@@ -1,0 +1,10 @@
+#!/bin/bash
+# Runs simulation, including MPI.
+
+numprocesses=$1; if [ -z $numprocesses ]; then numprocesses=4; fi # Number of processes to use
+shift # Eliminate first argument
+
+#mpiexec -np $numprocesses nrniv -python -mpi my_batches.py $@ # Run the model
+python my_batches.py
+
+echo "This is the end of runmybatches."

@@ -298,25 +298,11 @@ if cfg.addLongConn:
 #------------------------------------------------------------------------------
 # NetStim inputs
 #------------------------------------------------------------------------------
-
-L5 = excPopLabels
-L5.append('PV5')
-plateau = [v for v in excPopLabels]# if not v=='PT5_0']
-cfg.analysis['plotRaster']['include'].append(L5)
-cfg.analysis['plotTraces']['include'].append((('PT5_1'),0))
-cfg.analysis['plotTraces']['include'].append((('PT5_1'),5))
-cfg.analysis['plotTraces']['include'].append((('PT5_1'),126))
-#cfg.analysis['plotTraces']['include'].append((('PT5_1'),125))
-#cfg.analysis['plotTraces']['include'].append((('PT5_2'),0))
-#cfg.analysis['plotTraces']['include'].append((('PT5_2'),125))
-#cfg.analysis['plotTraces']['include'].append((('PV5'),0))
-#cfg.analysis['plotTraces']['include'].append((('PV5'),1))
-
-ns_list =[]
-
-connList3 = [[0,i] for i in range(int(250.0/2.0))]
-
 if cfg.addNetStim == 1:
+
+    plateau = [v for v in excPopLabels]# if not v=='PT5_0']
+    ns_list =[]
+    connList3 = [[0,i] for i in range(int(250.0/2.0))]
 
     for nslabel in [k for k in dir(cfg) if k.startswith('NetStim')]:
         ns = getattr(cfg, nslabel, None)        
@@ -355,7 +341,7 @@ if cfg.addNetStim == 1:
         netParams.stimSourceParams[nslabel] = {'type': 'NetStim', 'start': ns['start'], 'interval': ns['interval'], 'noise': ns['noise'], 'number': ns['number']}  
 
         # connect stim source to target
-        for cur_pop in plateau:#enumerate(excPopLabels):    
+        for cur_pop in plateau: #enumerate(excPopLabels):    
             if not cur_pop == 'PV5': 
                 for i in range(len(ns['synMech'])):
                     netParams.stimTargetParams[nslabel+'_'+cur_pop+'_'+ns['synMech'][i]] = \
@@ -376,6 +362,7 @@ if cfg.addNetStim == 1:
                       'spkTimes': spkTimes1,
                       }
     
+
 #------------------------------------------------------------------------------
 # Local connectivity parameters
 #------------------------------------------------------------------------------
@@ -385,7 +372,6 @@ if cfg.addConns:
     inhL5 = ['PV5']
   
     # (Exc) to  Exc L5
-  
     for prePop in excL5:
         for postPop in excL5:
             ruleLabel = prePop+'->'+postPop
@@ -401,7 +387,6 @@ if cfg.addConns:
                 'sec': 'basal_8'}
   
     #exc to inh
-
     for prePop in excL5:
         for postPop in inhL5:
             ruleLabel = prePop+'->'+postPop
@@ -415,7 +400,6 @@ if cfg.addConns:
                 'loc': 0.5,
                 'sec': 'soma'}
 
-  
     #inh to exc 
     for prePop in inhL5:
         for postPop in excL5:
@@ -445,9 +429,10 @@ if cfg.addConns:
                 'loc': 0.5,
                 'sec': 'soma'}
   
-###########
 
-
+#------------------------------------------------------------------------------
+# Long-range connectivity parameters
+#------------------------------------------------------------------------------
 if cfg.addLongConn:
   
     longPops = ['dTC']
@@ -492,8 +477,7 @@ if cfg.addLongConn:
                     'loc': 0.5,
                     'sec': 'dend'}  
 
-    if cfg.addNetStim:   
-                      
+    if cfg.addNetStim:       
         for nslabel1 in [k for k in dir(cfg) if k.startswith('Stim')]:
             ns1 = getattr(cfg, nslabel1, None) 
             for postPop in plateau:             

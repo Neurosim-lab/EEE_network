@@ -90,7 +90,7 @@ cfg.recordStep = 0.1 #sampling rate, orig =1.0, 1=1khz, 0.1=10khz, 0.05=20khz
 # Saving
 #------------------------------------------------------------------------------
 cfg.simLabel = 'network463'
-cfg.saveFolder = 'batch_data/v63'
+cfg.saveFolder = '.'
 cfg.savePickle = False
 cfg.saveJson = True
 cfg.saveDataInclude = ['simData', 'simConfig', 'netParams', 'net']
@@ -107,8 +107,10 @@ analysisList = [() for i in range((len(PT5))-1)]
 for k,v in enumerate(PT5): 
 	if not k == 0: analysisList[k-1] = (v,range(0,40))
 
+rasterInclude = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV'] 
 cfg.analysis['plotRaster'] = {'include':[],'orderBy': 'gid', 'orderInverse':True,'saveFig': True, 'labels':'overlay','popRates': False, 'syncLines': False, 'figSize': (12,10),'showFig': True,'lw': 2.0,'marker': '|'}#'timeRange':[0,500], 'popColors': {'PT5':'red','PV5': 'blue'}}
 
+tracesInclude = [('PT5_1',0), ('PT5_1',5), ('PT5_1',126)]
 cfg.analysis['plotTraces'] = {'include': [],'oneFigPer':'cell', 'colors': ['black'], 'figSize': (12,8),'saveFig': True ,'saveData': False,'showFig': False}#, 'ylim':[-0.001,0.09]} 
 
 #cfg.analysis['plotConn'] = {'includePre':L5, 'includePost':L5,'feature': 'strength'} #,'synOrConn':'conn','synMech':['AMPA'],'groupBy': 'pop', 'saveFig': True, 'showFig': False}

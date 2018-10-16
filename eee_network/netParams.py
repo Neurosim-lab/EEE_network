@@ -193,34 +193,29 @@ for k,label in enumerate(excPopLabels[1:]):
 # import PV5 cell
 cellRule = netParams.importCellParams(label='PV5', conds={'cellType':'PV', 'cellModel':'HH_simple'}, fileName=PV_path, cellName='FScell1', cellInstance = True)
 
-for cell_label, cell_params in netParams.cellParams.iteritems():
-  if  cell_label == 'PV5':          
-    for secName,sec in cell_params['secs'].iteritems():         
-        sec['vinit'] = cfg.vinit_PV5
+for secName,sec in netParams.cellParams['PV5']['secs'].iteritems():         
+    sec['vinit'] = cfg.vinit_PV5
 
-        if 'pas' in sec['mechs']:
+    if 'pas' in sec['mechs']:
+        if sec['mechs']['pas']['e'] != cfg.vinit_PV5:
+            print(secName)
+            print("e_pas orig:")
+            print(sec['mechs']['pas']['e'])
+            sec['mechs']['pas']['e'] = cfg.vinit_PV5
+            print("e_pas new:")
+            print(sec['mechs']['pas']['e'])
 
-            if sec['mechs']['pas']['e'] != cfg.vinit_PV5:
-            
-                print(cell_label)
-                print(secName)
-                print("e_pas orig:")
-                print(sec['mechs']['pas']['e'])
-                sec['mechs']['pas']['e'] = cfg.vinit_PV5
-                print("e_pas new:")
-                print(sec['mechs']['pas']['e'])
+    if hasattr(cfg, 'RmScale_PV5'):
+        if type(sec['mechs']['pas']['g']) == list:
+            sec['mechs']['pas']['g'] = list((1.0/cfg.RmScale_PV5) * np.array(sec['mechs']['pas']['g']))
+        elif type(sec['mechs']['pas']['g']) == float:
+            sec['mechs']['pas']['g'] = (1.0/cfg.RmScale_PV5) * sec['mechs']['pas']['g']
+        else:
+            raise Exception("Error occurred adjusting RmScale in " + secName)
 
-        if hasattr(cfg, 'RmScale_PV5'):
-            if type(sec['mechs']['pas']['g']) == list:
-                sec['mechs']['pas']['g'] = list((1.0/cfg.RmScale_PV5) * np.array(sec['mechs']['pas']['g']))
-            elif type(sec['mechs']['pas']['g']) == float:
-                sec['mechs']['pas']['g'] = (1.0/cfg.RmScale_PV5) * sec['mechs']['pas']['g']
-            else:
-                raise Exception("Error occurred adjusting RmScale in " + cell_label + ", " + secName)
-
-        if hasattr(cfg, 'RaScale'):
-            orig_ra = sec['geom']['Ra']
-            sec['geom']['Ra'] = cfg.RaScale_PV5 * sec['geom']['Ra']
+    if hasattr(cfg, 'RaScale'):
+        orig_ra = sec['geom']['Ra']
+        sec['geom']['Ra'] = cfg.RaScale_PV5 * sec['geom']['Ra']
 
 
 if cfg.noise_PV5:
@@ -240,11 +235,11 @@ if cfg.noise_PV5:
 #------------------------------------------------------------------------------
 # Synaptic mechanism parameters
 #------------------------------------------------------------------------------
-#### MyExp2syn synaptic mechanisms
+# MyExp2syn synaptic mechanisms
 netParams.synMechParams['GABAAfast'] = {'mod':'MyExp2SynBB','tau1':0.07,'tau2':18.2,'e': cfg.GABAAfast_e}
 netParams.synMechParams['GABAAslow'] = {'mod': 'MyExp2SynBB','tau1': 10, 'tau2': 200, 'e': cfg.GABAAslow_e}
 
-#### DMS synaptic mechanisms 
+# DMS synaptic mechanisms 
 netParams.synMechParams['NMDA'] = {'mod': 'NMDAeee', 'Cdur': cfg.CdurNMDAScale * 1.0, 'Alpha': cfg.NMDAAlphaScale * 4.0, 'Beta': cfg.NMDABetaScale * 0.0015, 'gmax': cfg.NMDAgmax, 'e': cfg.eNMDA}
 netParams.synMechParams['AMPA'] = {'mod': 'AMPA', 'gmax': cfg.ratioAMPANMDA * cfg.NMDAgmax}
 
@@ -273,33 +268,6 @@ if cfg.addIClamp:
             'conds': {'pop': params['pop'], 'cellList': [i]},
             'sec': params['sec'],
             'loc': params['loc']}
-
-#------------------------------------------------------------------------------
-# Synaptic noise to PT5_0 pop
-#------------------------------------------------------------------------------
-
-if cfg.noise_ptps:  
-
-    for i in range(numcellsPT5):
-        netParams.stimSourceParams['noise_fluct'] = {'type': 'Gfluctp','std_e': 0.012*cfg.exc_noise_amp, 'g_e0': 0.0121, 'tau_i': 10.49*cfg.noise_tau, 'tau_e': 2.728*cfg.noise_tau, 'std_i': 0.0264*cfg.inh_noise_amp, 'g_i0': 0.0573, 'E_e': cfg.e_exc_noise, 'E_i': cfg.e_inh_noise} #'seed': i+100} 
-        netParams.stimTargetParams['noise_fluct'+'_'+'PT5_1'] =  {
-            'source': 'noise_fluct',
-            'conds': {'pop':'PT5_1','cellList': [i]},
-            'sec': 'soma_2',
-            'loc': 0.5,
-            }  
-
-    for k,label in enumerate(excPopLabels):    
-        if not k == 0: 
-            for i in range(numcellsPT5):
-                netParams.stimSourceParams['noise_fluct'] = {'type': 'Gfluctp','std_e': 0.012*cfg.exc_noise_amp, 'g_e0': 0.0121, 'tau_i': 10.49*cfg.noise_tau, 'tau_e': 2.728*cfg.noise_tau, 'std_i': 0.0264*cfg.inh_noise_amp, 'g_i0': 0.0573, 'E_e': cfg.e_exc_noise, 'E_i': cfg.e_inh_noise} #'seed': i+100} 
-                netParams.stimTargetParams['noise_fluct'+'_'+label] =  {
-                    'source': 'noise_fluct',
-                    'conds': {'pop':label,'cellList': [i]},
-                    'sec': 'soma_2',
-                    'loc': 0.5,
-                    }
-
 
 
 #------------------------------------------------------------------------------

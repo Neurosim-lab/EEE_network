@@ -1,10 +1,15 @@
 """
 cfg.py
+
+Simulation configuration for M1 model (using NetPyNE)
+
+Contributors: sergio angulo, joe graham, subha, salvadordura@gmail.com
 """
 
 from netpyne import specs
-cfg = specs.SimConfig()
 import numpy as np
+
+cfg = specs.SimConfig()
 
 #------------------------------------------------------------------------------
 #
@@ -155,7 +160,6 @@ cfg.dendCaScale = 1.0 # Scales dendritic Ca conductance
 # Parameters AMPA, NMDA, AMPA/NMDA ratio
 #------------------------------------------------------------------------------
 
-
 # DMS NMDA params
 cfg.NMDAAlphaScale = 1.0   # Scales original value of 4.0
 cfg.NMDABetaScale  = 14.0  # Scales original value of 0.0015
@@ -171,7 +175,6 @@ cfg.eNMDA		   = -10.0
 #------------------------------------------------------------------------------
 
 cfg.noise = 1 #add synaptic noise to soma of PT5
-cfg.noise_ptps = 0 # add noise as point process with addstim method
 cfg.noise_PV5 = 1
 
 # noise for exc

@@ -99,7 +99,6 @@ if cfg.noise:
 
 
 # Modify cell rule biophysics based on cfg params
-
 for secName,sec in netParams.cellParams['PT5_1']['secs'].iteritems():         
     sec['vinit'] = cfg.vinit_PT5 #-80.0 #-88.12656642859307   # set vinit for all secs
 
@@ -164,7 +163,7 @@ for secName,sec in netParams.cellParams['PT5_1']['secs'].iteritems():
             if hasattr(cfg, 'dendCaScale') and (("basal" in secName) or ("axon" in secName)) and (cfg.dendCaScale != 1.0):
                 sec['mechs']['it']['gbar'] = list(np.array(orig_it, ndmin=1) * cfg.dendCaScale)
             if hasattr(cfg, 'allCaScale') and (cfg.allCaScale != 1.0):
-                    sec['mechs']['it']['gbar'] = list(np.array(orig_it, ndmin=1) * cfg.allCaScale)
+                sec['mechs']['it']['gbar'] = list(np.array(orig_it, ndmin=1) * cfg.allCaScale)
 
     if hasattr(cfg, 'ihScale'):
         if 'ih' in sec['mechs']:
@@ -176,7 +175,7 @@ for secName,sec in netParams.cellParams['PT5_1']['secs'].iteritems():
         elif type(sec['mechs']['pas']['g']) == float:
             sec['mechs']['pas']['g'] = (1.0/cfg.RmScale) * sec['mechs']['pas']['g']
         else:
-            raise Exception("Error occurred adjusting RmScale in " + cell_label + ", " + secName)
+            raise Exception("Error occurred adjusting RmScale in ", secName)
 
     if hasattr(cfg, 'RaScale'):
         orig_ra = sec['geom']['Ra']
@@ -191,8 +190,7 @@ for k,label in enumerate(excPopLabels[1:]):
         netParams.cellParams[label] = cellRule
 
 
-#import PV5 cell
-
+# import PV5 cell
 cellRule = netParams.importCellParams(label='PV5', conds={'cellType':'PV', 'cellModel':'HH_simple'}, fileName=PV_path, cellName='FScell1', cellInstance = True)
 
 for cell_label, cell_params in netParams.cellParams.iteritems():
@@ -226,18 +224,17 @@ for cell_label, cell_params in netParams.cellParams.iteritems():
 
 
 if cfg.noise_PV5:
-        
-        netParams.cellParams['PV5']['secs']['soma']['pointps']= {'noise': {'mod'  : 'Gfluctp', 
-                                                                           'loc': 0.5, 
-                                                                           'std_e': 0.012*cfg.exc_noise_amp_icells,
-                                                                           'g_e0' : 0.0121, 
-                                                                           'tau_i': 10.49*cfg.noise_tau, 
-                                                                           'tau_e': 2.728*cfg.noise_tau, 
-                                                                           'std_i': 0.0264*cfg.inh_noise_amp_icells, 
-                                                                           'g_i0' : 0.0573, 
-                                                                           'E_e'  : cfg.e_exc_noise_icells, 
-                                                                           'E_i'  : cfg.e_inh_noise_icells,
-                                                                           'seed1': 'gid', 'seed2': sim.id32('gfluctp'), 'seed3': cfg.seeds['stim']}}
+    netParams.cellParams['PV5']['secs']['soma']['pointps']= {'noise': {'mod'  : 'Gfluctp', 
+                                                                       'loc': 0.5, 
+                                                                       'std_e': 0.012*cfg.exc_noise_amp_icells,
+                                                                       'g_e0' : 0.0121, 
+                                                                       'tau_i': 10.49*cfg.noise_tau, 
+                                                                       'tau_e': 2.728*cfg.noise_tau, 
+                                                                       'std_i': 0.0264*cfg.inh_noise_amp_icells, 
+                                                                       'g_i0' : 0.0573, 
+                                                                       'E_e'  : cfg.e_exc_noise_icells, 
+                                                                       'E_i'  : cfg.e_inh_noise_icells,
+                                                                       'seed1': 'gid', 'seed2': sim.id32('gfluctp'), 'seed3': cfg.seeds['stim']}}
 
 
 #------------------------------------------------------------------------------

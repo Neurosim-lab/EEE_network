@@ -26,7 +26,7 @@ cfg.createPyStruct = True
 cfg.cvode_active = False
 cfg.cvode_atol = 1e-6
 cfg.cache_efficient = True
-cfg.checkErrors = True
+cfg.checkErrors = False
 cfg.seed_wiring = 4123
 cfg.seeds = {'conn': cfg.seed_wiring,
 			'stim': 1234, 

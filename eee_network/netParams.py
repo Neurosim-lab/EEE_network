@@ -8,7 +8,6 @@ import sys
 import copy
 
 
-
 try:
     from __main__ import cfg  # import SimConfig object with params from parent module
 except:
@@ -30,6 +29,7 @@ netParams.sizeX = cfg.sizeX # x-dimension (horizontal length) size in um
 netParams.sizeY = cfg.sizeY # y-dimension (vertical height or cortical depth) size in um
 netParams.sizeZ = cfg.sizeZ # z-dimension (horizontal depth) size in um
 netParams.shape = 'cylinder' # cylindrical (column-like) volume
+
 
 #------------------------------------------------------------------------------
 # General connectivity parameters

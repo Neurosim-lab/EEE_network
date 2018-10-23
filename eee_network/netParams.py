@@ -79,7 +79,8 @@ reducedSecList = {  # section Lists for reduced cell model
     'perisom':  ['soma_0'],
     'basaldend': ['Bdend1','Bdend2', 'Bdend3']}
 
-# import and modify PT5 cell
+
+# Import and modify PT5 cell
 cellRule = netParams.importCellParams(label='PT5_1', conds={'cellType': 'PT5_1', 'cellModel': 'HH_reduced'}, fileName=eeeS_path, cellName='MakeCell')
 
 # add noise
@@ -190,7 +191,7 @@ for k,label in enumerate(excPopLabels[1:]):
         netParams.cellParams[label] = cellRule
 
 
-# import PV5 cell
+# Import PV5 cell
 cellRule = netParams.importCellParams(label='PV5', conds={'cellType':'PV', 'cellModel':'HH_simple'}, fileName=PV_path, cellName='FScell1', cellInstance = True)
 
 for secName,sec in netParams.cellParams['PV5']['secs'].iteritems():         

@@ -75,7 +75,7 @@ elif cfg.cellsrec == 5:  # record selected cells
 #cfg.recordTraces['GABAAfast'] = {'sec':'soma_2', 'loc':0.5, 'synMech': 'GABAAfast', 'var': 'i'}
 #cfg.recordTraces['GABAAslow'] = {'sec':'soma_2', 'loc':0.5, 'synMech': 'GABAAslow', 'var': 'i'}
 
-cfg. recordTraces['NMDA_basal'] = {'sec':'basal_8', 'loc':0.3, 'synMech': 'NMDA', 'var': 'iNMDA'}
+cfg.recordTraces['NMDA_basal'] = {'sec':'basal_8', 'loc':0.3, 'synMech': 'NMDA', 'var': 'iNMDA'}
 
 #'i_NMDA_Bdend1': {'sec':'Bdend1', 'loc':0.5, 'synMech': 'NMDA', 'var': 'iNMDA'}
 #					'g_NMDA_Bdend1': {'sec':'Bdend1', 'loc':0.5, 'synMech': 'NMDA2', 'var': 'sNMDA'} #'var': 'g'	 for the NMDA DMS				
@@ -85,6 +85,7 @@ cfg.recordStims = False
 cfg.recordStep = 0.1 #sampling rate, orig =1.0, 1=1khz, 0.1=10khz, 0.05=20khz
 
 #cfg.recordLFP = [[150, 400, 200]]
+
 
 #------------------------------------------------------------------------------
 # Saving
@@ -96,8 +97,9 @@ cfg.saveJson = True
 cfg.saveDataInclude = ['simData', 'simConfig', 'netParams', 'net']
 cfg.backupCfgFile = None 
 cfg.gatherOnlySimData = False
-cfg.saveCellSecs = False
+cfg.saveCellSecs = 1 # False
 cfg.saveCellConns = False
+
 
 #------------------------------------------------------------------------------
 # Analysis and plotting
@@ -121,15 +123,18 @@ cfg.analysis['plotTraces'] = {'include': [],'oneFigPer':'cell', 'colors': ['blac
 
 #cfg.analysis['plotLFP'] = {'electrodes':'avg'}
 
+
 #------------------------------------------------------------------------------
 # Cells
 #------------------------------------------------------------------------------
 cfg.singleCellPops = 0
 
+
 #------------------------------------------------------------------------------
 # Connections
 #------------------------------------------------------------------------------
 cfg.addConns = True
+
 
 #------------------------------------------------------------------------------
 # Parameter to control for Rm in all secs of eee7 cell and  PV5 cells
@@ -138,17 +143,21 @@ cfg.RmScale    = 1.0 #20.0
 cfg.RaScale    = 0.7
 
 cfg.RmScale_PV5= 5.0#5.0
-cfg.RaScale_PV5= 0.5#0.7    
+cfg.RaScale_PV5= 0.5#0.7
+
+
 #------------------------------------------------------------------------------
 # Parameter to control for Ih in all secs of eee7ps cell
 #------------------------------------------------------------------------------
 cfg.ihScale     = 0.0 # Scales ih conductance
+
 
 #------------------------------------------------------------------------------
 # Parameter to control for vinit in all secs of eee7ps cell
 #------------------------------------------------------------------------------
 cfg.vinit_PT5 = -70.0
 cfg.vinit_PV5 = -55.0 # orig value -72.32
+
 
 #------------------------------------------------------------------------------
 # Sodium, potassium, and calcium conductance scaling
@@ -157,6 +166,7 @@ cfg.allNaScale  = 1.2
 cfg.dendNaScale = 1.0 # Scales dendritic Na conductance
 cfg.dendKScale  = 1.0 # Scales dendritic K  conductance
 cfg.dendCaScale = 1.0 # Scales dendritic Ca conductance
+
 
 #------------------------------------------------------------------------------
 # Parameters AMPA, NMDA, AMPA/NMDA ratio
@@ -169,7 +179,6 @@ cfg.CdurNMDAScale  = 1.0   # Scales original value of 1.0
 cfg.NMDAgmax       = 0.01
 cfg.ratioAMPANMDA  = 4.0 
 cfg.eNMDA		   = -10.0
-
 
 
 #------------------------------------------------------------------------------
@@ -192,6 +201,7 @@ cfg.inh_noise_amp_icells = 0.22 *0.075
 cfg.e_inh_noise_icells = cfg.vinit_PV5 - 10.0 
 cfg.e_exc_noise_icells = cfg.vinit_PV5 + 55.0 
 
+
 #------------------------------------------------------------------------------
 # Synaptic weigth 
 #------------------------------------------------------------------------------
@@ -210,10 +220,11 @@ cfg.ratiobdend = [0.666,0.334]# 2.0 AMPA/NMDA
 cfg.GABAAfast_e = -80
 cfg.GABAAslow_e = -90
 
+
 #------------------------------------------------------------------------------
 # Long range inputs
 #------------------------------------------------------------------------------
-cfg.addLongConn = 1 #control all long connectivty, including glut stim 
+cfg.addLongConn = 1 #1 #control all long connectivty, including glut stim 
 cfg.longConnPT5 = 0
 cfg.longConnPV5 = 0
 
@@ -227,6 +238,7 @@ cfg.weightLongInh = 0#3.5#4.0 #2.0 #1.4 # to PV5
 
 cfg.startLong = 0  # start at 0 ms
 cfg.ratesLong = {'dTC':[80.0, 100.0]}#, 'HC':[40.0,80.0]}
+
 
 #------------------------------------------------------------------------------
 # NetStim inputs
@@ -270,7 +282,7 @@ cfg.NetStimExSyn = {'loc': list(np.linspace(cfg.synLocMiddle-cfg.synLocRadius, c
 #------------------------------------------------------------------------------
 # Current inputs (IClamp)
 #------------------------------------------------------------------------------
-cfg.addIClamp = 1
+cfg.addIClamp = 0
 
 ampl = 0.7
 durat = 2000

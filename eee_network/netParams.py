@@ -45,7 +45,7 @@ netParams.propVelocity = 100.0 # propagation velocity (um/ms)
 
 columnA = [50, 350] # horizontal range (xrange)
 
-numcellsPT5 = 250 #80
+numcellsPT5 = int(250 * 1.0) #80
 numcellsPV5 = int((numcellsPT5*4)/2.0)
 
 # layer boundaries
@@ -54,10 +54,10 @@ layer = {'5': [0.2,0.623], 'long': [0.7,1.0]} # yRange in column
 # add excitatory populations
 excPopLabels = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4'] 
 for k,label in enumerate(excPopLabels):
-    netParams.popParams[label]  = {'cellModel': 'HH_reduced', 'cellType': label,  'xRange': columnA, 'yRange': layer['5'], 'numCells': numcellsPT5} 
+    netParams.popParams[label]  = {'cellModel': 'HH_reduced', 'cellType': label,  'xRange': columnA, 'ynormRange': layer['5'], 'numCells': numcellsPT5} 
 
 # add inhibitory population
-netParams.popParams['PV5']  = {'cellModel': 'HH_simple',  'cellType': 'PV','xRange': columnA, 'yRange': layer['5'], 'numCells': numcellsPV5} 
+netParams.popParams['PV5']  = {'cellModel': 'HH_simple',  'cellType': 'PV','xRange': columnA, 'ynormRange': layer['5'], 'numCells': numcellsPV5} 
 
 # set all pop size to 1 for testing purposes
 if cfg.singleCellPops:
@@ -303,7 +303,7 @@ if cfg.addNetStim == 1:
 
     plateau = [v for v in excPopLabels]# if not v=='PT5_0']
     ns_list =[]
-    connList3 = [[0,i] for i in range(int(250.0/2.0))]
+    connList3 = [[0,i] for i in range(int(numcellsPT5/2.0))]
 
     for nslabel in [k for k in dir(cfg) if k.startswith('NetStim')]:
         ns = getattr(cfg, nslabel, None)        
@@ -346,7 +346,7 @@ if cfg.addNetStim == 1:
             if not cur_pop == 'PV5': 
                 for i in range(len(ns['synMech'])):
                     netParams.stimTargetParams[nslabel+'_'+cur_pop+'_'+ns['synMech'][i]] = \
-                        {'source': nslabel, 'conds': {'pop': cur_pop, 'cellList': range(0,125)}, 'sec': ns['sec'], 'synsPerConn': cfg.numSyns, 'loc': list(cur_locs), 'synMech': ns['synMech'][i], 'weight': list(cur_weights), 'delay': list(cur_delays)}
+                        {'source': nslabel, 'conds': {'pop': cur_pop, 'cellList': range(0,int(numcellsPT5/2.0))}, 'sec': ns['sec'], 'synsPerConn': cfg.numSyns, 'loc': list(cur_locs), 'synMech': ns['synMech'][i], 'weight': list(cur_weights), 'delay': list(cur_delays)}
           
     for nslabel1 in [k for k in dir(cfg) if k.startswith('Stim')]:
         ns1 = getattr(cfg, nslabel1, None)   

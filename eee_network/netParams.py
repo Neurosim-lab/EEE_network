@@ -72,31 +72,23 @@ cellpath = '../cells'
 eeeS_path = os.path.join(cellpath, 'eeeS.py')
 PV_path   = os.path.join(cellpath, 'FS3.hoc')
 
-reducedSecList = {  # section Lists for reduced cell model
-    'alldend':  ['Adend1', 'Adend2', 'Adend3','Bdend1','Bdend2','Bdend3'], 
-    'spiny':  ['Adend1', 'Adend2', 'Adend3', 'Bdend1','Bdend2'],
-    'apicdend': ['Adend1', 'Adend2', 'Adend3'],
-    'perisom':  ['soma_0'],
-    'basaldend': ['Bdend1','Bdend2', 'Bdend3']}
-
-
 # Import and modify PT5 cell
 cellRule = netParams.importCellParams(label='PT5_1', conds={'cellType': 'PT5_1', 'cellModel': 'HH_reduced'}, fileName=eeeS_path, cellName='MakeCell')
 
-# add noise
-noiseSec = 'soma_2'
-if cfg.noise:
-    netParams.cellParams['PT5_1']['secs'][noiseSec]['pointps'] = {'noise': {'mod': 'Gfluctp', 
-                                                                     'loc': 0.5,
-                                                                      'std_e': 0.012*cfg.exc_noise_amp,
-                                                                      'g_e0' : 0.0121, 
-                                                                      'tau_i': 10.49*cfg.noise_tau, 
-                                                                      'tau_e': 2.728*cfg.noise_tau, 
-                                                                      'std_i': 0.0264*cfg.inh_noise_amp, 
-                                                                      'g_i0' : 0.0573, 
-                                                                      'E_e'  : cfg.e_exc_noise, 
-                                                                      'E_i'  : cfg.e_inh_noise, 
-                                                                      'seed1': 'gid', 'seed2': sim.id32('gfluctp'), 'seed3': cfg.seeds['stim']}}
+# # add noise
+# noiseSec = 'soma_2'
+# if cfg.noise:
+#     netParams.cellParams['PT5_1']['secs'][noiseSec]['pointps'] = {'noise': {'mod': 'Gfluctp', 
+#                                                                                  'loc': 0.5,
+#                                                                                   'std_e': 0.012*cfg.exc_noise_amp,
+#                                                                                   'g_e0' : 0.0121, 
+#                                                                                   'tau_i': 10.49*cfg.noise_tau, 
+#                                                                                   'tau_e': 2.728*cfg.noise_tau, 
+#                                                                                   'std_i': 0.0264*cfg.inh_noise_amp, 
+#                                                                                   'g_i0' : 0.0573, 
+#                                                                                   'E_e'  : cfg.e_exc_noise, 
+#                                                                                   'E_i'  : cfg.e_inh_noise, 
+#                                                                                   'seed1': 'gid', 'seed2': sim.id32('gfluctp'), 'seed3': cfg.seeds['stim']}}
 
 
 # Modify cell rule biophysics based on cfg params
@@ -118,7 +110,7 @@ for secName,sec in netParams.cellParams['PT5_1']['secs'].iteritems():
         if 'na' in sec['mechs']:
             orig_na = sec['mechs']['na']['gbar']
             if hasattr(cfg, 'dendNaScale') and (("basal" in secName) or ("axon" in secName)) and (cfg.dendNaScale != 1.0):
-                sec['mechs']['na']['gbar'] = list(np.array(orig_na, ndmin=1) * cfg.dendNaScale) 
+                sec['mechs']['na']['gbar'] = orig_na * cfg.dendNaScale 
             if hasattr(cfg, 'allNaScale') and (cfg.allNaScale != 1.0):
                 sec['mechs']['na']['gbar'] = list(np.array(orig_na, ndmin=1) * cfg.allNaScale)
         
@@ -219,18 +211,18 @@ for secName,sec in netParams.cellParams['PV5']['secs'].iteritems():
         sec['geom']['Ra'] = cfg.RaScale_PV5 * sec['geom']['Ra']
 
 
-if cfg.noise_PV5:
-    netParams.cellParams['PV5']['secs']['soma']['pointps']= {'noise': {'mod'  : 'Gfluctp', 
-                                                                       'loc': 0.5, 
-                                                                       'std_e': 0.012*cfg.exc_noise_amp_icells,
-                                                                       'g_e0' : 0.0121, 
-                                                                       'tau_i': 10.49*cfg.noise_tau, 
-                                                                       'tau_e': 2.728*cfg.noise_tau, 
-                                                                       'std_i': 0.0264*cfg.inh_noise_amp_icells, 
-                                                                       'g_i0' : 0.0573, 
-                                                                       'E_e'  : cfg.e_exc_noise_icells, 
-                                                                       'E_i'  : cfg.e_inh_noise_icells,
-                                                                       'seed1': 'gid', 'seed2': sim.id32('gfluctp'), 'seed3': cfg.seeds['stim']}}
+# if cfg.noise_PV5:
+#     netParams.cellParams['PV5']['secs']['soma']['pointps']= {'noise': {'mod'  : 'Gfluctp', 
+#                                                                        'loc': 0.5, 
+#                                                                        'std_e': 0.012*cfg.exc_noise_amp_icells,
+#                                                                        'g_e0' : 0.0121, 
+#                                                                        'tau_i': 10.49*cfg.noise_tau, 
+#                                                                        'tau_e': 2.728*cfg.noise_tau, 
+#                                                                        'std_i': 0.0264*cfg.inh_noise_amp_icells, 
+#                                                                        'g_i0' : 0.0573, 
+#                                                                        'E_e'  : cfg.e_exc_noise_icells, 
+#                                                                        'E_i'  : cfg.e_inh_noise_icells,
+#                                                                        'seed1': 'gid', 'seed2': sim.id32('gfluctp'), 'seed3': cfg.seeds['stim']}}
 
 
 #------------------------------------------------------------------------------
@@ -248,251 +240,251 @@ ESynMech = ['AMPA','NMDA']
 ISynMech = ['GABAAfast','GABAAslow']
 
 
-#------------------------------------------------------------------------------
-# Current clamps (IClamp)
-#------------------------------------------------------------------------------
-if cfg.addIClamp:
-    for key in [k for k in dir(cfg) if k.startswith('IClamp')]:
-        params = getattr(cfg, key, None)
+# #------------------------------------------------------------------------------
+# # Current clamps (IClamp)
+# #------------------------------------------------------------------------------
+# if cfg.addIClamp:
+#     for key in [k for k in dir(cfg) if k.startswith('IClamp')]:
+#         params = getattr(cfg, key, None)
         
-        for i in range(numcellsPV5):
-          # add stim source
-          netParams.stimSourceParams[str(key)+'_'+str(i)] = {
-            'type': 'IClamp',
-            'del': i/64.0,
-            'dur': params['dur'],
-            'amp': params['amp']}    
+#         for i in range(numcellsPV5):
+#           # add stim source
+#           netParams.stimSourceParams[str(key)+'_'+str(i)] = {
+#             'type': 'IClamp',
+#             'del': i/64.0,
+#             'dur': params['dur'],
+#             'amp': params['amp']}    
 
-          # connect stim source to target
-          netParams.stimTargetParams[str(key)+'_'+str(i)+'_'+params['pop']] =  {
-            'source': str(key)+'_'+str(i),
-            'conds': {'pop': params['pop'], 'cellList': [i]},
-            'sec': params['sec'],
-            'loc': params['loc']}
+#           # connect stim source to target
+#           netParams.stimTargetParams[str(key)+'_'+str(i)+'_'+params['pop']] =  {
+#             'source': str(key)+'_'+str(i),
+#             'conds': {'pop': params['pop'], 'cellList': [i]},
+#             'sec': params['sec'],
+#             'loc': params['loc']}
 
 
-#------------------------------------------------------------------------------
-# Long range input pulses
-#------------------------------------------------------------------------------
-## Long-range input populations (VecStims)
-if cfg.addLongConn:
+# #------------------------------------------------------------------------------
+# # Long range input pulses
+# #------------------------------------------------------------------------------
+# ## Long-range input populations (VecStims)
+# if cfg.addLongConn:
   
-    if cfg.longConnPV5 == 1:
-        numCells = cfg.numCellsLong
-        noise = cfg.noiseLong
-        start = cfg.startLong
+#     if cfg.longConnPV5 == 1:
+#         numCells = cfg.numCellsLong
+#         noise = cfg.noiseLong
+#         start = cfg.startLong
               
 
-        longPops = ['dTC']
-        ## create populations with fixed 
-        for longPop in longPops:
-            netParams.popParams[longPop] = {'cellModel': 'VecStim', 
-                            'numCells': numCells, 
-                            'rate': cfg.ratesLong[longPop], 
-                            'noise': noise, 
-                            'start': start, 
-                            'pulses': [],#pulses 
-                            'yRange': layer['long']
-                            #'spkTimes': spkTimes
-                            }
+#         longPops = ['dTC']
+#         ## create populations with fixed 
+#         for longPop in longPops:
+#             netParams.popParams[longPop] = {'cellModel': 'VecStim', 
+#                             'numCells': numCells, 
+#                             'rate': cfg.ratesLong[longPop], 
+#                             'noise': noise, 
+#                             'start': start, 
+#                             'pulses': [],#pulses 
+#                             'yRange': layer['long']
+#                             #'spkTimes': spkTimes
+#                             }
 
-#------------------------------------------------------------------------------
-# NetStim inputs
-#------------------------------------------------------------------------------
-if cfg.addNetStim == 1:
+# #------------------------------------------------------------------------------
+# # NetStim inputs
+# #------------------------------------------------------------------------------
+# if cfg.addNetStim == 1:
 
-    plateau = [v for v in excPopLabels]# if not v=='PT5_0']
-    ns_list =[]
-    connList3 = [[0,i] for i in range(int(numcellsPT5/2.0))]
+#     plateau = [v for v in excPopLabels]# if not v=='PT5_0']
+#     ns_list =[]
+#     connList3 = [[0,i] for i in range(int(numcellsPT5/2.0))]
 
-    for nslabel in [k for k in dir(cfg) if k.startswith('NetStim')]:
-        ns = getattr(cfg, nslabel, None)        
+#     for nslabel in [k for k in dir(cfg) if k.startswith('NetStim')]:
+#         ns = getattr(cfg, nslabel, None)        
           
-        branch_length = netParams.cellParams['PT5_1']['secs'][ns['sec']]['geom']['L']
+#         branch_length = netParams.cellParams['PT5_1']['secs'][ns['sec']]['geom']['L']
                   
-        if "ExSyn" in nslabel:
-            cur_locs = np.linspace(cfg.synLocMiddle-cfg.synLocRadius, cfg.synLocMiddle+cfg.synLocRadius, cfg.numExSyns)
-            cur_dists = branch_length * np.abs(cur_locs - cfg.synLocMiddle)
-            cur_weights = (cfg.glutAmp * cfg.glutAmpExSynScale) * (1 - cur_dists * cfg.glutAmpDecay/100)
-            cur_weights = [weight if weight > 0.0 else 0.0 for weight in cur_weights]
-            cur_delays = cfg.initDelay + (cfg.exSynDelay * cur_dists)
+#         if "ExSyn" in nslabel:
+#             cur_locs = np.linspace(cfg.synLocMiddle-cfg.synLocRadius, cfg.synLocMiddle+cfg.synLocRadius, cfg.numExSyns)
+#             cur_dists = branch_length * np.abs(cur_locs - cfg.synLocMiddle)
+#             cur_weights = (cfg.glutAmp * cfg.glutAmpExSynScale) * (1 - cur_dists * cfg.glutAmpDecay/100)
+#             cur_weights = [weight if weight > 0.0 else 0.0 for weight in cur_weights]
+#             cur_delays = cfg.initDelay + (cfg.exSynDelay * cur_dists)
                   
               
-        elif "Syn" in nslabel:
-            cur_locs = np.linspace(cfg.synLocMiddle-cfg.synLocRadius, cfg.synLocMiddle+cfg.synLocRadius, cfg.numSyns)
-            cur_dists = branch_length * np.abs(cur_locs - cfg.synLocMiddle)
-            cur_weights = cfg.glutAmp * (1 - cur_dists * cfg.glutAmpDecay/100)
-            cur_weights = [weight if weight > 0.0 else 0.0 for weight in cur_weights]
-            cur_delays = cfg.initDelay + (cfg.synDelay * cur_dists)                
+#         elif "Syn" in nslabel:
+#             cur_locs = np.linspace(cfg.synLocMiddle-cfg.synLocRadius, cfg.synLocMiddle+cfg.synLocRadius, cfg.numSyns)
+#             cur_dists = branch_length * np.abs(cur_locs - cfg.synLocMiddle)
+#             cur_weights = cfg.glutAmp * (1 - cur_dists * cfg.glutAmpDecay/100)
+#             cur_weights = [weight if weight > 0.0 else 0.0 for weight in cur_weights]
+#             cur_delays = cfg.initDelay + (cfg.synDelay * cur_dists)                
               
-        else:
-            raise Exception("NetStim must have Syn or ExSyn in name")
+#         else:
+#             raise Exception("NetStim must have Syn or ExSyn in name")
           
-        spkTimes = list(np.linspace(ns['start'],ns['start']+(ns['interval']*(ns['number']-1)), num= ns['number']))  
+#         spkTimes = list(np.linspace(ns['start'],ns['start']+(ns['interval']*(ns['number']-1)), num= ns['number']))  
 
-        netParams.popParams['plateau_stim'] = {'cellModel': 'VecStim',
-                            'numCells': 40, 
-                            'noise': ns['noise'], 
-                            'yRange': layer['long'], 
-                            'spkTimes': spkTimes}
+#         netParams.popParams['plateau_stim'] = {'cellModel': 'VecStim',
+#                             'numCells': 40, 
+#                             'noise': ns['noise'], 
+#                             'yRange': layer['long'], 
+#                             'spkTimes': spkTimes}
         
-        ns_list.append('plateau_stim')                   
+#         ns_list.append('plateau_stim')                   
 
-        # add stim source
-        netParams.stimSourceParams[nslabel] = {'type': 'NetStim', 'start': ns['start'], 'interval': ns['interval'], 'noise': ns['noise'], 'number': ns['number']}  
+#         # add stim source
+#         netParams.stimSourceParams[nslabel] = {'type': 'NetStim', 'start': ns['start'], 'interval': ns['interval'], 'noise': ns['noise'], 'number': ns['number']}  
 
-        # connect stim source to target
-        for cur_pop in plateau: #enumerate(excPopLabels):    
-            if not cur_pop == 'PV5': 
-                for i in range(len(ns['synMech'])):
-                    netParams.stimTargetParams[nslabel+'_'+cur_pop+'_'+ns['synMech'][i]] = \
-                        {'source': nslabel, 'conds': {'pop': cur_pop, 'cellList': range(0,int(numcellsPT5/2.0))}, 'sec': ns['sec'], 'synsPerConn': cfg.numSyns, 'loc': list(cur_locs), 'synMech': ns['synMech'][i], 'weight': list(cur_weights), 'delay': list(cur_delays)}
+#         # connect stim source to target
+#         for cur_pop in plateau: #enumerate(excPopLabels):    
+#             if not cur_pop == 'PV5': 
+#                 for i in range(len(ns['synMech'])):
+#                     netParams.stimTargetParams[nslabel+'_'+cur_pop+'_'+ns['synMech'][i]] = \
+#                         {'source': nslabel, 'conds': {'pop': cur_pop, 'cellList': range(0,int(numcellsPT5/2.0))}, 'sec': ns['sec'], 'synsPerConn': cfg.numSyns, 'loc': list(cur_locs), 'synMech': ns['synMech'][i], 'weight': list(cur_weights), 'delay': list(cur_delays)}
           
-    for nslabel1 in [k for k in dir(cfg) if k.startswith('Stim')]:
-        ns1 = getattr(cfg, nslabel1, None)   
+#     for nslabel1 in [k for k in dir(cfg) if k.startswith('Stim')]:
+#         ns1 = getattr(cfg, nslabel1, None)   
 
-        ns_list.append(nslabel1)  
+#         ns_list.append(nslabel1)  
 
-        cfg.analysis['plotRaster']['include'].append(ns_list)
+#         cfg.analysis['plotRaster']['include'].append(ns_list)
 
-        spkTimes1 = list(np.linspace(ns1['start'],ns1['start']+(ns1['interval']*(ns1['number']-1)), num= ns1['number']))
-        netParams.popParams[nslabel1] = {'cellModel': 'VecStim', 
-                      'numCells': 40, 
-                      'noise': ns1['noise'],
-                      'yRange': layer['long'],
-                      'spkTimes': spkTimes1,
-                      }
+#         spkTimes1 = list(np.linspace(ns1['start'],ns1['start']+(ns1['interval']*(ns1['number']-1)), num= ns1['number']))
+#         netParams.popParams[nslabel1] = {'cellModel': 'VecStim', 
+#                       'numCells': 40, 
+#                       'noise': ns1['noise'],
+#                       'yRange': layer['long'],
+#                       'spkTimes': spkTimes1,
+#                       }
     
 
-#------------------------------------------------------------------------------
-# Local connectivity parameters
-#------------------------------------------------------------------------------
-if cfg.addConns:
+# #------------------------------------------------------------------------------
+# # Local connectivity parameters
+# #------------------------------------------------------------------------------
+# if cfg.addConns:
     
-    excL5 = excPopLabels #['PT5_0','PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PT5_5','PT5_6','PT5_7','PT5_8','PT5_9','PT5_10']
-    inhL5 = ['PV5']
+#     excL5 = excPopLabels #['PT5_0','PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PT5_5','PT5_6','PT5_7','PT5_8','PT5_9','PT5_10']
+#     inhL5 = ['PV5']
   
-    # (Exc) to  Exc L5
-    for prePop in excL5:
-        for postPop in excL5:
-            ruleLabel = prePop+'->'+postPop
-            netParams.connParams[ruleLabel] = {
-                'preConds': {'pop': prePop},
-                'postConds': {'pop': postPop},
-                'synMech': ESynMech, 
-                'weight': 1.0*cfg.EEgain, 
-                'synMechWeightFactor': cfg.ratiobdend,
-                'delay': 'defaultDelay+dist_3D/propVelocity',
-                'convergence': cfg.EEconv,#5,#3,
-                'loc': 0.3,
-                'sec': 'basal_8'}
+#     # (Exc) to  Exc L5
+#     for prePop in excL5:
+#         for postPop in excL5:
+#             ruleLabel = prePop+'->'+postPop
+#             netParams.connParams[ruleLabel] = {
+#                 'preConds': {'pop': prePop},
+#                 'postConds': {'pop': postPop},
+#                 'synMech': ESynMech, 
+#                 'weight': 1.0*cfg.EEgain, 
+#                 'synMechWeightFactor': cfg.ratiobdend,
+#                 'delay': 'defaultDelay+dist_3D/propVelocity',
+#                 'convergence': cfg.EEconv,#5,#3,
+#                 'loc': 0.3,
+#                 'sec': 'basal_8'}
   
-    #exc to inh
-    for prePop in excL5:
-        for postPop in inhL5:
-            ruleLabel = prePop+'->'+postPop
-            netParams.connParams[ruleLabel] = {
-                'preConds': {'pop': prePop},
-                'postConds': {'pop': postPop},
-                'synMech': 'AMPA',
-                'weight': 2.0*cfg.EIgain, 
-                'delay': 'defaultDelay+dist_3D/propVelocity',
-                'convergence': 3,
-                'loc': 0.5,
-                'sec': 'soma'}
+#     #exc to inh
+#     for prePop in excL5:
+#         for postPop in inhL5:
+#             ruleLabel = prePop+'->'+postPop
+#             netParams.connParams[ruleLabel] = {
+#                 'preConds': {'pop': prePop},
+#                 'postConds': {'pop': postPop},
+#                 'synMech': 'AMPA',
+#                 'weight': 2.0*cfg.EIgain, 
+#                 'delay': 'defaultDelay+dist_3D/propVelocity',
+#                 'convergence': 3,
+#                 'loc': 0.5,
+#                 'sec': 'soma'}
 
-    #inh to exc 
-    for prePop in inhL5:
-        for postPop in excL5:
-            ruleLabel = prePop+'->'+postPop
-            netParams.connParams[ruleLabel] = {
-                'preConds': {'pop': prePop},
-                'postConds': {'pop': postPop},
-                'synMech': ISynMech, 
-                'weight': 0.001*cfg.IEgain, 
-                'synMechWeightFactor': [0.7,0.3],
-                'delay': 'defaultDelay+dist_3D/propVelocity',
-                'convergence': 4,
-                'loc': 0.5,
-                'sec': 'soma_2'}
+#     #inh to exc 
+#     for prePop in inhL5:
+#         for postPop in excL5:
+#             ruleLabel = prePop+'->'+postPop
+#             netParams.connParams[ruleLabel] = {
+#                 'preConds': {'pop': prePop},
+#                 'postConds': {'pop': postPop},
+#                 'synMech': ISynMech, 
+#                 'weight': 0.001*cfg.IEgain, 
+#                 'synMechWeightFactor': [0.7,0.3],
+#                 'delay': 'defaultDelay+dist_3D/propVelocity',
+#                 'convergence': 4,
+#                 'loc': 0.5,
+#                 'sec': 'soma_2'}
   
-    #inh to inh
-    for prePop in inhL5:
-        for postPop in inhL5:
-            ruleLabel = prePop+'->'+postPop
-            netParams.connParams[ruleLabel] = {
-                'preConds': {'pop': prePop},
-                'postConds': {'pop': postPop},
-                'synMech': 'GABAAfast',
-                'weight': 0.002*cfg.IIgain, 
-                'delay': cfg.IIdelay, #'defaultDelay+dist_3D/propVelocity',
-                'convergence': cfg.IIconv,
-                'loc': 0.5,
-                'sec': 'soma'}
+#     #inh to inh
+#     for prePop in inhL5:
+#         for postPop in inhL5:
+#             ruleLabel = prePop+'->'+postPop
+#             netParams.connParams[ruleLabel] = {
+#                 'preConds': {'pop': prePop},
+#                 'postConds': {'pop': postPop},
+#                 'synMech': 'GABAAfast',
+#                 'weight': 0.002*cfg.IIgain, 
+#                 'delay': cfg.IIdelay, #'defaultDelay+dist_3D/propVelocity',
+#                 'convergence': cfg.IIconv,
+#                 'loc': 0.5,
+#                 'sec': 'soma'}
   
 
-#------------------------------------------------------------------------------
-# Long-range connectivity parameters
-#------------------------------------------------------------------------------
-if cfg.addLongConn:
+# #------------------------------------------------------------------------------
+# # Long-range connectivity parameters
+# #------------------------------------------------------------------------------
+# if cfg.addLongConn:
   
-    longPops = ['dTC']
-    excL5 = excPopLabels
-    plateau = [v for v in excPopLabels  if  not v=='PV5']
-    PV5 = ['PV5']  
+#     longPops = ['dTC']
+#     excL5 = excPopLabels
+#     plateau = [v for v in excPopLabels  if  not v=='PV5']
+#     PV5 = ['PV5']  
   
-    cellnumber = numcellsPT5*10
-    cellnumber2 = int(numcellsPV5*1.0)
+#     cellnumber = numcellsPT5*10
+#     cellnumber2 = int(numcellsPV5*1.0)
     
-    connList = [[0,i] for i in range(numcellsPT5)]
-    connList2 = [[i,i] for i in range(cellnumber2)]
-    connList3 = [[0,i] for i in range(int(numcellsPT5/2.0))]
-    connList4 = [[(i+500),i] for i in range(numcellsPT5)]
+#     connList = [[0,i] for i in range(numcellsPT5)]
+#     connList2 = [[i,i] for i in range(cellnumber2)]
+#     connList3 = [[0,i] for i in range(int(numcellsPT5/2.0))]
+#     connList4 = [[(i+500),i] for i in range(numcellsPT5)]
     
-    if cfg.longConnPT5:
-        for prePop in longPops:
-            for postPop in excL5:
-                ruleLabel = prePop+'->'+postPop
-                netParams.connParams[ruleLabel] = {
-                    'preConds': {'pop': prePop},
-                    'postConds': {'pop': postPop},
-                    'synMech': ESynMech,
-                    'weight': cfg.weightLong, 
-                    'synMechWeightFactor':  cfg.ratioapical,
-                    'delay': 1, 
-                    'connList': connList4,
-                    'loc': 0.5,
-                    'sec': 'soma'}   
+#     if cfg.longConnPT5:
+#         for prePop in longPops:
+#             for postPop in excL5:
+#                 ruleLabel = prePop+'->'+postPop
+#                 netParams.connParams[ruleLabel] = {
+#                     'preConds': {'pop': prePop},
+#                     'postConds': {'pop': postPop},
+#                     'synMech': ESynMech,
+#                     'weight': cfg.weightLong, 
+#                     'synMechWeightFactor':  cfg.ratioapical,
+#                     'delay': 1, 
+#                     'connList': connList4,
+#                     'loc': 0.5,
+#                     'sec': 'soma'}   
 
-    if cfg.longConnPV5:
-        for prePop in longPops:
-            for postPop in PV5:
-                ruleLabel = prePop+'->'+postPop
-                netParams.connParams[ruleLabel] = {
-                    'preConds': {'pop': prePop},
-                    'postConds': {'pop': postPop},
-                    'synMech': 'AMPA',
-                    'weight': cfg.weightLongInh,
-                    'delay': 1, 
-                    'connList': connList2,
-                    'loc': 0.5,
-                    'sec': 'dend'}  
+#     if cfg.longConnPV5:
+#         for prePop in longPops:
+#             for postPop in PV5:
+#                 ruleLabel = prePop+'->'+postPop
+#                 netParams.connParams[ruleLabel] = {
+#                     'preConds': {'pop': prePop},
+#                     'postConds': {'pop': postPop},
+#                     'synMech': 'AMPA',
+#                     'weight': cfg.weightLongInh,
+#                     'delay': 1, 
+#                     'connList': connList2,
+#                     'loc': 0.5,
+#                     'sec': 'dend'}  
 
-    if cfg.addNetStim:       
-        for nslabel1 in [k for k in dir(cfg) if k.startswith('Stim')]:
-            ns1 = getattr(cfg, nslabel1, None) 
-            for postPop in plateau:             
-                ruleLabel = nslabel1+'->'+postPop
-                netParams.connParams[ruleLabel] = {
-                    'preConds': {'pop': nslabel1},
-                    'postConds': {'pop': postPop},
-                    'synMech': ESynMech,                   
-                    'weight': ns1['weight'], #cfg.glutAmp3,
-                    'synMechWeightFactor':  cfg.ratioapical, 
-                    'delay': 1, 
-                    'synsPerConn': 2,#numActiveSpines,  
-                    'connList': connList,
-                    'loc': ns1['loc'], 
-                    'sec': ns1['sec']}
+#     if cfg.addNetStim:       
+#         for nslabel1 in [k for k in dir(cfg) if k.startswith('Stim')]:
+#             ns1 = getattr(cfg, nslabel1, None) 
+#             for postPop in plateau:             
+#                 ruleLabel = nslabel1+'->'+postPop
+#                 netParams.connParams[ruleLabel] = {
+#                     'preConds': {'pop': nslabel1},
+#                     'postConds': {'pop': postPop},
+#                     'synMech': ESynMech,                   
+#                     'weight': ns1['weight'], #cfg.glutAmp3,
+#                     'synMechWeightFactor':  cfg.ratioapical, 
+#                     'delay': 1, 
+#                     'synsPerConn': 2,#numActiveSpines,  
+#                     'connList': connList,
+#                     'loc': ns1['loc'], 
+#                     'sec': ns1['sec']}
 
                   

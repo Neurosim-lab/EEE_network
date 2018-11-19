@@ -13,10 +13,11 @@ Contributors: salvadordura@gmail.com
 #import matplotlib; matplotlib.use('Agg')  # to avoid graphics error in servers
 from netpyne import sim
 
+simConfig, netParams = sim.readCmdLineArgs()
+#sim.createSimulateAnalyze()
 
-cfg, netParams = sim.readCmdLineArgs()
 sim.initialize(
-    simConfig = cfg,    
+    simConfig = simConfig,    
     netParams = netParams)                  # create network object and set cfg and net params
 sim.net.createPops()                        # instantiate network populations
 sim.net.createCells()                       # instantiate network cells based on defined populations

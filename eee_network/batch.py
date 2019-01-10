@@ -5,16 +5,17 @@ Batch simulation for M1 model using NetPyNE
 
 Contributors: salvadordura@gmail.com
 """
-from netpyne.batch import Batch, specs
+from netpyne import specs
+from netpyne.batch import Batch
 import numpy as np
 
 
 # set configuration to run batch
-def setRunCfg(b, type='mpi'):
+def setRunCfg(b, type='mpi_bulletin'):
 	b.method = 'grid'
 
-	if type=='mpi':
-		b.runCfg = {'type': 'mpi',
+	if type=='mpi_bulletin':
+		b.runCfg = {'type': 'mpi_bulletin',
 			'script': 'init.py',
 			'skip': True}
 
@@ -99,10 +100,10 @@ b = stim_batch()
 
 b.batchLabel = 'stim_batch6'
 
-b.saveFolder = 'batch_data/'+b.batchLabel
+b.saveFolder = 'batch_data/' #+b.batchLabel
 
-setRunCfg(b, type='hpc_slurm')
-#setRunCfg(b, type='mpi')
+#setRunCfg(b, type='hpc_slurm')
+setRunCfg(b, type='mpi_bulletin')
 
 # run batch
 b.run()

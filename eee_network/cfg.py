@@ -21,7 +21,7 @@ cfg = specs.SimConfig()
 # Run parameters
 #------------------------------------------------------------------------------
 
-cfg.duration = 600 #ms
+cfg.duration = 50 #600 #ms
 cfg.dt = 0.05 #don't do less than 0.05
 cfg.hParams = {'celsius': 32}
 
@@ -67,7 +67,7 @@ elif cfg.cellsrec == 5:  # record selected cells
 	cfg.recordCells = [] # doesn't record any cell
 
 
-#cfg.recordTraces = {'v_soma': {'sec':'soma_2', 'loc':0.5, 'var':'v'}} #for PT5
+cfg.recordTraces = {'v_soma': {'sec':'soma_2', 'loc':0.5, 'var':'v'}} #for PT5
 #cfg.recordTraces['v_apical'] = {'sec':'apical_0', 'loc':0.5, 'var':'v'}
 #cfg.recordTraces['v_basal'] = {'sec':'basal_8', 'loc':0.5, 'var':'v'}
 #cfg.recordTraces['v_soma_inh'] = {'sec':'soma', 'loc':0.5, 'var':'v'} # for PV5
@@ -75,7 +75,7 @@ elif cfg.cellsrec == 5:  # record selected cells
 #cfg.recordTraces['GABAAfast'] = {'sec':'soma_2', 'loc':0.5, 'synMech': 'GABAAfast', 'var': 'i'}
 #cfg.recordTraces['GABAAslow'] = {'sec':'soma_2', 'loc':0.5, 'synMech': 'GABAAslow', 'var': 'i'}
 
-cfg.recordTraces['NMDA_basal'] = {'sec':'basal_8', 'loc':0.3, 'synMech': 'NMDA', 'var': 'iNMDA'}
+#cfg.recordTraces['NMDA_basal'] = {'sec':'basal_8', 'loc':0.3, 'synMech': 'NMDA', 'var': 'iNMDA'}
 
 #'i_NMDA_Bdend1': {'sec':'Bdend1', 'loc':0.5, 'synMech': 'NMDA', 'var': 'iNMDA'}
 #					'g_NMDA_Bdend1': {'sec':'Bdend1', 'loc':0.5, 'synMech': 'NMDA2', 'var': 'sNMDA'} #'var': 'g'	 for the NMDA DMS				
@@ -127,7 +127,7 @@ cfg.analysis['plotTraces'] = {'include': [],'oneFigPer':'cell', 'colors': ['blac
 #------------------------------------------------------------------------------
 # Cells
 #------------------------------------------------------------------------------
-cfg.singleCellPops = True
+cfg.singleCellPops = False
 
 
 #------------------------------------------------------------------------------

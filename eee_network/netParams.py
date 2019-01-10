@@ -92,7 +92,7 @@ cellRule = netParams.importCellParams(label='PT5_1', conds={'cellType': 'PT5_1',
 
 
 # Modify cell rule biophysics based on cfg params
-for secName,sec in netParams.cellParams['PT5_1']['secs'].iteritems():         
+for secName,sec in netParams.cellParams['PT5_1']['secs'].items(): #changed .iteritems to .items      
     sec['vinit'] = cfg.vinit_PT5 #-80.0 #-88.12656642859307   # set vinit for all secs
 
     #if hasattr(cfg, 'vinit_PT5'):
@@ -186,7 +186,7 @@ for k,label in enumerate(excPopLabels[1:]):
 # Import PV5 cell
 cellRule = netParams.importCellParams(label='PV5', conds={'cellType':'PV', 'cellModel':'HH_simple'}, fileName=PV_path, cellName='FScell1', cellInstance = True)
 
-for secName,sec in netParams.cellParams['PV5']['secs'].iteritems():         
+for secName,sec in netParams.cellParams['PV5']['secs'].items(): #changed iteritems to items        
     sec['vinit'] = cfg.vinit_PV5
 
     if 'pas' in sec['mechs']:

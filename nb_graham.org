@@ -1,0 +1,376 @@
+Author:  Joe Graham
+E-mail:  joe.w.graham@gmail.com
+Project: Embedded Ensemble Encoding (EEE) Theory
+Drive:   https://drive.google.com/drive/folders/0Bx7OIVIgY3AVU2pKQ21EdFVPVDA
+
+* 2019-01-10 -- 
+
+In progress
+-----------
+Uninstall Anaconda
+Reinstall Anaconda (Python 2 and 3)
+Uninstall NEURON
+Install latest NEURON
+Install Visual Studio Code
+Run Sergio's EEE network sim
+Summarize current network model
+Prepare for discussion with EEE team
+Meeting 10am Eastern to discuss network
+
+** Anaconda
+
+*** Uninstalling 
+
+https://docs.anaconda.com/anaconda/install/uninstall/
+
+anaconda-clean doesn't install properly:
+
+	graham-mac% conda install anaconda-clean
+	Fatal Python error: initfsencoding: unable to load the file system codec
+	  File "/Users/graham/anaconda/lib/python2.7/encodings/__init__.py", line 123
+	    raise CodecRegistryError,\
+	                            ^
+	SyntaxError: invalid syntax
+
+	Current thread 0x0000000111f705c0 (most recent call first):
+	Abort
+	Fatal Python error: initfsencoding: unable to load the file system codec
+	  File "/Users/graham/anaconda/lib/python2.7/encodings/__init__.py", line 123
+	    raise CodecRegistryError,\
+	                            ^
+	SyntaxError: invalid syntax
+
+	Current thread 0x0000000107f365c0 (most recent call first):
+	Abort
+	graham-mac% 
+
+Seems like it may already be installed.  Just going to run it:
+
+	graham-mac% anaconda-clean
+	Delete .anaconda? (Y or N): y
+	Delete .bash_profile? (Y or N): n
+	Delete .bash_profile-anaconda.bak? (Y or N): n
+	Delete .cache? (Y or N): n
+	Delete .conda? (Y or N): y
+	Delete .condarc? (Y or N): y
+	Delete .config? (Y or N): n
+	Delete .continuum? (Y or N): y
+	Delete .ipynb_checkpoints? (Y or N): y
+	Delete .ipython? (Y or N): y
+	Delete .jupyter? (Y or N): y
+	Delete .matplotlib? (Y or N): y
+	graham-mac% 
+
+Now to delete old anaconda dirs:
+
+	/anaconda3
+	/Users/graham/anaconda
+
+*** Reinstalling Anaconda
+
+**** To install Python 2 and 3:
+
+http://docs.anaconda.com/anaconda/install/mac-os/#macos-graphical-install
+https://conda.io/docs/user-guide/tasks/manage-python.html
+
+Installing Anaconda3, comes with Visual Studio
+
+Having a problem with: "conda search python" and "ipython". 
+Switching Terminal to Bash.  Now it works fine.
+
+So far I only have Python 3 installed.  Will try to run network sims in 
+Python 3 before bothering with installing 2.7
+
+*** To use Python 2 and 3:
+
+https://docs.anaconda.com/anaconda/user-guide/tasks/switch-environment/
+
+Going to try with just Python 3 for now.
+
+** NEURON
+
+Uninstalling and reinstalling NEURON.
+
+Moving /Applications/NEURON-7.5 to the Desktop (will delete once everything
+is working
+
+Getting latest copy of NEURON
+https://www.neuron.yale.edu/neuron/download
+
+Running gui installer.  Seems to have worked: can run programs from Finder,
+but not from command line.
+
+Looking at path:
+	graham$ echo $PATH
+	/Users/graham/anaconda3/bin:/usr/site/nrniv/local/python/anaconda3/bin:/Library/Frameworks/Python.framework/Versions/3.6/bin:/Library/Frameworks/Python.framework/Versions/3.6/bin:/anaconda3/bin:/Library/Frameworks/Python.framework/Versions/3.6/bin:/Users/graham/anaconda/bin:/Applications/NEURON-7.4/nrn/x86_64/bin://anaconda/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/texbin:/opt/X11/bin
+
+Okay, my new NEURON is in NEURON-7.6, not NEURON-7.4
+Need to update my PATH
+
+https://hathaway.cc/2008/06/how-to-edit-your-path-environment-variables-on-mac/
+
+Editing .bash_profile, changing all 7.4 to 7.6
+
+Now NEURON commands run from command line.
+
+
+** EEE Network Sims
+
+*** Updating repo:
+https://github.com/Neurosim-lab/EEE_network
+
+	graham$ git clone https://github.com/Neurosim-lab/EEE_network.git
+	graham$ cd EEE_network/mod/
+	graham$ nrnivmodl
+
+Looks good except for ghk.inc:
+
+	Translating NMDAeee.mod into NMDAeee.c
+	"/Applications/NEURON-7.6/nrn/x86_64/bin/nocmodl" PlateauConductance
+	Couldn't open: ghk.inc
+	Couldn't open ghk.inc
+	make: *** [NMDAeee.lo] Error 1
+
+Looks like there is no ghk.inc in the mod dir...
+
+	graham$ git clone https://github.com/Neurosim-lab/EEE_network.git
+	graham$ cd EEE_network/mod/
+	graham$ cp /usr/site/nrniv/local/mod/ghk.inc ./ghk.inc
+	graham$ nrnivmodl
+
+Now it seems to have worked fine.  
+Will add ghk.inc to the git repo.
+
+But first, I notice I need to merge Salvador's improvements from his
+'simplify' branch to the Master... done.
+
+Starting over.
+
+	graham$ rm -rf EEE_network/
+	graham$ git clone https://github.com/Neurosim-lab/EEE_network.git
+	graham$ cd EEE_network/mod/
+	graham$ nrnivmodl
+
+Still has the ghk.inc problem.  Will add to repo.
+
+	graham$ cd ~
+	graham$ rm -rf EEE_network/
+	graham$ git clone https://github.com/Neurosim-lab/EEE_network.git
+	graham$ cd EEE_network/mod/
+	graham$ cp /usr/site/nrniv/local/mod/ghk.inc ./ghk.inc
+	graham$ git status
+	On branch master
+	Your branch is up to date with 'origin/master'.
+
+	Untracked files:
+	  (use "git add <file>..." to include in what will be committed)
+
+		ghk.inc
+
+	nothing added to commit but untracked files present (use "git add" to track)
+	graham$ git add ghk.inc 
+	graham$ git status
+	On branch master
+	Your branch is up to date with 'origin/master'.
+
+	Changes to be committed:
+	  (use "git reset HEAD <file>..." to unstage)
+
+		new file:   ghk.inc
+
+	graham$ git commit -m "Added ghk.inc which is needed by NMDAeee.mod"
+	[master 5fb1177] Added ghk.inc which is needed by NMDAeee.mod
+	 1 file changed, 35 insertions(+)
+	 create mode 100644 mod/ghk.inc
+	graham$ git push
+	Counting objects: 4, done.
+	Delta compression using up to 8 threads.
+	Compressing objects: 100% (4/4), done.
+	Writing objects: 100% (4/4), 742 bytes | 742.00 KiB/s, done.
+	Total 4 (delta 2), reused 0 (delta 0)
+	remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+	To https://github.com/Neurosim-lab/EEE_network.git
+	   700cd24..5fb1177  master -> master
+
+So everything should work now.  Trying it out.
+
+	graham$ cd ~
+	graham$ rm -rf EEE_network/
+	graham$ git clone https://github.com/Neurosim-lab/EEE_network.git
+	graham$ cd EEE_network/mod/
+	graham$ nrnivmodl
+
+Works perfectly now.  
+
+Need to symlink mod/x86_64 into eee_network
+
+	graham$ ln -s /Users/graham/EEE_network/mod/x86_64 /Users/graham/EEE_network/eee_network/x86_64
+
+Now hopefully everything works.
+
+*** Running EEE network sim
+
+To debug in Netpyne, run files in the following order:
+
+1) netParams.py 
+2) batch_init.py (just init.py in this case) 
+3) batch.py
+
+Trying to run netParams.py:
+	graham$ python netParams.py 
+	Traceback (most recent call last):
+	  File "netParams.py", line 1, in <module>
+	    from netpyne import specs
+	ModuleNotFoundError: No module named 'netpyne'
+
+Need to install Netpyne (development version to immediately get fixes):
+http://www.netpyne.org/install.html#install-via-pip-development-version
+
+	1. git clone https://github.com/Neurosim-lab/netpyne.git
+	2. cd netpyne
+	3. git checkout development
+	4. pip install -e .
+
+	pip will add a symlink in the default python packages folder to the cloned netpyne folder (so you don’t need to modify PYTHONPATH). If new changes are available just need to pull from cloned netpyne repo.
+
+Commands:
+	graham$ cd ~/Applications/
+	graham$ git clone https://github.com/Neurosim-lab/netpyne.git
+	graham$ cd netpyne/
+	graham$ git checkout development
+	graham$ pip install -e .
+
+Everything seems to have worked.
+
+Trying to run netParams again:
+	
+	graham$ cd ~/EEE_network/eee_network/
+	graham$ python netParams.py
+	Note: NeuroML import failed; import/export functions for NeuroML will not be available. 
+	  To install the pyNeuroML & libNeuroML Python packages visit: https://www.neuroml.org/getneuroml
+	Traceback (most recent call last):
+	  File "netParams.py", line 95, in <module>
+	    for secName,sec in netParams.cellParams['PT5_1']['secs'].iteritems():         
+	TypeError: 'Dict' object is not callable
+
+Seems to be a problem with Python 2 --> 3
+https://github.com/mgymrek/itable/issues/9
+https://stackoverflow.com/questions/10458437/what-is-the-difference-between-dict-items-and-dict-iteritems
+
+I changed two `iteritems` in netParams to `items` and now it works.
+
+So netParams works now.  Now to run init.py
+
+	graham$ python init.py
+
+Something's not quite right:
+
+	Plotting raster...
+	There was an exception in plotRaster(): 
+	 "['tags'] not found in axis" 
+	(<class 'KeyError'>, KeyError("['tags'] not found in axis"), <traceback object at 0x12223ea88>)
+
+Also, traces plot appeared in eee_network dir, but it's blank.
+
+Also, there are too few cells...
+
+Line 130 in cfg.py was:
+cfg.singleCellPops = True
+
+Changed it to False and trying again.
+
+Running netParams works fine.  
+When I run init, it seems like there are no connections and no traces recorded:
+
+	Creating network of 5 cell populations on 1 hosts...
+	  Number of cells on node 0: 1500 
+	  Done; cell creation time = 4.66 s.
+	Making connections...
+	  Number of connections on node 0: 0 
+	  Done; cell connection time = 0.00 s.
+	  Number of stims on node 0: 0 
+	  Done; cell stims creation time = 0.00 s.
+	Recording 0 traces of 0 types on node 0
+
+Still getting raster error and blank traces plot.
+
+
+Changing from hpc_slurm to mpi in batch.py:
+#setRunCfg(b, type='hpc_slurm')
+setRunCfg(b, type='mpi')
+
+Trying to run batch.py
+
+Getting an error:
+	graham$ python batch.py
+	Traceback (most recent call last):
+	  File "batch.py", line 8, in <module>
+	    from netpyne.batch import Batch, specs
+	ImportError: cannot import name 'specs' from 'netpyne.batch' (/Users/graham/Applications/netpyne/netpyne/batch/__init__.py)
+
+It seems like I should change importing specs from netpyne.batch to just from netpyne...
+
+Changing batch.py and trying again.
+
+Getting a new error:
+	FileNotFoundError: [Errno 2] No such file or directory: 'batch_data/stim_batch6/stim_batch6_batch.json'
+
+I think the dir must already exist...  Changing batch.py to remove need for
+extra dir.
+
+New error:
+	Error: invalid runCfg 'type' selected; valid types are 'mpi_bulletin', 'mpi_direct', 'hpc_slurm', 'hpc_torque'
+
+Will have to look into this.  Asked Salva:
+
+	joe [9:59 AM]
+	Hey Salva, it seems Netpyne used to accept `mpi` as a runCfg option, but now Netpyne requires `mpi_direct` or `mpi_bulletin`…
+
+	Untitled 
+	Error: invalid runCfg 'type' selected; valid types are 'mpi_bulletin', 'mpi_direct', 'hpc_slurm', 'hpc_torque'
+	Would you mind explaining the difference between `direct` and `bulletin`?
+	i.e. which should I be using?
+
+	salvadord [10:03 AM]
+	mpi_bulletin - uses NEURON’s mpi bulletin board (master slave) to run the batch sim — there is a master node that sends jobs (each sim) to the slave nodes
+
+	joe [10:05 AM]
+	And what does `mpi_direct` do?
+
+	salvadord [10:07 AM]
+	mpi_direct - runs each of the batch jobs directly using mpi by calling mpirun via Popen (a pipe) — can specify the number of cores of each mpi job … eg say you have a machine with 16 cores, you could run 4 of the batch jobs on 4 cores each simultaneously
+	with mpi_bulleting, each job is always on a single core
+	*mpi_bulletin
+
+Okay, so switching to `mpi_bulletin` (seems less complicated):
+Changing all `mpi` in batch.py to `mpi_bulletin`
+
+Now batch.py seems to run, but Sergio's default batch was huge: four 
+variables each with multiple values.  Will need to set up a smaller batch.  
+
+For now, will look into why there are no connections and no traces.
+
+Running single sim:
+
+graham$ cd ~/EEE_network/eee_network/
+graham$ ./runsim
+
+It runs, but no connections or output traces.  Looking into it...
+
+The lack of connectivity is because the connectivity stuff has been commented out. Once we have it working and are getting output we can worry about connectivity.
+
+Having a hard time figuring out the problem with lack of output figures.
+I tried adding a soma recording to the cfg file, and when I look in the output json file, the soma trace data is there, but the trace plot output is blank...
+
+Reducing sim time to 50 ms to speed things up.  Commenting out basal trace recording in cfg.
+
+Same thing.  No output traces.
+
+The code is really convoluted.  I'm beginning to think it would be better to start from our cell models and build up network sims from scratch...
+
+Will push my stuff to the git repo now.  Creating a new branch: joes_branch
+
+Cloning, switching to joes_branch, swapping in my changes, then pushing.
+
+
+

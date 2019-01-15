@@ -3,7 +3,7 @@ E-mail:  joe.w.graham@gmail.com
 Project: Embedded Ensemble Encoding (EEE) Theory
 Drive:   https://drive.google.com/drive/folders/0Bx7OIVIgY3AVU2pKQ21EdFVPVDA
 
-* 2019-01-10 -- 
+* 2019-01-10 -- Cleaning up and organizing
 
 In progress
 -----------
@@ -371,6 +371,236 @@ The code is really convoluted.  I'm beginning to think it would be better to sta
 Will push my stuff to the git repo now.  Creating a new branch: joes_branch
 
 Cloning, switching to joes_branch, swapping in my changes, then pushing.
+
+
+* 2019-01-11 -- EEE Network Meeting
+
+In progress
+-----------
+Summarize current network model
+Prepare for discussion with EEE team
+Meeting 12pm Eastern to discuss network
+
+** Steps to run network sim
+
+cd ~
+git clone https://github.com/Neurosim-lab/EEE_network.git
+cd EEE_network/
+git checkout joes_branch
+cd mod
+nrnivmodl
+ln -s ~/EEE_network/mod/x86_64 ~/EEE_network/x86_64
+cd ../eee_network
+./runsim
+
+** EEE Network Sim Meeting -- 2018-01-11
+https://docs.google.com/document/d/1jKOPmc2PkjyJme_dgMKip7mLxlXXPuehVY4q-qeBWZs/edit
+
+Google Hangout URL: https://hangouts.google.com/call/UFV-belsSHz1VJv5J4ozAAEE 
+
+Today’s agenda
+
+How to start developing the network model
+List of tasks
+Division of tasks
+	
+Discussion
+
+Current state
+Disorganized
+
+Network sim development plan
+  Scrap existing model
+  Two populations: Netpyne tutorial 5
+  How many populations? Two
+  Where data?  Connectivity?
+    Layer 5 IT cells connectivity
+    PV cells from M1 model
+  Background inputs
+  Inputs to both pops
+  Want baseline oscillations
+How to divide E cells
+  Sergio had multiple -- good way to start
+  Can force plateaus on subset
+How to distribute synapses on neurons
+  Bill: 500 inputs 
+  One basal has convergence
+  Look into clustering
+  Strong convergence onto dend A then B
+  Other dend possible synchronicity source
+Number of cells: ~5000
+Trello for task management
+Goal of network
+  Use existing cell models
+  Plug into network
+  Look for ensembles
+  Preferably emergent
+  Synchrony in embedded ensembles
+  Activated → Synced
+Tasks to be accomplished
+  Joe gets framework in place
+  Then we divvy up tasks
+
+
+* 2019-01-15 -- 
+
+In progress
+-----------
+Netpyne Tutorial 5 as basis for network model
+Get new model framework into Github
+List of synaptic clustering articles
+Meeting 11am Eastern - prepare agenda
+
+** Netpyne Tutorial 5
+
+http://netpyne.org/tutorial.html#position-and-distance-based-connectivity-tutorial-5
+
+Downloaded tut5.py and it runs, though I needed to uncomment the following line to see figures:
+
+	import pylab; pylab.show()  # this line is only necessary in certain systems where figures appear empty
+
+The figures should have been saved as well, but never appeared.  Will look into this later.
+
+Downloaded runsim in order to parallelize sims:
+	
+	#!/bin/bash
+	mpiexec -n $1 nrniv -python -mpi $2  # Run the model
+
+Changed permissions on runsim so I can execute:
+
+	graham$ chmod +x runsim
+
+Now splitting tut5.py into three files: 
+	
+	netParams.py
+	cfg.py
+	init.py
+
+Changing runsim to call init.py:
+
+	#!/bin/bash
+	# Runs simulation, including MPI.
+
+	numprocesses=$1; if [ -z $numprocesses ]; then numprocesses=4; fi # Number of processes to use
+	shift # Eliminate first argument
+
+	mpiexec -np $numprocesses nrniv -python -mpi init.py $@  # Run the model
+
+Copying init.py from earlier network sim:
+
+	"""
+	init.py
+
+	Usage:
+	    python init.py # Run simulation, optionally plot a raster
+
+	MPI usage:
+	    mpiexec -n 4 nrniv -python -mpi init.py
+
+	Contributors: salvadordura@gmail.com
+	"""
+
+	#import matplotlib; matplotlib.use('Agg')  # to avoid graphics error in servers
+	from netpyne import sim
+
+	simConfig, netParams = sim.readCmdLineArgs()
+	#sim.createSimulateAnalyze()
+
+	sim.initialize(
+	    simConfig = simConfig,    
+	    netParams = netParams)        # create network object and set cfg and net params
+	sim.net.createPops()              # instantiate network populations
+	sim.net.createCells()             # instantiate network cells based on defined populations
+	sim.net.connectCells()            # create connections between cells based on params
+	sim.net.addStims()                # add network stimulation
+	sim.setupRecording()              # setup variables to record for each cell (spikes, V traces, etc)
+	sim.runSim()                      # run parallel Neuron simulation  
+	sim.gatherData()                  # gather spiking data and cell info from each node
+	sim.saveData()                    # save params, cell info and sim output to file (pickle,mat,txt,etc)
+	sim.analysis.plotData()           # plot spike raster etc
+
+
+Now to break tut5.py into netParams and cfg and try to run.
+
+	graham$ ./runsim 1
+	numprocs=1
+	NEURON -- VERSION 7.6.4 master (50728e66) 2018-12-14
+	Duke, Yale, and the BlueBrain Project -- Copyright 1984-2018
+	See http://neuron.yale.edu/neuron/credits
+
+	Note: NeuroML import failed; import/export functions for NeuroML will not be available. 
+	  To install the pyNeuroML & libNeuroML Python packages visit: https://www.neuroml.org/getneuroml
+
+	Reading command line arguments using syntax: python file.py [simConfig=filepath] [netParams=filepath]
+
+	Warning: Could not load cfg from command line path or from default cfg.py
+
+	Creating network of 6 cell populations on 1 hosts...
+	  Number of cells on node 0: 300 
+	  Done; cell creation time = 0.03 s.
+	Making connections...
+	  Number of connections on node 0: 6796 
+	  Done; cell connection time = 0.67 s.
+	Adding stims...
+	  Number of stims on node 0: 300 
+	  Done; cell stims creation time = 0.03 s.
+
+	Running simulation for 1000.0 ms...
+	  Done; run time = 3.08 s; real-time ratio: 0.32.
+
+	Gathering data...
+	  Done; gather time = 0.17 s.
+
+	Analyzing...
+	  Cells: 300
+	  Connections: 7096 (23.65 per cell)
+	  Spikes: 4879 (16.26 Hz)
+	  Simulated time: 1.0 s; 1 workers
+	  Run time: 3.08 s
+	  Done; saving time = 0.01 s.
+	  Done; plotting time = 0.00 s
+
+	Total time = 4.00 s
+	>>> 
+
+No figures, and it doesn't seem to have worked:
+
+	Warning: Could not load cfg from command line path or from default cfg.py
+
+It seems the problem may be that in tut5.py we named the config object simConfig instead of cfg...
+
+	simConfig = specs.SimConfig()
+
+Will change all config file lines to:
+	
+	cfg = specs.SimConfig()
+
+Commenting out line that runs sim in cfg.py
+
+Renaming simConfig to cfg in init.py
+
+Trying to run sim.
+
+	graham$ ./runsim 1
+
+Sim ran successfully, figures appeared but weren't saved.  Off to a good start.
+
+Now that the sim is functional, I'll push to Github.
+
+How I was taught to develop code:
+	
+	Step 1: make it run.
+	Step 2: make it right.
+	Step 3: make it fast.
+
+Now to work on Step 2 while ensuring Step 1 continues to work.
+
+
+
+** Meeting agenda / notes
+
+https://docs.google.com/document/d/1kZGWeilbLhc9Lv9ly82xLqsqFRsdW6iAsQdeytzcUXo/edit
+
 
 
 

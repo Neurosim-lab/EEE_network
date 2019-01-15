@@ -1,22 +1,14 @@
 # EEE_network
 
-Steps to run the network simulation:
+## Steps to run the network simulation:
 
-cd ~
-
-git clone https://github.com/Neurosim-lab/EEE_network.git
-
-cd EEE_network/
-
-git checkout joes_branch
-
-cd mod
-
-nrnivmodl
-
-ln -s ~/EEE_network/mod/x86_64 ~/EEE_network/x86_64
-
-cd ../eee_network
-
-./runsim
+1. cd ~
+2. git clone https://github.com/Neurosim-lab/EEE_network.git
+3. cd EEE_network/
+4. git checkout joes_branch
+5. cd mod
+6. nrnivmodl
+7. cd ../eee_net
+8. ln -s "../mod/x86_64" x86_64
+9. ./runsim
 

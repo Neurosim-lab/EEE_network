@@ -595,7 +595,28 @@ How I was taught to develop code:
 
 Now to work on Step 2 while ensuring Step 1 continues to work.
 
+Next steps:
 
+Use our cell models
+Modify population parameters 
+
+** Updating the README
+
+	# EEE_network
+
+	## Steps to run the network simulation:
+
+	1. cd ~
+	2. git clone https://github.com/Neurosim-lab/EEE_network.git
+	3. cd EEE_network/
+	4. git checkout joes_branch
+	5. cd mod
+	6. nrnivmodl
+	7. cd ../eee_net
+	8. ln -s "../mod/x86_64" x86_64
+	9. ./runsim
+
+Tested these steps and they work from any location (not just home).
 
 ** Meeting agenda / notes
 
@@ -604,3 +625,4 @@ https://docs.google.com/document/d/1kZGWeilbLhc9Lv9ly82xLqsqFRsdW6iAsQdeytzcUXo/
 
 
 
+** Swapping in our cell models

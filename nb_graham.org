@@ -442,7 +442,7 @@ Tasks to be accomplished
   Then we divvy up tasks
 
 
-* 2019-01-15 -- 
+* 2019-01-15 -- Setting up new network model, EEE Meeting
 
 In progress
 -----------
@@ -622,7 +622,135 @@ Tested these steps and they work from any location (not just home).
 
 https://docs.google.com/document/d/1kZGWeilbLhc9Lv9ly82xLqsqFRsdW6iAsQdeytzcUXo/edit
 
+*** Upcoming deadlines:
+
+IMAG:		Feb 1, 11:59 EST
+https://msmmeeting.nibib.nih.gov/instructions-for-submitting-materials
+
+CNS: 		March 4, 11pm Pacific time
+https://www.cnsorg.org/cns-2019-abstract-submission
+
+BRAIN:	March 11, 5pm EST
+http://www.cvent.com/events/5th-annual-brain-initiative-investigators-meeting/custom-117-de9c0d8f934b46eb8d80b55bcfbfe96a.aspx
+
+SfN: 		May 2, 5pm EDT
+https://www.sfn.org/Meetings/Neuroscience-2019/Dates-and-Deadlines
+
+*** Network Meeting summary
+
+2 populations (E and I)
+E from Penny’s single cell model (simplified)
+I from PV cells in Salva’s M1 model
+5000 cells, 500 inputs per cell
+Background inputs to both pops → oscillations
+First force plateaus and explore sims
+Work towards emergent plateaus / ensembles
+
+Framework for network sims is in joes_branch in EEE_network/eee_net
+https://github.com/Neurosim-lab/EEE_network/tree/joes_branch/eee_net
+
+Currently it’s just Netpyne Tutorial 5 broken down into the files needed for organizing a larger simulation, but it runs
+Next steps: swapping in our cell models, modifying pop parameters, etc.
+
+
+** Synaptic clustering articles
+
+Need to read these and pull relevant info.
+
+Synaptic clustering articles:
+
+Single excitatory axons form clustered synapses onto CA1 pyramidal cell dendrites
+https://www.nature.com/articles/s41593-018-0084-6
+“Here we show that single presynaptic axons form multiple, spatially clustered inputs onto the distal, but not proximal, dendrites of CA1 pyramidal neurons.”
+
+Synaptic clustering by dendritic signalling mechanisms
+https://www.sciencedirect.com/science/article/abs/pii/S095943880800086X
+“Dendrites are endowed with mechanisms of nonlinear summation of synaptic inputs leading to regenerative dendritic events including local sodium, NMDA and calcium spikes. The generation of these events requires distinct spatio-temporal activation patterns of synaptic inputs. We hypothesise that the recent findings on dendritic spikes and local synaptic plasticity rules suggest clustering of common inputs along a subregion of a dendritic branch.”
+
+Synaptic clustering within dendrites: An emerging theory of memory formation
+https://www.sciencedirect.com/science/article/pii/S0301008214001373
+“The emerging picture suggests that clusters of functionally related synapses may serve as key computational and memory storage units in the brain. We discuss both experimental evidence and theoretical models that support this hypothesis and explore its advantages for neuronal function.”
+
+Synaptic clustering during development and learning: the why, when, and how
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3364493/
+“Previous modeling and experimental studies have predicted that this specificity could entail a subcellular organization whereby synapses that carry similar information are clustered together on local stretches of dendrite. Recent imaging studies have now, for the first time, demonstrated synaptic clustering during development and learning in different neuronal circuits.”
+
+Clusters of synaptic inputs on dendrites of layer 5 pyramidal cells in mouse visual cortex
+https://elifesciences.org/articles/09222
+“We mapped the spatial organization of glutamatergic synapses between layer 5 pyramidal cells by combining optogenetics and 2-photon calcium imaging in mouse neocortical slices. To mathematically characterize the organization of inputs we developed an approach based on combinatorial analysis of the likelihoods of specific synapse arrangements. We found that the synapses of intralaminar inputs form clusters on the basal dendrites of layer 5 pyramidal cells. These clusters contain 4 to 14 synapses within ≤30 µm of dendrite.”
+
+
+* 2019-01-17 -- 
+
+In progress
+-----------
+Setting up network model
+Get our cell models in
+Adjust population parameters
+Set initial connectivity to Sergio's settings?
+
+** Get our cell models in
+
+Sergio's original code:
+
+	# add excitatory populations
+	excPopLabels = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4'] 
+	for k,label in enumerate(excPopLabels):
+	    netParams.popParams[label]  = {'cellModel': 'HH_reduced', 'cellType': label,  'xRange': columnA, 'ynormRange': layer['5'], 'numCells': numcellsPT5} 
+
+	# add inhibitory population
+	netParams.popParams['PV5']  = {'cellModel': 'HH_simple',  'cellType': 'PV','xRange': columnA, 'ynormRange': layer['5'], 'numCells': numcellsPV5} 
+
+The layer['5'] comes from:
+	
+	# layer boundaries
+	layer = {'5': [0.2,0.623], 'long': [0.7,1.0]} # yRange in column
+
+Code from tutorial:
+
+	netParams.popParams['E2'] = {'cellType': 'E', 'numCells': 50, 'yRange': [100,300], 'cellModel': 'HH'}
+	netParams.popParams['I2'] = {'cellType': 'I', 'numCells': 50, 'yRange': [100,300], 'cellModel': 'HH'}
+	netParams.popParams['E4'] = {'cellType': 'E', 'numCells': 50, 'yRange': [300,600], 'cellModel': 'HH'}
+	netParams.popParams['I4'] = {'cellType': 'I', 'numCells': 50, 'yRange': [300,600], 'cellModel': 'HH'}
+	netParams.popParams['E5'] = {'cellType': 'E', 'numCells': 50, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
+	netParams.popParams['I5'] = {'cellType': 'I', 'numCells': 50, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
+
+New code:
+
+	## Population parameters
+	netParams.popParams['PT5_1'] = {'cellType': 'E', 'numCells': 200, 'ynormRange': [0.2,0.623], 'cellModel': 'HH'}
+	netParams.popParams['PT5_2'] = {'cellType': 'E', 'numCells': 200, 'ynormRange': [0.2,0.623], 'cellModel': 'HH'}
+	netParams.popParams['PT5_3'] = {'cellType': 'E', 'numCells': 200, 'ynormRange': [0.2,0.623], 'cellModel': 'HH'}
+	netParams.popParams['PT5_4'] = {'cellType': 'E', 'numCells': 200, 'ynormRange': [0.2,0.623], 'cellModel': 'HH'}
+	netParams.popParams['PV5'] = {'cellType': 'I', 'numCells': 200, 'ynormRange': [0.2,0.623], 'cellModel': 'HH'}
+
+Getting a strange NEURON error. Looking through netParams for any other necessary changes.
+
+The I-->E pops need to be changed, from:
+
+	netParams.connParams['I->E'] = {
+	  'preConds': {'cellType': 'I'}, 'postConds': {'pop': ['E2','E4','E5']},       #  I -> E
+	  
+To:
+
+	netParams.connParams['I->E'] = {
+	  'preConds': {'cellType': 'I'}, 'postConds': {'pop': ['E']},       #  I -> E
+
+Trying again.
+
+Hmmm.  When I run it using once core, it seems to complete the sim, but stalls at the connectivity plot.  (There are 79621 connections, which probably would take awhile to plot...)
+
+Reducing the number of cells and trying again.
+
+Now it works and plots.  Trying it with multiple cores.
+
+Still works.  Will add a variable to set the number of neurons.
+
+Still works.  I have succesfully renamed the populations.
+
+Now to use our cell models.  But first committing.
 
 
 
-** Swapping in our cell models
+
+

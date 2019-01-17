@@ -11,12 +11,15 @@ netParams.probLengthConst = 150.0 # length constant for conn probability (um)
 
 
 ## Population parameters
-netParams.popParams['E2'] = {'cellType': 'E', 'numCells': 50, 'yRange': [100,300], 'cellModel': 'HH'}
-netParams.popParams['I2'] = {'cellType': 'I', 'numCells': 50, 'yRange': [100,300], 'cellModel': 'HH'}
-netParams.popParams['E4'] = {'cellType': 'E', 'numCells': 50, 'yRange': [300,600], 'cellModel': 'HH'}
-netParams.popParams['I4'] = {'cellType': 'I', 'numCells': 50, 'yRange': [300,600], 'cellModel': 'HH'}
-netParams.popParams['E5'] = {'cellType': 'E', 'numCells': 50, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
-netParams.popParams['I5'] = {'cellType': 'I', 'numCells': 50, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
+numPT5cells = 80 #800
+numPV5cells = 20 #200
+ynormRange = [0.2,0.623]
+
+netParams.popParams['PT5_1'] = {'cellType': 'E', 'numCells': int(numPT5cells/4), 'ynormRange': ynormRange, 'cellModel': 'HH'}
+netParams.popParams['PT5_2'] = {'cellType': 'E', 'numCells': int(numPT5cells/4), 'ynormRange': ynormRange, 'cellModel': 'HH'}
+netParams.popParams['PT5_3'] = {'cellType': 'E', 'numCells': int(numPT5cells/4), 'ynormRange': ynormRange, 'cellModel': 'HH'}
+netParams.popParams['PT5_4'] = {'cellType': 'E', 'numCells': int(numPT5cells/4), 'ynormRange': ynormRange, 'cellModel': 'HH'}
+netParams.popParams['PV5'] = {'cellType': 'I', 'numCells': numPV5cells, 'ynormRange': ynormRange, 'cellModel': 'HH'}
 
 
 ## Cell property rules
@@ -52,7 +55,7 @@ netParams.connParams['E->all'] = {
   'synMech': 'exc'}                     # synaptic mechanism 
 
 netParams.connParams['I->E'] = {
-  'preConds': {'cellType': 'I'}, 'postConds': {'pop': ['E2','E4','E5']},       #  I -> E
+  'preConds': {'cellType': 'I'}, 'postConds': {'pop': ['E']},       #  I -> E
   'probability': '0.4*exp(-dist_3D/probLengthConst)',   # probability of connection
   'weight': 0.001,                                      # synaptic weight 
   'delay': 'dist_3D/propVelocity',                      # transmission delay (ms) 

@@ -680,7 +680,7 @@ https://elifesciences.org/articles/09222
 “We mapped the spatial organization of glutamatergic synapses between layer 5 pyramidal cells by combining optogenetics and 2-photon calcium imaging in mouse neocortical slices. To mathematically characterize the organization of inputs we developed an approach based on combinatorial analysis of the likelihoods of specific synapse arrangements. We found that the synapses of intralaminar inputs form clusters on the basal dendrites of layer 5 pyramidal cells. These clusters contain 4 to 14 synapses within ≤30 µm of dendrite.”
 
 
-* 2019-01-17 -- 
+* 2019-01-17 -- Setting up EEE populations
 
 In progress
 -----------
@@ -689,7 +689,7 @@ Get our cell models in
 Adjust population parameters
 Set initial connectivity to Sergio's settings?
 
-** Get our cell models in
+** Adjusting population properties
 
 Sergio's original code:
 
@@ -751,6 +751,80 @@ Still works.  I have succesfully renamed the populations.
 Now to use our cell models.  But first committing.
 
 
+* 2019-01-18 -- 
 
+In progress
+-----------
+Setting up network model
+Get our cell models in
+Set initial connectivity to Sergio's settings?
+
+** Get our cell models in
+
+Using info from here:
+http://netpyne.org/advanced.html#importing-cells
+
+Trying to swap in the PV5 cell model first.
+
+Sergio's code (from netParams.py):
+
+	# Find path to cells directory
+	cellpath = '../cells'
+	eeeS_path = os.path.join(cellpath, 'eeeS.py')
+	PV_path   = os.path.join(cellpath, 'FS3.hoc')
+
+	# Import and modify PT5 cell
+	cellRule = netParams.importCellParams(label='PT5_1', conds={'cellType': 'PT5_1', 'cellModel': 'HH_reduced'}, fileName=eeeS_path, cellName='MakeCell')
+
+	# Import PV5 cell
+	cellRule = netParams.importCellParams(label='PV5', conds={'cellType':'PV', 'cellModel':'HH_simple'}, fileName=PV_path, cellName='FScell1', cellInstance = True)
+
+First changing all cellTypes from tutorial's E and I to PT5 and PV
+
+Starting with importing the PV5 cell.
+
+	## Import PV5 cell
+	cellRule = netParams.importCellParams(label='PV5', conds={'cellType':'PV'}, fileName=PV_path, cellName='FScell1', cellInstance=True)
+	netParams.cellParams['PVrule'] = cellRule
+
+And attempting to run sim.
+
+Getting an error:
+
+	graham-mac:eee_net graham$ ipython -i netParams.py
+	Python 3.7.1 (default, Dec 14 2018, 13:28:58) 
+	Type 'copyright', 'credits' or 'license' for more information
+	IPython 7.2.0 -- An enhanced Interactive Python. Type '?' for help.
+	NEURON: syntax error
+	 in FS3.hoc near line 37
+	      insert Nafx
+	                ^
+	        xopen("FS3.hoc")
+	      execute1("{xopen("FS...")
+	    load_file("../cells/F...")
+	Segmentation fault: 11
+
+Looking into it.
+
+I think I need to symlink the x86_64 dir into the dir eee_net...
+
+That worked.  Now ./runsim works and generates figures, but PT5 trace figures didn't show up (PV5 trace figure did).  Looking into.
+
+I changed the cellType of all PT5 pops from PT5_# to just PT5.  Switching back and seeing if trace figures work again.
+
+Still none.
+
+Ahh, I had commented out the code setting up the PT cells because I wasn't ready.  Uncommenting and checking.
+
+Changed E to PT5:
+
+	## Cell property rules
+	cellRule = {'conds': {'cellType': 'PT5'},  'secs': {}}  # cell rule dict
+	cellRule['secs']['soma'] = {'geom': {}, 'mechs': {}}                              # soma params dict
+	cellRule['secs']['soma']['geom'] = {'diam': 15, 'L': 14, 'Ra': 120.0}                   # soma geometry
+	cellRule['secs']['soma']['mechs']['hh'] = {'gnabar': 0.13, 'gkbar': 0.036, 'gl': 0.003, 'el': -70}      # soma hh mechanism
+	netParams.cellParams['Erule'] = cellRule  
+
+Now everything works fine.  Will commit and then insert eeeS cell model.
 
 

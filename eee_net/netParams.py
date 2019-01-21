@@ -34,13 +34,11 @@ PV_path   = os.path.join(cellpath, 'FS3.hoc')
 cellRule = netParams.importCellParams(label='PV5', conds={'cellType':'PV5'}, fileName=PV_path, cellName='FScell1', cellInstance=True)
 netParams.cellParams['PV5'] = cellRule
 
+
 ## Import eeeS cell (PT5)
 cellRule = netParams.importCellParams(label='PT5_1', conds={'pop':'PT5_1'}, fileName=eeeS_path, cellName='MakeCell', cellInstance=True)
 netParams.cellParams['PT5_1'] = cellRule
 
-# ## Import eeeS cell (PT5)
-# cellRule = netParams.importCellParams(label='PT5_1', conds={'cellType':'PT5_1'}, fileName=eeeS_path, cellName='MakeCell', cellInstance=True)
-# netParams.cellParams['PT5_1'] = cellRule
 
 ## Then copy the cellRule for the other pops (faster than importing again)
 ## Note: we are creating 1 cell type per pop because they could potentially have different noise and connectivity params           
@@ -48,13 +46,6 @@ for label in ['PT5_2', 'PT5_3', 'PT5_4']:
     cellRule = copy.deepcopy(netParams.cellParams['PT5_1'].todict())
     cellRule['conds']['pop'] = [label]
     netParams.cellParams[label] = cellRule
-
-# ## Then copy the cellRule for the other pops (faster than importing again)
-# ## Note: we are creating 1 cell type per pop because they could potentially have different noise and connectivity params           
-# for label in ['PT5_2', 'PT5_3', 'PT5_4']:    
-#     cellRule = copy.deepcopy(netParams.cellParams['PT5_1'].todict())
-#     cellRule['conds']['cellType'] = [label]
-#     netParams.cellParams[label] = cellRule
 
 
 ## Synaptic mechanism parameters

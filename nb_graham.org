@@ -979,6 +979,138 @@ That worked.
 
 Committing now.
 
+** Swapping eeeS into network model
+
+Here's how we now import the PV5 cell model:
+
+	## Import PV5 cell
+	cellRule = netParams.importCellParams(label='PV5', conds={'cellType':'PV'}, fileName=PV_path, cellName='FScell1', cellInstance=True)
+	netParams.cellParams['PVrule'] = cellRule
+
+Here's how we used to import the eeeS model:
+
+	# Import and modify PT5 cell
+	cellRule = netParams.importCellParams(label='PT5_1', conds={'cellType': 'PT5_1', 'cellModel': 'HH_reduced'}, fileName=eeeS_path, cellName='MakeCell')
+
+But then to get separate pops, we used to copy the first cell rule:
+
+	# make copy of cell rule for the other 3 pops
+	# note: we are creating 1 cell type per pop because they could potentially have different Gfluct params           
+	for k,label in enumerate(excPopLabels[1:]):    
+	        cellRule = copy.deepcopy(netParams.cellParams['PT5_1'].todict())
+	        cellRule['conds']['cellType'] = [label]
+	        netParams.cellParams[label] = cellRule
+
+Where
+
+	excPopLabels = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4']
+
+I'm not quite sure what `cellInstance=True` does...  Can't find it anywhere in the Netpyne documentation.  I'll ask Salva.
+
+
+** Asking Salva for help
+
+joe [11:43 AM]
+Hey Salva, in our old network code, when we did a `cellRule = netParams.importCellParams` we included the option `cellInstance=True`, but that never appears in the tutorial code, and I can’t find it in the Netpyne documentation.  Do you know if that does anything?
+
+salvadord [11:45 AM]
+yes it does … unfotunately a lot of stuff not documented
+cellInstance = True means you are extracting the cell parameters from a cell that has been instantiated from a template (hoc template or python class) instead of fromthe template itself (which is the default
+i.e. in the file you are importing from there’ll be something like `cell = PTCell()`
+
+joe [11:48 AM]
+Pretty sure I understand the distinction, just not sure what difference it would make.  I.e., is there a reason we need it for our eee network sims?
+
+joe [12:01 PM]
+One more question: in the old code, we used `importCellParams` once for PT5_1, and then deepcopied the cellRule three times for PT5_2, etc.  To me, this is less intuitive than just running `importCellParams` four times…  Does the copying offer some advantage I don’t see?
+
+salvadord [12:03 PM]
+no difference after being imported — just needed for some cases where eg. need to instantiate cell first because need to call cell class methdos that set some cell params
+needed for eee — not sure, I can check
+copying advantage - faster, since importing internally requires actually creating the cell in Neuron and using a bunch of Neuron funcs to extract all the params
+ideally all the cell params would remain the same, so could just create multiple populations from the same cellParams rule — however due to the setup of the artif noise input to cell, I think needed different cellParams entries
+
+joe [12:06 PM]
+Great, thanks Salva!
+
+** Inserting eeeS cell model
+
+New code:
+
+	## Import eeeS cell (PT5)
+	cellRule = netParams.importCellParams(label='PT5_1', conds={'cellType':'PT5_1'}, fileName=eeeS_path, cellName='MakeCell', cellInstance=True)
+	netParams.cellParams['PT5_1'] = cellRule
+
+	## Then copy the cellRule for the other pops (faster than importing again)
+	## Note: we are creating 1 cell type per pop because they could potentially have different noise and connectivity params           
+	for label in ['PT5_2', 'PT5_3', 'PT5_4']:    
+	    cellRule = copy.deepcopy(netParams.cellParams['PT5_1'].todict())
+	    cellRule['conds']['cellType'] = [label]
+	    netParams.cellParams[label] = cellRule
+
+And trying it out.  It ran, but not all figures appeared.  Need to change recording options to match cellTypes.
+
+Actually, it already matched cellTypes.  The problem is that our eeeS cells have more than one soma compartment, requiring the following to record somas from both PV5 cells and PT5 (eeeS):
+
+	cfg.recordTraces = {'V_soma':{'sec':'soma','loc':0.5,'var':'v'}}  # Dict with traces to record
+	cfg.recordTraces['V_soma_0'] = {'sec':'soma_0','loc':0.5,'var':'v'}
+
+The first line gets the soma from the PV cells, the second line gets a soma from the PT cells.  Problem is, neither has the other soma section, so trace-plotting gets hinky.
+
+Easiest thing to do right now is probably compress the soma of eeeS into one compartment.  This will require figuring out how to keep the same surface area / volume, reconnecting all other branches to single soma, and testing before and after change to ensure they're the same.
+
+About to go to lunch, so I'll see if Penny and Don can handle this.
+
+** Chat with Penny and Don
+
+joe [12:41 PM]
+Hey Penny and Don, I’m still working on getting the network up and running, but there is something you guys could do in the meantime, if you have time.
+I’m having problems with figures.  PV cells have single soma compartment while eeeS cells have several.  That means I have to record two traces to see soma (`soma` in PV and `soma_0` or `soma_1` etc. in eeeS).  Since the other cell type doesn’t have that section, the figures break.
+I think the easiest fix would be just to collapse the several soma compartments in eeeS into a single one.
+This would require reconnecting branches to the new single soma and matching surface area/volume between multiple and new single cylinder.
+Then we’d probably want to run inputs into old multi-soma and new single-soma to ensure they behave the same.
+I’m about to head to lunch, but I’ll be back later.
+
+don [1:41 PM]
+i’m looking though newly fetched EEE_network … not seeing new stuff. maybe i’m looking in wrong place?
+
+joe [2:04 PM]
+I’m working in `joes_branch` in the `eee_net` directory.  The `eee_network` directory is the old stuff I’m keeping around until we get all useful code out of it.
+
+don [2:05 PM]
+makes sense
+
+penny [2:11 PM]
+Got it. Will look into it soon :slightly_smiling_face:
+
+
+** Using cellType different from pop name
+
+Was having to do a lot of work to connect pops.  Instead of having each pop having a cellType set to its name, all PT5 pops now have cellType PT5.
+
+Now I can wire individually to a pop or collectively to a cellType.
+
+e.g. conds: {'pop': PT5_1} or conds: {'cellType': PT5}
+
+And running.  Looks good except background seems to have zero connectivity.
+
+Problem was I was using old cellTypes in the bkg setting.
+
+Changed from this:
+
+	netParams.stimTargetParams['bkg->all'] = {'source': 'bkg', 'conds': {'cellType': ['PV','PT5_1','PT5_2','PT5_3','PT5_4']}, 'weight': 0.01, 'delay': 'max(1, normal(5,2))', 'synMech': 'exc'}
+
+To this:
+
+	netParams.stimTargetParams['bkg->all'] = {'source': 'bkg', 'conds': {'cellType': ['PV5','PT5']}, 'weight': 0.01, 'delay': 'max(1, normal(5,2))', 'synMech': 'exc'}
+
+Now it works and everything looks good.
+
+Committing.
+
+
+
+
 
 
 

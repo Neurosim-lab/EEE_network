@@ -9,18 +9,6 @@ Feb 01, 2018
 The cell class has 3d morphology structure infomation.
 They can be placed in a network (logical 3d location).
 
-Improved on March 01, 2018 to have better membrane time constant & resting membrane potential.
-Previous model has time constant ~ 6ms, most experimental data of
-neocortex pyramidal L5-6 neurons have time constant ~ 10ms.
-SpineFACTOR is increased from 1.5 to 1.6
-somaRm increased from 1000/0.4 to 1400/0.04
-dendRm increased to same value as somaRm
-somaCm increased from 1 to 1.5431
-dendCm increased to somaCm*spineFACTOR
-
-pasVm increased from -80 to -65
-kBK_gpeak increased from 2.68e-4 to 16.8e-4
-
 Ref: https://neuroelectro.org/neuron/111/
      https://senselab.med.yale.edu/ModelDB/ShowModel.cshtml?model=168148&file=/stadler2014_layerV/LayerVinit.hoc#tabs-2
 
@@ -39,28 +27,19 @@ h.load_file('stdrun.hoc')
 # Parameters
 #########################################
 # Cell passive properties
-global_Ra = 90
-spineFACTOR = 1.5 # It was 1.5 originally, in order to match the time constant,
-# We try to increase it on Feb.27, 2018 according to Reetz et al. (2014)
-somaRm = 1500/0.04 # Try 1500/0.04 on Feb.27, 2018, Original 1000/0.04
-dendRm = somaRm/spineFACTOR # somaRm/spineFACTOR
-somaCm = 1.45 # It was 1 originally, in order to increase the time constant,
-# We increased it on Marth 1, 2018 according to Reetz et al. (2014)
+global_Ra = 100
+spineFACTOR = 1.5
+somaRm = 1500/0.04
+dendRm = somaRm/spineFACTOR
+somaCm = 1.45
 
-############ This is where the problem comes from when i want the hyperpolarization
-# after spike change
-# If dendCm = somaCm*spineFACTOR: No hyperpolarization after spike on plateau at all
-# If dendCm = somaCm/spineFACTOR: Huge hyperpolarization!!!
 dendCm = somaCm*spineFACTOR
-spinedist = 50 # distance at which spines start
-Vk = -100 # -100 #-105 # -80
-VNa = 65 #65 #60 #55
-pasVm = -70 #-80 #-85 #-89 #-90 #-65
-
+spinedist = 40 # distance at which spines start
+Vk = -87
+VNa = 60
+pasVm = -65
 # Specify cell biophysics
-# ratio = 0
-
-somaNa = 150 # 900  # [pS/um2]
+somaNa = 900  # [pS/um2]
 axonNa = 5000   # [pS/um2]
 basalNa = 150  # [pS/um2]
 mNa = 0.5  # decrease in sodium channel conductance in basal dendrites [pS/um2/um]
@@ -72,11 +51,7 @@ somaKv = 40 # somatic, apical, and initial basal Kv conductance
 mKV = 0  # increase in KV conductance in basal dendrites
 gKVmax = 500  # maximum basal KV conductance
 axonKv = 100
-somaKA = 150 #100  # It was 150 in the best fit model from Srdjan 2009
-# In order to decrease the hyperpolirization after APs on plateau
-# decreased to 100 on Feb 27, 2018
-# Changed back to 150 on March 01, 2018
-# initial basal total GKA conductance [pS/um2] equals somatic
+somaKA = 150
 mgka = 0.7  # linear rise in IA channel density
 mgkaratio = 1./300 # linear drop in KAP portion, 1 at soma
 apicalKA = 300  # apical total GKA conductance
@@ -97,9 +72,8 @@ gkl = 0.005
 ILdist = 15
 
 #############kBK.mod
-kBK_gpeak = 2.68e-4 #7.67842640257e-05 #2.68e-4 #16.8e-4 #2.68e-4 #7.67842640257e-05 # Tried 2.68e-4 # original value of 268e-4 too high for this model
-# 7.67842640257e-05 or 6.68e-4 both works, can change it based on the interspike invervals we are aiming for
-kBK_caVhminShift = 45 #45 #50 #45.0 # shift upwards to get lower effect on subthreshold
+kBK_gpeak = 2.68e-4 
+kBK_caVhminShift = 45
 
 
 #########################################
@@ -155,7 +129,7 @@ class eeeS():
         for sec in self.all:
             # creates the number of segments per section
             # lambda_f takes in the current section
-            
+
             print
             print(sec.name())
             print(sec.nseg)
@@ -250,7 +224,7 @@ class eeeS():
     # Add basic properties
     ###################
     def add_all(self):
-        
+
         for sec in self.all:
             sec.insert('vmax')
             sec.insert('pas')
@@ -595,8 +569,8 @@ class eeeS():
         h.pt3dadd(-54.06,-4.25,-5.96,7.99, sec = self.soma[2])
 
         # Set up the 3d morphology and connection of basal dendrites
-      
-        
+
+
 
         self.basal[0].connect(self.soma[0])
         h.pt3dclear(sec = self.basal[0])

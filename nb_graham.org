@@ -751,7 +751,7 @@ Still works.  I have succesfully renamed the populations.
 Now to use our cell models.  But first committing.
 
 
-* 2019-01-18 -- 
+* 2019-01-18 -- Plugging PV5 model into network
 
 In progress
 -----------
@@ -764,7 +764,7 @@ Set initial connectivity to Sergio's settings?
 Using info from here:
 http://netpyne.org/advanced.html#importing-cells
 
-Trying to swap in the PV5 cell model first.
+*** Trying to swap in the PV5 cell model first
 
 Sergio's code (from netParams.py):
 
@@ -826,5 +826,162 @@ Changed E to PT5:
 	netParams.cellParams['Erule'] = cellRule  
 
 Now everything works fine.  Will commit and then insert eeeS cell model.
+
+
+* 2019-01-21 -- 
+
+In progress
+-----------
+Setting up network model
+Get our cell models in
+Set initial connectivity to Sergio's settings?
+
+** Chats 
+
+don [9:18 AM]
+joe, how is the code coming along. please let me know if there is anything i may help with
+
+joe [9:30 AM]
+I’m just sitting down at it now.  Right now it’s just Netpyne tutorial 5 broken into separate files.  I’m about to start setting it up how we discussed in the meeting.
+But if you could try running it now, that’d be great, and then you can help plug in the cell models, set the parameters, etc. with me.
+It’s in my branch right now: https://github.com/Neurosim-lab/EEE_network/tree/joes_branch
+GitHub
+Neurosim-lab/EEE_network
+Contribute to Neurosim-lab/EEE_network development by creating an account on GitHub.
+The README should explain how to run it.
+
+don [9:37 AM]
+ok … doing now
+
+don [9:45 AM]
+looks like i just pulled the same as before
+your branch is selected and then i clone
+i ran init.py
+
+joe [9:46 AM]
+After you clone, you have to `git checkout joes_branch`
+
+don [9:46 AM]
+oh, sorry!
+
+joe [9:47 AM]
+No worries.  git is confusing.
+
+joe [10:00 AM]
+So I left the old stuff in eee_network (so we can mine it for useful code) and I am now developing eee_net
+
+don [10:00 AM]
+ran. seems to run fine. gui windows appeared but i didn
+’t wait for content to appear
+need to run but will be back at it in about 1 hour
+
+joe [10:01 AM]
+:+1:
+
+don [12:48 PM]
+sorry, was pulled away longer than expected
+did a git fetch when i returned … guess you hadn’t updated repo?
+
+don [12:54 PM]
+running and displaying fine
+don’t want to redo that which you’ve already done so please assign me a task and i will do
+
+joe [2:25 PM]
+I’m trying to get all the old parameters and settings into the new model.  Probably won’t be done until sometime tomorrow.  Might as well wait until then to get you going so we don’t overlap.
+
+don [3:07 PM]
+Ok
+
+don [8:56 AM]
+how’s it going joe?
+
+joe [9:18 AM]
+Slowly, but it’s going.  I got the EEE populations into the model yesterday.  This morning I’m working on getting our cell models in.
+If you wanted to update your repo and make sure it still runs on your machine, that would be helpful.
+
+don [9:30 AM]
+already did and does ;)
+
+joe [9:33 AM]
+Sweet, thanks.  I’ll let you know when I get the cells in.
+
+don [9:48 AM]
+are the cells the ones in EEE_singlecell_simplified?
+
+joe [9:52 AM]
+We’ve got them in the repo as: `EEE_network/cells/eeeS.py` and `EEE_network/cells/FS3.hoc`
+But actually, there is something you could do that wouldn’t overlap!
+I’ve been meaning to re-compare `eeeS.py` with Penny’s detailed model again (it’s been awhile and she probably made some changes).
+We want to use all the same mod files, all the same parameter values, etc.
+
+joe [11:45 AM]
+Got the PV model cell inserted and working.  After lunch I’ll get the eeeS model plugged in.
+
+don [6:28 AM]
+Where can I find Penny’s original detailed model? Maybe EEE_singlecell_simplified? But says “simplified” not detailed model.
+
+joe [3:08 PM]
+Hmmm.  I’ll have to look for it.
+
+joe [3:12 PM]
+Hey Penny, Don is going to make sure that our simplified model uses all the same mod files and parameter values as your detailed model.  Is there some way we can access your current detailed model?
+
+penny [5:47 PM]
+Hello, here it is: https://github.com/super-penguin/EEE_Detailed_Cell. We are using the same mod files :-)
+GitHub
+super-penguin/EEE_Detailed_Cell
+A detailed model of prefrontal L5 pyramidal neuron --- for EEE project - super-penguin/EEE_Detailed_Cell
+But some of the parameters are a little bit different. I made changes to the simplified model from the network github repo before, but didn’t push it. I will push it tonight
+
+don [6:15 PM]
+great! thank you penny
+
+penny [7:27 PM]
+:+1:
+
+joe [7:47 PM]
+Thanks Penny!
+
+penny [12:39 AM]
+Hmmm, if I add a pull request, the new changes will be merged into the neurosim-lab/EEE_network master branch without permission. Is this how its set up?
+I just add a pull request, let me know if something is not right. Hope I didn’t mess up the repo
+
+joe [11:10 AM]
+Thanks, Penny! I don’t have a lot of experience with Git, but it looks like your pull request is great.  I’m just about to try inserting eeeS into the network model.  Once I get that working I’ll figure out how to merge my changes into the master branch.  :sweat_smile:
+
+penny [11:11 AM]
+Great! Thanks. I am pretty new to group work on github too:joy:
+
+
+** Updating eeeS
+
+I accepted Penny's pull request in the master branch, so the updated eeeS model is there.
+
+I'm working in joes_branch though, so I need to get the latest model into my branch also.
+
+I think I'll just download it from the master branch and copy and paste it into my local repo of joes_branch.
+
+Cloning repo into temp, copying eeeS.py over to my repo of joes_branch.
+
+That worked.  
+
+	graham-mac:EEE_network graham$ git status
+	On branch joes_branch
+	Your branch is up to date with 'origin/joes_branch'.
+
+	Changes not staged for commit:
+	  (use "git add <file>..." to update what will be committed)
+	  (use "git checkout -- <file>..." to discard changes in working directory)
+
+		modified:   cells/eeeS.py
+		modified:   nb_graham.org
+
+
+Committing now.
+
+
+
+
+
 
 

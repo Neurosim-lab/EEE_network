@@ -1,5 +1,9 @@
 from netpyne import specs, sim
 
+# Show figures? Save figures?
+showFig = True
+saveFig = True
+
 # Simulation options
 cfg = specs.SimConfig()        # object of class SimConfig to store simulation configuration
 cfg.duration = 1000           # Duration of the simulation, in ms
@@ -13,10 +17,10 @@ cfg.savePickle = False         # Save params, network and sim output to pickle f
 cfg.saveMat = False         # Save params, network and sim output to pickle file
 
 
-cfg.analysis['plotRaster'] = {'orderBy': 'y', 'orderInverse': True}      # Plot a raster
-cfg.analysis['plotTraces'] = {'include': [('PT5_1',0), ('PT5_2', 0), ('PT5_3', 0), ('PT5_4', 0), ('PV5', 0)]}      # Plot recorded traces for this list of cells
-cfg.analysis['plot2Dnet'] = True            # plot 2D visualization of cell positions and connections
-cfg.analysis['plotConn'] = True             # plot connectivity matrix
+cfg.analysis['plotRaster'] = {'orderBy': 'y', 'orderInverse': True, 'saveFig': saveFig, 'showFig': showFig}      # Plot a raster
+cfg.analysis['plotTraces'] = {'include': [('PT5_1',0), ('PT5_2', 0), ('PT5_3', 0), ('PT5_4', 0), ('PV5', 0)], 'saveFig': saveFig, 'showFig': showFig}      # Plot recorded traces for this list of cells
+cfg.analysis['plot2Dnet', 'saveFig': saveFig, 'showFig': showFig] = True            # plot 2D visualization of cell positions and connections
+cfg.analysis['plotConn', 'saveFig': saveFig, 'showFig': showFig] = True             # plot connectivity matrix
 
 # Create network and run simulation
 #sim.createSimulateAnalyze(netParams = netParams, simConfig = simConfig)    

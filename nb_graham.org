@@ -1253,6 +1253,7 @@ Committing then pushing.
 In progress
 -----------
 Setting up network model
+Set up synaptic mechanisms
 Set initial connectivity to Sergio's settings
 
 ** EEE meeting
@@ -1310,6 +1311,272 @@ file:nb_gif/20190122_083027.png
 file:nb_gif/20190122_083039.png
 
 Committing now and pushing.
+
+** Chat with Penny and Don
+
+	penny [11:01 PM]
+	Hey Joe, the soma is collapsed into one compartment. I compared the plateau, it is consistent with the original simplified cell. I am not sure if it would cause any conflict, so I saved it in a new cell file called eeeS1.py (the class in this file is named as eeeS1).
+
+	joe [7:53 AM]
+	Awesome, thanks! I’ll try it out now.
+
+	don [8:03 AM]
+	is eeeS1 checked to joes_branch? don’t see it. sorry i’m not being much help :/
+
+	joe [8:05 AM]
+	Forget about joes_branch now (just as you were getting used to it).  :wink:  Everything is in master again now.
+	Penny did a pull request and I just merged it into master.
+	You’re fine Don, once we have the baseline model done we can all explore it.
+
+	don [8:11 AM]
+	ok. back to master. ty
+
+	penny [9:00 AM]
+	No worry Don, we are more familiar with the cell model. All minor changes. You can help more for the network part :slightly_smiling_face:
+
+	don [9:10 AM]
+	quick attempt to run (under eee_net) threw this error:
+
+	NEURON: syntax error
+	in FS3.hoc near line 37
+	     insert Nafx
+	               ^
+	       xopen(“FS3.hoc”)
+	     execute1(“{xopen(“FS...“)
+	   load_file(“../cells/F...“)
+	Segmentation fault: 11
+	running under py3
+
+	joe [9:18 AM]
+	Could be one of two easy things: 1) make sure you compiled the mod files, 2) make sure `x86_64` dir is properly simlinked into `eee_net` dir.  Could also probably be a million complicated things.  :wink:
+
+	don [9:19 AM]
+	was thinking mod files while you typed ;)
+	running now
+
+	joe [9:20 AM]
+	:sweat_smile:
+
+	don [9:20 AM]
+	looks good. all plots, etc showing correctly
+
+	joe [9:21 AM]
+	Awesome.  I’m off for a hike, but then I hope to get syn mechs and connectivity in today.
+	That may be too ambitious.  We shall see.
+
+	penny [9:25 AM]
+	:+1:
+
+	penny [9:51 AM]
+	When I run python init.py, the figures can’t show up properly. Have u guys ever seen this before?
+	No figures showing up 
+	MacBook-Pro:eee_net Penny$ python init.py
+	Balancing each compartment to -73 mV
+	​
+	Creating network of 5 cell populations on 1 hosts...
+	 Number of cells on node 0: 100 
+	 Done; cell creation time = 0.25 s.
+	Making connections...
+	 Number of connections on node 0: 1086 
+	 Done; cell connection time = 0.07 s.
+	Adding stims...
+	 Number of stims on node 0: 100 
+	 Done; cell stims creation time = 0.01 s.
+	Recording 5 traces of 1 types on node 0
+	​
+	Running simulation for 1000 ms...
+	 Done; run time = 33.19 s; real-time ratio: 0.03.
+	​
+	Gathering data...
+	 Done; gather time = 0.19 s.
+	​
+	Analyzing...
+	 Cells: 100
+	 Connections: 1186 (11.86 per cell)
+	 Spikes: 995 (9.95 Hz)
+	 Simulated time: 1.0 s; 1 workers
+	 Run time: 33.19 s
+	 Done; saving time = 0.05 s.
+	Plotting raster...
+	Plotting recorded cell traces ...
+	INFO:matplotlib.backends._backend_tk:Could not load matplotlib icon: can't use "pyimage10" as iconphoto: not a photo image
+	INFO:matplotlib.backends._backend_tk:Could not load matplotlib icon: can't use "pyimage19" as iconphoto: not a photo image
+	INFO:matplotlib.backends._backend_tk:Could not load matplotlib icon: can't use "pyimage28" as iconphoto: not a photo image
+	INFO:matplotlib.backends._backend_tk:Could not load matplotlib icon: can't use "pyimage37" as iconphoto: not a photo image
+	INFO:matplotlib.backends._backend_tk:Could not load matplotlib icon: can't use "pyimage46" as iconphoto: not a photo image
+	Plotting 2D representation of network cell locations and connections...
+	INFO:matplotlib.backends._backend_tk:Could not load matplotlib icon: can't use "pyimage55" as iconphoto: not a photo image
+	Plotting connectivity matrix...
+	INFO:matplotlib.backends._backend_tk:Could not load matplotlib icon: can't use "pyimage64" as iconphoto: not a photo image
+	 Done; plotting time = 1.84 s
+	​
+	Total time = 35.61 s
+	Collapse 
+	I checked matplotlib, it is good. Not sure where the problem is.
+
+	joe [9:53 AM]
+	I haven’t done anything with `init.py` yet, that’s really for running batches of sims.  Right now `./runsim` should work though…
+
+	penny [9:54 AM]
+	Untitled 
+	MacBook-Pro:eee_net Penny$ ./runsim
+	[MacBook-Pro.local:97715] [[1500,0],0] mca_oob_tcp_recv_handler: invalid message type: 15
+	[MacBook-Pro.local:97715] [[1500,0],0] mca_oob_tcp_recv_handler: invalid message type: 15
+	[MacBook-Pro.local:97715] [[1500,0],0] mca_oob_tcp_recv_handler: invalid message type: 15
+	[MacBook-Pro.local:97715] [[1500,0],0] mca_oob_tcp_recv_handler: invalid message type: 15
+	--------------------------------------------------------------------------
+	mpiexec noticed that the job aborted, but has no info as to the process
+	that caused that situation.
+	Collapse 
+	When I do ./runsim, this error showed up. I can’t locate the problem, so tried init.py. So strange
+
+	joe [9:55 AM]
+	Hmmm.  Seems to be a problem with your MPI stuff.  Try running `./runsim 1`, which forces everything onto one core…
+
+	penny [9:55 AM]
+	Okay
+
+	don [9:55 AM]
+	i ran init.py but from python console
+	ran fine
+	after i compiled mods :)
+
+	penny [9:57 AM]
+	I see. Thanks. the errors are strange
+	Untitled 
+	MacBook-Pro:eee_net Penny$ ./runsim 1
+	[MacBook-Pro.local:97848] [[1623,0],0] mca_oob_tcp_recv_handler: invalid message type: 15
+	--------------------------------------------------------------------------
+	mpiexec noticed that the job aborted, but has no info as to the process
+	that caused that situation.
+
+	don [9:57 AM]
+	trying python init.py now
+
+	joe [9:57 AM]
+	You could post it in #tech and see if anybody else knows.  I have no idea.
+
+	don [9:57 AM]
+	windows don’t show because program exits
+	no errors
+	py3
+
+	penny [9:58 AM]
+	Okay. I will ask in #tech too! Thanks :slightly_smiling_face:
+
+	joe [9:58 AM]
+	Speaking of which, Don, if you could figure out how to save the figures in Netpyne (right now they don’t get saved for some reason), that would be really helpful.
+	Off to a mountain for an hour.
+
+	don [10:00 AM]
+	what is 1 arg for Penny?
+	when i run ./runsim 1 the windows remain blank
+
+	penny [10:01 AM]
+	Thats the number of core used
+
+	don [10:01 AM]
+	doesn’t throw an error that i can see
+
+	penny [10:02 AM]
+	sorry, number of processes
+
+	don [10:02 AM]
+	understood. ty
+
+	penny [10:02 AM]
+	Ah, when I run python -i init.py, all the figures showed up properly!
+	Strange.
+
+	don [10:03 AM]
+	something about running mpi
+
+	penny [10:05 AM]
+	I guess I set up something wrong.        python init.py   --- network model runs successfully, but no figures show up;  python -i init.py    --- network  runs successfully and figures show up.
+	I am guessing in the file init.py, the last part    sim.analysis.plotData()    needs to be set up with some paramters
+
+	don [10:07 AM]
+	ran:
+
+	mpiexec -np 1 nrniv -python -mpi init.py
+	numprocs=1
+
+	got:
+
+	There was an exception in plotConn():
+	module ‘matplotlib.pyplot’ has no attribute ‘hold’
+
+	penny [10:07 AM]
+	Hmmm
+	I tried the same command, but got different errors with the last plotting part. Strange.
+	Going to check the netpyne documentation
+
+	don [10:10 AM]
+	you’re also using py3?
+
+	penny [10:10 AM]
+	yes
+
+	don [10:11 AM]
+	hmmm. you’re running on a mac?
+
+	penny [10:12 AM]
+	yup
+
+	don [10:12 AM]
+	argh!
+	go figure …
+
+	penny [10:13 AM]
+	lol
+
+	joe [12:44 PM]
+	Did you guys get your problems sorted?
+
+	don [12:45 PM]
+	joe, it runs fine except under mpi
+	i didn’t pursue mpi issue
+
+	joe [12:45 PM]
+	Penny, I realize that `./runsim` just calls `init.py` and parallelizes it.  So the first thing is to make sure you can run `init.py`.  You know, like you were trying before I said it was an mpi problem.  :joy:
+	I can’t help with mpi issues.  I’m a neuroscientist in a computer scientist’s world.
+	Did you have a chance to look into how to save figures, Don?
+
+	don [12:48 PM]
+	generally use cfg.analysis
+	like:
+
+	cfg.analysis[‘plotSpikeHist’] = {‘include’: [‘IT2’], ‘timeRange’: [0,1000], ‘yaxis’:‘rate’, ‘binSize’:5, ‘graphType’:‘bar’, ‘saveFig’: True, ‘showFig’: False, ‘popColors’: popColors, ‘figSize’: (10,4), ‘dpi’: 300}
+
+	joe [12:57 PM]
+	Yeah, tried to just add a saveFig option.  Didn’t work.
+	Penny, if the problem is figures don’t show up for you, can you try uncommenting this line in `cfg.py`?
+	#import pylab; pylab.show()  # this line is only necessary in certain systems where figures appear empty
+	Hmmm.  Now figures aren’t showing up for me either.
+	The problem may be this printout:
+	Untitled 
+	Reading command line arguments using syntax: python file.py [simConfig=filepath] [netParams=filepath]
+	​
+	Warning: Could not load cfg from command line path or from default cfg.py
+
+** Summary of chat
+
+Penny was having figures not show up.  Also problems with MPI.  Now my own figures aren't showing up.  It seems Netpyne is no longer reading the config file (cfg.py) properly.
+
+I am going to commit, push, and then try the following commands as a sanity check:
+
+cd ~ ; mkdir eee_temp ; cd eee_temp ; git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network/mod ; nrnivmodl ; cd ../eee_net ; ln -s "../mod/x86_64" x86_64 ; ./runsim 1
+
+
+
+
+
+
+
+
+** Setting up synaptic mechanisms
+
+** Setting up connectivity
 
 
 

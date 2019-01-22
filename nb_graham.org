@@ -828,7 +828,7 @@ Changed E to PT5:
 Now everything works fine.  Will commit and then insert eeeS cell model.
 
 
-* 2019-01-21 -- 
+* 2019-01-21 -- Importing eeeS, gitting back to master
 
 In progress
 -----------
@@ -838,119 +838,119 @@ Set initial connectivity to Sergio's settings?
 
 ** Chats 
 
-don [9:18 AM]
-joe, how is the code coming along. please let me know if there is anything i may help with
+	don [9:18 AM]
+	joe, how is the code coming along. please let me know if there is anything i may help with
 
-joe [9:30 AM]
-I’m just sitting down at it now.  Right now it’s just Netpyne tutorial 5 broken into separate files.  I’m about to start setting it up how we discussed in the meeting.
-But if you could try running it now, that’d be great, and then you can help plug in the cell models, set the parameters, etc. with me.
-It’s in my branch right now: https://github.com/Neurosim-lab/EEE_network/tree/joes_branch
-GitHub
-Neurosim-lab/EEE_network
-Contribute to Neurosim-lab/EEE_network development by creating an account on GitHub.
-The README should explain how to run it.
+	joe [9:30 AM]
+	I’m just sitting down at it now.  Right now it’s just Netpyne tutorial 5 broken into separate files.  I’m about to start setting it up how we discussed in the meeting.
+	But if you could try running it now, that’d be great, and then you can help plug in the cell models, set the parameters, etc. with me.
+	It’s in my branch right now: https://github.com/Neurosim-lab/EEE_network/tree/joes_branch
+	GitHub
+	Neurosim-lab/EEE_network
+	Contribute to Neurosim-lab/EEE_network development by creating an account on GitHub.
+	The README should explain how to run it.
 
-don [9:37 AM]
-ok … doing now
+	don [9:37 AM]
+	ok … doing now
 
-don [9:45 AM]
-looks like i just pulled the same as before
-your branch is selected and then i clone
-i ran init.py
+	don [9:45 AM]
+	looks like i just pulled the same as before
+	your branch is selected and then i clone
+	i ran init.py
 
-joe [9:46 AM]
-After you clone, you have to `git checkout joes_branch`
+	joe [9:46 AM]
+	After you clone, you have to `git checkout joes_branch`
 
-don [9:46 AM]
-oh, sorry!
+	don [9:46 AM]
+	oh, sorry!
 
-joe [9:47 AM]
-No worries.  git is confusing.
+	joe [9:47 AM]
+	No worries.  git is confusing.
 
-joe [10:00 AM]
-So I left the old stuff in eee_network (so we can mine it for useful code) and I am now developing eee_net
+	joe [10:00 AM]
+	So I left the old stuff in eee_network (so we can mine it for useful code) and I am now developing eee_net
 
-don [10:00 AM]
-ran. seems to run fine. gui windows appeared but i didn
-’t wait for content to appear
-need to run but will be back at it in about 1 hour
+	don [10:00 AM]
+	ran. seems to run fine. gui windows appeared but i didn
+	’t wait for content to appear
+	need to run but will be back at it in about 1 hour
 
-joe [10:01 AM]
-:+1:
+	joe [10:01 AM]
+	:+1:
 
-don [12:48 PM]
-sorry, was pulled away longer than expected
-did a git fetch when i returned … guess you hadn’t updated repo?
+	don [12:48 PM]
+	sorry, was pulled away longer than expected
+	did a git fetch when i returned … guess you hadn’t updated repo?
 
-don [12:54 PM]
-running and displaying fine
-don’t want to redo that which you’ve already done so please assign me a task and i will do
+	don [12:54 PM]
+	running and displaying fine
+	don’t want to redo that which you’ve already done so please assign me a task and i will do
 
-joe [2:25 PM]
-I’m trying to get all the old parameters and settings into the new model.  Probably won’t be done until sometime tomorrow.  Might as well wait until then to get you going so we don’t overlap.
+	joe [2:25 PM]
+	I’m trying to get all the old parameters and settings into the new model.  Probably won’t be done until sometime tomorrow.  Might as well wait until then to get you going so we don’t overlap.
 
-don [3:07 PM]
-Ok
+	don [3:07 PM]
+	Ok
 
-don [8:56 AM]
-how’s it going joe?
+	don [8:56 AM]
+	how’s it going joe?
 
-joe [9:18 AM]
-Slowly, but it’s going.  I got the EEE populations into the model yesterday.  This morning I’m working on getting our cell models in.
-If you wanted to update your repo and make sure it still runs on your machine, that would be helpful.
+	joe [9:18 AM]
+	Slowly, but it’s going.  I got the EEE populations into the model yesterday.  This morning I’m working on getting our cell models in.
+	If you wanted to update your repo and make sure it still runs on your machine, that would be helpful.
 
-don [9:30 AM]
-already did and does ;)
+	don [9:30 AM]
+	already did and does ;)
 
-joe [9:33 AM]
-Sweet, thanks.  I’ll let you know when I get the cells in.
+	joe [9:33 AM]
+	Sweet, thanks.  I’ll let you know when I get the cells in.
 
-don [9:48 AM]
-are the cells the ones in EEE_singlecell_simplified?
+	don [9:48 AM]
+	are the cells the ones in EEE_singlecell_simplified?
 
-joe [9:52 AM]
-We’ve got them in the repo as: `EEE_network/cells/eeeS.py` and `EEE_network/cells/FS3.hoc`
-But actually, there is something you could do that wouldn’t overlap!
-I’ve been meaning to re-compare `eeeS.py` with Penny’s detailed model again (it’s been awhile and she probably made some changes).
-We want to use all the same mod files, all the same parameter values, etc.
+	joe [9:52 AM]
+	We’ve got them in the repo as: `EEE_network/cells/eeeS.py` and `EEE_network/cells/FS3.hoc`
+	But actually, there is something you could do that wouldn’t overlap!
+	I’ve been meaning to re-compare `eeeS.py` with Penny’s detailed model again (it’s been awhile and she probably made some changes).
+	We want to use all the same mod files, all the same parameter values, etc.
 
-joe [11:45 AM]
-Got the PV model cell inserted and working.  After lunch I’ll get the eeeS model plugged in.
+	joe [11:45 AM]
+	Got the PV model cell inserted and working.  After lunch I’ll get the eeeS model plugged in.
 
-don [6:28 AM]
-Where can I find Penny’s original detailed model? Maybe EEE_singlecell_simplified? But says “simplified” not detailed model.
+	don [6:28 AM]
+	Where can I find Penny’s original detailed model? Maybe EEE_singlecell_simplified? But says “simplified” not detailed model.
 
-joe [3:08 PM]
-Hmmm.  I’ll have to look for it.
+	joe [3:08 PM]
+	Hmmm.  I’ll have to look for it.
 
-joe [3:12 PM]
-Hey Penny, Don is going to make sure that our simplified model uses all the same mod files and parameter values as your detailed model.  Is there some way we can access your current detailed model?
+	joe [3:12 PM]
+	Hey Penny, Don is going to make sure that our simplified model uses all the same mod files and parameter values as your detailed model.  Is there some way we can access your current detailed model?
 
-penny [5:47 PM]
-Hello, here it is: https://github.com/super-penguin/EEE_Detailed_Cell. We are using the same mod files :-)
-GitHub
-super-penguin/EEE_Detailed_Cell
-A detailed model of prefrontal L5 pyramidal neuron --- for EEE project - super-penguin/EEE_Detailed_Cell
-But some of the parameters are a little bit different. I made changes to the simplified model from the network github repo before, but didn’t push it. I will push it tonight
+	penny [5:47 PM]
+	Hello, here it is: https://github.com/super-penguin/EEE_Detailed_Cell. We are using the same mod files :-)
+	GitHub
+	super-penguin/EEE_Detailed_Cell
+	A detailed model of prefrontal L5 pyramidal neuron --- for EEE project - super-penguin/EEE_Detailed_Cell
+	But some of the parameters are a little bit different. I made changes to the simplified model from the network github repo before, but didn’t push it. I will push it tonight
 
-don [6:15 PM]
-great! thank you penny
+	don [6:15 PM]
+	great! thank you penny
 
-penny [7:27 PM]
-:+1:
+	penny [7:27 PM]
+	:+1:
 
-joe [7:47 PM]
-Thanks Penny!
+	joe [7:47 PM]
+	Thanks Penny!
 
-penny [12:39 AM]
-Hmmm, if I add a pull request, the new changes will be merged into the neurosim-lab/EEE_network master branch without permission. Is this how its set up?
-I just add a pull request, let me know if something is not right. Hope I didn’t mess up the repo
+	penny [12:39 AM]
+	Hmmm, if I add a pull request, the new changes will be merged into the neurosim-lab/EEE_network master branch without permission. Is this how its set up?
+	I just add a pull request, let me know if something is not right. Hope I didn’t mess up the repo
 
-joe [11:10 AM]
-Thanks, Penny! I don’t have a lot of experience with Git, but it looks like your pull request is great.  I’m just about to try inserting eeeS into the network model.  Once I get that working I’ll figure out how to merge my changes into the master branch.  :sweat_smile:
+	joe [11:10 AM]
+	Thanks, Penny! I don’t have a lot of experience with Git, but it looks like your pull request is great.  I’m just about to try inserting eeeS into the network model.  Once I get that working I’ll figure out how to merge my changes into the master branch.  :sweat_smile:
 
-penny [11:11 AM]
-Great! Thanks. I am pretty new to group work on github too:joy:
+	penny [11:11 AM]
+	Great! Thanks. I am pretty new to group work on github too:joy:
 
 
 ** Updating eeeS
@@ -1010,28 +1010,28 @@ I'm not quite sure what `cellInstance=True` does...  Can't find it anywhere in t
 
 ** Asking Salva for help
 
-joe [11:43 AM]
-Hey Salva, in our old network code, when we did a `cellRule = netParams.importCellParams` we included the option `cellInstance=True`, but that never appears in the tutorial code, and I can’t find it in the Netpyne documentation.  Do you know if that does anything?
+	joe [11:43 AM]
+	Hey Salva, in our old network code, when we did a `cellRule = netParams.importCellParams` we included the option `cellInstance=True`, but that never appears in the tutorial code, and I can’t find it in the Netpyne documentation.  Do you know if that does anything?
 
-salvadord [11:45 AM]
-yes it does … unfotunately a lot of stuff not documented
-cellInstance = True means you are extracting the cell parameters from a cell that has been instantiated from a template (hoc template or python class) instead of fromthe template itself (which is the default
-i.e. in the file you are importing from there’ll be something like `cell = PTCell()`
+	salvadord [11:45 AM]
+	yes it does … unfotunately a lot of stuff not documented
+	cellInstance = True means you are extracting the cell parameters from a cell that has been instantiated from a template (hoc template or python class) instead of fromthe template itself (which is the default
+	i.e. in the file you are importing from there’ll be something like `cell = PTCell()`
 
-joe [11:48 AM]
-Pretty sure I understand the distinction, just not sure what difference it would make.  I.e., is there a reason we need it for our eee network sims?
+	joe [11:48 AM]
+	Pretty sure I understand the distinction, just not sure what difference it would make.  I.e., is there a reason we need it for our eee network sims?
 
-joe [12:01 PM]
-One more question: in the old code, we used `importCellParams` once for PT5_1, and then deepcopied the cellRule three times for PT5_2, etc.  To me, this is less intuitive than just running `importCellParams` four times…  Does the copying offer some advantage I don’t see?
+	joe [12:01 PM]
+	One more question: in the old code, we used `importCellParams` once for PT5_1, and then deepcopied the cellRule three times for PT5_2, etc.  To me, this is less intuitive than just running `importCellParams` four times…  Does the copying offer some advantage I don’t see?
 
-salvadord [12:03 PM]
-no difference after being imported — just needed for some cases where eg. need to instantiate cell first because need to call cell class methdos that set some cell params
-needed for eee — not sure, I can check
-copying advantage - faster, since importing internally requires actually creating the cell in Neuron and using a bunch of Neuron funcs to extract all the params
-ideally all the cell params would remain the same, so could just create multiple populations from the same cellParams rule — however due to the setup of the artif noise input to cell, I think needed different cellParams entries
+	salvadord [12:03 PM]
+	no difference after being imported — just needed for some cases where eg. need to instantiate cell first because need to call cell class methdos that set some cell params
+	needed for eee — not sure, I can check
+	copying advantage - faster, since importing internally requires actually creating the cell in Neuron and using a bunch of Neuron funcs to extract all the params
+	ideally all the cell params would remain the same, so could just create multiple populations from the same cellParams rule — however due to the setup of the artif noise input to cell, I think needed different cellParams entries
 
-joe [12:06 PM]
-Great, thanks Salva!
+	joe [12:06 PM]
+	Great, thanks Salva!
 
 ** Inserting eeeS cell model
 
@@ -1063,25 +1063,25 @@ About to go to lunch, so I'll see if Penny and Don can handle this.
 
 ** Chat with Penny and Don
 
-joe [12:41 PM]
-Hey Penny and Don, I’m still working on getting the network up and running, but there is something you guys could do in the meantime, if you have time.
-I’m having problems with figures.  PV cells have single soma compartment while eeeS cells have several.  That means I have to record two traces to see soma (`soma` in PV and `soma_0` or `soma_1` etc. in eeeS).  Since the other cell type doesn’t have that section, the figures break.
-I think the easiest fix would be just to collapse the several soma compartments in eeeS into a single one.
-This would require reconnecting branches to the new single soma and matching surface area/volume between multiple and new single cylinder.
-Then we’d probably want to run inputs into old multi-soma and new single-soma to ensure they behave the same.
-I’m about to head to lunch, but I’ll be back later.
+	joe [12:41 PM]
+	Hey Penny and Don, I’m still working on getting the network up and running, but there is something you guys could do in the meantime, if you have time.
+	I’m having problems with figures.  PV cells have single soma compartment while eeeS cells have several.  That means I have to record two traces to see soma (`soma` in PV and `soma_0` or `soma_1` etc. in eeeS).  Since the other cell type doesn’t have that section, the figures break.
+	I think the easiest fix would be just to collapse the several soma compartments in eeeS into a single one.
+	This would require reconnecting branches to the new single soma and matching surface area/volume between multiple and new single cylinder.
+	Then we’d probably want to run inputs into old multi-soma and new single-soma to ensure they behave the same.
+	I’m about to head to lunch, but I’ll be back later.
 
-don [1:41 PM]
-i’m looking though newly fetched EEE_network … not seeing new stuff. maybe i’m looking in wrong place?
+	don [1:41 PM]
+	i’m looking though newly fetched EEE_network … not seeing new stuff. maybe i’m looking in wrong place?
 
-joe [2:04 PM]
-I’m working in `joes_branch` in the `eee_net` directory.  The `eee_network` directory is the old stuff I’m keeping around until we get all useful code out of it.
+	joe [2:04 PM]
+	I’m working in `joes_branch` in the `eee_net` directory.  The `eee_network` directory is the old stuff I’m keeping around until we get all useful code out of it.
 
-don [2:05 PM]
-makes sense
+	don [2:05 PM]
+	makes sense
 
-penny [2:11 PM]
-Got it. Will look into it soon :slightly_smiling_face:
+	penny [2:11 PM]
+	Got it. Will look into it soon :slightly_smiling_face:
 
 
 ** Using cellType different from pop name
@@ -1246,6 +1246,70 @@ That seems to have worked fine.  :)
 Updating the README.
 
 Committing then pushing.
+
+
+* 2019-01-22 -- EEE Meeting and ...
+
+In progress
+-----------
+Setting up network model
+Set initial connectivity to Sergio's settings
+
+** EEE meeting
+
+Agenda:
+https://docs.google.com/document/d/1ifVpuQo0gJJhj8epg4cWRoeJSASfI8AP3HP-oRDOteo/edit
+
+
+** Collapsing soma into single compartment
+
+Penny got this going, new cell is eeeS1.py.  I am renaming eeeS.py to eeeS_multi.py and renaming eeeS1.py as eeeS.py.
+
+Commenting out the other soma trace request in cfg.py:
+	#cfg.recordTraces['V_soma_0'] = {'sec':'soma_0','loc':0.5,'var':'v'}
+
+Getting an error when I run the sim.
+
+Found it by running netParams.py
+
+	graham-mac:eee_net graham$ ipython -i netParams.py
+	Python 3.7.1 (default, Dec 14 2018, 13:28:58) 
+	Type 'copyright', 'credits' or 'license' for more information
+	IPython 7.2.0 -- An enhanced Interactive Python. Type '?' for help.
+	Balancing each compartment to -73 mV
+	  File "../cells/eeeS.py", line 143
+	    print "geom_nseg: changed from ", before, " to ", after, " total segments"
+	                                   ^
+	SyntaxError: Missing parentheses in call to 'print'. Did you mean print("geom_nseg: changed from ", before, " to ", after, " total segments")?
+
+Added parentheses to print statement:
+
+	print("geom_nseg: changed from ", before, " to ", after, " total segments")
+
+Had to add parentheses to a bunch of print statements.
+
+Now a new error:
+
+	~/EEE_network/cells/eeeS.py in create_cell(self)
+	    540         self.soma = h.Section(name='soma')
+	    541         self.apical = [h.Section(name='apical[0]')]
+	--> 542         self.basal = [h.Section(name='basal[%d]' % i) for i in xrange(10)]
+	    543         self.axon = [h.Section(name='axon[0]')]
+	    544 
+
+	NameError: name 'xrange' is not defined
+
+It seems xrange doesn't exist in Python 3.  range should do the same thing
+
+Now it runs.  Output:
+
+file:nb_gif/20190122_082937.png
+file:nb_gif/20190122_082949.png
+file:nb_gif/20190122_083017.png
+file:nb_gif/20190122_083027.png
+file:nb_gif/20190122_083039.png
+
+Committing now and pushing.
 
 
 

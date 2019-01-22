@@ -72,7 +72,7 @@ gkl = 0.005
 ILdist = 15
 
 #############kBK.mod
-kBK_gpeak = 2.68e-4
+kBK_gpeak = 2.68e-4 
 kBK_caVhminShift = 45
 
 
@@ -80,7 +80,7 @@ kBK_caVhminShift = 45
 # Set up the eeeS cell class
 #########################################
 
-class eeeS1():
+class eeeS():
     """
     A detailed model of Prefrontal layer V pyramidal neuron in Mouse.
 
@@ -89,7 +89,7 @@ class eeeS1():
     Membrane Exitability and Action Potential Backpropagation in Basal Dendrites
     of Prefrontal Cortical Pyramidal Neurons.
 
-    soma: 1 compartment
+    soma: soma compartments (soma[0] - soma[3])
     apical: apical dendrites (apical[0] - apical[44])
     basal: basal dendrites (basal[0] - basal[35])
     basals: SectionList of all basal but excluing basal[16]
@@ -140,7 +140,7 @@ class eeeS1():
             print(sec.nseg)
             print
         for sec in self.all: after += sec.nseg
-        print "geom_nseg: changed from ", before, " to ", after, " total segments"
+        print("geom_nseg: changed from ", before, " to ", after, " total segments")
 
     def lambda_f (self, section):
         # these are reasonable values for most models
@@ -171,10 +171,9 @@ class eeeS1():
         # Set up sectionList - easy to modify properties
         self.all = h.SectionList()
         self.all_no_axon = h.SectionList()
-
-        self.all.append(sec = self.soma)
-        self.all_no_axon.append(sec = self.soma)
-
+        for section in self.soma:
+            self.all.append(sec = section)
+            self.all_no_axon.append(sec = section)
         for section in self.basal:
             self.all.append(sec = section)
         for section in self.apical:
@@ -298,7 +297,7 @@ class eeeS1():
             h.thi2_na = -58
 
             sec.insert('kl')
-            h.distance(0,0.5,sec=self.soma)
+            h.distance(0,0.5,sec=self.soma[0])
             for seg in sec.allseg():
                 dist = h.distance(seg.x, sec=sec)
                 if (dist>= ILdist):
@@ -314,22 +313,22 @@ class eeeS1():
             sec.gbar_na = somaNa
 
         for sec in self.basals:
-            h.distance(0, 0.5, sec = self.soma)
+            h.distance(0, 0.5, sec = self.soma[0])
             for seg in sec.allseg():
                 dist = h.distance(seg.x, sec = sec)
                 gNalin = basalNa - mNa * dist
                 if (gNalin > gNamax):
                     gNalin = gNamax
-                    print "Setting basal Na to maximum ",gNamax,
-                    " at distance ",dist," in basal dendrite ", sec.name()
+                    print("Setting basal Na to maximum ",gNamax,
+                    " at distance ",dist," in basal dendrite ", sec.name())
                 elif (gNalin < 0):
                     gNalin = 0
-                    print "Setting basal Na to zero at distance ",dist,
-                    " in basal dendrite ",sec.name()
+                    print("Setting basal Na to zero at distance ",dist,
+                    " in basal dendrite ",sec.name())
                 sec(seg.x).gbar_na = gNalin
 
         for sec in self.axon:
-            h.distance(0, 0.5, sec = self.soma)
+            h.distance(0, 0.5, sec = self.soma[0])
             for seg in sec.allseg():
                 dist = h.distance(seg.x, sec = sec)
                 if (dist >= 50 and dist <= 100):
@@ -348,16 +347,16 @@ class eeeS1():
             sec.gbar_kv = somaKv
 
         for sec in self.basals:
-            h.distance(0,0.5,sec=self.soma)
+            h.distance(0,0.5,sec=self.soma[0])
             for seg in sec.allseg():
                 dist = h.distance(seg.x, sec=sec)
                 gKVlin = somaKv + mKV * dist
                 if (gKVlin > gKVmax):
                     gKVlin = gKVmax
-                    print "Setting basal GKV to maximum ",gKVmax," at distance ",dist," in basal dendrite",sec.name()
+                    print("Setting basal GKV to maximum ",gKVmax," at distance ",dist," in basal dendrite",sec.name())
                 elif (gKVlin < 0):
                     gKVlin = 0
-                    print "Setting basal GKV to zero at distance ",dist," in basal dendrite ",sec.name()
+                    print("Setting basal GKV to zero at distance ",dist," in basal dendrite ",sec.name())
                 sec(seg.x).gbar_kv = gKVlin
 
         for sec in self.axon:
@@ -375,7 +374,7 @@ class eeeS1():
             gkabar_kap = somaKA/1e4
 
         for sec in self.basals:
-            h.distance(0,0.5,sec=self.soma)
+            h.distance(0,0.5,sec=self.soma[0])
             for seg in sec.allseg():
                 dist = h.distance(seg.x, sec=sec)
                 gkalin = somaKA + mgka*dist
@@ -387,15 +386,15 @@ class eeeS1():
 
                 if (gkalin > gkamax):
                     gkalin = gkamax
-                    print "Setting GKA to maximum ",gkamax," in basal dendrite",sec.name()
+                    print("Setting GKA to maximum ",gkamax," in basal dendrite",sec.name())
                 elif (gkalin < 0):
                     gkalin = 0
-                    print "Setting GKA to 0 in basal dendrite",sec.name()
+                    print("Setting GKA to 0 in basal dendrite",sec.name())
                 sec(seg.x).gkabar_kap = gkalin * ratio/1e4
                 sec(seg.x).gkabar_kad = gkalin * (1-ratio)/1e4
 
         for sec in self.apical:
-            h.distance(0,0.5,sec=self.soma)
+            h.distance(0,0.5,sec=self.soma[0])
             for seg in sec.allseg():
                 dist = h.distance(seg.x, sec=sec)
                 ratiolin = 1 - mgkaratio*dist
@@ -415,7 +414,7 @@ class eeeS1():
             sec.gbar_it = SomaCaT/1e4
 
         for sec in self.basals:
-            h.distance(0,0.5,sec = self.soma)
+            h.distance(0,0.5,sec = self.soma[0])
             for seg in sec.allseg():
                 dist = h.distance(seg.x, sec = sec)
                 if (dist > cadistB):
@@ -426,7 +425,7 @@ class eeeS1():
                     sec(seg.x).gbar_it = SomaCaT/1e4
 
         for sec in self.apical:
-            h.distance(0,0.5,sec = self.soma)
+            h.distance(0,0.5,sec = self.soma[0])
             for seg in sec.allseg():
                 dist = h.distance(seg.x, sec=sec)
                 if (dist > cadistA):
@@ -441,7 +440,7 @@ class eeeS1():
 #########################################
     def distspines(self):
         for sec in self.basals:
-            h.distance(0,0.5,sec = self.soma)
+            h.distance(0,0.5,sec = self.soma[0])
             for seg in sec.allseg():
                 dist = h.distance(seg.x, sec=sec)
                 if (dist >= spinedist):
@@ -452,7 +451,7 @@ class eeeS1():
                     sec(seg.x).g_pas = 1./somaRm
 
         for sec in self.apical:
-            h.distance(0,0.5,sec = self.soma)
+            h.distance(0,0.5,sec = self.soma[0])
             for seg in sec.allseg():
                 dist = h.distance(seg.x, sec=sec)
                 if (dist >= spinedist):
@@ -466,8 +465,9 @@ class eeeS1():
 # Add Ih channels
 #########################################
     def add_ih(self):
-        self.soma.insert('Ih')
-        self.soma.gIhbar_Ih = 0.0001
+        for sec in self.soma:
+            sec.insert('Ih')
+            sec.gIhbar_Ih = 0.0001
 
         for sec in self.basals:
             sec.insert('Ih')
@@ -475,7 +475,7 @@ class eeeS1():
 
         for sec in self.apical:
             sec.insert('Ih')
-            h.distance(0,0.5,sec=self.soma)
+            h.distance(0,0.5,sec=self.soma[0])
             for seg in sec.allseg():
                 dist = h.distance(seg.x, sec=sec)
                 sec(seg.x).gIhbar_Ih = 0.0002*(-0.8696 + 2.0870*exp(dist/323))
@@ -503,10 +503,10 @@ class eeeS1():
             sec.insert('kBK')
             sec.gpeak_kBK = kBK_gpeak
             sec.caVhmin_kBK = -46.08 + kBK_caVhminShift
-
-        self.soma.insert('kBK')
-        self.soma.gpeak_kBK = kBK_gpeak
-        self.soma.caVhmin_kBK = -46.08 + kBK_caVhminShift
+        for sec in self.soma:
+            sec.insert('kBK')
+            sec.gpeak_kBK = kBK_gpeak
+            sec.caVhmin_kBK = -46.08 + kBK_caVhminShift
 
 #########################################
 # TTX
@@ -520,8 +520,9 @@ class eeeS1():
 # No calcium
 #########################################
     def no_ca(self):
-        self.soma.gbar_ca = 0
-        self.soma.gbar_it = 0
+        for sec in self.soma:
+            sec.gbar_ca = 0
+            sec.gbar_it = 0
         for sec in self.apical:
             sec.gbar_ca = 0
             sec.gbar_it = 0
@@ -537,50 +538,41 @@ class eeeS1():
         The diam and L of each compartment is determined by 3D structure.
         Same as hoc 3D morphology: CA229.hoc
         """
-        self.soma = h.Section(name='soma')
+        self.soma = [h.Section(name='soma[%d]' % i) for i in range(4)]
         self.apical = [h.Section(name='apical[0]')]
-        self.basal = [h.Section(name='basal[%d]' % i) for i in xrange(10)]
+        self.basal = [h.Section(name='basal[%d]' % i) for i in range(10)]
         self.axon = [h.Section(name='axon[0]')]
-
-        self.axon[0].L = 200.0
-        self.axon[0].diam = 1.03
-        self.axon[0].nseg = 1
-        self.axon[0].connect(self.soma)
-
-        self.apical[0].L = 454.5
-        self.apical[0].diam = 6.00
-        self.apical[0].nseg = 1
-        self.apical[0].connect(self.soma)
-
-        self.basal[9].L = 157.2
-        self.basal[9].diam = 6.00
-        self.basal[9].nseg = 1
-        self.basal[9].connect(self.soma)
-
-        self.basal[8].nseg = 3
-
 
 
         # Set up the 3d morphology and connection of soma
-        h.pt3dclear(sec = self.soma)
-        h.pt3dstyle(1, -53.42,3.52,-5.95,13.43, sec = self.soma)
-        h.pt3dadd(-53.42,3.52,-5.96,13.43, sec = self.soma)
-        h.pt3dadd(-53.74,0.93,-5.96,15.35, sec = self.soma)
-        h.pt3dadd(-54.06,-1.66,-5.96,11.51, sec = self.soma)
-        h.pt3dadd(-54.06,-4.25,-5.96,7.99, sec = self.soma)
+        h.pt3dclear(sec = self.soma[0])
+        h.pt3dstyle(1, -53.42,3.52,-5.95,13.43, sec = self.soma[0])
+        h.pt3dadd(-53.42,3.52,-5.96,13.43, sec = self.soma[0])
 
+        self.soma[1].connect(self.soma[0])
+        h.pt3dclear(sec = self.soma[1])
+        h.pt3dadd(-53.42,3.52,-5.96,13.43, sec = self.soma[1])
+        h.pt3dadd(-53.74,0.93,-5.96,15.35, sec = self.soma[1])
+        h.pt3dadd(-54.06,-1.66,-5.96,11.51, sec = self.soma[1])
 
-        h.pt3dadd(-53.42,3.52,-5.96,13.43, sec = self.soma)
-        h.pt3dadd(-53.1,6.12,-5.96,11.19, sec = self.soma)
-        h.pt3dadd(-52.78,8.71,-5.96,9.59, sec = self.soma)
-        h.pt3dadd(-52.78,11.62,-5.96,7.36, sec = self.soma)
-        h.pt3dadd(-53.1,14.22,-5.96,5.76, sec = self.soma)
+        self.soma[3].connect(self.soma[0])
+        h.pt3dclear(sec = self.soma[3])
+        h.pt3dadd(-53.42,3.52,-5.96,13.43, sec = self.soma[3])
+        h.pt3dadd(-53.1,6.12,-5.96,11.19, sec = self.soma[3])
+        h.pt3dadd(-52.78,8.71,-5.96,9.59, sec = self.soma[3])
+        h.pt3dadd(-52.78,11.62,-5.96,7.36, sec = self.soma[3])
+        h.pt3dadd(-53.1,14.22,-5.96,5.76, sec = self.soma[3])
+
+        self.soma[2].connect(self.soma[1])
+        h.pt3dclear(sec = self.soma[2])
+        h.pt3dadd(-54.06,-1.66,-5.96,11.51, sec = self.soma[2])
+        h.pt3dadd(-54.06,-4.25,-5.96,7.99, sec = self.soma[2])
 
         # Set up the 3d morphology and connection of basal dendrites
 
 
 
-        self.basal[0].connect(self.soma)
+        self.basal[0].connect(self.soma[0])
         h.pt3dclear(sec = self.basal[0])
         h.pt3dadd(-53.42,3.52,-5.96,2.5, sec = self.basal[0])
         h.pt3dadd(-60.3,3.99,0.28,1.28, sec = self.basal[0])
@@ -721,6 +713,31 @@ class eeeS1():
         h.pt3dadd(-164.572,-106.049,-24.672,0.32, sec = self.basal[8])
         h.pt3dadd(-167.132,-110.579,-24.672,0.32, sec = self.basal[8])
         h.pt3dadd(-168.732,-116.409,-26.352,0.32, sec = self.basal[8])
+
+        # add simplified sections
+        self.axon[0].L = 200.0
+        self.axon[0].diam = 1.03
+        self.axon[0].nseg = 1
+        self.axon[0].connect(self.soma[2])
+        h.pt3dstyle(0, sec=self.axon[0])
+
+        self.apical[0].L = 454.5
+        self.apical[0].diam = 6.00
+        self.apical[0].nseg = 1
+        self.apical[0].connect(self.soma[3])
+        h.pt3dstyle(0, sec=self.apical[0])
+
+        self.basal[9].L = 157.2
+        self.basal[9].diam = 6.00
+        self.basal[9].nseg = 1
+        self.basal[9].connect(self.soma[1])
+        h.pt3dstyle(0, sec=self.basal[9])
+
+        h.define_shape()
+
+        self.basal[8].nseg = 3
+
+
 
 
 ############################################

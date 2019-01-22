@@ -1603,14 +1603,170 @@ cd ~ ; mkdir eee_temp ; cd eee_temp ; git clone https://github.com/Neurosim-lab/
 
 ** Fixing problems
 
-So the problem was that running cfg.py caused a crash.  Fixed that problem.  
+So the problem was that running cfg.py caused a crash.  Fixed that problem. Sloppy coding. 
 
 I believe it works now.  Pushing now to try.  After, the following should work:
 
 	cd ~ ; rm -rf eee_temp ; mkdir eee_temp ; cd eee_temp ; git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network/mod ; nrnivmodl ; cd ../eee_net ; ln -s "../mod/x86_64" x86_64 ; ./runsim 1
 
+It does work now.  Asking others to try.
+
+	salvadord [1:54 PM]
+	bugs in cfg.py
+	run python cfg.py to see
+	the last 2 lines are buggy
+
+	joe [1:57 PM]
+	Thanks.  Just figured out cfg crashed.  Everything is obvious in hindsight.  :joy:
+
+	joe [2:11 PM]
+	Okay, fixed problem in cfg.py, and now everything seems to work.  Added `showFig` and `saveFig` options in cfg.py.  Committed and pushed.  I would appreciate if people would run the following one-liner and let me know if it crashes:
+	Untitled 
+	cd ~ ; rm -rf eee_temp ; mkdir eee_temp ; cd eee_temp ; git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network/mod ; nrnivmodl ; cd ../eee_net ; ln -s "../mod/x86_64" x86_64 ; ./runsim
+	Penny, let us know if you’re still getting MPI issues, and we’ll try to solve them.
+
+	The one-liner should both display figures and save figures to: `~/eee_temp/EEE_network/eee_net`
+
+	salvadord [2:16 PM]
+	one-liner works for me! :woman-with-bunny-ears-partying:
+
+	billl [2:17 PM]
+	remind from whence to clone
+
+	salvadord [2:17 PM]
+	one-liner above does everything, including clone
+
+	billl [2:18 PM]
+	oh
+
+	joe [2:28 PM]
+	Don, let us know if you still get that plotConn error with the one-liner.  No hurry.
+	Salva, would it be useful to have a Netpyne “pre-checker” that throws an error if either netParams.py or cfg.py crashes during loading?  I’d be happy to put a ticket in (and even work on it in my spare time), but I’m not sure if that’s worthwhile.
+
+	salvadord [2:33 PM]
+	what would be difference with warning msg you got above?
+
+	billl [2:33 PM]
+	failed; supposed to run with 3 or 2?
+
+	joe [2:36 PM]
+	Salva: it didn’t throw an error, just a non-specific warning.  It’s just I’ve had this problem before, and it would immediately remind me to check and make sure both netParams.py and cfg.py don’t throw an error.
+	Bill: 3
+
+	billl [2:36 PM]
+	maybe need to build py3 into runsim?
+
+	joe [2:37 PM]
+	I have switched to Python 3 completely.  Finally.  I wouldn’t know how to include a Python version choice in runsim… but I’m open to suggestions.
+
+	billl [2:38 PM]
+	call it python3 typically
+
+	salvadord [2:39 PM]
+	joe: the warning is result of error loading cfg.py so maybe can just change warning msg to make clearer and/or stop execution — but sure feel free to open gituhb issue and work on it if have time… Im sure helpful
+
+	joe [2:39 PM]
+	The active line in runsim is: `mpiexec -np $numprocesses nrniv -python -mpi init.py $@  # Run the model`
+
+	billl [2:39 PM]
+	nrniv generally deprecated
+	get this error now  `/usr/bin/python3: No module named pi`
+
+	salvadord [2:40 PM]
+	can you run with mpi calling python instead of nrniv?
+
+	joe [2:40 PM]
+	I would love to try.  How would you change the active line to make that happen?
+
+	salvadord [2:41 PM]
+	oh Im asking if possible :slightly_smiling_face:
+
+	ramcdougal [2:41 PM]
+	normally yes
+
+	billl [2:41 PM]
+	this maybe?  mpiexec -np $numprocesses python3 -mpi init.py $@  # Run the model
+
+	ramcdougal [2:41 PM]
+	not sure if something weird about this model
+	drop the -mpi
+	that tells it to run a module called mpi
+	errr
+	called pi
+
+	billl [2:41 PM]
+	oh ic
+
+	ramcdougal [2:42 PM]
+	e.g. python -m CGIHTTPServer launches a server
+	in py2
+	but yeah
+
+	billl [2:42 PM]
+	so how to run with python with mpi?
+
+	ramcdougal [2:42 PM]
+	no need for the -mpi
+	as long as you have
+	a `from mpi4py import MPI` before you import NEURON
+	in super recent versions of NEURON, there's also a parallelcontext solution that removes the need for the `mpi4py` module...
+
+	billl [2:43 PM]
+	ic -- so would need to include in the init joe
+
+	joe [2:46 PM]
+	Untitled 
+	 File "init.py", line 17, in <module>
+	  from mpi4py import MPI
+	ModuleNotFoundError: No module named 'mpi4py'
+
+Error:
+
+Traceback (most recent call last):
+  File "init.py", line 17, in <module>
+    from mpi4py import MPI
+ModuleNotFoundError: No module named 'mpi4py'
+
+pip install mpi4py
+
+	graham-mac:EEE_network graham$ pip install mpi4py
+	Collecting mpi4py
+	  Downloading https://files.pythonhosted.org/packages/31/27/1288918ac230cc9abc0da17d84d66f3db477757d90b3d6b070d709391a15/mpi4py-3.0.0.tar.gz (1.4MB)
+	    100% |████████████████████████████████| 1.4MB 6.3MB/s 
+	Building wheels for collected packages: mpi4py
+	  Running setup.py bdist_wheel for mpi4py ... done
+	  Stored in directory: /Users/graham/Library/Caches/pip/wheels/23/03/c5/30289417f1428c692651e046174b64ac871a377df227802bf6
+	Successfully built mpi4py
+	Installing collected packages: mpi4py
+	Successfully installed mpi4py-3.0.0
+
+Now it runs.  Committing, pushing, asking others to run one-liner.
+
+Whoops, actually changed the old runsim.  Reverting that, changing new one, and trying again.
+
+Hmm.  Four processes and four of each figure.
+
+	joe [2:56 PM]
+	Hmmm.  Changing to remove -mpi and importing mpi4py made things wonky…  Running on four cores and got four of each figure…
+
+	billl [2:56 PM]
+	ok well if i'm only 1 with a problem let's ot worry on this
+	i'll fix for myself
+
+	joe [2:56 PM]
+	:+1: Sweet.  Moving on.
+
+Switching back, and everything works as expected.
+
+Will commit, test one-liner, and then move on to swapping in our synaptic mechs.
+
+
+
+
 
 ** Setting up synaptic mechanisms
+
+
 
 ** Setting up connectivity
 

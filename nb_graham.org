@@ -1567,11 +1567,47 @@ I am going to commit, push, and then try the following commands as a sanity chec
 
 cd ~ ; mkdir eee_temp ; cd eee_temp ; git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network/mod ; nrnivmodl ; cd ../eee_net ; ln -s "../mod/x86_64" x86_64 ; ./runsim 1
 
+** Chats 
 
+	joe [1:44 PM]
+	Moving a conversation here.
+	I just pushed to repo.  For some reason, it’s no longer reading the config file.  Getting the same thing as the last Warning I posted.
+	If you guys could update your repos and try to figure out why it’s not reading the config file, that would be helpful.
+	The following one-liner should run everything (and it did until just recently):
+	Untitled 
+	cd ~ ; rm -rf eee_temp ; mkdir eee_temp ; cd eee_temp ; git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network/mod ; nrnivmodl ; cd ../eee_net ; ln -s "../mod/x86_64" x86_64 ; ./runsim 1
 
+	don [1:46 PM]
+	running fine here joe except it throws an error on connectivity matrix
 
+	Plotting connectivity matrix...
+	There was an exception in plotConn():
+	module ‘matplotlib.pyplot’ has no attribute ‘hold’
+	running from py3 command
 
+	joe [1:47 PM]
+	Untitled 
+	Reading command line arguments using syntax: python file.py [simConfig=filepath] [netParams=filepath]
+	​
+	Warning: Could not load cfg from command line path or from default cfg.py
+	I’ve never seen that before, but Salva might know.
+	Looking into why reading the config file failed…
 
+	salvadord [1:54 PM]
+	bugs in cfg.py
+	run python cfg.py to see
+	the last 2 lines are buggy
+
+	joe [1:57 PM]
+	Thanks.  Just figured out cfg crashed.  Everything is obvious in hindsight.  :joy:
+
+** Fixing problems
+
+So the problem was that running cfg.py caused a crash.  Fixed that problem.  
+
+I believe it works now.  Pushing now to try.  After, the following should work:
+
+	cd ~ ; rm -rf eee_temp ; mkdir eee_temp ; cd eee_temp ; git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network/mod ; nrnivmodl ; cd ../eee_net ; ln -s "../mod/x86_64" x86_64 ; ./runsim 1
 
 
 ** Setting up synaptic mechanisms

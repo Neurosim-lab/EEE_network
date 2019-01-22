@@ -1170,6 +1170,82 @@ Now to forcefully replace master with joes_branch
 
 Oops.  Need to commit the notebook changes first.
 
+	graham-mac:EEE_network graham$ git checkout master
+	error: Your local changes to the following files would be overwritten by checkout:
+		nb_graham.org
+	Please commit your changes or stash them before you switch branches.
+	Aborting
+	graham-mac:EEE_network graham$ git status
+	On branch joes_branch
+	Your branch is up to date with 'origin/joes_branch'.
+
+	Changes not staged for commit:
+	  (use "git add <file>..." to update what will be committed)
+	  (use "git checkout -- <file>..." to discard changes in working directory)
+
+		modified:   nb_graham.org
+
+	Untracked files:
+	  (use "git add <file>..." to include in what will be committed)
+
+		cells/__pycache__/
+		eee_net/__pycache__/
+		eee_net/x86_64
+		eee_network/__pycache__/
+		mod/x86_64/
+		x86_64
+
+	no changes added to commit (use "git add" and/or "git commit -a")
+	graham-mac:EEE_network graham$ git add nb_graham.org 
+	graham-mac:EEE_network graham$ git status
+	On branch joes_branch
+	Your branch is up to date with 'origin/joes_branch'.
+
+	Changes to be committed:
+	  (use "git reset HEAD <file>..." to unstage)
+
+		modified:   nb_graham.org
+
+	Untracked files:
+	  (use "git add <file>..." to include in what will be committed)
+
+		cells/__pycache__/
+		eee_net/__pycache__/
+		eee_net/x86_64
+		eee_network/__pycache__/
+		mod/x86_64/
+		x86_64
+
+	graham-mac:EEE_network graham$ git commit -m "Notebook commit before branch grafting."
+	[joes_branch 6251998] Notebook commit before branch grafting.
+	 1 file changed, 52 insertions(+)
+	graham-mac:EEE_network graham$ git checkout master
+	Switched to branch 'master'
+	Your branch is behind 'origin/master' by 2 commits, and can be fast-forwarded.
+	  (use "git pull" to update your local branch)
+	graham-mac:EEE_network graham$ git pull
+	Updating 5fb1177..1f6a291
+	Fast-forward
+	 cells/eeeS.py | 64 +++++++++++++++++++---------------------------------------------
+	 1 file changed, 19 insertions(+), 45 deletions(-)
+	graham-mac:EEE_network graham$ git reset --hard joes_branch
+	HEAD is now at 6251998 Notebook commit before branch grafting.
+	graham-mac:EEE_network graham$ git push -f origin master
+	Counting objects: 3, done.
+	Delta compression using up to 8 threads.
+	Compressing objects: 100% (3/3), done.
+	Writing objects: 100% (3/3), 953 bytes | 953.00 KiB/s, done.
+	Total 3 (delta 2), reused 0 (delta 0)
+	remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+	To https://github.com/Neurosim-lab/EEE_network.git
+	 + 1f6a291...6251998 master -> master (forced update)
+	graham-mac:EEE_network graham$ 
+
+That seems to have worked fine.  :)
+
+Updating the README.
+
+Committing then pushing.
 
 
 

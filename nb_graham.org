@@ -1116,7 +1116,59 @@ https://stackoverflow.com/questions/2862590/how-to-replace-master-branch-in-git-
 
 Cleaned up some extraneous comments.  Committing now and then will attempt the branch grafting.
 
+Commands to graft:
 
+	git checkout joes_branch
+	git merge -s ours master
+	git checkout master
+	git merge joes_branch
+
+Doesn't seem to be working.  
+
+	graham$ git merge -s ours master
+	Already up to date.
+
+I'm going to do it quick and dirty.  First, I'll make a branch copy of master named old_master.  
+
+	graham-mac:EEE_network graham$ git checkout master
+	Switched to branch 'master'
+	Your branch is up to date with 'origin/master'.
+	graham-mac:EEE_network graham$ git branch -m master old_master
+	graham-mac:EEE_network graham$ git branch
+	  joes_branch
+	* old_master
+	graham-mac:EEE_network graham$ git push
+	fatal: The upstream branch of your current branch does not match
+	the name of your current branch.  To push to the upstream branch
+	on the remote, use
+
+	    git push origin HEAD:master
+
+	To push to the branch of the same name on the remote, use
+
+	    git push origin old_master
+
+	graham-mac:EEE_network graham$ git push origin old_master
+	Total 0 (delta 0), reused 0 (delta 0)
+	remote: 
+	remote: Create a pull request for 'old_master' on GitHub by visiting:
+	remote:      https://github.com/Neurosim-lab/EEE_network/pull/new/old_master
+	remote: 
+	To https://github.com/Neurosim-lab/EEE_network.git
+	 * [new branch]      old_master -> old_master
+	graham-mac:EEE_network graham$ 
+
+
+Now to forcefully replace master with joes_branch
+
+	graham-mac:EEE_network graham$ git checkout master
+	error: Your local changes to the following files would be overwritten by checkout:
+		nb_graham.org
+	Please commit your changes or stash them before you switch branches.
+	Aborting
+	graham-mac:EEE_network graham$ 
+
+Oops.  Need to commit the notebook changes first.
 
 
 

@@ -2,6 +2,16 @@ from netpyne import specs
 import os
 import copy
 
+## Network variables (move to cfg.py later)
+NMDAgmax        = 0.005
+NMDA2AMPA       = 0.1
+AMPAgmax        = NMDAgmax / NMDA2AMPA
+NMDAweight      = 0.8
+AMPAweight      = NMDAweight
+GABAAfastWeight = 0.0001
+GABAAslowWeight = 0.0001
+
+
 ## Network parameters
 netParams = specs.NetParams()  # object of class NetParams to store the network parameters
 
@@ -39,7 +49,6 @@ netParams.cellParams['PV5'] = cellRule
 cellRule = netParams.importCellParams(label='PT5_1', conds={'pop':'PT5_1'}, fileName=eeeS_path, cellName='MakeCell', cellInstance=True)
 netParams.cellParams['PT5_1'] = cellRule
 
-
 ## Then copy the cellRule for the other pops (faster than importing again)
 ## Note: we are creating 1 cell type per pop because they could potentially have different noise and connectivity params           
 for label in ['PT5_2', 'PT5_3', 'PT5_4']:    
@@ -49,27 +58,62 @@ for label in ['PT5_2', 'PT5_3', 'PT5_4']:
 
 
 ## Synaptic mechanism parameters
-netParams.synMechParams['exc'] = {'mod': 'Exp2Syn', 'tau1': 0.8, 'tau2': 5.3, 'e': 0}  # NMDA synaptic mechanism
-netParams.synMechParams['inh'] = {'mod': 'Exp2Syn', 'tau1': 0.6, 'tau2': 8.5, 'e': -75}  # GABA synaptic mechanism
+ESynMech = ['NMDA','AMPA']
+ISynMech = ['GABAAfast','GABAAslow']
+
+## Inhibitory GABA synaptic mechs
+netParams.synMechParams['GABAAfast'] = {'mod':'MyExp2SynBB','tau1': 0.07,'tau2': 18.2,'e': cfg.GABAAfast_e}
+netParams.synMechParams['GABAAslow'] = {'mod': 'MyExp2SynBB','tau1': 10, 'tau2': 200, 'e': cfg.GABAAslow_e}
+
+## Excitatory NMDA and AMPA synaptic mechs
+netParams.synMechParams['NMDA'] = {'mod': 'NMDA', 'Cdur': 10.0, 'Beta': 0.02, 'gmax': NMDAgmax}
+netParams.synMechParams['AMPA'] = {'mod': 'AMPA', 'gmax': AMPAgmax}
 
 
-# Stimulation parameters
+## Stimulation parameters
 netParams.stimSourceParams['bkg'] = {'type': 'NetStim', 'rate': 20, 'noise': 0.3}
 netParams.stimTargetParams['bkg->all'] = {'source': 'bkg', 'conds': {'cellType': ['PV5','PT5']}, 'weight': 0.01, 'delay': 'max(1, normal(5,2))', 'synMech': 'exc'}
 
 
 ## Cell connectivity rules
 netParams.connParams['PT5->all'] = {
-  'preConds': {'cellType': 'PT5'}, 'postConds': {'y': [100,1000]},  #  E -> all (100-1000 um)
-  'probability': 0.1 ,                  # probability of connection
-  'weight': '0.005*post_ynorm',         # synaptic weight 
-  'delay': 'dist_3D/propVelocity',      # transmission delay (ms) 
-  'synMech': 'exc'}                     # synaptic mechanism 
+  'preConds': {'cellType': 'PT5'},
+  'postConds': {'cellType': ['PT5','PV5']},
+  'probability': 0.5,
+  'weight': [NMDAweight, AMPAweight],
+  'delay': 'dist_3D/propVelocity',
+  'synMech': 'ESynMech'}
 
 netParams.connParams['PV5->PT5'] = {
-  'preConds': {'cellType': 'PV5'}, 'postConds': {'cellType': ['PT5']},       #  I -> E
-  'probability': '0.4*exp(-dist_3D/probLengthConst)',   # probability of connection
-  'weight': 0.001,                                      # synaptic weight 
-  'delay': 'dist_3D/propVelocity',                      # transmission delay (ms) 
-  'synMech': 'inh'}                                     # synaptic mechanism 
+  'preConds': {'cellType': 'PV5'},
+  'postConds': {'cellType': 'PT5'},
+  'probability': 0.5,
+  'weight': [GABAAfastWeight, GABAAslowWeight],
+  'delay': 'dist_3D/propVelocity',
+  'synMech': 'ISynMech'} 
+
+netParams.connParams['PV5->PV5'] = {
+  'preConds': {'cellType': 'PV5'},
+  'postConds': {'cellType': 'PV5'},
+  'probability': 0.5,
+  'weight': GABAAfastWeight,
+  'delay': 'dist_3D/propVelocity',
+  'synMech': 'GABAAfast'} 
+
+
+# ## Cell connectivity rules
+# netParams.connParams['PT5->all'] = {
+#   'preConds': {'cellType': 'PT5'}, 'postConds': {'y': [100,1000]},  #  E -> all (100-1000 um)
+#   'probability': 0.1 ,                  # probability of connection
+#   'weight': '0.005*post_ynorm',         # synaptic weight 
+#   'delay': 'dist_3D/propVelocity',      # transmission delay (ms) 
+#   'synMech': 'exc'}                     # synaptic mechanism 
+
+# netParams.connParams['PV5->PT5'] = {
+#   'preConds': {'cellType': 'PV5'}, 'postConds': {'cellType': ['PT5']},       #  I -> E
+#   'probability': '0.4*exp(-dist_3D/probLengthConst)',   # probability of connection
+#   'weight': 0.001,                                      # synaptic weight 
+#   'delay': 'dist_3D/propVelocity',                      # transmission delay (ms) 
+#   'synMech': 'inh'}                                     # synaptic mechanism 
+
 

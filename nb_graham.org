@@ -1248,7 +1248,7 @@ Updating the README.
 Committing then pushing.
 
 
-* 2019-01-22 -- EEE Meeting and ...
+* 2019-01-22 -- EEE Meeting and various fixes
 
 In progress
 -----------
@@ -1760,15 +1760,411 @@ Switching back, and everything works as expected.
 
 Will commit, test one-liner, and then move on to swapping in our synaptic mechs.
 
+One-liner worked.  Moving on.
 
 
+* 2019-01-23 -- Synaptic mechanisms
+
+In progress
+-----------
+Setting up network model
+Set up synaptic mechanisms
+Set initial connectivity to Sergio's settings
 
 
 ** Setting up synaptic mechanisms
 
+Want to swap in our synaptic mechanisms for the generic Exp2Syns from the tutorial.
+
+Code from old model:
+
+	# MyExp2syn synaptic mechanisms
+	netParams.synMechParams['GABAAfast'] = {'mod':'MyExp2SynBB','tau1':0.07,'tau2':18.2,'e': cfg.GABAAfast_e}
+	netParams.synMechParams['GABAAslow'] = {'mod': 'MyExp2SynBB','tau1': 10, 'tau2': 200, 'e': cfg.GABAAslow_e}
+
+	# DMS synaptic mechanisms 
+	netParams.synMechParams['NMDA'] = {'mod': 'NMDAeee', 'Cdur': cfg.CdurNMDAScale * 1.0, 'Alpha': cfg.NMDAAlphaScale * 4.0, 'Beta': cfg.NMDABetaScale * 0.0015, 'gmax': cfg.NMDAgmax, 'e': cfg.eNMDA}
+	netParams.synMechParams['AMPA'] = {'mod': 'AMPA', 'gmax': cfg.ratioAMPANMDA * cfg.NMDAgmax}
+
+	ESynMech = ['AMPA','NMDA']
+	ISynMech = ['GABAAfast','GABAAslow']
+
+Code from tutorial:
+
+	## Synaptic mechanism parameters
+	netParams.synMechParams['exc'] = {'mod': 'Exp2Syn', 'tau1': 0.8, 'tau2': 5.3, 'e': 0}  # NMDA synaptic mechanism
+	netParams.synMechParams['inh'] = {'mod': 'Exp2Syn', 'tau1': 0.6, 'tau2': 8.5, 'e': -75}  # GABA synaptic mechanism
+
+Will need to add some parameters to the config file (or decide to hardcode them):
+
+	Parameter 				cfg.py value            mod value
+	=================       ==================      ============
+	cfg.GABAAfast_e          -80.0                   0.0
+	cfg.GABAAslow_e          -90.0                   0.0
+	cfg.CdurNMDAScale          1.0                   1.0
+	cfg.NMDAAlphaScale         1.0 (*4.0)            4.0
+	cfg.NMDABetaScale         14.0                   0.0015
+	cfg.NMDAgmax               0.01                  1.0
+	cfg.eNMDA                -10.0                   0.0
+	cfg.ratioAMPANMDA          4.0                   n/a
+
+First, should make sure these parameters don't change the values that Penny uses in the detailed model.
+
+Detailed model here:
+https://github.com/super-penguin/EEE_Detailed_Cell
+
+	Parameter 				Detailed model
+	=================       ==================
+	cfg.CdurNMDAScale        
+	cfg.NMDAAlphaScale         
+	cfg.NMDABetaScale         
+	cfg.NMDAgmax               
+	cfg.eNMDA                
+	cfg.ratioAMPANMDA          
+
+Actually, first I want to see which NMDA mod files are used in the detailed model:
+
+The DMS model uses:   h.NMDA     
+	from mod file :  NMDA.mod
+	https://github.com/super-penguin/EEE_Detailed_Cell/blob/master/mod/NMDA.mod
+With values set to:
+    SynNMDA[-1].gmax = 0.005
+    SynNMDA[-1].Beta = Beta
+    SynNMDA[-1].Cdur = Cdur
+
+The Major model uses:  h.nmda     
+	from mod file   : NMDAmajor.mod
+	https://github.com/super-penguin/EEE_Detailed_Cell/blob/master/mod/NMDAmajor.mod
+With values set to:
+    tempNMDA.gmax = 0.005 * Syn_w1
+
+Hmmm.  So it seems that Penny's model uses a different NMDA mod file than we are (NMDA.mod --> NMDA, while we use NMDAeee.mod --> NMDAeee)
+
+I'll have to run a diff.  Or just switch to Penny's mod file...
+
+Hmmmm.  No sense in running a diff.  I'll ask in Slack which mod we want to start using for the network model.  
+
+
+* 2019-01-25 -- 
+
+In progress
+-----------
+Setting up network model
+Set up synaptic mechanisms
+Set initial connectivity to Sergio's settings
+
+
+** Setting up synaptic mechanisms
+
+Asking about which NMDA mod to use:
+
+	joe [9:37 AM]
+	It’s easy enough to swap them out, but I’m wondering which of the detailed model’s NMDA mod files we should start using for the network model, the DMS or the Major?
+
+	billl [9:38 AM]
+	DMS since faster
+	but if you have any reason for a major Major or a minor Major preference then can do that
+
+So the DMS model is NMDA.mod.  I notice we already have an NMDA.mod in the network mod dir.  I'm going to compare with Penny's.
+
+Penny's:
+https://github.com/super-penguin/EEE_Detailed_Cell/blob/master/mod/NMDA.mod
+
+Network:
+https://github.com/Neurosim-lab/EEE_network/blob/master/mod/NMDA.mod
+
+Diff using Sublime:
+
+	--- /Users/graham/Desktop/NMDAdiff/NMDA_net.mod	Fri Jan 25 10:08:57 2019
+	+++ /Users/graham/Desktop/NMDAdiff/NMDA_penny.mod	Fri Jan 25 10:09:26 2019
+	@@ -81,7 +81,7 @@
+	 	Cmax	= 1	 (mM)           : max transmitter concentration
+	 	Cdur	= 1	 (ms)		: transmitter duration (rising phase)
+	 	Alpha	= 4 (/ms /mM)	: forward (binding) rate (4)
+	-	Beta 	=0.01   (/ms)
+	+	Beta 	=0.01   (/ms)   : backward (unbinding) rate
+	 	e	= 0	 (mV)		: reversal potential
+	     mg   = 1      (mM)           : external magnesium concentration
+	 	gmax = 1   (uS)
+
+No significant differences, but I'll replace the network NMDA.mod with Penny's just so they're identical.
+
+I see the network mod dir doesn't have Penny's NMDAmajor.mod:
+https://github.com/super-penguin/EEE_Detailed_Cell/blob/master/mod/NMDAmajor.mod
+
+I'll add it to the network mod dir.
+
+Don't know what this means, but adding here just in case it becomes a problem:
+
+	graham-mac:EEE_network graham$ git add mod/NMDAmajor.mod 
+	warning: CRLF will be replaced by LF in mod/NMDAmajor.mod.
+	The file will have its original line endings in your working directory.
+
+Here's the current network NMDA settings:
+
+	netParams.synMechParams['NMDA'] = {'mod': 'NMDAeee', 'Cdur': cfg.CdurNMDAScale * 1.0, 'Alpha': cfg.NMDAAlphaScale * 4.0, 'Beta': cfg.NMDABetaScale * 0.0015, 'gmax': cfg.NMDAgmax, 'e': cfg.eNMDA}
+
+Need to change it to use NDMA.mod, and ensure the parameter values are the same as Penny's.
+
+Here's how she sets up her NMDA:
+
+    #Adding NMDA
+    SynNMDA.append(h.NMDA(Cell.basal[34](loc1[i])))
+    SynNMDA[-1].gmax = 0.005
+    SynNMDA[-1].Beta = Beta
+    SynNMDA[-1].Cdur = Cdur
+    nc_NMDA.append(h.NetCon(ns, SynNMDA[i]))
+    nc_NMDA[-1].delay = delay1[i]
+    nc_NMDA[-1].weight[0] = Syn_w1
+
+Here's the function she uses to run sims for figure 3:
+
+	def Glu_Stim(TTX = False, Pool1_num = 9, Pool2_num = 9, Beta = 0.067,
+	Cdur = 1, Syn_w1 = 0.01, Syn_w2 = 0.01, Loc = [0.2, 0.6]):
+
+And here's how she calls that function for the figure 3 simulations
+https://github.com/super-penguin/EEE_Detailed_Cell/blob/master/Fig3_exp_dms.py
+
+    loc = [0.25, 0.6]
+    weight = [0.1, 0.15, 0.20, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
+
+    for w in weight:
+        Pool_num = 8 + int(20*w)
+        Glu_Stim(False, Pool_num, Pool_num, 0.02, 50 + int(100*w), w, w, loc)
+
+There are a couple things I find odd here...  
+
+1) the number of synapses (Pool_num) is a function of the weight of glutamate stim instead of a constant
+2) Cdur is also a function of weight
+3) default Beta is 0.067, but the call uses 0.02
+
+I'm going to look into how she runs sims for figure 5:
+https://github.com/super-penguin/EEE_Detailed_Cell/blob/master/Fig5_exp_DMS.py
+
+Here's her function:
+
+	def Glu_Stim(Bnum = 34, TTX = False, Pool1_num = 9, Pool2_num = 9,
+	Beta = 0.067, Cdur = 1, Syn_w1 = 0.01, Syn_w2 = 0.01, Loc = [0.2, 0.6], DenLoc = 0.5):
+
+Here's how she calls it:
+
+    Pool_num = 12
+    weight = [0.7, 0.9] # 0.7 for Fig 5. B1, 0.9 for Fig D1
+
+    basal_num = [15, 34, 14, 22, 25, 31]
+    with open('data.json', 'r') as fp:
+        data = json.load(fp)
+    with open('dend_measure_data.json', 'r') as fp1:
+        Ndata = json.load(fp1)
+
+    for b in basal_num:
+        loc = data[str(b)]
+        DenLoc = Ndata[str(b)]
+        for l1, l2 in zip(loc, DenLoc):
+            for w in weight:
+                Glu_Stim(b, False, Pool_num, Pool_num, 0.02, 10, w, w, l1, l2)
+                Glu_Stim(b, True, Pool_num, Pool_num, 0.02, 10, w, w, l1, l2)
+
+Okay, so here anyway, Pool_num is a constant (12) and Cdur is a constant (10).
+
+Beta is set to 0.02 (though 0.067 is the default).  Looking into the values of Beta and Cdur in the NMDA.mod file.
+
+Beta is 0.01 in NMDA.mod
+Cdur is 1 in NMDA.mod
+
+I should bring these oddities up with Penny et al.
+
+One other thing: she uses a 1:1 NMDA:AMPA weight ratio...  We had always used an AMPA/NMDA ratio.
+
+Actually, that was to adjust gmax for NMDA and AMPA.  Looking into NMDA and AMPA gmax in the detailed model...
+
+	SynAMPA[-1].gmax = 0.05
+	SynNMDA[-1].gmax = 0.005
+
+So Penny uses a NMDA/AMPA ratio of 0.1 for gmax.
+
+Need to set gmax for NMDA and AMPA in network model.
+
+Added to top of netParams:
+
+	## Network variables (move to cfg.py later)
+	NMDAgmax        = 0.005
+	NMDA2AMPA       = 0.1
+	AMPAgmax        = NMDAgmax / NMDA2AMPA
+	NMDAweight      = 0.8
+	AMPAweight      = NMDAweight
+
+And then below changed to:
+
+	## Excitatory NMDA and AMPA synaptic mechs
+	netParams.synMechParams['NMDA'] = {'mod': 'NMDA', 'Cdur': 10.0, 'Beta': 0.02, 'gmax': NMDAgmax}
+	netParams.synMechParams['AMPA'] = {'mod': 'AMPA', 'gmax': AMPAgmax}
+
+I think we'll need to test the network implementation of simplified cell model to ensure it behaves like detailed.
+
+
+** Back to setting up NMDA mech
+
+Previous code:
+
+	netParams.synMechParams['NMDA'] = {'mod': 'NMDAeee', 'Cdur': cfg.CdurNMDAScale * 1.0, 'Alpha': cfg.NMDAAlphaScale * 4.0, 'Beta': cfg.NMDABetaScale * 0.0015, 'gmax': cfg.NMDAgmax, 'e': cfg.eNMDA}
+
+New code:
+
+	netParams.synMechParams['NMDA'] = {'mod': 'NMDA', 'Cdur': 10.0, 'Beta': 0.02, 'gmax': NMDAgmax}
+
+
+** Setting up inhibitory mechs
+
+The old code actually stays the same:
+
+	## Inhibitory GABA synaptic mechs
+	netParams.synMechParams['GABAAfast'] = {'mod':'MyExp2SynBB','tau1': 0.07,'tau2': 18.2,'e': cfg.GABAAfast_e}
+	netParams.synMechParams['GABAAslow'] = {'mod': 'MyExp2SynBB','tau1': 10, 'tau2': 200, 'e': cfg.GABAAslow_e}
+
+
+** Looking into connectivity
+
+Now we need to make sure our connectivity is using the newly swapped in mechs.
+
+Old code in netParams:
+
+	## Cell connectivity rules
+	netParams.connParams['PT5->all'] = {
+	  'preConds': {'cellType': 'PT5'}, 'postConds': {'y': [100,1000]},  #  E -> all (100-1000 um)
+	  'probability': 0.1 ,                  # probability of connection
+	  'weight': '0.005*post_ynorm',         # synaptic weight 
+	  'delay': 'dist_3D/propVelocity',      # transmission delay (ms) 
+	  'synMech': 'exc'}                     # synaptic mechanism 
+
+	netParams.connParams['PV5->PT5'] = {
+	  'preConds': {'cellType': 'PV5'}, 'postConds': {'cellType': ['PT5']},       #  I -> E
+	  'probability': '0.4*exp(-dist_3D/probLengthConst)',   # probability of connection
+	  'weight': 0.001,                                      # synaptic weight 
+	  'delay': 'dist_3D/propVelocity',                      # transmission delay (ms) 
+	  'synMech': 'inh'}     
+
+New code:
+
+	## Cell connectivity rules
+	netParams.connParams['PT5->all'] = {
+	  'preConds': {'cellType': 'PT5'},
+	  'postConds': {'cellType': ['PT5','PV5']},
+	  'probability': 0.1,
+	  'weight': [NMDAweight, AMPAweight],
+	  'delay': 'dist_3D/propVelocity',
+	  'synMech': 'ESynMech'}
+
+	netParams.connParams['PV5->all'] = {
+	  'preConds': {'cellType': 'PV5'},
+	  'postConds': {'cellType': ['PT5', 'PV5']},
+	  'probability': 0.1,
+	  'weight': [GABAAfastWeight, GABAAslowWeight],
+	  'delay': 'dist_3D/propVelocity',
+	  'synMech': 'ISynMech'} 
+
+Now need to set weights for GABAA fast and slow.
+
+Looking into how the old network model did it.
+
+Hmmm.  Interesting.  So the connectivity is such that for inh to exc, both GABA fast and slow are used.  For inh to inh, only GABA fast is used.
+
+Old code:
+
+	#     #inh to exc 
+	#     for prePop in inhL5:
+	#         for postPop in excL5:
+	#             ruleLabel = prePop+'->'+postPop
+	#             netParams.connParams[ruleLabel] = {
+	#                 'preConds': {'pop': prePop},
+	#                 'postConds': {'pop': postPop},
+	#                 'synMech': ISynMech, 
+	#                 'weight': 0.001*cfg.IEgain, 
+	#                 'synMechWeightFactor': [0.7,0.3],
+	#                 'delay': 'defaultDelay+dist_3D/propVelocity',
+	#                 'convergence': 4,
+	#                 'loc': 0.5,
+	#                 'sec': 'soma_2'}
+	  
+	#     #inh to inh
+	#     for prePop in inhL5:
+	#         for postPop in inhL5:
+	#             ruleLabel = prePop+'->'+postPop
+	#             netParams.connParams[ruleLabel] = {
+	#                 'preConds': {'pop': prePop},
+	#                 'postConds': {'pop': postPop},
+	#                 'synMech': 'GABAAfast',
+	#                 'weight': 0.002*cfg.IIgain, 
+	#                 'delay': cfg.IIdelay, #'defaultDelay+dist_3D/propVelocity',
+	#                 'convergence': cfg.IIconv,
+	#                 'loc': 0.5,
+	#                 'sec': 'soma'}
+
+Where:
+
+	cfg.IEgain = 0.1 #10.0 #0.5    #PV to Exc 
+	cfg.IIgain = 0.1 #1.0 #1.0 # PV to PV
+
+So, the weight for I->E = 0.001*cfg.IEgain = 0.001*0.1 = 0.0001
+
+The weight is the same for GABA fast and slow.
+
+And the weight for I->I = 0.002*cfg.IIgain = 0.002*0.1 = 0.0002
+
+Which is the weight for just GABA fast, as that is all that's used.
+
+I'm going to set up the new connectivity in the same way and also ask about it in Slack.
 
 
 ** Setting up connectivity
+
+New code:
+
+	## Cell connectivity rules
+	netParams.connParams['PT5->all'] = {
+	  'preConds': {'cellType': 'PT5'},
+	  'postConds': {'cellType': ['PT5','PV5']},
+	  'probability': 0.1,
+	  'weight': [NMDAweight, AMPAweight],
+	  'delay': 'dist_3D/propVelocity',
+	  'synMech': 'ESynMech'}
+
+	netParams.connParams['PV5->PT5'] = {
+	  'preConds': {'cellType': 'PV5'},
+	  'postConds': {'cellType': 'PT5'},
+	  'probability': 0.1,
+	  'weight': [GABAAfastWeight, GABAAslowWeight],
+	  'delay': 'dist_3D/propVelocity',
+	  'synMech': 'ISynMech'} 
+
+	netParams.connParams['PV5->PV5'] = {
+	  'preConds': {'cellType': 'PV5'},
+	  'postConds': {'cellType': 'PV5'},
+	  'probability': 0.5,
+	  'weight': GABAAfastWeight,
+	  'delay': 'dist_3D/propVelocity',
+	  'synMech': 'GABAAfast'} 
+
+Okay, enough changing.  Time to make it run.
+
+Committing first.
+
+** Running the sim
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

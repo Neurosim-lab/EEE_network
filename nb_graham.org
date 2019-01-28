@@ -1845,7 +1845,7 @@ I'll have to run a diff.  Or just switch to Penny's mod file...
 Hmmmm.  No sense in running a diff.  I'll ask in Slack which mod we want to start using for the network model.  
 
 
-* 2019-01-25 -- 
+* 2019-01-25 -- Synaptic mechs and connectivity 
 
 In progress
 -----------
@@ -2152,20 +2152,157 @@ Committing first.
 ** Running the sim
 
 
+* 2019-01-28 -- Synaptic mechs and connectivity 
+
+In progress
+-----------
+Setting up network model
+Set up synaptic mechanisms
+Set initial connectivity to Sergio's settings
 
 
+** Running the sim to see what's broken
 
+Trial run:
 
+	graham$ cd ~/EEE_network/eee_net ; ./runsim
+	...
+	Warning: Could not load netParams from command line path or from default netParams.py
+	...
 
+No dice.  Probably a problem in netParams.py
 
+	graham-mac:EEE_network graham$ cd ~/EEE_network/eee_net
+	graham-mac:eee_net graham$ ipython -i netParams.py
+	Python 3.7.1 (default, Dec 14 2018, 13:28:58) 
+	Type 'copyright', 'credits' or 'license' for more information
+	IPython 7.2.0 -- An enhanced Interactive Python. Type '?' for help.
+	Balancing each compartment to -73 mV
+	---------------------------------------------------------------------------
+	NameError                                 Traceback (most recent call last)
+	~/EEE_network/eee_net/netParams.py in <module>
+	     63 
+	     64 ## Inhibitory GABA synaptic mechs
+	---> 65 netParams.synMechParams['GABAAfast'] = {'mod':'MyExp2SynBB','tau1': 0.07,'tau2': 18.2,'e': cfg.GABAAfast_e}
+	     66 netParams.synMechParams['GABAAslow'] = {'mod': 'MyExp2SynBB','tau1': 10, 'tau2': 200, 'e': cfg.GABAAslow_e}
+	     67 
 
+	NameError: name 'cfg' is not defined
 
+Or perhaps a problem in cfg.py.  Nope.  cfg.py runs without crashing.
 
+Adding the following to the top of netParams.py (it was in the old netParams):
 
+	try:
+	    from __main__ import cfg
+	except:
+	    from cfg import cfg
 
+And executing netParams:
 
+	AttributeError                            Traceback (most recent call last)
+	~/EEE_network/eee_net/netParams.py in <module>
+	     67 
+	     68 ## Inhibitory GABA synaptic mechs
+	---> 69 netParams.synMechParams['GABAAfast'] = {'mod':'MyExp2SynBB','tau1': 0.07,'tau2': 18.2,'e': cfg.GABAAfast_e}
+	     70 netParams.synMechParams['GABAAslow'] = {'mod': 'MyExp2SynBB','tau1': 10, 'tau2': 200, 'e': cfg.GABAAslow_e}
+	     71 
 
+	AttributeError: 'SimConfig' object has no attribute 'GABAAfast_e'
 
+Will add "cfg." in front of all variables, will later move these to cfg.py.
+
+Okay, netParams.py runs now.
+
+Now to try a whole sim.
+
+Getting an error:
+
+	graham$ cd ~/EEE_network/eee_net ; ipython -i init.py
+	Python 3.7.1 (default, Dec 14 2018, 13:28:58) 
+	Type 'copyright', 'credits' or 'license' for more information
+	IPython 7.2.0 -- An enhanced Interactive Python. Type '?' for help.
+	Note: NeuroML import failed; import/export functions for NeuroML will not be available. 
+	  To install the pyNeuroML & libNeuroML Python packages visit: https://www.neuroml.org/getneuroml
+	Balancing each compartment to -73 mV
+
+	Creating network of 5 cell populations on 1 hosts...
+	  Number of cells on node 0: 100 
+	  Done; cell creation time = 0.30 s.
+	Making connections...
+	---------------------------------------------------------------------------
+	TypeError                                 Traceback (most recent call last)
+	~/EEE_network/eee_net/init.py in <module>
+	     22 sim.net.createPops()                        # instantiate network populations
+	     23 sim.net.createCells()                       # instantiate network cells based on defined populations
+	---> 24 sim.net.connectCells()                      # create connections between cells based on params
+	     25 sim.net.addStims()                          # add network stimulation
+	     26 sim.setupRecording()                       # setup variables to record for each cell (spikes, V traces, etc)
+
+	~/Applications/netpyne/netpyne/network/conn.py in connectCells(self)
+	     76                                 sim.cfg.seeds['conn'])
+	     77             self._connStrToFunc(preCellsTags, postCellsTags, connParam)  # convert strings to functions (for the delay, and probability params)
+	---> 78             connFunc(preCellsTags, postCellsTags, connParam)  # call specific conn function
+	     79 
+	     80         # check if gap junctions in any of the conn rules
+
+	~/Applications/netpyne/netpyne/network/conn.py in probConn(self, preCellsTags, postCellsTags, connParam)
+	    402                                 connParam[paramStrFunc + 'Args'][funcKey] = connParam[paramStrFunc + 'Vars'][funcKey](preCellTags, postCellTags)
+	    403                             # connParam[paramStrFunc+'Args'] = {k:v if isinstance(v, Number) else v(preCellTags,postCellTags) for k,v in connParam[paramStrFunc+'Vars'].items()}
+	--> 404                         self._addCellConn(connParam, preCellGid, postCellGid) # add connection
+	    405 
+	    406 
+
+	~/Applications/netpyne/netpyne/network/conn.py in _addCellConn(self, connParam, preCellGid, postCellGid)
+	    610         if sim.cfg.includeParamsLabel: params['label'] = connParam.get('label')
+	    611 
+	--> 612         postCell.addConn(params=params)
+	    613 
+	    614 
+
+	~/Applications/netpyne/netpyne/cell/compartCell.py in addConn(self, params, netStimParams)
+	    740                     else:
+	    741                         sec = self.secs[synMechSecs[i]]
+	--> 742                         postTarget = synMechs[i]['hObj'] # local synaptic mechanism
+	    743 
+	    744                     if netStimParams:
+
+	TypeError: 'NoneType' object is not subscriptable
+
+So the crash occurs during `sim.net.connectCells()`, which implies a problem with connectivity.
+
+It seems like `synMechs` is undefined, and thus not subscriptable.  Looking into this.
+
+In the connectivity section of netParams, I had this:
+	'synMech': 'ESynMech'
+
+But I think it should be this:
+	'synMech': ESynMech
+
+Same for ISynMech.
+
+Same error.
+
+For the background input, I have the following:
+	
+	netParams.stimTargetParams['bkg->all'] = {'source': 'bkg', 'conds': {'cellType': ['PV5','PT5']}, 'weight': 0.01, 'delay': 'max(1, normal(5,2))', 'synMech': 'exc'}
+
+But I realize I no longer have a synMech named 'exc'...  Looking into what 'exc' used to be...
+
+From the Netpyne tutorial (http://netpyne.org/tutorial.html):
+
+	netParams.synMechParams['exc'] = {'mod': 'Exp2Syn', 'tau1': 0.8, 'tau2': 5.3, 'e': 0}  # NMDA synaptic mechanism
+
+Based on the comment, it's supposed to be an NMDA model, so I suppose I could use the NMDA.mod, but I'm just going to keep it the same for now.
+
+It runs and produces figures.  :)
+
+But the connectivity is a little wonky:
+file:nb_gif/20190128_102730.png
+
+Both `PV5` and `bkg` seem to have no connectivity.
+
+Committing, pushing, and then looking into this.
 
 
 

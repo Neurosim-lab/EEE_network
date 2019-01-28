@@ -1,15 +1,21 @@
 from netpyne import specs
 import os
 import copy
+try:
+    from __main__ import cfg
+except:
+    from cfg import cfg
 
 ## Network variables (move to cfg.py later)
-NMDAgmax        = 0.005
-NMDA2AMPA       = 0.1
-AMPAgmax        = NMDAgmax / NMDA2AMPA
-NMDAweight      = 0.8
-AMPAweight      = NMDAweight
-GABAAfastWeight = 0.0001
-GABAAslowWeight = 0.0001
+cfg.NMDAgmax        = 0.005
+cfg.NMDA2AMPA       = 0.1
+cfg.AMPAgmax        = cfg.NMDAgmax / cfg.NMDA2AMPA
+cfg.NMDAweight      = 0.8
+cfg.AMPAweight      = cfg.NMDAweight
+cfg.GABAAfastWeight = 0.0001
+cfg.GABAAslowWeight = 0.0001
+cfg.GABAAfast_e     = -80
+cfg.GABAAslow_e     = -90
 
 
 ## Network parameters
@@ -23,15 +29,15 @@ netParams.probLengthConst = 150.0 # length constant for conn probability (um)
 
 
 ## Population parameters
-numPT5cells = 80 #800
-numPV5cells = 20 #200
-ynormRange = [0.2,0.623]
+cfg.numPT5cells = 80 #800
+cfg.numPV5cells = 20 #200
+cfg.ynormRange = [0.2,0.623]
 
-netParams.popParams['PT5_1'] = {'cellType': 'PT5', 'numCells': int(numPT5cells/4), 'ynormRange': ynormRange, 'cellModel': 'HH'}
-netParams.popParams['PT5_2'] = {'cellType': 'PT5', 'numCells': int(numPT5cells/4), 'ynormRange': ynormRange, 'cellModel': 'HH'}
-netParams.popParams['PT5_3'] = {'cellType': 'PT5', 'numCells': int(numPT5cells/4), 'ynormRange': ynormRange, 'cellModel': 'HH'}
-netParams.popParams['PT5_4'] = {'cellType': 'PT5', 'numCells': int(numPT5cells/4), 'ynormRange': ynormRange, 'cellModel': 'HH'}
-netParams.popParams['PV5'] = {'cellType': 'PV5', 'numCells': numPV5cells, 'ynormRange': ynormRange, 'cellModel': 'HH'}
+netParams.popParams['PT5_1'] = {'cellType': 'PT5', 'numCells': int(cfg.numPT5cells/4), 'ynormRange': cfg.ynormRange, 'cellModel': 'HH'}
+netParams.popParams['PT5_2'] = {'cellType': 'PT5', 'numCells': int(cfg.numPT5cells/4), 'ynormRange': cfg.ynormRange, 'cellModel': 'HH'}
+netParams.popParams['PT5_3'] = {'cellType': 'PT5', 'numCells': int(cfg.numPT5cells/4), 'ynormRange': cfg.ynormRange, 'cellModel': 'HH'}
+netParams.popParams['PT5_4'] = {'cellType': 'PT5', 'numCells': int(cfg.numPT5cells/4), 'ynormRange': cfg.ynormRange, 'cellModel': 'HH'}
+netParams.popParams['PV5'] = {'cellType': 'PV5', 'numCells': cfg.numPV5cells, 'ynormRange': cfg.ynormRange, 'cellModel': 'HH'}
 
 
 ## Set path to cells directory
@@ -43,7 +49,6 @@ PV_path   = os.path.join(cellpath, 'FS3.hoc')
 ## Import PV5 cell
 cellRule = netParams.importCellParams(label='PV5', conds={'cellType':'PV5'}, fileName=PV_path, cellName='FScell1', cellInstance=True)
 netParams.cellParams['PV5'] = cellRule
-
 
 ## Import eeeS cell (PT5)
 cellRule = netParams.importCellParams(label='PT5_1', conds={'pop':'PT5_1'}, fileName=eeeS_path, cellName='MakeCell', cellInstance=True)
@@ -66,11 +71,12 @@ netParams.synMechParams['GABAAfast'] = {'mod':'MyExp2SynBB','tau1': 0.07,'tau2':
 netParams.synMechParams['GABAAslow'] = {'mod': 'MyExp2SynBB','tau1': 10, 'tau2': 200, 'e': cfg.GABAAslow_e}
 
 ## Excitatory NMDA and AMPA synaptic mechs
-netParams.synMechParams['NMDA'] = {'mod': 'NMDA', 'Cdur': 10.0, 'Beta': 0.02, 'gmax': NMDAgmax}
-netParams.synMechParams['AMPA'] = {'mod': 'AMPA', 'gmax': AMPAgmax}
+netParams.synMechParams['NMDA'] = {'mod': 'NMDA', 'Cdur': 10.0, 'Beta': 0.02, 'gmax': cfg.NMDAgmax}
+netParams.synMechParams['AMPA'] = {'mod': 'AMPA', 'gmax': cfg.AMPAgmax}
 
 
 ## Stimulation parameters
+netParams.synMechParams['exc'] = {'mod': 'Exp2Syn', 'tau1': 0.8, 'tau2': 5.3, 'e': 0}
 netParams.stimSourceParams['bkg'] = {'type': 'NetStim', 'rate': 20, 'noise': 0.3}
 netParams.stimTargetParams['bkg->all'] = {'source': 'bkg', 'conds': {'cellType': ['PV5','PT5']}, 'weight': 0.01, 'delay': 'max(1, normal(5,2))', 'synMech': 'exc'}
 
@@ -80,23 +86,23 @@ netParams.connParams['PT5->all'] = {
   'preConds': {'cellType': 'PT5'},
   'postConds': {'cellType': ['PT5','PV5']},
   'probability': 0.5,
-  'weight': [NMDAweight, AMPAweight],
+  'weight': [cfg.NMDAweight, cfg.AMPAweight],
   'delay': 'dist_3D/propVelocity',
-  'synMech': 'ESynMech'}
+  'synMech': ESynMech}
 
 netParams.connParams['PV5->PT5'] = {
   'preConds': {'cellType': 'PV5'},
   'postConds': {'cellType': 'PT5'},
   'probability': 0.5,
-  'weight': [GABAAfastWeight, GABAAslowWeight],
+  'weight': [cfg.GABAAfastWeight, cfg.GABAAslowWeight],
   'delay': 'dist_3D/propVelocity',
-  'synMech': 'ISynMech'} 
+  'synMech': ISynMech} 
 
 netParams.connParams['PV5->PV5'] = {
   'preConds': {'cellType': 'PV5'},
   'postConds': {'cellType': 'PV5'},
   'probability': 0.5,
-  'weight': GABAAfastWeight,
+  'weight': cfg.GABAAfastWeight,
   'delay': 'dist_3D/propVelocity',
   'synMech': 'GABAAfast'} 
 

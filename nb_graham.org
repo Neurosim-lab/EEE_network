@@ -2413,6 +2413,7 @@ In order to start using batch sims, first I need to get all cfg.values into the 
 
 Doing that now.
 
+
 ** Config file
 
 First I just want to see what all default variables are in a cfg structure:
@@ -2495,8 +2496,48 @@ And now trying to run.
 It still works.  Cleaning up and committing.
 
 
+** Setting up batch sims
 
+http://netpyne.org/tutorial.html#running-batch-simulations-tutorial-8
 
+	We will also need to add a new file to control the batch simulation:
+
+	tut8_batch.py : Defines the parameters and parameter values to be explored in a batch of simulations, the run configuration – e.g. whether to use MPI+Bulletin Board (for multicore machines) or SLURM/PBS Torque (for HPCs) –, and the command to run the batch.
+
+	In summary, netParams.py for fixed (network) parameters, cfg.py for variable (simulation) parameters, init.py to run a simulation, and batch.py to run a batch of simulations exploring combinations of parameter values.
+
+Here's the code in tut8_batch.py:
+
+	from netpyne import specs
+	from netpyne.batch import Batch 
+
+	def batchTauWeight():
+		# Create variable of type ordered dictionary (NetPyNE's customized version) 
+		params = specs.ODict()   
+
+		# fill in with parameters to explore and range of values (key has to coincide with a variable in simConfig) 
+		params['synMechTau2'] = [3.0, 5.0, 7.0]   
+		params['connWeight'] = [0.005, 0.01, 0.15]
+
+		# create Batch object with paramaters to modify, and specifying files to use
+		b = Batch(params=params, cfgFile='tut8_cfg.py', netParamsFile='tut8_netParams.py')
+		
+		# Set output folder, grid method (all param combinations), and run configuration
+		b.batchLabel = 'tauWeight'
+		b.saveFolder = 'tut8_data'
+		b.method = 'grid'
+		b.runCfg = {'type': 'mpi_bulletin', 
+					'script': 'tut8_init.py', 
+					'skip': True}
+
+		# Run batch simulations
+		b.run()
+
+	# Main code
+	if __name__ == '__main__':
+		batchTauWeight() 
+
+Adding batch.py to the repo with that code.
 
 
 

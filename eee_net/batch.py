@@ -1,23 +1,23 @@
 from netpyne import specs
 from netpyne.batch import Batch 
 
-def batchTauWeight():
+def batchTest():
 	# Create variable of type ordered dictionary (NetPyNE's customized version) 
 	params = specs.ODict()   
 
 	# fill in with parameters to explore and range of values (key has to coincide with a variable in simConfig) 
-	params['synMechTau2'] = [3.0, 5.0, 7.0]   
-	params['connWeight'] = [0.005, 0.01, 0.15]
+	params['GABAAfastWeight'] = [0.0001, 0.01, 1.0]   
+	#params['GABAAslowWeight'] = [0.0001, 0.001, 0.01]
 
 	# create Batch object with paramaters to modify, and specifying files to use
-	b = Batch(params=params, cfgFile='tut8_cfg.py', netParamsFile='tut8_netParams.py')
+	b = Batch(params=params, cfgFile='cfg.py', netParamsFile='netParams.py')
 	
 	# Set output folder, grid method (all param combinations), and run configuration
-	b.batchLabel = 'tauWeight'
-	b.saveFolder = 'tut8_data'
+	b.batchLabel = 'batch_test'
+	b.saveFolder = 'batch_data'
 	b.method = 'grid'
 	b.runCfg = {'type': 'mpi_bulletin', 
-				'script': 'tut8_init.py', 
+				'script': 'init.py', 
 				'skip': True}
 
 	# Run batch simulations
@@ -25,7 +25,7 @@ def batchTauWeight():
 
 # Main code
 if __name__ == '__main__':
-	batchTauWeight() 
+	batchTest() 
 
 
 

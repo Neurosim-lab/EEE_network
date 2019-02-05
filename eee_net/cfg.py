@@ -33,6 +33,7 @@ cfg.GABAAslow_e     = -90
 
 # Recording options
 cfg.recordTraces = {'V_soma': {'sec':'soma', 'loc':0.5, 'var':'v'}}  
+cfg.printPopAvgRates = True
 
 # Analysis options
 cfg.analysis['plotRaster'] = {'orderBy': 'y', 'orderInverse': True, 'saveFig': saveFig, 'showFig': showFig}

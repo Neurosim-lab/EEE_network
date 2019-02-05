@@ -2539,6 +2539,87 @@ Here's the code in tut8_batch.py:
 
 Adding batch.py to the repo with that code.
 
+** Running a test batch
+
+Modified the original batch code example to:
+
+	from netpyne import specs
+	from netpyne.batch import Batch 
+
+	def batchTest():
+		# Create variable of type ordered dictionary (NetPyNE's customized version) 
+		params = specs.ODict()   
+
+		# fill in with parameters to explore and range of values (key has to coincide with a variable in simConfig) 
+		params['GABAAfastWeight'] = [0.0001, 0.001, 0.01]   
+		params['GABAAslowWeight'] = [0.0001, 0.001, 0.01]
+
+		# create Batch object with paramaters to modify, and specifying files to use
+		b = Batch(params=params, cfgFile='cfg.py', netParamsFile='netParams.py')
+		
+		# Set output folder, grid method (all param combinations), and run configuration
+		b.batchLabel = 'batch_test'
+		b.saveFolder = 'batch_data'
+		b.method = 'grid'
+		b.runCfg = {'type': 'mpi_bulletin', 
+					'script': 'init.py', 
+					'skip': True}
+
+		# Run batch simulations
+		b.run()
+
+	# Main code
+	if __name__ == '__main__':
+		batchTest() 
+
+So now, here's the command to run the batch sims:
+
+	To run the batch simulations you will need to have MPI properly installed and NEURON configured to use MPI. Run the following command: mpiexec -np [num_cores] nrniv -python -mpi batch.py , where [num_cores] should be replaced with the number of processors you want to use. The minimum required is 2, since one will be uses to schedule the jobs (master node); e.g. if you select 4 processors, one will be used to schedule jobs, and the other 3 will run NEURON simulations with different parameter combinations.
+
+I will make a new file called `runbatch` using `runsim` as a start.
+
+runsim:
+
+	#!/bin/bash
+	# Runs simulation, including MPI.
+
+	numprocesses=$1; if [ -z $numprocesses ]; then numprocesses=4; fi # Number of processes to use
+	shift # Eliminate first argument
+
+	mpiexec -np $numprocesses nrniv -python -mpi init.py $@  # Run the model
+
+runbatch:
+
+	#!/bin/bash
+	# Runs batch simulations, including MPI.
+
+	numprocesses=$1; if [ -z $numprocesses ]; then numprocesses=4; fi # Number of processes to use
+	shift # Eliminate first argument
+
+	mpiexec -np $numprocesses nrniv -python -mpi batch.py $@  # Run the batch sims
+
+Trying it now.
+
+	graham$ cd ~/EEE_network/eee_net ; ./runbatch
+
+It seems to be working.
+
+Well, it went through three sims so far, but now seems to have hung.
+
+I'm going to set up a batch that only changes one variable and see how that does.
+
+	params['GABAAfastWeight'] = [0.0001, 0.01, 1.0]   
+	#params['GABAAslowWeight'] = [0.0001, 0.001, 0.01]
+
+graham$ cd ~/EEE_network/eee_net ; ./runbatch
+
+That produced three sims and expected figures (now inhib connectivity is visible in the connection strength matrix):
+
+file:nb_gif/20190205_083659.png
+
+The terminal never returned to the command prompt, but I suppose that's okay.
+
+Committing and pushing now.
 
 
 

@@ -2305,6 +2305,116 @@ Both `PV5` and `bkg` seem to have no connectivity.
 Committing, pushing, and then looking into this.
 
 
+** Fixing connectivity
+
+Earlier I had increased the connection probability from 0.1 to 0.5, gonna try changing that back and seeing what happens.
+
+Still missing connectivity, but the plots look much better.
+
+Instead of lumping synMechs into excitatory and inhibitory:
+
+	## Synaptic mechanism parameters
+	ESynMech = ['NMDA','AMPA']
+	ISynMech = ['GABAAfast','GABAAslow']
+
+I'll set each connection type up separately.
+
+	NMDA
+	AMPA
+	GABAAFast
+	GABAASlow
+	bkg
+
+
+* 2019-01-29 -- EEE meeting and connectivity 
+
+In progress
+-----------
+Setting up network model
+Fixing connectivity
+
+
+** EEE Meeting
+
+https://docs.google.com/document/d/16vmQn6gmJzhUXq48PAuTd9uzx5keSdxT0qSn3yWfC9g/edit
+
+Get connectivity fixed and then start setting up batch sims.
+
+
+** Connectivity
+
+Salva was looking into the problem.
+
+	salvadord [9:17 AM]
+	so all the conns are actually there!
+
+	billl [9:18 AM]
+	that's the good news
+
+	salvadord [9:18 AM]
+	for the PV5 if you plot eg. the probability instead of the strength you can see them
+	strength=prob*weight
+
+	billl [9:18 AM]
+	maybe the strength == 0?
+
+	salvadord [9:18 AM]
+	so seems like PV5 weights are much lower
+	just lower by several O - 0.0001 vs 0.8
+
+	billl [9:19 AM]
+	goose 'em joe
+
+	salvadord [9:19 AM]
+	and the bkg also there but since implemented as a stimSourceParam/stimTargetParam (it’s a NetStim) the conn matrix calculation doesnt really apply
+	there’s one netstim per cell
+
+	joe [9:20 AM]
+	Awesome, thanks Salva!
+
+	salvadord [9:20 AM]
+	np!
+
+	you can plot without bkg using `sim.analysis.plotConn(includePre=['allCells'], includePost=['allCells'], feature='probability')` — and can replace `probability` with `strength`, `weight` or `numConns`
+
+
+** Preparing for batch sims
+
+Ugh, sick as a dog.  This will have to wait.
+
+
+* 2019-01-30 -- Reading journal club article
+
+Cortical column and whole-brain
+imaging with molecular contrast
+and nanoscale resolution
+
+https://paperpile.com/view/3070709c-e7e3-0e02-ad60-cf7cb111d3a4
+
+Journal club was moved to Monday Feb 11th, 12pm EST.
+
+
+* 2019-02-05 -- EEE meeting and connectivity 
+
+In progress
+-----------
+Setting up network model
+Fixing connectivity
+Setting up batch sims
+
+
+** Connectivity
+
+So the connectivity actually works, some of it is just at very low values.
+
+Best way to explore connectivity is using batch sims.
+
+In order to start using batch sims, first I need to get all cfg.values into the cfg.py file.
+
+Doing that now.
+
+
+
 
 
 

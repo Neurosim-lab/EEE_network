@@ -85,7 +85,7 @@ netParams.stimTargetParams['bkg->all'] = {'source': 'bkg', 'conds': {'cellType':
 netParams.connParams['PT5->all'] = {
   'preConds': {'cellType': 'PT5'},
   'postConds': {'cellType': ['PT5','PV5']},
-  'probability': 0.5,
+  'probability': 0.1,
   'weight': [cfg.NMDAweight, cfg.AMPAweight],
   'delay': 'dist_3D/propVelocity',
   'synMech': ESynMech}
@@ -93,7 +93,7 @@ netParams.connParams['PT5->all'] = {
 netParams.connParams['PV5->PT5'] = {
   'preConds': {'cellType': 'PV5'},
   'postConds': {'cellType': 'PT5'},
-  'probability': 0.5,
+  'probability': 0.1,
   'weight': [cfg.GABAAfastWeight, cfg.GABAAslowWeight],
   'delay': 'dist_3D/propVelocity',
   'synMech': ISynMech} 
@@ -101,25 +101,8 @@ netParams.connParams['PV5->PT5'] = {
 netParams.connParams['PV5->PV5'] = {
   'preConds': {'cellType': 'PV5'},
   'postConds': {'cellType': 'PV5'},
-  'probability': 0.5,
+  'probability': 0.1,
   'weight': cfg.GABAAfastWeight,
   'delay': 'dist_3D/propVelocity',
   'synMech': 'GABAAfast'} 
-
-
-# ## Cell connectivity rules
-# netParams.connParams['PT5->all'] = {
-#   'preConds': {'cellType': 'PT5'}, 'postConds': {'y': [100,1000]},  #  E -> all (100-1000 um)
-#   'probability': 0.1 ,                  # probability of connection
-#   'weight': '0.005*post_ynorm',         # synaptic weight 
-#   'delay': 'dist_3D/propVelocity',      # transmission delay (ms) 
-#   'synMech': 'exc'}                     # synaptic mechanism 
-
-# netParams.connParams['PV5->PT5'] = {
-#   'preConds': {'cellType': 'PV5'}, 'postConds': {'cellType': ['PT5']},       #  I -> E
-#   'probability': '0.4*exp(-dist_3D/probLengthConst)',   # probability of connection
-#   'weight': 0.001,                                      # synaptic weight 
-#   'delay': 'dist_3D/propVelocity',                      # transmission delay (ms) 
-#   'synMech': 'inh'}                                     # synaptic mechanism 
-
 

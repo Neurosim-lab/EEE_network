@@ -6,17 +6,6 @@ try:
 except:
     from cfg import cfg
 
-## Network variables (move to cfg.py later)
-cfg.NMDAgmax        = 0.005
-cfg.NMDA2AMPA       = 0.1
-cfg.AMPAgmax        = cfg.NMDAgmax / cfg.NMDA2AMPA
-cfg.NMDAweight      = 0.8
-cfg.AMPAweight      = cfg.NMDAweight
-cfg.GABAAfastWeight = 0.0001
-cfg.GABAAslowWeight = 0.0001
-cfg.GABAAfast_e     = -80
-cfg.GABAAslow_e     = -90
-
 
 ## Network parameters
 netParams = specs.NetParams()  # object of class NetParams to store the network parameters
@@ -29,10 +18,6 @@ netParams.probLengthConst = 150.0 # length constant for conn probability (um)
 
 
 ## Population parameters
-cfg.numPT5cells = 80 #800
-cfg.numPV5cells = 20 #200
-cfg.ynormRange = [0.2,0.623]
-
 netParams.popParams['PT5_1'] = {'cellType': 'PT5', 'numCells': int(cfg.numPT5cells/4), 'ynormRange': cfg.ynormRange, 'cellModel': 'HH'}
 netParams.popParams['PT5_2'] = {'cellType': 'PT5', 'numCells': int(cfg.numPT5cells/4), 'ynormRange': cfg.ynormRange, 'cellModel': 'HH'}
 netParams.popParams['PT5_3'] = {'cellType': 'PT5', 'numCells': int(cfg.numPT5cells/4), 'ynormRange': cfg.ynormRange, 'cellModel': 'HH'}

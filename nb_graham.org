@@ -2413,6 +2413,86 @@ In order to start using batch sims, first I need to get all cfg.values into the 
 
 Doing that now.
 
+** Config file
+
+First I just want to see what all default variables are in a cfg structure:
+
+	graham-mac:EEE_network graham$ ipython
+	Python 3.7.1 (default, Dec 14 2018, 13:28:58) 
+	Type 'copyright', 'credits' or 'license' for more information
+	IPython 7.2.0 -- An enhanced Interactive Python. Type '?' for help.
+
+	In [1]: from netpyne import specs                                                                                         
+
+	In [2]: cfg = specs.SimConfig()                                                                                           
+
+	In [3]: cfg                                                                                                               
+	Out[3]: <netpyne.specs.simConfig.SimConfig at 0x10a81c198>
+
+	In [4]: cfgd = cfg.todict()                                                                                               
+	Note: NeuroML import failed; import/export functions for NeuroML will not be available. 
+	  To install the pyNeuroML & libNeuroML Python packages visit: https://www.neuroml.org/getneuroml
+
+	In [5]: cfgd                                                                                                              
+	Out[5]: 
+	{'duration': 1000.0,
+	 'tstop': 1000.0,
+	 'dt': 0.025,
+	 'hParams': {'celsius': 6.3, 'v_init': -65.0, 'clamp_resist': 0.001},
+	 'cache_efficient': False,
+	 'cvode_active': False,
+	 'cvode_atol': 0.001,
+	 'seeds': {'conn': 1, 'stim': 1, 'loc': 1},
+	 'rand123GlobalIndex': None,
+	 'createNEURONObj': True,
+	 'createPyStruct': True,
+	 'addSynMechs': True,
+	 'includeParamsLabel': True,
+	 'gatherOnlySimData': False,
+	 'compactConnFormat': False,
+	 'connRandomSecFromList': True,
+	 'saveCellSecs': True,
+	 'saveCellConns': True,
+	 'timing': True,
+	 'saveTiming': False,
+	 'printRunTime': False,
+	 'printPopAvgRates': False,
+	 'printSynsAfterRule': False,
+	 'verbose': False,
+	 'recordCells': [],
+	 'recordTraces': {},
+	 'recordCellsSpikes': -1,
+	 'recordStim': False,
+	 'recordLFP': [],
+	 'saveLFPCells': False,
+	 'recordStep': 0.1,
+	 'recordTime': True,
+	 'simLabel': '',
+	 'saveFolder': '',
+	 'filename': 'model_output',
+	 'saveDataInclude': ['netParams',
+	  'netCells',
+	  'netPops',
+	  'simConfig',
+	  'simData'],
+	 'timestampFilename': False,
+	 'savePickle': False,
+	 'saveJson': False,
+	 'saveMat': False,
+	 'saveCSV': False,
+	 'saveDpk': False,
+	 'saveHDF5': False,
+	 'saveDat': False,
+	 'backupCfgFile': [],
+	 'checkErrors': False,
+	 'checkErrorsVerbose': False,
+	 'analysis': OrderedDict()}
+
+Now moving cfg variables from netParams.py to cfg.py.
+
+And now trying to run.
+
+It still works.  Cleaning up and committing.
 
 
 

@@ -118,19 +118,27 @@ for prePop in ['PV5']:
             'sec': 'soma'}
 
 
-# netParams.connParams['PV5->PT5'] = {
-#   'preConds': {'cellType': 'PV5'},
-#   'postConds': {'cellType': 'PT5'},
-#   'probability': 0.1,
-#   'weight': [cfg.GABAAfastWeight, cfg.GABAAslowWeight],
-#   'delay': 'dist_3D/propVelocity',
-#   'synMech': ISynMech} 
+# Inhibitory --> Inhibitory
 
-netParams.connParams['PV5->PV5'] = {
-  'preConds': {'cellType': 'PV5'},
-  'postConds': {'cellType': 'PV5'},
-  'probability': 0.1,
-  'weight': cfg.GABAAfastWeight,
-  'delay': 'dist_3D/propVelocity',
-  'synMech': 'GABAAfast'} 
+for prePop in ['PV5']:
+    for postPop in ['PV5']:
+        ruleLabel = prePop+'->'+postPop
+        netParams.connParams[ruleLabel] = {
+            'preConds': {'pop': prePop},
+            'postConds': {'pop': postPop},
+            'synMech': 'GABAAfast',
+            'weight': cfg.GABAAfastWeight, 
+            'delay': 'defaultDelay+dist_3D/propVelocity',
+            'convergence': cfg.IIconv,
+            'loc': 0.5,
+            'sec': 'soma'}
+
+
+# netParams.connParams['PV5->PV5'] = {
+#   'preConds': {'cellType': 'PV5'},
+#   'postConds': {'cellType': 'PV5'},
+#   'probability': 0.1,
+#   'weight': cfg.GABAAfastWeight,
+#   'delay': 'dist_3D/propVelocity',
+#   'synMech': 'GABAAfast'} 
 

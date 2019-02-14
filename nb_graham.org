@@ -2876,11 +2876,47 @@ New code that works:
 	            'loc': 0.5,
 	            'sec': 'soma'}
 
+Committing.
 
 
+** I --> I connectivity
 
+Old code:
 
+    #inh to inh
+    for prePop in inhL5:
+        for postPop in inhL5:
+            ruleLabel = prePop+'->'+postPop
+            netParams.connParams[ruleLabel] = {
+                'preConds': {'pop': prePop},
+                'postConds': {'pop': postPop},
+                'synMech': 'GABAAfast',
+                'weight': 0.002*cfg.IIgain, 
+                'delay': cfg.IIdelay, #'defaultDelay+dist_3D/propVelocity',
+                'convergence': cfg.IIconv,
+                'loc': 0.5,
+                'sec': 'soma'}
 
+Adding cfg.IIconv = 12.0 to config file
+
+New code:
+
+	# Inhibitory --> Inhibitory
+
+	for prePop in ['PV5']:
+	    for postPop in ['PV5']:
+	        ruleLabel = prePop+'->'+postPop
+	        netParams.connParams[ruleLabel] = {
+	            'preConds': {'pop': prePop},
+	            'postConds': {'pop': postPop},
+	            'synMech': 'GABAAfast',
+	            'weight': cfg.GABAAfastWeight, 
+	            'delay': 'defaultDelay+dist_3D/propVelocity',
+	            'convergence': cfg.IIconv,
+	            'loc': 0.5,
+	            'sec': 'soma'}
+
+It works.  Committing.
 
 
 

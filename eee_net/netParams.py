@@ -68,13 +68,33 @@ netParams.stimTargetParams['bkg->all'] = {'source': 'bkg', 'conds': {'cellType':
 
 
 ## Cell connectivity rules
-netParams.connParams['PT5->all'] = {
-  'preConds': {'cellType': 'PT5'},
-  'postConds': {'cellType': ['PT5','PV5']},
-  'probability': 0.1,
-  'weight': [cfg.AMPAweight, cfg.NMDAweight],
-  'delay': 'dist_3D/propVelocity',
-  'synMech': ESynMech}
+
+
+# Excitatory --> Excitatory
+
+EPops = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4']
+
+for prePop in EPops:
+    for postPop in EPops:
+        ruleLabel = prePop+'->'+postPop
+        netParams.connParams[ruleLabel] = {
+            'preConds': {'pop': prePop},
+            'postConds': {'pop': postPop},
+            'synMech': ESynMech, 
+            'weight': [cfg.AMPAweight, cfg.NMDAweight], #1.0*cfg.EEgain, 
+            'delay': 'defaultDelay+dist_3D/propVelocity',
+            'convergence': cfg.EEconv,
+            'loc': 0.3,
+            'sec': 'basal_8'}
+
+
+# netParams.connParams['PT5->all'] = {
+#   'preConds': {'cellType': 'PT5'},
+#   'postConds': {'cellType': ['PT5','PV5']},
+#   'probability': 0.1,
+#   'weight': [cfg.AMPAweight, cfg.NMDAweight],
+#   'delay': 'dist_3D/propVelocity',
+#   'synMech': ESynMech}
 
 netParams.connParams['PV5->PT5'] = {
   'preConds': {'cellType': 'PV5'},

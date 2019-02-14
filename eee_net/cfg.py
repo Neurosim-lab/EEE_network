@@ -29,7 +29,8 @@ cfg.GABAAslowWeight = 0.0001
 cfg.GABAAfast_e     = -80
 cfg.GABAAslow_e     = -90
 
-
+# Connectivity variables
+cfg.EEconv = 3.0
 
 # Recording options
 cfg.recordTraces = {'V_soma': {'sec':'soma', 'loc':0.5, 'var':'v'}}  

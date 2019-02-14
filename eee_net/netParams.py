@@ -48,7 +48,7 @@ for label in ['PT5_2', 'PT5_3', 'PT5_4']:
 
 
 ## Synaptic mechanism parameters
-ESynMech = ['NMDA','AMPA']
+ESynMech = ['AMPA','NMDA']
 ISynMech = ['GABAAfast','GABAAslow']
 
 ## Inhibitory GABA synaptic mechs
@@ -56,8 +56,9 @@ netParams.synMechParams['GABAAfast'] = {'mod':'MyExp2SynBB','tau1': 0.07,'tau2':
 netParams.synMechParams['GABAAslow'] = {'mod': 'MyExp2SynBB','tau1': 10, 'tau2': 200, 'e': cfg.GABAAslow_e}
 
 ## Excitatory NMDA and AMPA synaptic mechs
-netParams.synMechParams['NMDA'] = {'mod': 'NMDA', 'Cdur': 10.0, 'Beta': 0.02, 'gmax': cfg.NMDAgmax}
 netParams.synMechParams['AMPA'] = {'mod': 'AMPA', 'gmax': cfg.AMPAgmax}
+netParams.synMechParams['NMDA'] = {'mod': 'NMDA', 'Cdur': 10.0, 'Beta': 0.02, 'gmax': cfg.NMDAgmax}
+
 
 
 ## Stimulation parameters
@@ -71,7 +72,7 @@ netParams.connParams['PT5->all'] = {
   'preConds': {'cellType': 'PT5'},
   'postConds': {'cellType': ['PT5','PV5']},
   'probability': 0.1,
-  'weight': [cfg.NMDAweight, cfg.AMPAweight],
+  'weight': [cfg.AMPAweight, cfg.NMDAweight],
   'delay': 'dist_3D/propVelocity',
   'synMech': ESynMech}
 

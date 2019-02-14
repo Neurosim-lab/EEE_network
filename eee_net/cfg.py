@@ -15,13 +15,13 @@ cfg.savePickle = False         # Save params, network and sim output to pickle f
 cfg.saveMat = False  
 
 # Network variables
-cfg.numPT5cells = 80 #800
-cfg.numPV5cells = 20 #200
+cfg.numPT5cells = 80
+cfg.numPV5cells = 20
 cfg.ynormRange = [0.2, 0.623]
 
 cfg.NMDAgmax        = 0.005
-cfg.NMDA2AMPA       = 0.1
-cfg.AMPAgmax        = cfg.NMDAgmax / cfg.NMDA2AMPA
+cfg.AMPANMDAratio   = 10.0
+cfg.AMPAgmax        = cfg.AMPANMDAratio * cfg.NMDAgmax 
 cfg.NMDAweight      = 0.8
 cfg.AMPAweight      = cfg.NMDAweight
 cfg.GABAAfastWeight = 0.0001

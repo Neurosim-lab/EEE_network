@@ -2622,4 +2622,132 @@ The terminal never returned to the command prompt, but I suppose that's okay.
 Committing and pushing now.
 
 
+* 2019-02-11 -- Journal club and connectivity 
+
+** Need to swap in the old connectivity probabilities
+
+I think there are too many connections when I scale up from 80/20 (exc/inh) to 800/200
+
+Trying to run a big one overnight, and we'll see.
+
+It worked but a lot of it seems a little odd.  Details and figures are in the meeting notes.
+
+
+* 2019-02-12 -- EEE Meeting and Article Revision
+
+Meeting agenda and notes:
+https://docs.google.com/document/d/1B7ql4aKGjfABxtbjWdRmSlpHuRSmoCncVEluCdkl7i8/edit
+
+
+* 2019-02-13 -- Article revision
+
+
+* 2019-02-14 -- Fixing connectivity
+
+** E --> E connectivity
+
+The last version of our old network, as I recall, didn't have the weird problems I'm seeing now.
+
+Looking at the old connectivity code for E->E:
+
+	excPopLabels = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4']
+	excL5 = excPopLabels
+
+    # (Exc) to  Exc L5
+    for prePop in excL5:
+        for postPop in excL5:
+            ruleLabel = prePop+'->'+postPop
+            netParams.connParams[ruleLabel] = {
+                'preConds': {'pop': prePop},
+                'postConds': {'pop': postPop},
+                'synMech': ESynMech, 
+                'weight': 1.0*cfg.EEgain, 
+                'synMechWeightFactor': cfg.ratiobdend,
+                'delay': 'defaultDelay+dist_3D/propVelocity',
+                'convergence': cfg.EEconv,#5,#3,
+                'loc': 0.3,
+                'sec': 'basal_8'}
+
+Where:
+	
+	ESynMech = ['AMPA','NMDA']
+
+	cfg.EEgain = 1.0
+	cfg.ratiobdend = [0.666,0.334]
+	cfg.EEconv = 3.0
+
+	netParams.defaultDelay = 2.0 # default conn delay (ms)
+	netParams.propVelocity = 100.0 # propagation velocity (um/ms)
+
+By using a for loop, we create a cell rule for each individual pop to each other pop, 
+which can then be modified individually later.  This seems like a better way to set 
+this up than the simpler tutorial version.
+
+I'm not totally sure what 
+
+	'synMechWeightFactor': cfg.ratiobdend
+
+does (and not currently documented in Netpyne), but I'm guessing it just scales 
+the one weight given for each of the two mechs.  So, AMPA weight would be scaled
+by 0.666 and NMDA by 0.334.  This would then indicate an AMPA/NMDA ratio of 2.0
+
+But, the old and new code already takes care of the ratio by scaling gmax of AMPA 
+and NMDA.  So I think I'll leave out synMechWeightFactor.
+
+I am going to switch my code from being NMDA then AMPA to AMPA then NMDA, in order to match
+with the old code and because it seems more common to say AMPA/NMDA ratio in the literature
+than vice-versa.
+
+And actually, I realize I should Check Penny's code to see what she sets NMDA and AMPA gmaxes
+to, because that is what we should use.
+
+	https://github.com/super-penguin/EEE_Detailed_Cell/blob/master/Fig3_exp_dms.py
+
+	SynAMPA[-1].gmax = 0.05
+	SynNMDA[-1].gmax = 0.005
+
+Currently, network model has:
+
+	cfg.NMDAgmax        = 0.005
+	cfg.AMPANMDAratio   = 10.0
+	cfg.AMPAgmax        = cfg.AMPANMDAratio * cfg.NMDAgmax
+
+Which works out to the same thing. So we're good.
+
+Trying to run sim, then will commit.
+
+Still runs.  Committing now.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

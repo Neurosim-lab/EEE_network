@@ -32,6 +32,7 @@ cfg.GABAAslow_e     = -90
 # Connectivity variables
 cfg.EEconv = 3.0
 cfg.EIconv = 3.0
+cfg.IEconv = 12.0
 
 # Recording options
 cfg.recordTraces = {'V_soma': {'sec':'soma', 'loc':0.5, 'var':'v'}}  

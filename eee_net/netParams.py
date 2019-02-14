@@ -102,14 +102,29 @@ for prePop in EPops:
             'loc': 0.5,
             'sec': 'soma'}
 
+# Inhibitory --> Excitatory
 
-netParams.connParams['PV5->PT5'] = {
-  'preConds': {'cellType': 'PV5'},
-  'postConds': {'cellType': 'PT5'},
-  'probability': 0.1,
-  'weight': [cfg.GABAAfastWeight, cfg.GABAAslowWeight],
-  'delay': 'dist_3D/propVelocity',
-  'synMech': ISynMech} 
+for prePop in ['PV5']:
+    for postPop in EPops:
+        ruleLabel = prePop+'->'+postPop
+        netParams.connParams[ruleLabel] = {
+            'preConds': {'pop': prePop},
+            'postConds': {'pop': postPop},
+            'synMech': ISynMech, 
+            'weight': [cfg.GABAAfastWeight, cfg.GABAAslowWeight],
+            'delay': 'defaultDelay+dist_3D/propVelocity',
+            'convergence': cfg.IEconv,
+            'loc': 0.5,
+            'sec': 'soma'}
+
+
+# netParams.connParams['PV5->PT5'] = {
+#   'preConds': {'cellType': 'PV5'},
+#   'postConds': {'cellType': 'PT5'},
+#   'probability': 0.1,
+#   'weight': [cfg.GABAAfastWeight, cfg.GABAAslowWeight],
+#   'delay': 'dist_3D/propVelocity',
+#   'synMech': ISynMech} 
 
 netParams.connParams['PV5->PV5'] = {
   'preConds': {'cellType': 'PV5'},

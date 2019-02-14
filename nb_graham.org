@@ -2794,15 +2794,87 @@ Running sim.
 
 It runs.  Committing.
 
+** I --> E connectivity
 
+Old code:
 
+     #inh to exc 
+     for prePop in inhL5:
+         for postPop in excL5:
+             ruleLabel = prePop+'->'+postPop
+             netParams.connParams[ruleLabel] = {
+                 'preConds': {'pop': prePop},
+                 'postConds': {'pop': postPop},
+                 'synMech': ISynMech, 
+                 'weight': 0.001*cfg.IEgain, 
+                 'synMechWeightFactor': [0.7,0.3],
+                 'delay': 'defaultDelay+dist_3D/propVelocity',
+                 'convergence': 4,
+                 'loc': 0.5,
+                 'sec': 'soma_2'}
 
+Adding cfg.IEconv = 4.0 to cfg.py
 
+cfg.IEgain = 0.1 in the old code, so the weight would be 0.001 * 0.1 = 0.0001
 
+That would be the weight for both GABAfast and GABAslow.
 
+GABAfast weight was set to 0.0002 in the old model.
 
+Note: I->E uses both fast and slow.  I->I only uses fast.
 
+I am going to create individual fast and slow weights in cfg.py:
 
+	cfg.GABAAfastWeight = 0.0001
+	cfg.GABAAslowWeight = 0.0001
+
+New code:
+
+	# Inhibitory --> Excitatory
+
+	for prePop in ['PV5']:
+	    for postPop in Epops:
+	        ruleLabel = prePop+'->'+postPop
+	        netParams.connParams[ruleLabel] = {
+	            'preConds': {'pop': prePop},
+	            'postConds': {'pop': postPop},
+	            'synMech': ISynMech, 
+	            'weight': [cfg.GABAAfastWeight.cfg.GABAAslowWeight],
+	            'delay': 'defaultDelay+dist_3D/propVelocity',
+	            'convergence': cfg.IEconv,
+	            'loc': 0.5,
+	            'sec': 'soma'}
+
+Running sim.  Didn't work.  Looking into.
+
+	Traceback (most recent call last):
+	  File "netParams.py", line 108, in <module>
+	    for postPop in Epops:
+	NameError: name 'Epops' is not defined
+
+Had to capitalize the 'p'
+
+	Traceback (most recent call last):
+	  File "netParams.py", line 114, in <module>
+	    'weight': [cfg.GABAAfastWeight.cfg.GABAAslowWeight],
+	AttributeError: 'float' object has no attribute 'cfg'
+
+New code that works:
+
+	# Inhibitory --> Excitatory
+
+	for prePop in ['PV5']:
+	    for postPop in EPops:
+	        ruleLabel = prePop+'->'+postPop
+	        netParams.connParams[ruleLabel] = {
+	            'preConds': {'pop': prePop},
+	            'postConds': {'pop': postPop},
+	            'synMech': ISynMech, 
+	            'weight': [cfg.GABAAfastWeight, cfg.GABAAslowWeight],
+	            'delay': 'defaultDelay+dist_3D/propVelocity',
+	            'convergence': cfg.IEconv,
+	            'loc': 0.5,
+	            'sec': 'soma'}
 
 
 

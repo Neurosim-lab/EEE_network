@@ -81,20 +81,27 @@ for prePop in EPops:
             'preConds': {'pop': prePop},
             'postConds': {'pop': postPop},
             'synMech': ESynMech, 
-            'weight': [cfg.AMPAweight, cfg.NMDAweight], #1.0*cfg.EEgain, 
+            'weight': [cfg.AMPAweight, cfg.NMDAweight],
             'delay': 'defaultDelay+dist_3D/propVelocity',
             'convergence': cfg.EEconv,
             'loc': 0.3,
             'sec': 'basal_8'}
 
+# Excitatory --> Inhibitory
 
-# netParams.connParams['PT5->all'] = {
-#   'preConds': {'cellType': 'PT5'},
-#   'postConds': {'cellType': ['PT5','PV5']},
-#   'probability': 0.1,
-#   'weight': [cfg.AMPAweight, cfg.NMDAweight],
-#   'delay': 'dist_3D/propVelocity',
-#   'synMech': ESynMech}
+for prePop in EPops:
+    for postPop in ['PV5']:
+        ruleLabel = prePop+'->'+postPop
+        netParams.connParams[ruleLabel] = {
+            'preConds': {'pop': prePop},
+            'postConds': {'pop': postPop},
+            'synMech': 'AMPA',
+            'weight': cfg.AMPAweight, 
+            'delay': 'defaultDelay+dist_3D/propVelocity',
+            'convergence': cfg.EIconv,
+            'loc': 0.5,
+            'sec': 'soma'}
+
 
 netParams.connParams['PV5->PT5'] = {
   'preConds': {'cellType': 'PV5'},

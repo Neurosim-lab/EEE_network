@@ -2753,6 +2753,46 @@ Forgot to add cfg.EEconv to cfg.py
 
 It runs now.  Committing.
 
+** E --> I connectivity
+
+Old code:
+
+    #exc to inh
+    for prePop in excL5:
+        for postPop in inhL5:
+            ruleLabel = prePop+'->'+postPop
+            netParams.connParams[ruleLabel] = {
+                'preConds': {'pop': prePop},
+                'postConds': {'pop': postPop},
+                'synMech': 'AMPA',
+                'weight': 2.0*cfg.EIgain, 
+                'delay': 'defaultDelay+dist_3D/propVelocity',
+                'convergence': 3,
+                'loc': 0.5,
+                'sec': 'soma'}
+
+Adding cfg.EIconv to cfg.py
+
+New code:
+
+	for prePop in EPops:
+	    for postPop in ['PV5']:
+	        ruleLabel = prePop+'->'+postPop
+	        netParams.connParams[ruleLabel] = {
+	            'preConds': {'pop': prePop},
+	            'postConds': {'pop': postPop},
+	            'synMech': 'AMPA',
+	            'weight': cfg.AMPAweight, 
+	            'delay': 'defaultDelay+dist_3D/propVelocity',
+	            'convergence': cfg.EIconv,
+	            'loc': 0.5,
+	            'sec': 'soma'}
+
+Running sim.
+
+	graham$ cd ~/EEE_network/eee_net ; rm *.png ; ./runsim
+
+It runs.  Committing.
 
 
 

@@ -2918,6 +2918,217 @@ New code:
 
 It works.  Committing.
 
+** Running a big simulation
+
+800 exc, 200 inh
+
+Interesting results.  Looking into how to turn them into a pdf that can be referenced from here.
+
+		b.runCfg = {'type': 'hpc_slurm', 
+		    'allocation': 'shs100', # bridges='ib4iflp', comet m1='shs100', comet nsg='csd403'
+		    #'reservation': 'salva1',
+		    'walltime': '2:00:00',
+		    'nodes': 5,
+		    'coresPerNode': 24,  # comet=24, bridges=28
+		    'email': 'salvadordura@gmail.com',
+		    'folder': '/home/salvadord/m1/sim/',  # comet='/salvadord', bridges='/salvi82'
+		    'script': 'init.py', 
+		    'mpiCommand': 'ibrun', # comet='ibrun', bridges='mpirun'
+		    'skip': True}
+
+
+* 2019-02-15 -- Code review and HPC intro
+
+Notes from meeting:
+https://docs.google.com/document/d/1pj7cdq8XcPIaCNWD6nMM5fostTbtoXujyku6Y5ryZLQ/edit
+
+EEE Theory Code Review -- 2018-02-15
+
+Google Hangout URL: https://hangouts.google.com/call/UFV-belsSHz1VJv5J4ozAAEE 
+
+Code repo: https://github.com/Neurosim-lab/EEE_network
+
+Old code is in eee_network
+New code is in eee_net
+
+Agenda
+
+Code review
+HPC tutorial
+
+Discussion
+
+Fitting
+Set known variables
+Then explore lesser known ones programmatically
+Salva: I play with E->E, E->I, I->E, I->I relative gains
+Gain variable in front of weights
+Conn prob is fairly well constrained
+Gains: 0.8, 1.0, 1.2, e.g.
+Can be global or define by layer
+Evolutionary
+Perhaps not ideal right now
+Should look into
+Code review
+Run individual sim: ./runsim
+Uses MPI to run init.py
+Run batch sims: ./runbatch
+Uses MPI to run batch.py
+Connectivity
+Probability: 
+can be distance dependent
+Convergence: 
+random throughout pops
+Divergence
+How to do connectivity
+Can have distance dependent weights
+Salva not sure need we need to complexify now
+This is more proof of concept
+Don’t worry too much about details here: already so simplified
+Find interesting things here, then explore in more realistic model
+Steps upcoming
+Get model output looking realistic
+Need inputs to apical dendrites
+These will be modeled as external inputs to network
+Three conditions:
+Standby: no plateaus
+Prepared: just plateaus
+Active: plateaus plus apical inputs
+Active should show more synchrony
+Input induced plateaus into a E pop
+See how plateaus affect network behavior
+Looking for synchrony
+
+
+Get plateaus to emerge from network
+
+Getting into HPC with Subha
+Don adds Joe as user
+Google search: SDSC comet
+Get your own space 
+SSH into comet.sdsc.edu (using your own user name)
+ssh <your_username>@comet.sdsc.edu
+ssh -l <your_username> comet.sdsc.edu 
+Login node does not run jobs, but can explore files, etc.
+Set up public-private keys
+Directions:
+Modules
+module list 
+Can do pip install package-name --user
+Can check out different branches
+Set up Python paths
+Queues
+Different types (debug, etc.)
+Compute queue is for exclusive access
+Debug for quick stuff, highly limited
+
+
+Each node has 48 cores
+Basic MPI job example
+#!/bin/bash
+#SBATCH --job-name="hellompi"
+#SBATCH --output="hellompi.%j.%N.out"
+#SBATCH --partition=compute
+#SBATCH --nodes=2
+#SBATCH --ntasks-per-node=24
+#SBATCH --export=ALL
+#SBATCH -t 01:30:00
+The partition is the queue you want to use
+-t is an estimate of time required for job
+Always ask for more time than you think you’ll need
+Scheduler will kill job after time 
+Longer times require longer waits in the queue
+Best to overestimate
+ibrun is unique to Comet, makes it more efficient
+Command ‘man’ gives info about things
+Can also specify email address and other options
+Netpyne can handle HPC configurations for Comet
+example Comet batch.py (in netpyne)
+Log into Comet, and run `python batch.py`
+
+b.runCfg = {'type': 'hpc_slurm', 
+    'allocation': 'shs100', # bridges='ib4iflp', comet m1='shs100', comet nsg='csd403'
+    #'reservation': 'salva1',
+    'walltime': '2:00:00',
+    'nodes': 5,
+    'coresPerNode': 24,  # comet=24, bridges=28
+    'email': 'salvadordura@gmail.com',
+    'folder': '/home/salvadord/m1/sim/',  # comet='/salvadord', bridges='/salvi82'
+    'script': 'init.py', 
+    'mpiCommand': 'ibrun', # comet='ibrun', bridges='mpirun'
+    'skip': True}
+
+Tip: start with smaller sims, then increase as you know they work
+See Job Monitoring and Management to see how your sim is going
+If you submit a bad job, can use scancel
+Once job is running, you have access into that node
+There is a command to show job characteristics
+Shows which computer node your job is running
+Then can SSH into that node from login
+Then use command `top` to see memory usage
+
+
+
+* 2019-02-20 -- OCNC 2019 application reviewing
+
+OIST Computational Neuroscience Course
+Reviewing student applications
+
+
+* 2019-02-21 -- OCNC 2019 application reviewing
+
+OIST Computational Neuroscience Course
+Reviewing student applications
+
+
+* 2019-02-26 -- EEE Meeting and
+
+** Matching up parameter values with old network model
+
+I see the old network model had slightly different dimensions:
+
+	cfg.sizeY = 1600
+	cfg.sizeX = 400
+	cfg.sizeZ = 300
+
+Our current:
+
+	netParams.sizeX = 100 # x-dimension (horizontal length) size in um
+	netParams.sizeY = 1000 # y-dimension (vertical height or cortical depth) size in um
+	netParams.sizeZ = 100 # z-dimension (horizontal length) size in um
+
+I'll move these params to cfg and set them to the old values.
+
+
+** Plotting raster arranged by cell gid
+
+I'd like to see the raster with cells arranged by y-position (current setting), but would 
+also like to see raster plot with cells arranged by gid (separated by pop type)
+
+Adding this to cfg.py:
+	
+	cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True,'saveFig': saveFig, 'labels':'overlay','showFig': showFig}
+
+That worked, but now I no longer get the raster by y-pos.  I'll have to ask Salva how to 
+plot more than one raster.
+
+
+** Looking into odd PT5 cell traces
+
+Traces still look odd:  
+file:nb_gif/20190226_061931.png
+
+I'm going to turn off all connectivity to PT cells and see results.
+
+
+
+
+
+
+
+
+
+
 
 
 

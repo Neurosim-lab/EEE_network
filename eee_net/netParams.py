@@ -10,9 +10,10 @@ except:
 ## Network parameters
 netParams = specs.NetParams()  # object of class NetParams to store the network parameters
 
-netParams.sizeX = 100 # x-dimension (horizontal length) size in um
-netParams.sizeY = 1000 # y-dimension (vertical height or cortical depth) size in um
-netParams.sizeZ = 100 # z-dimension (horizontal length) size in um
+netParams.sizeX = cfg.sizeX # x-dimension (horizontal length) size in um
+netParams.sizeY = cfg.sizeY # y-dimension (vertical height or cortical depth)
+netParams.sizeZ = cfg.sizeZ # z-dimension (horizontal depth)
+netParams.shape = 'cylinder' # cylindrical (column-like) volume
 netParams.propVelocity = 100.0 # propagation velocity (um/ms)
 netParams.probLengthConst = 150.0 # length constant for conn probability (um)
 

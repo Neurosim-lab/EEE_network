@@ -13,7 +13,10 @@ cfg.recordStep = 1
 cfg.simLabel = 'eee_net'
 cfg.saveFolder = 'output'
 cfg.savePickle = False         
-cfg.saveMat = False  
+cfg.saveMat = False
+cfg.seeds = {'conn': 4123,
+			 'stim': 1234, 
+			 'loc' : 3214}  
 
 # Network variables
 cfg.numPT5cells = 8
@@ -26,12 +29,30 @@ cfg.ynormRange  = [0.2, 0.623]
 cfg.NMDAgmax        = 0.005
 cfg.AMPANMDAratio   = 10.0
 cfg.AMPAgmax        = cfg.AMPANMDAratio * cfg.NMDAgmax 
-cfg.NMDAweight      = 0.8
-cfg.AMPAweight      = cfg.NMDAweight
-cfg.GABAAfastWeight = 0.0001
-cfg.GABAAslowWeight = 0.0001
+cfg.NMDAweight      = 0 #0.8
+cfg.AMPAweight      = 0 #cfg.NMDAweight
+cfg.GABAAfastWeight = 0 #0.0001
+cfg.GABAAslowWeight = 0 #0.0001
 cfg.GABAAfast_e     = -80
 cfg.GABAAslow_e     = -90
+
+# Noise variables
+cfg.noisePT5 = True
+cfg.noisePV5 = True
+
+cfg.PT5_exc_noise_amp = 0.0121
+cfg.PT5_exc_noise_e   = 0.0
+cfg.PT5_exc_noise_tau = 1.0
+cfg.PT5_inh_noise_amp = 0.0573
+cfg.PT5_inh_noise_e   = -75.0
+cfg.PT5_inh_noise_tau = 1.0
+
+cfg.PV5_exc_noise_amp = 0.0121
+cfg.PV5_exc_noise_e   = 0.0
+cfg.PV5_exc_noise_tau = 1.0
+cfg.PV5_inh_noise_amp = 0.0573
+cfg.PV5_inh_noise_e   = -75.0
+cfg.PV5_inh_noise_tau = 1.0
 
 # Connectivity variables
 cfg.EEconv = 3.0

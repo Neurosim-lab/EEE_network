@@ -3120,18 +3120,144 @@ file:nb_gif/20190226_061931.png
 
 I'm going to turn off all connectivity to PT cells and see results.
 
+Committing first.
 
+First step, I'll turn off the noise.
 
+Okay, without the noise there is no spiking in any cell pop.
 
+PT5 sits at resting membrane potential RMP of about -69
+PV5 sits at resting membrane potential RMP of about -71
 
+Will have to look into appropriate RMPs.
 
+Turning noise on but all other connectivity off.
 
+	cfg.NMDAweight      = 0 #0.8
+	cfg.AMPAweight      = 0 #cfg.NMDAweight
+	cfg.GABAAfastWeight = 0 #0.0001
+	cfg.GABAAslowWeight = 0 #0.0001 
 
+Okay, now the traces look funky again:
+file:nb_gif/20190226_063630.png
 
+Ahhh, I am using a different (simpler) noise than we used in the old network
+(simple Exp2Syn instead of Gfluctp)
 
+Will switch to using Gfluctp now.
 
+	if cfg.noisePT5:
+	    netParams.cellParams['PT5_1']['secs']['soma']['pointps'] = {
+                        'noise': {'mod': 'Gfluctp', 
+                        'loc': 0.5,
+                        'std_e': 0.012 * cfg.exc_noise_amp,
+                        'g_e0' : 0.0121, 
+                        'tau_i': 10.49 * cfg.noise_tau, 
+                        'tau_e': 2.728 * cfg.noise_tau, 
+                        'std_i': 0.0264 * cfg.inh_noise_amp, 
+                        'g_i0' : 0.0573, 
+                        'E_e'  : cfg.e_exc_noise, 
+                        'E_i'  : cfg.e_inh_noise, 
+                        'seed1': 'gid', 
+                        'seed2': sim.id32('gfluctp'), 
+                        'seed3': cfg.seeds['stim']}}
 
+Need to add all the variable params to cfg.py.
 
+Adding seeds:
+
+	cfg.seeds = {'conn': 4123,
+			 'stim': 1234, 
+			 'loc' : 3214}  
+
+Here are the default values from Gfluctp.mod:
+
+	  E_e	= 0 	(mV)	: reversal potential of excitatory conductance
+	  E_i	= -75 	(mV)	: reversal potential of inhibitory conductance
+
+	  g_e0	= 0.0121 (umho)	: average excitatory conductance
+	  g_i0	= 0.0573 (umho)	: average inhibitory conductance
+
+	  std_e	= 0.0030 (umho)	: standard dev of excitatory conductance
+	  std_i	= 0.0066 (umho)	: standard dev of inhibitory conductance
+
+	  tau_e	= 2.728	(ms)	: time constant of excitatory conductance
+	  tau_i	= 10.49	(ms)	: time constant of inhibitory conductance
+
+I think the noise amplitude is set wrong in old model...
+
+Instead of 
+
+	'std_e': 0.012 * cfg.exc_noise_amp
+	'g_e0' : 0.0121, 
+
+I think it should be
+	
+	'std_e': 0.012
+	'g_e0' : 0.0121 * cfg.exc_noise_amp
+
+Because g is the conductance, which determines amplitude. std is the variability of the 
+conductance
+
+Making this change.
+
+Error:
+
+	graham$ python netParams.py
+	Balancing each compartment to -73 mV
+	Traceback (most recent call last):
+	  File "netParams.py", line 87, in <module>
+	    'seed2': sim.id32('gfluctp'), 
+	NameError: name 'sim' is not defined
+
+Looks like the previous netParams.py had this:
+
+	from netpyne import sim
+
+Adding that and trying again.
+
+Error:
+
+	graham$ python netParams.py
+	Balancing each compartment to -73 mV
+	Traceback (most recent call last):
+	  File "netParams.py", line 88, in <module>
+	    'seed2': sim.id32('gfluctp'), 
+	AttributeError: module 'netpyne.sim' has no attribute 'id32'
+
+Searching around, I see:
+
+	id32() provides a 32-bit hash for a name: def id32(obj):return hash(obj)&0xffffffff
+
+From:
+
+	https://bmcneurosci.biomedcentral.com/articles/10.1186/1471-2202-16-S1-P151
+
+See also:
+
+	https://stackoverflow.com/questions/793761/built-in-python-hash-function/3979894
+
+Which explains:
+
+	Hash results varies between 32bit and 64bit platforms
+
+	If a calculated hash shall be the same on both platforms consider using
+
+	def hash32(value):
+	    return hash(value) & 0xffffffff
+
+I'll just add an id32 function to the top of netParams:
+
+	## Hash function
+	def id32(obj):
+	    return hash(obj) & 0xffffffff
+
+And get rid of the sim in sim.id32
+
+Now it works, and the traces look better:
+file:nb_gif/20190226_074924.png
+
+Committing now.
 
 
 

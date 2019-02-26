@@ -7,6 +7,10 @@ except:
     from cfg import cfg
 
 
+## Hash function
+def id32(obj):
+    return hash(obj) & 0xffffffff
+
 ## Network parameters
 netParams = specs.NetParams()  # object of class NetParams to store the network parameters
 
@@ -40,13 +44,6 @@ netParams.cellParams['PV5'] = cellRule
 cellRule = netParams.importCellParams(label='PT5_1', conds={'pop':'PT5_1'}, fileName=eeeS_path, cellName='MakeCell', cellInstance=True)
 netParams.cellParams['PT5_1'] = cellRule
 
-## Then copy the cellRule for the other pops (faster than importing again)
-## Note: we are creating 1 cell type per pop because they could potentially have different noise and connectivity params           
-for label in ['PT5_2', 'PT5_3', 'PT5_4']:    
-    cellRule = copy.deepcopy(netParams.cellParams['PT5_1'].todict())
-    cellRule['conds']['pop'] = [label]
-    netParams.cellParams[label] = cellRule
-
 
 ## Synaptic mechanism parameters
 ESynMech = ['AMPA','NMDA']
@@ -62,14 +59,43 @@ netParams.synMechParams['NMDA'] = {'mod': 'NMDA', 'Cdur': 10.0, 'Beta': 0.02, 'g
 
 
 
-## Stimulation parameters
-netParams.synMechParams['exc'] = {'mod': 'Exp2Syn', 'tau1': 0.8, 'tau2': 5.3, 'e': 0}
-netParams.stimSourceParams['bkg'] = {'type': 'NetStim', 'rate': 20, 'noise': 0.3}
-netParams.stimTargetParams['bkg->all'] = {'source': 'bkg', 'conds': {'cellType': ['PV5','PT5']}, 'weight': 0.01, 'delay': 'max(1, normal(5,2))', 'synMech': 'exc'}
+## Noise
+
+#netParams.synMechParams['exc'] = {'mod': 'Exp2Syn', 'tau1': 0.8, 'tau2': 5.3, 'e': 0}
+#netParams.stimSourceParams['bkg'] = {'type': 'NetStim', 'rate': 20, 'noise': 0.3}
+#netParams.stimTargetParams['bkg->all'] = {'source': 'bkg', 'conds': {'cellType': ['PV5','PT5']}, 'weight': 0.01, 'delay': 'max(1, normal(5,2))', 'synMech': 'exc'}
+
+if cfg.noisePT5:
+    netParams.cellParams['PT5_1']['secs']['soma']['pointps'] = {
+                        'noise': {'mod': 'Gfluctp', 
+                        'loc': 0.5,
+                        'std_e': 0.012,
+                        'g_e0' : 0.0121 * cfg.PT5_exc_noise_amp, 
+                        'tau_i': 10.49 * cfg.PT5_inh_noise_tau, 
+                        'tau_e': 2.728 * cfg.PT5_exc_noise_tau, 
+                        'std_i': 0.0264, 
+                        'g_i0' : 0.0573 * cfg.PT5_inh_noise_amp, 
+                        'E_e'  : cfg.PT5_exc_noise_e, 
+                        'E_i'  : cfg.PT5_inh_noise_e, 
+                        'seed1': 'gid', 
+                        'seed2': id32('gfluctp'), 
+                        'seed3': cfg.seeds['stim']}}
+
+
+# Now that all PT5_1 parameters have been set, copy the cellRule for the other pops
+# Note: we are creating 1 cell type per pop because they could potentially have 
+# different noise and connectivity params  
+
+for label in ['PT5_2', 'PT5_3', 'PT5_4']:    
+    cellRule = copy.deepcopy(netParams.cellParams['PT5_1'].todict())
+    cellRule['conds']['pop'] = [label]
+    netParams.cellParams[label] = cellRule
+
+
+
 
 
 ## Cell connectivity rules
-
 
 # Excitatory --> Excitatory
 
@@ -135,11 +161,4 @@ for prePop in ['PV5']:
             'sec': 'soma'}
 
 
-# netParams.connParams['PV5->PV5'] = {
-#   'preConds': {'cellType': 'PV5'},
-#   'postConds': {'cellType': 'PV5'},
-#   'probability': 0.1,
-#   'weight': cfg.GABAAfastWeight,
-#   'delay': 'dist_3D/propVelocity',
-#   'synMech': 'GABAAfast'} 
 

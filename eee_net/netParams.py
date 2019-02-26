@@ -1,6 +1,8 @@
 from netpyne import specs
 import os
 import copy
+import numpy as np
+
 try:
     from __main__ import cfg
 except:
@@ -58,10 +60,9 @@ netParams.synMechParams['AMPA'] = {'mod': 'AMPA', 'gmax': cfg.AMPAgmax}
 netParams.synMechParams['NMDA'] = {'mod': 'NMDA', 'Cdur': 10.0, 'Beta': 0.02, 'gmax': cfg.NMDAgmax}
 
 
-
 ## Noise
 
-# PT5 noise
+# PT5_1 noise
 if cfg.noisePT5:
     netParams.cellParams['PT5_1']['secs']['soma']['pointps'] = {
                         'noise': {'mod': 'Gfluctp', 
@@ -96,16 +97,15 @@ if cfg.noisePV5:
                         'seed3': cfg.seeds['stim']}}
 
 
-# Now that all PT5_1 parameters have been set, copy the cellRule for the other pops
-# Note: we are creating 1 cell type per pop because they could potentially have 
-# different noise and connectivity params  
+# All PT5_1 parameters have been set (including noise), so now copy the 
+#   cellRule for the other PT pops
+# Note: we are creating 1 cell type per pop because they could potentially 
+#   have different noise and connectivity params  
 
 for label in ['PT5_2', 'PT5_3', 'PT5_4']:    
     cellRule = copy.deepcopy(netParams.cellParams['PT5_1'].todict())
     cellRule['conds']['pop'] = [label]
     netParams.cellParams[label] = cellRule
-
-
 
 
 
@@ -174,5 +174,38 @@ for prePop in ['PV5']:
             'loc': 0.5,
             'sec': 'soma'}
 
+if cfg.glutamate:
 
+    for nslabel in [k for k in dir(cfg) if k.startswith('glutPuff')]:
+        
+        ns = getattr(cfg, nslabel, None)        
+            
+        branch_length = netParams.cellParams['PT5_1']['secs'][ns['sec']]['geom']['L']
+
+        if "ExSyn" in nslabel:
+            cur_locs = np.linspace(cfg.synLocMiddle-cfg.synLocRadius, cfg.synLocMiddle+cfg.synLocRadius, cfg.numExSyns)
+            cur_dists = branch_length * np.abs(cur_locs - cfg.synLocMiddle)
+            cur_weights = (cfg.glutAmp * cfg.glutAmpExSynScale) * (1 - cur_dists * cfg.glutAmpDecay/100)
+            cur_weights = [weight if weight > 0.0 else 0.0 for weight in cur_weights]
+            cur_delays = cfg.initDelay + (cfg.exSynDelay * cur_dists)
+                  
+              
+        elif "Syn" in nslabel:
+            cur_locs = np.linspace(cfg.synLocMiddle-cfg.synLocRadius, cfg.synLocMiddle+cfg.synLocRadius, cfg.numSyns)
+            cur_dists = branch_length * np.abs(cur_locs - cfg.synLocMiddle)
+            cur_weights = cfg.glutAmp * (1 - cur_dists * cfg.glutAmpDecay/100)
+            cur_weights = [weight if weight > 0.0 else 0.0 for weight in cur_weights]
+            cur_delays = cfg.initDelay + (cfg.synDelay * cur_dists)                
+              
+        else:
+            raise Exception("Should have had Syn or ExSyn in name. See netParams.py")             
+        # add stim source
+        netParams.stimSourceParams[nslabel] = {'type': 'NetStim', 'start': ns['start'], 'interval': ns['interval'], 'noise': ns['noise'], 'number': ns['number']}  
+
+        # connect stim source to target
+        for cur_pop in ['PT5_1']:    
+
+            for i in range(len(ns['synMech'])):
+                
+                netParams.stimTargetParams[nslabel+'_'+cur_pop+'_'+ns['synMech'][i]] = {'source': nslabel, 'conds': {'pop': cur_pop}, 'sec': ns['sec'], 'synsPerConn': cfg.numSyns, 'loc': list(cur_locs), 'synMech': ns['synMech'][i], 'weight': list(cur_weights), 'delay': list(cur_delays)}
 

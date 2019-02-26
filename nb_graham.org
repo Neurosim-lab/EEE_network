@@ -3295,6 +3295,98 @@ Everything works.  Will post figs in EEE Meeting agenda.
 
 Committing now.
 
+** EEE Meeting
+
+https://docs.google.com/document/d/1DeegMQNZIMpLq36klrj9kUMvpHJQJ3wsm3SAGRIYnt4/edit
+
+Discussion
+
+Penny puts in CNS abstract, will use same one for BRAIN meeting
+Poster out of paper figures, plus some network stuff
+Next step: induce plateaus
+Then: larger network, look for emergent plateaus
+Bill: save spikes for each run, can make figures later then
+RMP values look fine
+Play around with convergence to find emergent plateaus
+Want to expand to 10,000 cells
+How does Netpyne convergence work?  It it a percent or a number of cells?
+Should look into connectivity, measure output from different con/divergences
+
+Action items for next week
+
+Penny: abstract for CNS
+Joe: induced plateaus
+Joe/Subha: run batch sims on HPC
+
+
+** Getting plateau induction going
+
+Getting an error:
+
+	graham$ cd ~/EEE_network/eee_net ; ipython -i init.py
+	Python 3.7.1 (default, Dec 14 2018, 13:28:58) 
+	Type 'copyright', 'credits' or 'license' for more information
+	IPython 7.2.0 -- An enhanced Interactive Python. Type '?' for help.
+	Note: NeuroML import failed; import/export functions for NeuroML will not be available. 
+	  To install the pyNeuroML & libNeuroML Python packages visit: https://www.neuroml.org/getneuroml
+	Balancing each compartment to -73 mV
+
+	Creating network of 5 cell populations on 1 hosts...
+	  Number of cells on node 0: 100 
+	  Done; cell creation time = 0.32 s.
+	Making connections...
+	  Number of connections on node 0: 2400 
+	  Number of synaptic contacts on node 0: 4320 
+	  Done; cell connection time = 0.30 s.
+	Adding stims...
+	---------------------------------------------------------------------------
+	IndexError                                Traceback (most recent call last)
+	~/EEE_network/eee_net/init.py in <module>
+	     24 sim.net.createCells()         # instantiate network cells based on defined populations
+	     25 sim.net.connectCells()        # create connections between cells based on params
+	---> 26 sim.net.addStims()            # add network stimulation
+	     27 sim.setupRecording()          # setup variables to record (spikes, V traces, etc)
+	     28 sim.runSim()                  # run parallel Neuron simulation
+
+	~/Applications/netpyne/netpyne/network/stim.py in addStims(self)
+	     60             if 'cellList' in target['conds']:
+	     61                 orderedPostGids = sorted(postCellsTags.keys())
+	---> 62                 gidList = [orderedPostGids[i] for i in target['conds']['cellList']]
+	     63                 postCellsTags = {gid: tags for (gid,tags) in postCellsTags.items() if gid in gidList}
+	     64 
+
+	~/Applications/netpyne/netpyne/network/stim.py in <listcomp>(.0)
+	     60             if 'cellList' in target['conds']:
+	     61                 orderedPostGids = sorted(postCellsTags.keys())
+	---> 62                 gidList = [orderedPostGids[i] for i in target['conds']['cellList']]
+	     63                 postCellsTags = {gid: tags for (gid,tags) in postCellsTags.items() if gid in gidList}
+	     64 
+
+	IndexError: list index out of range
+
+
+Here's where the problem arises:
+
+        for cur_pop in ['PV5_1']:    
+
+            for i in range(len(ns['synMech'])):
+                
+                netParams.stimTargetParams[nslabel+'_'+cur_pop+'_'+ns['synMech'][i]] = {'source': nslabel, 'conds': {'pop': cur_pop, 'cellList': range(0, int(cfg.numPT5cells/4))}, 'sec': ns['sec'], 'synsPerConn': cfg.numSyns, 'loc': list(cur_locs), 'synMech': ns['synMech'][i], 'weight': list(cur_weights), 'delay': list(cur_delays)}
+
+I'm going to remove cellList from the conds.
+
+Okay it runs now, but I'm not seeing the glutamate puff.  Netpyne says it is setting up 0 stims.
+
+Looking into it.
+
+Part of it was that I said `for cur_pop in ['PV5_1']:` instead of `PT5_1`.
+
+Now the stim connection works, but I'm still not seeing the plateau.  Looking into it.
+
+Committing and taking a break.
+
+
+
 
 
 

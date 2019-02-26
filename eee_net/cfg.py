@@ -1,7 +1,8 @@
 from netpyne import specs, sim
+import numpy as np
 
 # Show figures? Save figures?
-showFig = True
+showFig = False
 saveFig = True
 
 # Simulation options
@@ -59,6 +60,25 @@ cfg.EEconv = 3.0
 cfg.EIconv = 3.0
 cfg.IEconv = 12.0
 cfg.IIconv = 12.0
+
+# Glutamate stim parameters
+cfg.glutamate         = True
+
+cfg.synTime           = 200.0
+cfg.numSyns           = 24
+cfg.numExSyns         = cfg.numSyns
+cfg.glutAmp           = 20.0
+cfg.glutAmpExSynScale = 1.0
+cfg.glutAmpDecay      = 0.0 # percent/um
+cfg.synLocMiddle      = 0.3 #0.45 
+cfg.synLocRadius      = 0.15 
+cfg.initDelay         = 10.0
+cfg.synDelay          = 2.0 # ms/um
+cfg.exSynDelay        = 4.0 # ms/um
+
+cfg.glutPuffSyn = {'loc': list(np.linspace(cfg.synLocMiddle-cfg.synLocRadius, cfg.synLocMiddle+cfg.synLocRadius, cfg.numSyns)), 'sec': 'basal_8', 'synMech': ['NMDA','AMPA'], 'start': cfg.synTime, 'interval': 1000, 'noise': 0.0, 'number': 1, 'weight': cfg.glutAmp, 'delay': cfg.synDelay}
+
+cfg.glutPuffExSyn = {'loc': list(np.linspace(cfg.synLocMiddle-cfg.synLocRadius, cfg.synLocMiddle+cfg.synLocRadius, cfg.numExSyns)), 'sec': 'basal_8', 'synMech': ['NMDA'], 'start': cfg.synTime, 'interval': 1000, 'noise': 0.0, 'number': 1, 'weight': cfg.glutAmp * cfg.glutAmpExSynScale, 'delay': cfg.exSynDelay}
 
 # Recording options
 cfg.recordTraces = {'V_soma': {'sec':'soma', 'loc':0.5, 'var':'v'}}  

@@ -19,8 +19,8 @@ cfg.seeds = {'conn': 4123,
 			 'loc' : 3214}  
 
 # Network variables
-cfg.numPT5cells = 8
-cfg.numPV5cells = 2
+cfg.numPT5cells = 80
+cfg.numPV5cells = 20
 cfg.sizeY       = 1600
 cfg.sizeX       = 400
 cfg.sizeZ       = 300
@@ -29,10 +29,10 @@ cfg.ynormRange  = [0.2, 0.623]
 cfg.NMDAgmax        = 0.005
 cfg.AMPANMDAratio   = 10.0
 cfg.AMPAgmax        = cfg.AMPANMDAratio * cfg.NMDAgmax 
-cfg.NMDAweight      = 0 #0.8
-cfg.AMPAweight      = 0 #cfg.NMDAweight
-cfg.GABAAfastWeight = 0 #0.0001
-cfg.GABAAslowWeight = 0 #0.0001
+cfg.NMDAweight      = 0.8
+cfg.AMPAweight      = cfg.NMDAweight
+cfg.GABAAfastWeight = 0.0001
+cfg.GABAAslowWeight = 0.0001
 cfg.GABAAfast_e     = -80
 cfg.GABAAslow_e     = -90
 

@@ -3146,6 +3146,10 @@ Ahhh, I am using a different (simpler) noise than we used in the old network
 
 Will switch to using Gfluctp now.
 
+** Switching PT5 noise to Gfluctp
+
+Original code:
+
 	if cfg.noisePT5:
 	    netParams.cellParams['PT5_1']['secs']['soma']['pointps'] = {
                         'noise': {'mod': 'Gfluctp', 
@@ -3229,7 +3233,7 @@ Searching around, I see:
 
 	id32() provides a 32-bit hash for a name: def id32(obj):return hash(obj)&0xffffffff
 
-From:
+From an article from our lab:
 
 	https://bmcneurosci.biomedcentral.com/articles/10.1186/1471-2202-16-S1-P151
 
@@ -3258,6 +3262,39 @@ Now it works, and the traces look better:
 file:nb_gif/20190226_074924.png
 
 Committing now.
+
+
+** Switching PV5 noise to Gfluctp
+
+New code:
+
+	# PV5 noise
+	if cfg.noisePV5:
+	    netParams.cellParams['PV5']['secs']['soma']['pointps'] = {
+                        'noise': {'mod': 'Gfluctp', 
+                        'loc': 0.5,
+                        'std_e': 0.012,
+                        'g_e0' : 0.0121 * cfg.PV5_exc_noise_amp, 
+                        'tau_i': 10.49 * cfg.PV5_inh_noise_tau, 
+                        'tau_e': 2.728 * cfg.PV5_exc_noise_tau, 
+                        'std_i': 0.0264, 
+                        'g_i0' : 0.0573 * cfg.PV5_inh_noise_amp, 
+                        'E_e'  : cfg.PV5_exc_noise_e, 
+                        'E_i'  : cfg.PV5_inh_noise_e, 
+                        'seed1': 'gid', 
+                        'seed2': id32('gfluctp'), 
+                        'seed3': cfg.seeds['stim']}}
+
+It works and traces look good.  
+
+Activating connectivity and running a larger sim (80/20 instead of 8/2)
+
+Also running a very large sim (800/200)
+
+Everything works.  Will post figs in EEE Meeting agenda.
+
+Committing now.
+
 
 
 

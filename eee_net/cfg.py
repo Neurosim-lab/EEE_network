@@ -18,10 +18,12 @@ cfg.saveMat = False
 cfg.seeds = {'conn': 4123,
 			 'stim': 1234, 
 			 'loc' : 3214}  
+cfg.hParams.celsius = 32.0
+cfg.hParams.v_init  = -73.7
 
 # Network variables
-cfg.numPT5cells = 8
-cfg.numPV5cells = 2
+cfg.numPT5cells = 80
+cfg.numPV5cells = 20
 cfg.sizeY       = 1600
 cfg.sizeX       = 400
 cfg.sizeZ       = 300
@@ -38,7 +40,7 @@ cfg.GABAAfast_e     = -80
 cfg.GABAAslow_e     = -90
 
 # Noise variables
-cfg.noisePT5 = False
+cfg.noisePT5 = True
 cfg.noisePV5 = True
 
 cfg.PT5_exc_noise_amp = 0.0121

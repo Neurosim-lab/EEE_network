@@ -18,6 +18,8 @@ cfg.saveMat = False
 cfg.seeds = {'conn': 4123,
 			 'stim': 1234, 
 			 'loc' : 3214}  
+cfg.hParams.celsius = 32.0
+cfg.hParams.v_init  = -73.7
 
 # Channel variables
 cfg.ttx = False

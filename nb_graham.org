@@ -4359,13 +4359,87 @@ Yeah, now the message disappears.
 Committing now.  Oops, added too much stuff (e.g. output) to eee_single/
 Looking into untracking files with Git...
 
-git rm -rf eee_single/__pycache__/
-git rm -rf eee_single/output/
-
-
+	git rm -rf eee_single/__pycache__/
+	git rm -rf eee_single/output/
+	git add -u
+	git commit -m "Working on matching eeeD with previous detailed model"
 
 
 ** Ensuring match of detailed models
+
+Interesting output from Netpyne verbose:
+
+	Setting h global variables ...
+	  h.celsius = 6.3
+	  h.v_init = -65.0
+	  h.clamp_resist = 0.001
+	  h.taur_cad = 100.0
+	  h.thi1_na = -58.0
+	  h.thi2_na = -58.0
+	  h.vshift_ca = 10.0
+	  h.vshift_na = -10.0
+	  h.tstop = 1000.0
+
+Will ensure Penny's model uses these values as well.
+
+I see Penny uses h.celsius = 32
+
+Changing to that value and re-running.
+
+	cfg.hParams.celsius = 32.0	
+
+Much better!
+
+file:gif/20190305_070140.png
+
+Left column, celsius = 6.3; Right column celsius = 32.0
+Top row: eeeD; Bottom row: eeeS
+
+Adding the temperature change to eee_net/cfg.py
+
+I see Penny uses h.v_init =  -73.6927850677
+
+Setting this value and seeing the effect.
+
+	cfg.hParams.v_init =  -73.7
+
+Looks very similar, but the initial voltage is closer to steady-state:
+file:gif/20190305_071153.png
+
+Left column, old v_init; Right column, new v_init
+Top row: eeeD; Bottom row: eeeS
+
+Adding new v_init to eee_net/cfg.py
+
+
+** Running network sim with improvements
+
+To run:
+
+	graham$ cd ~/EEE_network/eee_net/ ; ./runsim
+
+Turned noise back on, verbose off, 100 cells total
+
+file:gif/20190305_072635.png
+
+Looks pretty good, though perhaps too much E->E (basal_8 stays pretty depolarized)
+
+Turning plateau off and running for comparison.
+
+	cfg.glutamate         = False
+
+No plat:
+
+file:gif/20190305_073147.png
+
+Turning plat back on and committing.
+
+
+
+
+
+
+
 
 
 

@@ -177,7 +177,7 @@ for prePop in ['PV5']:
 if cfg.glutamate:
 
     for nslabel in [k for k in dir(cfg) if k.startswith('glutPuff')]:
-        
+
         ns = getattr(cfg, nslabel, None)        
             
         branch_length = netParams.cellParams['PT5_1']['secs'][ns['sec']]['geom']['L']
@@ -208,4 +208,25 @@ if cfg.glutamate:
             for i in range(len(ns['synMech'])):
                 
                 netParams.stimTargetParams[nslabel+'_'+cur_pop+'_'+ns['synMech'][i]] = {'source': nslabel, 'conds': {'pop': cur_pop}, 'sec': ns['sec'], 'synsPerConn': cfg.numSyns, 'loc': list(cur_locs), 'synMech': ns['synMech'][i], 'weight': list(cur_weights), 'delay': list(cur_delays)}
+
+
+if cfg.addIClamp:
+
+    for iclabel in [k for k in dir(cfg) if k.startswith('IClamp')]:
+        ic = getattr(cfg, iclabel, None)  # get dict with params
+
+        # add stim source
+        #netParams.stimSourceParams[iclabel] = {'type': 'IClamp', 'del': ic['del'], 'dur': ic['dur'], 'amp': ic['amp']}
+        netParams.stimSourceParams[iclabel] = {'type': 'IClamp', 'del': ic['del'], 'dur': ic['dur'], 'amp': cfg.ampIClamp1}
+        
+        # add stim target
+        for curpop in ic['pop']:
+            netParams.stimTargetParams[iclabel+'_'+curpop] = \
+                {'source': iclabel, 'conds': {'popLabel': ic['pop']}, 'sec': ic['sec'], 'loc': ic['loc']}
+
+
+
+#for secName, sec in netParams.cellParams['PT5_1']['secs'].items():  
+#    print(secName) 
+
 

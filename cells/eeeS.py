@@ -560,7 +560,6 @@ class eeeS():
         self.basal[8].nseg = 3
 
 
-
         # Set up the 3d morphology and connection of soma
         h.pt3dclear(sec = self.soma)
         h.pt3dstyle(1, -53.42,3.52,-5.95,13.43, sec = self.soma)
@@ -568,8 +567,6 @@ class eeeS():
         h.pt3dadd(-53.74,0.93,-5.96,15.35, sec = self.soma)
         h.pt3dadd(-54.06,-1.66,-5.96,11.51, sec = self.soma)
         h.pt3dadd(-54.06,-4.25,-5.96,7.99, sec = self.soma)
-
-
         h.pt3dadd(-53.42,3.52,-5.96,13.43, sec = self.soma)
         h.pt3dadd(-53.1,6.12,-5.96,11.19, sec = self.soma)
         h.pt3dadd(-52.78,8.71,-5.96,9.59, sec = self.soma)
@@ -577,9 +574,6 @@ class eeeS():
         h.pt3dadd(-53.1,14.22,-5.96,5.76, sec = self.soma)
 
         # Set up the 3d morphology and connection of basal dendrites
-
-
-
         self.basal[0].connect(self.soma)
         h.pt3dclear(sec = self.basal[0])
         h.pt3dadd(-53.42,3.52,-5.96,2.5, sec = self.basal[0])

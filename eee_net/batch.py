@@ -6,7 +6,8 @@ def batchTest():
 	params = specs.ODict()   
 
 	# fill in with parameters to explore and range of values (key has to coincide with a variable in simConfig) 
-	params['GABAAfastWeight'] = [0.0001, 0.01, 1.0]   
+	params['ampIClamp1'] = [0.1, 0.5, 1.0]
+	#params['GABAAfastWeight'] = [0.0001, 0.01, 1.0]   
 	#params['GABAAslowWeight'] = [0.0001, 0.001, 0.01]
 
 	# create Batch object with paramaters to modify, and specifying files to use

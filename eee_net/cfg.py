@@ -20,8 +20,8 @@ cfg.seeds = {'conn': 4123,
 			 'loc' : 3214}  
 
 # Network variables
-cfg.numPT5cells = 80
-cfg.numPV5cells = 20
+cfg.numPT5cells = 8
+cfg.numPV5cells = 2
 cfg.sizeY       = 1600
 cfg.sizeX       = 400
 cfg.sizeZ       = 300
@@ -38,7 +38,7 @@ cfg.GABAAfast_e     = -80
 cfg.GABAAslow_e     = -90
 
 # Noise variables
-cfg.noisePT5 = True
+cfg.noisePT5 = False
 cfg.noisePV5 = True
 
 cfg.PT5_exc_noise_amp = 0.0121
@@ -67,7 +67,7 @@ cfg.glutamate         = True
 cfg.synTime           = 200.0
 cfg.numSyns           = 24
 cfg.numExSyns         = cfg.numSyns
-cfg.glutAmp           = 20.0
+cfg.glutAmp           = 2.0
 cfg.glutAmpExSynScale = 1.0
 cfg.glutAmpDecay      = 0.0 # percent/um
 cfg.synLocMiddle      = 0.3 #0.45 
@@ -81,7 +81,18 @@ cfg.glutPuffSyn = {'loc': list(np.linspace(cfg.synLocMiddle-cfg.synLocRadius, cf
 cfg.glutPuffExSyn = {'loc': list(np.linspace(cfg.synLocMiddle-cfg.synLocRadius, cfg.synLocMiddle+cfg.synLocRadius, cfg.numExSyns)), 'sec': 'basal_8', 'synMech': ['NMDA'], 'start': cfg.synTime, 'interval': 1000, 'noise': 0.0, 'number': 1, 'weight': cfg.glutAmp * cfg.glutAmpExSynScale, 'delay': cfg.exSynDelay}
 
 # Recording options
-cfg.recordTraces = {'V_soma': {'sec':'soma', 'loc':0.5, 'var':'v'}}  
+cfg.recordTraces = {'V_soma': {'sec':'soma', 'loc':0.5, 'var':'v'}} 
+cfg.recordTraces['V_dend_0'] = {'sec':'basal_0', 'loc':0.5, 'var':'v'}
+#cfg.recordTraces['V_dend_1'] = {'sec':'basal_1', 'loc':0.5, 'var':'v'}
+#cfg.recordTraces['V_dend_2'] = {'sec':'basal_2', 'loc':0.5, 'var':'v'}
+#cfg.recordTraces['V_dend_3'] = {'sec':'basal_3', 'loc':0.5, 'var':'v'}
+#cfg.recordTraces['V_dend_4'] = {'sec':'basal_4', 'loc':0.5, 'var':'v'}
+#cfg.recordTraces['V_dend_5'] = {'sec':'basal_5', 'loc':0.5, 'var':'v'}
+#cfg.recordTraces['V_dend_6'] = {'sec':'basal_6', 'loc':0.5, 'var':'v'}
+#cfg.recordTraces['V_dend_7'] = {'sec':'basal_7', 'loc':0.5, 'var':'v'}
+cfg.recordTraces['V_dend_8'] = {'sec':'basal_8', 'loc':0.5, 'var':'v'}
+cfg.recordTraces['V_dend_9'] = {'sec':'basal_9', 'loc':0.5, 'var':'v'}
+
 cfg.printPopAvgRates = True
 
 # Analysis options
@@ -94,6 +105,17 @@ cfg.analysis['plot2Dnet'] = {'saveFig': saveFig, 'showFig': showFig}
 cfg.analysis['plotConn'] = {'saveFig': saveFig, 'showFig': showFig}           
 
 
+# Current clamps
+cfg.addIClamp = False
+
+cfg.delIClamp1 = 200
+cfg.durIClamp1 = 10
+cfg.ampIClamp1 = 1.0
+cfg.popIClamp1 = ['PT5_2']
+cfg.secIClamp1 = 'soma'
+cfg.locIClamp1 = 0.5
+
+cfg.IClamp1 = {'pop': cfg.popIClamp1, 'sec': cfg.secIClamp1, 'loc': cfg.locIClamp1, 'del': cfg.delIClamp1, 'dur': cfg.durIClamp1, 'amp': cfg.ampIClamp1}
 
 
 

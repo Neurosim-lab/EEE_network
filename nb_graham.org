@@ -4281,6 +4281,99 @@ file:gif/20190304_233346.png
 
 Committing now.
 
+A couple problems: 
+1) the plateau is way too large in the dendrite (about 70 mV)
+2) the plateau isn't even visible in the soma
+
+Because it is also happening in both the detailed cell model and the simplified, 
+I think it's probably a problem with the glutamate puff implementation.
+
+I will try to get the exact setup as Penny's and make sure the detailed model works.
+
+Will look into this tomorrow.
+
+
+* 2019-03-05 -- Inducing plateaus
+
+** Trying a range of glutamate puff amplitudes
+
+Setting up a batch sim
+
+Added to batch.py:
+
+	params['glutAmp'] = [0.02, 0.2, 2.0]
+
+Output:
+
+file:gif/20190305_054408.png
+Top row is eeeD, bottom is eeeS, left column is glutAmp 0.02, right column is 2.0
+
+Trying another range of glutAmps:
+
+	params['glutAmp'] = [0.1, 0.2, 0.3, 0.4, 0.5, 1.0]
+
+Oddly, it only runs the first three values...  But the range looks better.
+
+I am going to turn off Na (TTX) to see underlying plateaus.
+
+Added to cfg.py:
+
+	# Channel variables
+	cfg.ttx = True
+
+Added to netParams.py:
+
+	for secName, sec in netParams.cellParams['eeeD']['secs'].items(): 
+	    if cfg.ttx:
+	        sec['mechs']['nax']['gbar'] = 0.0
+
+	for secName, sec in netParams.cellParams['eeeS']['secs'].items(): 
+	    if cfg.ttx:
+	        sec['mechs']['nax']['gbar'] = 0.0
+
+Running batch.  Now can see underlying activity, but it's not large enough to be a plateau...
+
+Need to make sure the detailed model matches up with Penny's detailed model...
+
+But first: an error message from Netpyne
+
+
+** Error message from Netpyne
+
+Noticed the following when running the sim:
+	
+	ERROR: Some mechanisms and/or ions were not inserted (for details run with cfg.verbose=True). Make sure the required mod files are compiled.
+
+Setting verbose to True and re-running 
+
+Message:
+
+	# Error inserting nax mechanims in soma section! (check mod files are compiled)
+	# Error inserting nax mechanims in apical_0 section! (check mod files are compiled)
+	...
+
+Setting cfg.ttx = False and retrying.
+
+Yeah, now the message disappears.
+
+Committing now.  Oops, added too much stuff (e.g. output) to eee_single/
+Looking into untracking files with Git...
+
+git rm -rf eee_single/__pycache__/
+git rm -rf eee_single/output/
+
+
+
+
+** Ensuring match of detailed models
+
+
+
+
+
+
+
+
 
 
 

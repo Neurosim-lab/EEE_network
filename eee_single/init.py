@@ -29,3 +29,8 @@ sim.runSim()                  # run parallel Neuron simulation
 sim.gatherData()              # gather spiking data and cell info from each node
 sim.saveData()                # save params, cell info and sim output to file
 sim.analysis.plotData()       # plot spike raster etc
+
+# How to plot more than one figure of same type?  
+# (e.g. raster arranged by y-position and also by 
+# cell gid)  -- Salva: add function call at end 
+# of init.py , eg. sim.analysis.plotRaster(...)

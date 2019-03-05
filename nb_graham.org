@@ -4246,11 +4246,40 @@ Feed the same inputs into both and make sure they are similar.
 
 First I'm going to make sure the normal sim still runs and then commit.
 
+Committed.
 
+I copied the whole eee_net dir as eee_single.  Now to find useful code from old single
+cell analysis and put it into the cfg and netParams.
 
+Modified cfg and netParams.  Trying to run sim.
 
+Need to update eeeD.py for Python 3.
 
+Fixed that and a few other things and it runs.  
 
+	graham$ cd ~/EEE_network/eee_single/ ; ./runsim
+
+But no traces figures appear.  Looking into why.
+
+Problem was in cfg.py:
+
+	#cfg.analysis['plotTraces'] = {'include': [('PT5_1',0), ('PT5_2', 0), ('PT5_3', 0), ('PT5_4', 0), ('PV5', 0)], 'saveFig': saveFig, 'showFig': showFig}  
+	cfg.analysis['plotTraces'] = {'include': ['eeeD', 'eeeS'], 'saveFig': saveFig, 'showFig': showFig} 
+
+Running again.
+
+Better, but no soma plot for eeeD.  That'd be because it has soma_0, soma_1, etc.
+
+Added soma_0
+
+	# Recording options
+	cfg.recordTraces = {'V_soma': {'sec':'soma', 'loc':0.5, 'var':'v'}} 
+	cfg.recordTraces['V_soma_0'] = {'sec':'soma_0', 'loc':0.5, 'var':'v'}
+
+Looks good:
+file:gif/20190304_233346.png
+
+Committing now.
 
 
 

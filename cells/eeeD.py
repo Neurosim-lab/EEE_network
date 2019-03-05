@@ -163,7 +163,7 @@ class eeeD():
             # lambda_f takes in the current section
             sec.nseg = int((sec.L/(d_lambda*self.lambda_f(sec))+0.9)/2)*2 + 1
         for sec in self.all: after += sec.nseg
-        print "geom_nseg: changed from ", before, " to ", after, " total segments"
+        print("geom_nseg: changed from ", before, " to ", after, " total segments")
 
     def lambda_f (self, section):
         # these are reasonable values for most models
@@ -176,7 +176,7 @@ class eeeD():
         x1 = section.arc3d(0)
         d1 = section.diam3d(0)
         self.lam = 0
-        #print section, " n3d:", section.n3d(), " diam3d:", section.diam3d(0)
+        #print(section, " n3d:", section.n3d(), " diam3d:", section.diam3d(0))
         for i in range(section.n3d()): #h.n3d()-1
             x2 = section.arc3d(i)
             d2 = section.diam3d(i)
@@ -335,12 +335,12 @@ class eeeD():
                 gNalin = basalNa - mNa * dist
                 if (gNalin > gNamax):
                     gNalin = gNamax
-                    print "Setting basal Na to maximum ",gNamax,
-                    " at distance ",dist," in basal dendrite ", sec.name()
+                    print("Setting basal Na to maximum ",gNamax,
+                    " at distance ",dist," in basal dendrite ", sec.name())
                 elif (gNalin < 0):
                     gNalin = 0
-                    print "Setting basal Na to zero at distance ",dist,
-                    " in basal dendrite ",sec.name()
+                    print("Setting basal Na to zero at distance ",dist,
+                    " in basal dendrite ",sec.name())
                 sec(seg.x).gbar_na = gNalin
 
         for sec in self.axon:
@@ -369,10 +369,10 @@ class eeeD():
                 gKVlin = somaKv + mKV * dist
                 if (gKVlin > gKVmax):
                     gKVlin = gKVmax
-                    print "Setting basal GKV to maximum ",gKVmax," at distance ",dist," in basal dendrite",sec.name()
+                    print("Setting basal GKV to maximum ",gKVmax," at distance ",dist," in basal dendrite",sec.name())
                 elif (gKVlin < 0):
                     gKVlin = 0
-                    print "Setting basal GKV to zero at distance ",dist," in basal dendrite ",sec.name()
+                    print("Setting basal GKV to zero at distance ",dist," in basal dendrite ",sec.name())
                 sec(seg.x).gbar_kv = gKVlin
 
         for sec in self.axon:
@@ -402,10 +402,10 @@ class eeeD():
 
                 if (gkalin > gkamax):
                     gkalin = gkamax
-                    print "Setting GKA to maximum ",gkamax," in basal dendrite",sec.name()
+                    print("Setting GKA to maximum ",gkamax," in basal dendrite",sec.name())
                 elif (gkalin < 0):
                     gkalin = 0
-                    print "Setting GKA to 0 in basal dendrite",sec.name()
+                    print("Setting GKA to 0 in basal dendrite",sec.name())
                 sec(seg.x).gkabar_kap = gkalin * ratio/1e4
                 sec(seg.x).gkabar_kad = gkalin * (1-ratio)/1e4
 
@@ -556,9 +556,9 @@ class eeeD():
         The diam and L of each compartment is determined by 3D structure.
         Same as hoc 3D morphology: CA229.hoc
         """
-        self.soma = [h.Section(name='soma[%d]' % i) for i in xrange(4)]
-        self.apical = [h.Section(name='apical[%d]' % i) for i in xrange(45)]
-        self.basal = [h.Section(name='basal[%d]' % i) for i in xrange(36)]
+        self.soma = [h.Section(name='soma[%d]' % i) for i in range(4)]
+        self.apical = [h.Section(name='apical[%d]' % i) for i in range(45)]
+        self.basal = [h.Section(name='basal[%d]' % i) for i in range(36)]
 
         # Set up the 3d morphology and connection of soma
         h.pt3dclear(sec = self.soma[0])

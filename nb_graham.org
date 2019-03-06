@@ -4434,21 +4434,144 @@ file:gif/20190305_073147.png
 
 Turning plat back on and committing.
 
+Turning temperature up to body temp (36) and seeing what happens
+
+Output:
+file:gif/20190305_073923.png
+
+Hmmm.  Doesn't look too good, lots of depolarization blockade.
+
+Switching back to 32 celsius and moving on.
+
+Running a big sim (1000 cells)
+
+Raster plot (traces look similar to previous):
+file:gif/20190305_075218.png
+
+** Turning off PV5 noise 
+
+To see if we can see EPSPs and IPSPs.
+
+Looks okay:
+file:gif/20190305_080208.png
 
 
+** Adding external inputs to see synchrony
 
+The external inputs existed on 2018-05-09
 
+https://stackoverflow.com/questions/3790671/how-to-in-git-clone-a-remote-github-repository-from-a-specifed-date
 
+	Cloning the repository will give you the entire commit history of all the source code.
 
+	You need only scroll back through git log and find the desired commit on your target date. Running  git checkout SHA where SHA is the commit hash will give you the state of the source code on that date.
 
+	edit:
 
+	git log --since=2010-06-05 --until=2010-06-06 will help narrow it down!
 
+Trying the log
 
+	cd ~ ; mkdir eee_temp ; cd eee_temp ; hg clone ssh://no.neurosim.downstate.edu://u/graham/projects/eee
+	git log --since=2018-05-01 --until=2018-05-15
 
+Whoops.  This repo is actually in Mercurial (hg)
 
+https://stackoverflow.com/questions/10545800/clone-an-hg-directory-from-a-particular-date
 
+	(EDIT: My love of revsets has caused me to overlook the obvious answer: hg update --date 2012-04-04 should get you the tipmost revision as of that date.)
 
+	If you have the whole repository cloned already (date specifications don't seem to work with clone), you can do
 
+	hg update --rev "date('< 2012-04-04')"
+	If there's a possibility that the repository had multiple heads/branches at the date you want, you'll have to AND in some more conditions to narrow it down to the right changeset:
+
+	hg update --rev "date('< 2012-04-04') and branch(v1.1)"
+	Check out hg help revsets and hg help dates for more information.
+
+	Later, if you want to go back to the tip, just
+
+	hg update
+
+So I will try:
+
+	cd ~ ; rm -rf eee_temp ; mkdir eee_temp ; cd eee_temp ; hg clone ssh://no.neurosim.downstate.edu://u/graham/projects/eee ; cd eee
+
+	hg update --date 2018-05-09
+
+	found revision 580 from Wed May 09 10:19:15 2018 -0700
+	26 files updated, 0 files merged, 103 files removed, 0 files unresolved
+
+Now to look in cfg.py and netParams.py in this repo...
+
+From cfg_joe.py:
+
+	cfg.secStim  = 'basal_9'#'apical_0'
+	cfg.synTime2 = 50
+	cfg.synTime3 = 250
+	cfg.intervalStim = 10
+	cfg.stimNumber2 = 5
+	cfg.glutAmp2 = 7.5
+	cfg.glutDelay = 1.0
+
+	cfg.Stim_2 = {'loc': 0.5, 'sec': cfg.secStim, 'synMech': ['NMDA','AMPA'], 'start': cfg.synTime2, 'interval': cfg.intervalStim, 'noise': 0.0, 'number': cfg.stimNumber2, 'weight': [cfg.glutAmp2, cfg.glutAmp2], 'delay': cfg.glutDelay}
+
+	cfg.Stim_3 = {'loc': 0.5, 'sec': cfg.secStim, 'synMech': ['NMDA','AMPA'], 'start': cfg.synTime3, 'interval': cfg.intervalStim, 'noise': 0.0, 'number': cfg.stimNumber2, 'weight': [cfg.glutAmp2, cfg.glutAmp2], 'delay': cfg.glutDelay}
+
+From netParams.py:
+
+    if cfg.addNetStim:   
+                      
+        for nslabel1 in [k for k in dir(cfg) if k.startswith('Stim')]:
+            ns1 = getattr(cfg, nslabel1, None) 
+            for postPop in plateau:             
+                ruleLabel = nslabel1+'->'+postPop
+                netParams.connParams[ruleLabel] = {
+                    'preConds': {'pop': nslabel1},
+                    'postConds': {'pop': postPop},
+                    'synMech': ESynMech,                   
+                    'weight': cfg.glutAmp2,
+                    'synMechWeightFactor':  cfg.ratioapical, 
+                    'delay': 1, 
+                    'synsPerConn': 2,#numActiveSpines,  
+                    'connList': connList,
+                    'loc': ns1['loc'], 
+                    'sec': ns1['sec']}
+
+Added to cfg.py:
+
+	# Common synaptic input
+	cfg.addCommonInput = True
+
+	cfg.delCommonInput = 220  # delay or start
+	cfg.numCommonInput = 5    # number
+	cfg.intCommonInput = 20   # interval
+
+	cfg.secCommonInput = 'soma'
+	cfg.locCommonInput = 0.5
+	cfg.wgtCommonInput = 2.0
+
+Added to netParams:
+
+	if cfg.addCommonInput:
+
+	    netParams.stimSourceParams['CommonInput'] = {'type': 'NetStim', 'start': cfg.delCommonInput, 'interval': cfg.intCommonInput, 'number': cfg.numCommonInput}
+	                  
+	    for postPop in ['PV5_1', 'PV5_3']:             
+	        
+	        ruleLabel = 'CommonInput->'+postPop
+	        netParams.stimTargetParams[ruleLabel] = {
+	            'source' : 'CommonInput', 
+	            'conds'  : {'pop': postPop}, 
+	            'sec'    : cfg.secCommonInput, 
+	            'loc'    : cfg.locCommonInput, 
+	            'synMech': ['AMPA', 'NMDA'], 
+	            'weight' : cfg.wgtCommonInput, 
+	            'delay'  : 0.0}
+
+After some fixing, it works, though can't see the inputs with everything else going on.
+
+Committing now and then exploring.
 
 
 

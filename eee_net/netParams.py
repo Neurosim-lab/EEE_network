@@ -224,9 +224,21 @@ if cfg.addIClamp:
             netParams.stimTargetParams[iclabel+'_'+curpop] = \
                 {'source': iclabel, 'conds': {'popLabel': ic['pop']}, 'sec': ic['sec'], 'loc': ic['loc']}
 
+if cfg.addCommonInput:
 
+    netParams.stimSourceParams['CommonInput'] = {'type': 'NetStim', 'start': cfg.delCommonInput, 'interval': cfg.intCommonInput, 'number': cfg.numCommonInput}
+                  
+    for postPop in ['PV5_1', 'PV5_3']:             
+        
+        ruleLabel = 'CommonInput->'+postPop
+        netParams.stimTargetParams[ruleLabel] = {
+            'source' : 'CommonInput', 
+            'conds'  : {'pop': postPop}, 
+            'sec'    : cfg.secCommonInput, 
+            'loc'    : cfg.locCommonInput, 
+            'synMech': ['AMPA', 'NMDA'], 
+            'weight' : cfg.wgtCommonInput, 
+            'delay'  : 0.0}
 
-#for secName, sec in netParams.cellParams['PT5_1']['secs'].items():  
-#    print(secName) 
 
 

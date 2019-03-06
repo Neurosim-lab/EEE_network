@@ -120,6 +120,16 @@ cfg.locIClamp1 = 0.5
 cfg.IClamp1 = {'pop': cfg.popIClamp1, 'sec': cfg.secIClamp1, 'loc': cfg.locIClamp1, 'del': cfg.delIClamp1, 'dur': cfg.durIClamp1, 'amp': cfg.ampIClamp1}
 
 
+# Common synaptic input
+cfg.addCommonInput = True
+
+cfg.delCommonInput = 220  # delay or start
+cfg.numCommonInput = 5    # number
+cfg.intCommonInput = 20   # interval
+
+cfg.secCommonInput = 'soma'
+cfg.locCommonInput = 0.5
+cfg.wgtCommonInput = 2.0
 
 
 

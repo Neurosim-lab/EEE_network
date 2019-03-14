@@ -4293,7 +4293,7 @@ I will try to get the exact setup as Penny's and make sure the detailed model wo
 Will look into this tomorrow.
 
 
-* 2019-03-05 -- Inducing plateaus
+* 2019-03-05 -- Inducing plateaus, EEE meeting
 
 ** Trying a range of glutamate puff amplitudes
 
@@ -4572,6 +4572,263 @@ Added to netParams:
 After some fixing, it works, though can't see the inputs with everything else going on.
 
 Committing now and then exploring.
+
+** EEE Meeting
+
+https://docs.google.com/document/d/1lXhpxnmUTK8bgW2MF3YqqnQMPSDJu8oBfiBW0rujywo/edit
+
+Action items for next week
+
+Joe fixes up abstract
+Joe adds external input before and during plateaus (look at synchrony)
+HPC parameter exploration
+
+
+* 2019-03-06 -- External common input to cells
+
+** Common input
+
+Coming back to this later.
+
+Working on abstracts for CNS 2019
+
+
+* 2019-03-08 -- CNS abstract for EEE
+
+Submitted version:
+
+https://docs.google.com/document/d/1KcM9T4cV7p-GoAZsDS54BivaqTFuR-B7laK3gEKRbho/edit
+
+Experiments and modeling of NMDA plateau potentials in cortical pyramidal neurons 
+
+Experiments have shown that application of glutamate near basal dendrites of cortical pyramidal neurons activates AMPA and NMDA receptors, which can result in dendritic plateau potentials: long-lasting depolarizations which spread into the soma, reducing the membrane time constant and bringing the cell closer to the spiking threshold.  Utilizing a morphologically-detailed reconstruction of a Layer 5 pyramidal cell from prefrontal cortex, a Hodgkin-Huxley compartmental model was developed in NEURON.  Synaptic AMPA/NMDA and extrasynaptic NMDA receptor models were placed on basal dendrites to explore plateau potentials.  The properties of the model were tuned to match plateau potentials recorded by voltage-sensitive dye imaging in dendrites and whole-cell patch measurements in somata of prefrontal cortex pyramidal neurons from rat brain slices.  The model was capable of reproducing experimental observations: a threshold for activation of the plateau, saturation of plateau amplitude with increasing glutamate application, depolarization of the soma by approximately 20 mV, and back-propagating action potential amplitude attenuation and time delay.  The model predicted that membrane time constant is shortened during the plateau, that synaptic inputs are more effective during the plateau due to both depolarization and time constant change, the plateau durations are longer when activated by more distal dendritic segments, and that plateau initiation location can be predicted from somatic plateau amplitude.  Dendritic plateaus induced by strong basilar dendrite stimulation can increase population synchrony produced by weak coherent stimulation in apical dendrites.  The morphologically-detailed cell model was simplified while maintaining the observed plateau behavior and then utilized in cortical network models along with a previously-published inhibitory interneuron model.  The network model simulations showed increased synchrony between cells during induced dendritic plateaus. These results support our hypothesis that dendritic plateaus provide a 200-500 ms time window during which a neuron is particularly excitable. At the network level, this predicts that sets of cells with simultaneous plateaus would provide an activated ensemble of responsive cells with increased firing. Synchronously spiking subsets of these cells would then create an embedded ensemble. This embedded ensemble would demonstrate a temporal code, at the same time as the activated (embedded) ensemble showed rate coding.  
+ 
+Peng P Gao1, Joe W Graham2, Wen-Liang Zhou1, Jinyoung Jang1, Sergio L Angulo2, Salvador Dura-Bernal2, Michael L Hines3, William W Lytton2, Srdjan D Antic1
+  
+1Neuroscience Department, University of Connecticut Health Center, Farmington CT 06030, USA
+2Neurosim Lab, Department Physiology & Pharmacology, SUNY Downstate, Brooklyn, NY 11203, USA
+3Neuroscience Department, Yale School of Medicine, New Haven, CT 06510, USA
+
+
+* 2019-03-11 -- CNS abstract for morphology
+
+Submitted version:
+https://docs.google.com/document/d/1Ar_K_ShErbP_zHnDSYnGPc3zNNhZ7Nww1uTPu61XybU/edit
+
+Request for oral presentation:
+https://docs.google.com/document/d/1Fl3lSeSKfI2tgm5SDnrsQ32A-3J3dwR1_oDOcSNfrJA/edit
+
+
+
+The shape of thought: data-driven synthesis of neuronal morphology and the search for fundamental parameters of form
+
+Joe W. Graham
+joe.w.graham@gmail.com
+
+Abstract:
+
+Neuronal morphology is critical in the form and function of nervous systems. Morphological diversity in and between populations of neurons contributes to functional connectivity and robust behavior. Morphologically-realistic computational models are an important tool in improving our understanding of nervous systems. Continual improvements in computing make large-scale, morphologically-realistic, biophysical models of nervous systems increasingly feasible. However, reconstructing large numbers of neurons experimentally is not scalable. Algorithmic generation of neuronal morphologies (“synthesis” of “virtual” neurons) holds promise for deciphering underlying patterns in branching morphology as well as meeting the increasing need in computational neuroscience for large numbers of diverse, realistic neurons.
+
+There are many ways to quantify neuronal form, not all are useful. Hillman (1979) proposed that “from the mass of quantitative information available” a small set of “fundamental parameters of form” and their intercorrelations could be measured from reconstructed neurons which could potentially “completely describe” the population. A parameter set completely describing the original data would be useful for classification of neuronal types, exploring embryological development of neurons, and for understanding morphological changes following illness or intervention. Burke et al. (1992) realized that virtual dendritic trees could be generated by stochastic sampling from a set of fundamental parameters (a synthesis model). Persistent differences between the reconstructed and virtual trees guided model refinement. Ascoli et al. (2001) realized entire virtual neurons could be created by synthesizing multiple dendritic trees from a virtual soma. Ascoli et al. implemented the models of Hillman and Burke et al. and made the code and data publicly available. Both groups used the same data set: a population of six fully-reconstructed cat alpha motoneurons. They were able to generate virtual motoneurons that were similar to the reconstructed ones, however, persistent, significant differences remained unexplained.
+
+Exploration of these motoneurons and novel synthesis models led to two major insights into dendritic form. 1) Parameter distributions correlate with local properties, and these correlations must be accounted for in synthesis models. Dendritic diameter is an important local property, correlating with most parameters. 2) Parent branch parameters correlate differently than those of terminal branches, requiring setting a branch’s type before synthesizing it. Inclusion of these findings in a synthesis model produces virtual motoneurons that are far more similar to the reconstructions than previous models and which are statistically indistinguishable across most measures. These findings hold true across a variety of neuronal types, and may constitute a key to the elusive “fundamental parameters of form” for neuronal morphology.
+
+References
+
+Hillman DE. Neuronal shape parameters and substructures as a basis of neuronal form. In: Schmitt FO, Worden FG, editors. The Neurosciences, 4th Study program. Cambridge: MIT Press; 1979, pp. 477–498.
+Burke RE, Marks WB, Ulfhake B. A parsimonious description of motoneuron dendritic morphology using computer simulation. J Neurosci. 1992, 12(6), pp. 2403-2416.
+Ascoli GA, Krichmar JL, Scorcioni R, et al. Computer generation and quantitative morphometric analysis of virtual neurons. Anat Embryol. 2001, 204, pp. 283-301.
+
+
+* 2019-03-12 -- Common input and EEE meeting
+
+** EEE Meeting
+
+Agenda:
+https://docs.google.com/document/d/1IHby1FeYCav9c2JIifEq5kDkcQ3dAY_jkTuBY09uNqo/edit
+
+Notes:
+
+Discussion
+
+Noise problem: work with e_e
+  Bill is adding flags in gfluct mod file to turn off noise
+  He’ll push and Joe’ll pull and try out
+Y-limits in Netpyne
+  Should be an option for setting
+  Can also modify figure after produced
+Once saving data, can then make nice figures
+
+Action items for next week
+
+Poster outline for CNS / BRAIN 
+Try new Gfluct (look into noise problem)
+Get HPC running
+Joe submits BRAIN abstract today
+
+
+
+** Common input
+
+Setting noise to zero so I can see the input.
+	cfg.noisePT5 = False #True
+
+Running:
+	graham$ cd ~/EEE_network/eee_net ; ./runsim
+
+Reducing NMDA/AMPA weight by half because traces sit well above RMP and never gets near it.
+
+	cfg.NMDAweight      = 0.4 #0.8
+	cfg.AMPAweight      = cfg.NMDAweight
+
+Looks better, but I still can't see the common inputs:
+
+	file:nb_gif/20190312_060900.png
+
+Increasing common input weight:
+
+	cfg.wgtCommonInput = 20.0 #2.0
+
+Whoops, had the common input going to non-existent PV pops instead of PT pops:
+
+    for postPop in ['PV5_1', 'PV5_3']:   
+    -->
+    for postPop in ['PT5_1', 'PT5_3']:   
+
+Reducing weight.
+
+	cfg.wgtCommonInput = 2.0
+
+Adding a second common input not during plateau:
+
+	# Common synaptic input
+	cfg.addCommonInput1 = True
+	cfg.popCommonInput1 = ['PT5_1', 'PT5_3']
+
+	cfg.secCommonInput1 = 'soma'
+	cfg.locCommonInput1 = 0.5
+	cfg.wgtCommonInput1 = 4.0
+	cfg.delCommonInput1 = 220  # delay or start
+	cfg.numCommonInput1 = 5    # number
+	cfg.intCommonInput1 = 20   # interval
+
+
+	cfg.addCommonInput2 = True
+	cfg.popCommonInput2 = ['PT5_1', 'PT5_3']
+
+	cfg.secCommonInput2 = 'soma'
+	cfg.locCommonInput2 = 0.5
+	cfg.wgtCommonInput2 = 4.0
+	cfg.delCommonInput2 = 620  # delay or start
+	cfg.numCommonInput2 = 5    # number
+	cfg.intCommonInput2 = 20   # interval
+
+And in netParams:
+
+	if cfg.addCommonInput2:
+
+	    netParams.stimSourceParams['CommonInput2'] = {'type': 'NetStim', 'start': cfg.delCommonInput2, 'interval': cfg.intCommonInput2, 'number': cfg.numCommonInput2}
+	                  
+	    for postPop in cfg.popCommonInput2:             
+	        
+	        ruleLabel = 'CommonInput2->'+postPop
+	        netParams.stimTargetParams[ruleLabel] = {
+	            'source' : 'CommonInput2', 
+	            'conds'  : {'pop': postPop}, 
+	            'sec'    : cfg.secCommonInput2, 
+	            'loc'    : cfg.locCommonInput2, 
+	            'synMech': ['AMPA', 'NMDA'], 
+	            'weight' : cfg.wgtCommonInput2, 
+	            'delay'  : 0.0}
+
+Reducing NMDA/AMPA weight:
+
+	cfg.NMDAweight      = 0.2 #0.4 #0.8
+	cfg.AMPAweight      = cfg.NMDAweight
+
+Looking pretty good.  Turning noise back on.
+
+Reducing exc noise in PT5:
+
+	cfg.PT5_exc_noise_amp = 0.006 #0.0121
+
+And again:
+
+	cfg.PT5_exc_noise_amp = 0.003 #0.0121
+
+Hmmm.  Even when I set noise amp to 0.0, there is still noise...
+
+Setting to zero, running sim, then turning off completely and running.
+
+Zero:
+file:gif/20190312_070351.png
+
+Off:
+file:gif/20190312_070525.png
+
+So setting the noise amp to zero still ends up with noise. Perhaps it's because of the 
+standard deviation of noise, which is not currently a parameter in cfg.py...
+
+Will look into noise later.
+
+** Interesting figure
+
+file:gif/20190312_071642.png
+
+This cell (from PT5_3) doesn't get induced plateaus, just 5 synaptic inputs during and after plateaus
+(plats just in PT5_1 and PT5_2), but that's enough to get some spiking during plateau.
+
+
+** Looking into noise
+
+Noise comes from Gfluct.mod
+
+Maybe it's because the standard deviation of the noise is non-zero...
+
+Aha, that was the problem! Setting the mean conductance to zero still creates noise when the 
+standard deviation is non-zero.
+
+Setting mean and std to zero removes the noise.
+
+I should run some batches to explore the effects of the mean and std on Gfluct noise.
+
+
+* 2019-03-14 -- Batches
+
+** Batches
+
+I need to get batches running smoothly and then maybe even pull my old batch plots
+back in.  They made for nice easier comparisons across 2D batch runs.
+
+First I'm going to look in Netpyne documentation for batch info, maybe a template.
+
+http://netpyne.org/tutorial.html#running-batch-simulations-tutorial-8
+
+That's the same way I have batches set up in the repo now. I'm going to set up a batch
+varying two params and try running it.
+
+	params['cfg.EEconv'] = [0.0, 3.0, 6.0] # Default 3.0
+	params['cfg.IEconv'] = [0.0, 12.0, 24.0] # Default 12.0
+
+It's doing the same thing as it did before: getting hung up before completing all sims.
+
+Turning noise parameters back to default, running sim: it works. Running batch: still gets hung.
+
+I'll commit, push, and ask for Salva's help.
+
+The following should set it up and run the batch from scratch:
+
+cd ~ ; rm -rf eee_temp ; mkdir eee_temp ; cd eee_temp ; git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network/mod ; nrnivmodl ; cd ../eee_net ; ln -s "../mod/x86_64" x86_64 ; ./runbatch
+
+
+
+
+
+
+
+
+
+
 
 
 

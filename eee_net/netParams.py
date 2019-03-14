@@ -199,11 +199,12 @@ if cfg.glutamate:
               
         else:
             raise Exception("Should have had Syn or ExSyn in name. See netParams.py")             
+        
         # add stim source
         netParams.stimSourceParams[nslabel] = {'type': 'NetStim', 'start': ns['start'], 'interval': ns['interval'], 'noise': ns['noise'], 'number': ns['number']}  
 
         # connect stim source to target
-        for cur_pop in ['PT5_1']:    
+        for cur_pop in cfg.glutPops:    
 
             for i in range(len(ns['synMech'])):
                 
@@ -224,20 +225,37 @@ if cfg.addIClamp:
             netParams.stimTargetParams[iclabel+'_'+curpop] = \
                 {'source': iclabel, 'conds': {'popLabel': ic['pop']}, 'sec': ic['sec'], 'loc': ic['loc']}
 
-if cfg.addCommonInput:
+if cfg.addCommonInput1:
 
-    netParams.stimSourceParams['CommonInput'] = {'type': 'NetStim', 'start': cfg.delCommonInput, 'interval': cfg.intCommonInput, 'number': cfg.numCommonInput}
+    netParams.stimSourceParams['CommonInput1'] = {'type': 'NetStim', 'start': cfg.delCommonInput1, 'interval': cfg.intCommonInput1, 'number': cfg.numCommonInput1}
                   
-    for postPop in ['PV5_1', 'PV5_3']:             
+    for postPop in cfg.popCommonInput1:             
         
-        ruleLabel = 'CommonInput->'+postPop
+        ruleLabel = 'CommonInput1->'+postPop
         netParams.stimTargetParams[ruleLabel] = {
-            'source' : 'CommonInput', 
+            'source' : 'CommonInput1', 
             'conds'  : {'pop': postPop}, 
-            'sec'    : cfg.secCommonInput, 
-            'loc'    : cfg.locCommonInput, 
+            'sec'    : cfg.secCommonInput1, 
+            'loc'    : cfg.locCommonInput1, 
             'synMech': ['AMPA', 'NMDA'], 
-            'weight' : cfg.wgtCommonInput, 
+            'weight' : cfg.wgtCommonInput1, 
+            'delay'  : 0.0}
+
+
+if cfg.addCommonInput2:
+
+    netParams.stimSourceParams['CommonInput2'] = {'type': 'NetStim', 'start': cfg.delCommonInput2, 'interval': cfg.intCommonInput2, 'number': cfg.numCommonInput2}
+                  
+    for postPop in cfg.popCommonInput2:             
+        
+        ruleLabel = 'CommonInput2->'+postPop
+        netParams.stimTargetParams[ruleLabel] = {
+            'source' : 'CommonInput2', 
+            'conds'  : {'pop': postPop}, 
+            'sec'    : cfg.secCommonInput2, 
+            'loc'    : cfg.locCommonInput2, 
+            'synMech': ['AMPA', 'NMDA'], 
+            'weight' : cfg.wgtCommonInput2, 
             'delay'  : 0.0}
 
 

@@ -32,7 +32,7 @@ cfg.ynormRange  = [0.2, 0.623]
 cfg.NMDAgmax        = 0.005
 cfg.AMPANMDAratio   = 10.0
 cfg.AMPAgmax        = cfg.AMPANMDAratio * cfg.NMDAgmax 
-cfg.NMDAweight      = 0.8
+cfg.NMDAweight      = 0.2 #0.4 #0.8
 cfg.AMPAweight      = cfg.NMDAweight
 cfg.GABAAfastWeight = 0.0001
 cfg.GABAAslowWeight = 0.0001
@@ -43,17 +43,17 @@ cfg.GABAAslow_e     = -90
 cfg.noisePT5 = True
 cfg.noisePV5 = True
 
-cfg.PT5_exc_noise_amp = 0.0121
+cfg.PT5_exc_noise_amp = 1.0
 cfg.PT5_exc_noise_e   = 0.0
 cfg.PT5_exc_noise_tau = 1.0
-cfg.PT5_inh_noise_amp = 0.0573
+cfg.PT5_inh_noise_amp = 1.0
 cfg.PT5_inh_noise_e   = -75.0
 cfg.PT5_inh_noise_tau = 1.0
 
-cfg.PV5_exc_noise_amp = 0.0121
+cfg.PV5_exc_noise_amp = 1.0
 cfg.PV5_exc_noise_e   = 0.0
 cfg.PV5_exc_noise_tau = 1.0
-cfg.PV5_inh_noise_amp = 0.0573
+cfg.PV5_inh_noise_amp = 1.0
 cfg.PV5_inh_noise_e   = -75.0
 cfg.PV5_inh_noise_tau = 1.0
 
@@ -65,6 +65,7 @@ cfg.IIconv = 12.0
 
 # Glutamate stim parameters
 cfg.glutamate         = True
+cfg.glutPops          = ['PT5_1', 'PT5_2']
 
 cfg.synTime           = 200.0
 cfg.numSyns           = 24
@@ -102,7 +103,7 @@ cfg.analysis['plotRaster'] = {'orderBy': 'y', 'orderInverse': True, 'saveFig': s
 
 cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True,'saveFig': saveFig, 'labels':'overlay','showFig': showFig} #'timeRange':[0,500], 'popColors': {'PT5':'red','PV5': 'blue'}}
 
-cfg.analysis['plotTraces'] = {'include': [('PT5_1',0), ('PT5_2', 0), ('PT5_3', 0), ('PT5_4', 0), ('PV5', 0)], 'saveFig': saveFig, 'showFig': showFig}      
+cfg.analysis['plotTraces'] = {'include': [('PT5_1',0), ('PT5_2', 0), ('PT5_3', 0), ('PT5_4', 0), ('PV5', 0)], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}      
 cfg.analysis['plot2Dnet'] = {'saveFig': saveFig, 'showFig': showFig}            
 cfg.analysis['plotConn'] = {'saveFig': saveFig, 'showFig': showFig}           
 
@@ -121,16 +122,26 @@ cfg.IClamp1 = {'pop': cfg.popIClamp1, 'sec': cfg.secIClamp1, 'loc': cfg.locIClam
 
 
 # Common synaptic input
-cfg.addCommonInput = True
+cfg.addCommonInput1 = True
+cfg.popCommonInput1 = ['PT5_1', 'PT5_3']
 
-cfg.delCommonInput = 220  # delay or start
-cfg.numCommonInput = 5    # number
-cfg.intCommonInput = 20   # interval
+cfg.secCommonInput1 = 'soma'
+cfg.locCommonInput1 = 0.5
+cfg.wgtCommonInput1 = 4.0
+cfg.delCommonInput1 = 220  # delay or start
+cfg.numCommonInput1 = 5    # number
+cfg.intCommonInput1 = 20   # interval
 
-cfg.secCommonInput = 'soma'
-cfg.locCommonInput = 0.5
-cfg.wgtCommonInput = 2.0
 
+cfg.addCommonInput2 = True
+cfg.popCommonInput2 = ['PT5_1', 'PT5_3']
+
+cfg.secCommonInput2 = 'soma'
+cfg.locCommonInput2 = 0.5
+cfg.wgtCommonInput2 = 4.0
+cfg.delCommonInput2 = 620  # delay or start
+cfg.numCommonInput2 = 5    # number
+cfg.intCommonInput2 = 20   # interval
 
 
 #import pylab; pylab.show()  # this line is only necessary in certain systems where figures appear empty

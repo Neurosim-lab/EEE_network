@@ -7,8 +7,8 @@ def batchTest():
 
 	# fill in with parameters to explore and range of values (key has to coincide with a variable in simConfig) 
 	
-	params['cfg.EEconv'] = [0.0, 3.0, 6.0] # Default 3.0
-	params['cfg.IEconv'] = [0.0, 12.0, 24.0] # Default 12.0
+	params['EEconv'] = [0.0, 3.0, 6.0] # Default 3.0
+	params['IEconv'] = [0.0, 12.0, 24.0] # Default 12.0
 
 	#params['ampIClamp1'] = [0.1, 0.5, 1.0]
 	#params['GABAAfastWeight'] = [0.0001, 0.01, 1.0]   

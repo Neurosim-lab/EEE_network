@@ -4821,13 +4821,253 @@ The following should set it up and run the batch from scratch:
 cd ~ ; rm -rf eee_temp ; mkdir eee_temp ; cd eee_temp ; git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network/mod ; nrnivmodl ; cd ../eee_net ; ln -s "../mod/x86_64" x86_64 ; ./runbatch
 
 
+** Chatting about batches, errors
+
+joe [2:34 PM]
+I’m having trouble running Netpyne batches…  They start and get through the first params values, but then it hangs.
+I’ve pushed, the following one-liner should end up hanging in the middle of running a batch:
+Untitled 
+cd ~ ; rm -rf eee_temp ; mkdir eee_temp ; cd eee_temp ; git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network/mod ; nrnivmodl ; cd ../eee_net ; ln -s "../mod/x86_64" x86_64 ; ./runbatch
+
+billl [2:35 PM]
+on comet?
+
+joe [2:36 PM]
+@salvadord, would you take a look when you have a chance?
+Locally. Just tried running it on `no`, but got a different error I need help on.
+
+billl [2:36 PM]
+if having a hang maybe try linebyline to see where hang is -- i would assume at the end but good to check
+
+joe [2:36 PM]
+Untitled 
+>>> >>> Traceback (most recent call last):
+ File "batch.py", line 1, in <module>
+  from netpyne import specs
+ File "/usr/site/nrniv/local/python/netpyne/netpyne/specs/__init__.py", line 13, in <module>
+  from future import standard_library
+ModuleNotFoundError: No module named 'future'
+Collapse
+
+billl [2:36 PM]
+are we uptodate for netpyne on neurosim?
+oh future
+nuisance - that's for py2 to make more like py3
+can you jus tuse py3 or too much hassle
+pip install whatever gives 3 or else use anaconda (if we have anaconda2) ...
+i'm still pissed at von rossum for making this big mess with 2>3
+
+joe [2:38 PM]
+The EEE code should all be py3, I don’t know about Netpyne on neurosim…
+
+billl [2:41 PM]
+check it and pls update if needs it
+
+salvadord [2:43 PM]
+pip install future
+
+billl [2:44 PM]
+need --target
+see moh note on 'tech'
+but doesnt that mean he's using 2?
+or is future for 3 looking forward to 4? :)
+
+joe [2:44 PM]
+0.8.1 on neurosim, 0.9.1.3 on development branch of git
+
+mohamed.sherif [2:44 PM]
+I am using 2
+
+joe [2:45 PM]
+Untitled 
+no% pip install future
+pip: Command not found.
+
+billl [2:45 PM]
+pls update joe ... we have instructions somewhere on how to do? -- `pip install --update netpyne` right?
+
+joe [2:48 PM]
+Um, I’m happy to, but I don’t want to break anything.  I should install pip first?
+https://pip.pypa.io/en/stable/installing/
+
+mohamed.sherif [2:54 PM]
+how about trying a different machine, like pt or zn?
+I check pt - pip not there
+
+billl [2:55 PM]
+no pip on no?
+
+mohamed.sherif [2:56 PM]
+ok - weired - when I do py2env, pip is there
+on pt and on zn
+py2env - changes some of the enviromnet variables to run python 2
+
+salvadord [3:43 PM]
+updated netpyne for py3 on ‘no’ç
+need to add `/usr/site/python3/` to PYTHONPATH in  `py3env` alias in /usr/site/nrniv/simctrl/nrnenv.csh — but I don’t have permissions
+
+salvadord [6:12 AM]
+@billl - can you make this change in nrnenv.csh?
+
+billl [6:12 AM]
+was about to hgshare but noticed that 'no' rebooted somehow???
+ok should be shared now -- can pull and push
+submitted for BRAIN meeting:  "Experiment and modeling of NMDA plateau potentials in cortical pyramidal neurons William Lytton, Srdjan Antic, Peng Gao, Joseph Graham, Salvador Dura Bernal; Confirmation Number: RZDAMGMMJM Date Submitted: 03/15/2019"
+
+billl [6:16 AM]
+do we have a poster penny?
+
+billl [6:41 AM]
+"Posters must fit boards that are 4 feet tall by 6 feet wide."  or if we have one that's a little smaller is fine too
+
+salvadord [7:00 AM]
+@joe - perhaps better if you use Comet for the sims — I spent a couple hours with don last week helping him get set up, so maybe he can help you
+that would also help use up the XSEDE hours before the end of the month
+
+salvadord [7:01 AM]
+(I calculated it and even if I run continuously on the max num cores per user from now till the end of the month, I wouldn’t be able to use up all our hours)
+
+billl [7:01 AM]
+time for me to calc pi?
+(i'm always here to help out with research)
+
+salvadord [7:06 AM]
+it was pi’s day ysterday so makes sense
 
 
+* 2019-03-18 -- 
+
+** Trying a batch on 'no'
+
+The problems I was having before should be fixed by the update to py3
+
+One liner: 
+
+mkdir eee_temp ; cd eee_temp ; git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network/mod ; nrnivmodl ; cd ../eee_net ; ln -s "../mod/x86_64" x86_64 ; ./runbatch
+
+Hmmm.  I still get the no future module error.
+
+Will try on zn.  
+
+My alias to zn no longer works...
 
 
+** Fixing aliases
+
+So the aliases that are in ~/.bash_profile still work, but not those in ~/.bashrc
+
+Will copy aliases to bash_profile
+
+Actually the only alias I want from there is qlfix
+
+alias qlfix='qlmanage -r ; qlmanage -r cache ; killall Finder /System/Library/CoreServices/Finder.app'
+
+Copying that over. The sshzn alias must be in my old tcsh profile...
+
+Some useful aliases from my .tcshrc:
+
+	alias hgpush  'hg push ssh://no.neurosim.downstate.edu://u/graham/projects/eee/; sshno "cd projects/eee; hg update"'
+	alias hgpull  'hg pull ssh://no.neurosim.downstate.edu://u/graham/projects/eee'
+	alias ip      'ipython -i; echo "ipython -i"'
+	alias eeeip   'eee; echo "ipython -i setup.py"; ipython -i setup.py'
+	alias sshzn   'ssh -t -Y no.neurosim.downstate.edu "ssh -Y zn"'
+	alias sshmy   'ssh -t -Y no.neurosim.downstate.edu "ssh -Y my"'
+	alias eeetemp 'rm -r eeetemp; mkdir eeetemp; cd eeetemp; hg clone ssh://no.neurosim.downstate.edu//u/graham/projects/eee/; cd eee/sim; echo $PWD'
+	alias hgl     'hg log --limit 5'
+	alias hgs     'hg status'
+	alias nsimstatus 'python /usr/site/nrniv/local/python/nsimrepos.py'
+	alias nsimupdate 'python /usr/site/nrniv/local/python/nsimrepos.py update'
+
+Just listing them for future reference.  I'll get the following into bash (translated from tcsh):
+
+	alias sshzn='ssh -t -Y no.neurosim.downstate.edu "ssh -Y zn"'
+	alias sshmy='ssh -t -Y no.neurosim.downstate.edu "ssh -Y my"'
+	alias nsimstatus='python /usr/site/nrniv/local/python/nsimrepos.py'
+	alias nsimupdate='python /usr/site/nrniv/local/python/nsimrepos.py update'
+
+And add that to .bash_profile.
+
+Aliases work now.
+
+** Run batch on zn
+
+Couldn't use the alias to get to zn:
+
+	graham-mac:~ graham$ sshzn
+	Warning: No xauth data; using fake authentication data for X11 forwarding.
+	@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+	@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+	Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+	It is also possible that a host key has just been changed.
+	The fingerprint for the ECDSA key sent by the remote host is
+	SHA256:cwQFllPQXPQCAULdRRXujJ5+vO4etSvufqtKlfObhYE.
+	Please contact your system administrator.
+	Add correct host key in /u/graham/.ssh/known_hosts to get rid of this message.
+	Offending ECDSA key in /u/graham/.ssh/known_hosts:5
+	  remove with:
+	  ssh-keygen -f "/u/graham/.ssh/known_hosts" -R "zn"
+	ECDSA host key for zn has changed and you have requested strict checking.
+	Host key verification failed.
+	Connection to no.neurosim.downstate.edu closed.
+	graham-mac:~ graham$ 
+
+Trying to ssh to no and then to zn.  Still no.  Boo.
 
 
+** Running batch locally
 
+I need to ensure batches complete before moving to HPC
+
+I am going to run the current batch, it probably won't complete.  Afterwards, I will look at 
+my old batch setup (inlcuding analysis and figs).
+
+Trying now:
+
+	cd ~ ; rm -rf eee_temp ; mkdir eee_temp ; cd eee_temp ; git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network/mod ; nrnivmodl ; cd ../eee_net ; ln -s "../mod/x86_64" x86_64 ; ./runbatch
+
+Yeah, same old. The batch has two parameters each with three values. The sims get through the 
+frist value of the first parameter, but then it just sits.
+
+I.e., param sets 0_0, 0_1, and 0_2 get run, but not 1_0, 1_1, 1_2, 2_0, 2_1, or 2_2.
+
+Will have to ask about this in the meeting. For now, trying my old batch stuff that worked well.
+
+
+** Trying old batch routines
+
+Currently using the batch template from the Netpyne tutorial.  Will switch back to my old routines
+that used to work.
+
+https://github.com/Neurosim-lab/EEE_singlecell_simplified/blob/master/eee/sim/batch_utils.py
+https://github.com/Neurosim-lab/EEE_singlecell_simplified/blob/master/eee/sim/batch_analysis.py
+
+
+** Update Netpyne first
+
+/Users/graham/Applications/netpyne/
+git pull
+
+Checking, and I am on the development branch.
+
+Running a batch again.
+
+	cd ~ ; rm -rf eee_temp ; mkdir eee_temp ; cd eee_temp ; git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network/mod ; nrnivmodl ; cd ../eee_net ; ln -s "../mod/x86_64" x86_64 ; ./runbatch
+
+No good.
+
+** Removing cfg. from front of params
+
+	params['cfg.EEconv'] = [0.0, 3.0, 6.0] # Default 3.0
+	params['cfg.IEconv'] = [0.0, 12.0, 24.0] # Default 12.0
+
+	params['EEconv'] = [0.0, 3.0, 6.0] # Default 3.0
+	params['IEconv'] = [0.0, 12.0, 24.0] # Default 12.0
+
+Same problem. Ugh.
+
+Will commit and push and ask for help.
 
 
 

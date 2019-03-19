@@ -1,0 +1,1 @@
+mpiexec -np 4 nrniv -python -mpi tut8_batch.py

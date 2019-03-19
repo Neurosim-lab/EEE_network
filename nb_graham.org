@@ -4935,7 +4935,7 @@ salvadord [7:06 AM]
 it was pi’s day ysterday so makes sense
 
 
-* 2019-03-18 -- 
+* 2019-03-18 -- Batching, etc.
 
 ** Trying a batch on 'no'
 
@@ -5068,6 +5068,123 @@ No good.
 Same problem. Ugh.
 
 Will commit and push and ask for help.
+
+
+** Exploring batch problem
+
+First to see if running `python batch.py` works instead of ./runbatch
+
+Nope, that doesn't give any output (though it does create the input files)
+
+I think it's time to actually try to run the Netpyne batch tutorial to make sure that works.
+
+http://www.netpyne.org/tutorial.html#running-batch-simulations-tutorial-8
+
+After a break.
+
+
+* 2019-03-19 -- Batching, EEE meeting
+
+** Meeting
+
+https://docs.google.com/document/d/1Y-P9emA3k5ZoPMYTKsj7AWLVrH8QL_-4BzDCaAcWp-0/edit
+
+
+** Batching
+
+Trying to run the Netpyne batch tutorial
+
+http://www.netpyne.org/tutorial.html#running-batch-simulations-tutorial-8
+
+Downloaded all files.  Running `python init.py` works.
+
+To run batch, should use:
+
+	mpiexec -np [num_cores] nrniv -python -mpi batch.py
+
+Or:
+
+	mpiexec -np 4 nrniv -python -mpi tut8_batch.py
+
+Didn't complete...  Got almost all the way there, but never ran the last batch sim...
+
+Taking a quick break to install NeuroML (been getting warnings about it):
+
+** Install NeuroML
+
+Warning:
+
+	Note: NeuroML import failed; import/export functions for NeuroML will not be available. 
+  	To install the pyNeuroML & libNeuroML Python packages visit: https://www.neuroml.org/getneuroml
+
+Installing directions from here:
+
+  	https://github.com/NeuroML/pyNeuroML
+
+Running:
+
+	pip install pyneuroml
+
+And that seems to have been successful.
+
+Back to batching tutorial.
+
+
+** Batching tutorial
+
+Saving the following:
+
+	mpiexec -np 4 nrniv -python -mpi tut8_batch.py
+
+To a file: runbatch
+
+Trying to run it:
+
+	graham-mac:netpyne_tut graham$ ./runbatch
+	-bash: ./runbatch: Permission denied
+
+Need to allow execution:
+
+	chmod +x runbatch
+
+Now it runs, and NeuroML warning no longer appears.
+
+But, I'm having the same problem as when I run my own batches:
+I get outout for the first two values of param1 (0_0, 0_1, 0_2, 1_0, 1_1, 1_2) but not for 
+the final value of param1 (don't get: 2_0, 2_1, 2_2)
+
+When I run tut8_analysis.py, I get the following print statements:
+
+	Reading data...
+	0 (0, 0)
+	... file missing
+	1 (0, 1)
+	... file missing
+	2 (0, 2)
+	... file missing
+	3 (1, 0)
+	... file missing
+	4 (1, 1)
+	... file missing
+	5 (1, 2)
+	... file missing
+	6 (2, 0)
+	... file missing
+	7 (2, 1)
+	... file missing
+	8 (2, 2)
+	... file missing
+	9 files missing
+
+So it doesn't look like ANY of the files are actually functional.  
+
+** Running batch tutorial on Neurosim machines
+
+Will add tutorial files to EEE dir, commit and push, and try to run on `no` and `zn`
+
+
+
+
 
 
 

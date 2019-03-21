@@ -5182,6 +5182,318 @@ So it doesn't look like ANY of the files are actually functional.
 
 Will add tutorial files to EEE dir, commit and push, and try to run on `no` and `zn`
 
+	sshno
+	git clone https://github.com/Neurosim-lab/EEE_network.git
+	cd EEE_network/batch_tut/
+	./runbatch
+
+Still getting the same error as before:
+
+	>>> >>> Traceback (most recent call last):
+	  File "tut8_batch.py", line 1, in <module>
+	    from netpyne import specs
+	  File "/usr/site/nrniv/local/python/netpyne/netpyne/specs/__init__.py", line 13, in <module>
+	    from future import standard_library
+	ModuleNotFoundError: No module named 'future'
+
+Ugh.
+
+** Trying to install future
+
+Seems to have worked
+
+	no% pip install future
+	pip: Command not found.
+	no% 
+	no% pip3 install future
+	Collecting future
+	  Downloading https://files.pythonhosted.org/packages/90/52/e20466b85000a181e1e144fd8305caf2cf475e2f9674e797b222f8105f5f/future-0.17.1.tar.gz (829kB)
+	    100% |████████████████████████████████| 829kB 743kB/s 
+	Building wheels for collected packages: future
+	  Running setup.py bdist_wheel for future ... done
+	  Stored in directory: /u/graham/.cache/pip/wheels/0c/61/d2/d6b7317325828fbb39ee6ad559dbe4664d0896da4721bf379e
+	Successfully built future
+	Installing collected packages: future
+	Successfully installed future-0.17.1
+
+Trying to runbatch
+
+	ModuleNotFoundError: No module named 'numpy'
+
+I'm not sure it's a good idea for me to keep installing stuff...  Will ask in the meeting.
+
+
+** Asking Don to run batch
+
+Coming up with a one-liner:
+
+	cd ~ ; rm -rf eee_temp ; mkdir eee_temp ; cd eee_temp ; git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network/batch_tut ; ./runbatch
+
+And asking and waiting.
+
+	joe [7:25 AM]
+	Hey Don, I’m trying to see if I’m the only one with Netpyne batching issues.  Could you run the following one-liner when you have a chance?
+	Untitled 
+	cd ~ ; rm -rf eee_temp ; mkdir eee_temp ; cd eee_temp ; git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network/batch_tut ; ./runbatch
+	And then let me know if you get output figs for param sets 2_0, 2_1, and 2_2 ?
+
+
+* 2019-03-20 -- Batching
+
+** Connecting to zn
+
+Problem:
+
+	WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!
+	@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+	Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+	It is also possible that a host key has just been changed.
+	The fingerprint for the ECDSA key sent by the remote host is
+	SHA256:cwQFllPQXPQCAULdRRXujJ5+vO4etSvufqtKlfObhYE.
+	Please contact your system administrator.
+	Add correct host key in /u/graham/.ssh/known_hosts to get rid of this message.
+	Offending ECDSA key in /u/graham/.ssh/known_hosts:5
+	  remove with:
+	  ssh-keygen -f "/u/graham/.ssh/known_hosts" -R "zn"
+	ECDSA host key for zn has changed and you have requested strict checking.
+	Host key verification failed.
+
+Looking at /u/graham/.ssh/known_hosts on no
+
+	no% ssh-keygen -f "/u/graham/.ssh/known_hosts" -R "zn"
+	# Host zn found: line 5
+	/u/graham/.ssh/known_hosts updated.
+	Original contents retained as /u/graham/.ssh/known_hosts.old
+	no% 
+
+	no% ssh zn
+	The authenticity of host 'zn (138.5.101.136)' can't be established.
+	ECDSA key fingerprint is SHA256:cwQFllPQXPQCAULdRRXujJ5+vO4etSvufqtKlfObhYE.
+	Are you sure you want to continue connecting (yes/no)? yes
+	Warning: Permanently added 'zn' (ECDSA) to the list of known hosts.
+	Warning: the ECDSA host key for 'zn' differs from the key for the IP address '138.5.101.136'
+	Offending key for IP in /u/graham/.ssh/known_hosts:4
+	Are you sure you want to continue connecting (yes/no)? yes
+	Welcome to Ubuntu 18.04.2 LTS (GNU/Linux 4.15.0-46-generic x86_64)
+
+	 * Documentation:  https://help.ubuntu.com
+	 * Management:     https://landscape.canonical.com
+	 * Support:        https://ubuntu.com/advantage
+
+	  System information as of Wed Mar 20 20:01:55 EDT 2019
+
+	  System load:  0.0              Processes:                 537
+	  Usage of /:   0.9% of 1.79TB   Users logged in:           1
+	  Memory usage: 0%               IP address for enp193s0f0: 138.5.101.136
+	  Swap usage:   0%
+
+
+	 * Canonical Livepatch is available for installation.
+	   - Reduce system reboots and improve kernel security. Activate at:
+	     https://ubuntu.com/livepatch
+
+	33 packages can be updated.
+	0 updates are security updates.
+
+	zn% 
+
+Awesome, I'm in. Trying to run tutorial batch sims.
+
+	zn% mkdir eee_temp ; cd eee_temp ; git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network/batch_tut ; ./runbatch
+
+	ModuleNotFoundError: No module named 'pandas'
+
+	zn% pip install pandas
+	pip: Command not found.
+	zn% pip3 install pandas
+	pip3: Command not found.
+
+Bill had said it's probably better to install stuff with Conda anyway.
+
+http://docs.continuum.io/anaconda/install/
+https://anaconda.org/anaconda/pandas
+
+	zn% conda install -c anaconda pandas
+
+Got a lot of warnings saying files couldn't be deleted because I lack permissions, ending with 
+an error:
+
+	ERROR conda.core.link:_execute(568): An error occurred while uninstalling package 'defaults::conda-4.6.8-py37_0'.
+	PermissionError(13, 'Permission denied')
+	Attempting to roll back.
+
+	Rolling back transaction: done
+
+	[Errno 13] Permission denied: '/usr/site/nrniv/local/python/anaconda3/condabin/conda' -> '/usr/site/nrniv/local/python/anaconda3/condabin/conda.c~'
+
+Will try sudo
+
+Forgot my password. Resetting it here: http://www.neurosimlab.com/user
+
+New password isn't working on zn. Maybe it takes a little while.  Will come back to this.
+
+Well, I'll try to install pip first.  https://anaconda.org/anaconda/pip
+
+	zn% conda install -c anaconda pip 
+
+Still lacking permission.
+
+
+** Exploring batching
+
+What happens if each param has only one value?  If each has two?  If each has four?
+
+Original
+
+	params['synMechTau2'] = [3.0, 5.0, 7.0]   
+	params['connWeight'] = [0.005, 0.01, 0.15]
+
+One value each: 
+
+	params['synMechTau2'] = [3.0] #, 5.0, 7.0]   
+	params['connWeight'] = [0.005] #, 0.01, 0.15]
+
+It just ends up sitting here:
+
+	graham-mac:~ graham$ cd ~/EEE_network/batch_tut/ ; ./runbatch
+	numprocs=4
+	NEURON -- VERSION 7.6.4 master (50728e66) 2018-12-14
+	Duke, Yale, and the BlueBrain Project -- Copyright 1984-2018
+	See http://neuron.yale.edu/neuron/credits
+
+	Saving batch to tut8_data/tauWeight_batch.json ... 
+	Saving batch to tut8_data/tauWeight_batch.json ... 
+	Saving batch to tut8_data/tauWeight_batch.json ... 
+	Saving batch to tut8_data/tauWeight_batch.json ... 
+	(0, 0) (3.0, 0.005)
+	synMechTau2 = 3.0
+	connWeight = 0.005
+	Saving simConfig to tut8_data/tauWeight_0_0_cfg.json ... 
+	Submitting job  tut8_data/tauWeight_0_0
+	--------------------------------------------------------------------------------
+	   Finished submitting jobs for grid parameter exploration   
+	--------------------------------------------------------------------------------
+	>>> 
+
+
+* 2019-03-21 -- Batching
+
+** Exploring batch problem
+
+So a 1x1 batch doesn't run.  What about a 2x2?
+
+	params['synMechTau2'] = [3.0, 5.0] #, 7.0]   
+	params['connWeight'] = [0.005, 0.01] #, 0.15]
+
+Running:
+	
+	graham$ cd ~/EEE_network/batch_tut/ ; ./runbatch
+
+It gets through the first three (of four) sims, but then just sits.  Ugh.
+
+I am going to set cfg.verbose to True and look at terminal output.
+
+Wow.  Very verbose.  Looking for problems.
+
+No obvious problems.  Turning off verbose.
+
+** Submitting problem to Netpyne Github
+
+I am going to document the problem and post it as an issue in Github repo.
+
+First, to come up with code that produces the problem.  
+
+I think I'll try to download the tutorial 8 files programatically.
+
+https://www.thegeekstuff.com/2012/07/wget-curl/
+
+My system doesn't have wget, so I will use curl.
+
+	curl -O <URL> (save file with same name as remote in current dir)
+
+	or
+
+	curl -o <output name> <URL> (save file as <output name> in current dir)
+
+Files I need to download:
+
+http://www.netpyne.org/_downloads/11bf4e0a6395bbf144b644269a25b8be/tut8_netParams.py
+http://www.netpyne.org/_downloads/07e5be985bfca5ede59f15f8e38eb289/tut8_cfg.py
+http://www.netpyne.org/_downloads/473a938270d9e719882bd861fcb1e8b9/tut8_init.py
+http://www.netpyne.org/_downloads/a023a2e3de0d562f75dbf29656110821/tut8_batch.py
+
+And I may want to create a file with the following command:
+
+mpiexec -np [num_cores] nrniv -python -mpi batch.py
+mpiexec -np 4 nrniv -python -mpi tut8_batch.py
+
+Okay, working on a one-liner to reproduce problem:
+
+cd ~ ;
+mkdir netpyne_batch_tut ; 
+cd netpyne_batch_tut ; 
+curl -O http://www.netpyne.org/_downloads/11bf4e0a6395bbf144b644269a25b8be/tut8_netParams.py ; 
+curl -O http://www.netpyne.org/_downloads/07e5be985bfca5ede59f15f8e38eb289/tut8_cfg.py ; 
+curl -O http://www.netpyne.org/_downloads/473a938270d9e719882bd861fcb1e8b9/tut8_init.py ; 
+curl -O http://www.netpyne.org/_downloads/a023a2e3de0d562f75dbf29656110821/tut8_batch.py ; 
+touch runbatch ; 
+echo "mpiexec -np 4 nrniv -python -mpi tut8_batch.py" > runbatch ; 
+chmod +x runbatch ; 
+./runbatch
+
+Actually, I think I'll forget adding the `runbatch` file...
+
+cd ~ ;
+mkdir netpyne_batch_tut ; 
+cd netpyne_batch_tut ; 
+curl -O http://www.netpyne.org/_downloads/11bf4e0a6395bbf144b644269a25b8be/tut8_netParams.py ; 
+curl -O http://www.netpyne.org/_downloads/07e5be985bfca5ede59f15f8e38eb289/tut8_cfg.py ; 
+curl -O http://www.netpyne.org/_downloads/473a938270d9e719882bd861fcb1e8b9/tut8_init.py ; 
+curl -O http://www.netpyne.org/_downloads/a023a2e3de0d562f75dbf29656110821/tut8_batch.py ; 
+mpiexec -np 4 nrniv -python -mpi tut8_batch.py
+
+Tested it and it works. I mean, it runs, it doesn't complete all sims.
+
+Posting to Netpyne Github repo as an issue.
+
+https://github.com/Neurosim-lab/netpyne/issues/412
+
+	Not all batch simulations complete #412
+
+	When running a batch of simulations, not all of them complete.
+
+	In the batch tutorial (http://www.netpyne.org/tutorial.html#running-batch-simulations-tutorial-8), for example, there are two parameters varied and three values for each parameter, for a total of 9 simulations. But only the first 6 get run (0_0, 0_1, 0_2, 1_0, 1_1, 1_2) and then the terminal just sits at the Python prompt. (Missing sims 2_0, 2_1, 2_2)
+
+	The following commands should reproduce the problem:
+
+	cd ~ 
+	mkdir netpyne_batch_tut 
+	cd netpyne_batch_tut 
+	curl -O http://www.netpyne.org/_downloads/11bf4e0a6395bbf144b644269a25b8be/tut8_netParams.py 
+	curl -O http://www.netpyne.org/_downloads/07e5be985bfca5ede59f15f8e38eb289/tut8_cfg.py 
+	curl -O http://www.netpyne.org/_downloads/473a938270d9e719882bd861fcb1e8b9/tut8_init.py 
+	curl -O http://www.netpyne.org/_downloads/a023a2e3de0d562f75dbf29656110821/tut8_batch.py 
+	mpiexec -np 4 nrniv -python -mpi tut8_batch.py
+
+	The output will appear in a dir called tut8_data. Rasters and traces (.png) for the final three sims will be missing if this reproduces my problem.
+
+Chatting on Slack.  Bill is looking into as well, and updating Neurosim machines so we can 
+try it there.
+
+
+** 
+
+
+
+
+
+
+
+
+
+
+
 
 
 

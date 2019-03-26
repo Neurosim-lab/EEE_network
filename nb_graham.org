@@ -5482,15 +5482,660 @@ Chatting on Slack.  Bill is looking into as well, and updating Neurosim machines
 try it there.
 
 
-** 
+** conda activate py36
+
+Switches to Python 3
+
+joe [6:44 AM]
+Error on `no`: ModuleNotFoundError: No module named ‘numpy’
+
+billl [6:44 AM]
+did you `conda activate py36` ?
+then run python and makes sure can `import numpy`
+
+Craig [6:46 AM]
+joined #netpyne.
+
+joe [6:47 AM]
+What does `conda activate py36` do?  I’m not familiar with that.  But yeah, it solved the numpy problem.
+
+adamnewton [6:49 AM]
+We have two conda environments, one with python 2.7 and one with 3.6, it switches to the python 3.6 one.
 
 
 
 
+* 2019-03-21 -- HPC at SDSC
+
+** Message from Salva
+
+Batch sims on no weren't working.  Need following commands:
+
+salvadord [7:46 AM]
+ok got it
+ok netpyne working now on no — 1) `py3env` , 2) `conda activate py36`  — @joe
+
+
+** Using --user and .local
+
+So running `pip install <package name> --user` installs the package into the .local dir in 
+home directory.
+
+Subha recommends using this method and only installing needed packages
+
+It looks like we need future, matplotlib_scalebar, and pandas
+
+Will then need to change my Python path to .local instead of local (where Don and I installed)
+
+First adding a new alias to my .bash_profile file
+
+	alias sshc='ssh jwgraham@comet.sdsc.edu'
+
+Looking at my .bashrc file on Comet
 
 
 
 
+	graham-mac:~ graham$ sshc
+	Password: 
+	Last login: Fri Mar 15 11:24:42 2019 from 184.101.210.88
+	Rocks 6.2 (SideWinder)
+	Profile built 16:45 08-Feb-2016
+
+	Kickstarted 17:27 08-Feb-2016
+	                                                                       
+	                      WELCOME TO 
+	      __________________  __  _______________
+	        -----/ ____/ __ \/  |/  / ____/_  __/
+	          --/ /   / / / / /|_/ / __/   / /
+	           / /___/ /_/ / /  / / /___  / /
+	           \____/\____/_/  /_/_____/ /_/
+
+	*******************************************************************************
+
+	[1] Example Scripts: /share/apps/examples
+
+	[2] Filesystems:
+
+	     (a) Lustre scratch filesystem : /oasis/scratch/comet/$USER/temp_project
+	         (Preferred: Scalable large block I/O)
+	            *** Meant for storing data required for active simulations
+	            *** Not backed up and should not be used for storing data long term
+	            *** Periodically clear old data not required for active simulations
+
+	     (b) Compute/GPU node local SSD storage: /scratch/$USER/$SLURM_JOBID
+	         (Meta-data intensive jobs, high IOPs)
+
+	     (c) Lustre projects filesystem: /oasis/projects/nsf
+	     
+	     (d) /home/$USER : Only for source files, libraries, binaries.
+	         *Do not* use for I/O intensive jobs.
+
+	[3] Comet User Guide: http://www.sdsc.edu/support/user_guides/comet.html
+	******************************************************************************
+	[jwgraham@comet-ln3 ~]$ pwd
+	/home/jwgraham
+	[jwgraham@comet-ln3 ~]$ ls
+	EEE_network  local  matlab  netpyne
+	[jwgraham@comet-ln3 ~]$ cat .bashrc
+	# .bashrc
+
+	# Source global definitions
+	if [ -f /etc/bashrc ]; then
+	        . /etc/bashrc
+	fi
+
+	# User specific aliases and functionsi
+	#source /projects/ps-nsg/home/nsguser/.bashrc 
+	module purge
+	module load gnu
+	module load openmpi_ib
+	module load gsl
+
+	module load python
+	module load scipy
+
+	# update scipy
+	# export MODULEPATH=/share/apps/compute/modulefiles/applications:$MODULEPATH
+	# module load python/2.7.13
+	#export PYTHONPATH=/share/apps/compute/python-2.7.13/lib/python/site-packages:$PYTHONPATH
+
+	#export SITE=/home/lytton/site
+
+	# NEURON 7.5
+	export PATH=/projects/ps-nsg/home/nsguser/applications/neuron7.5/installdir/x86_64/bin:$PATH
+	#export PATH=/home/salvadord/site/nrniv/local/bin:/projects/ps-nsg/home/nsguser/applications/neuron7.5/installdir/x86_64/bin:$PATH
+	#export NEURON_INIT_MPI=0
+	#export LIBS=-ldl
+	#export CPU=`uname -p`
+
+	#export MODL_INCLUDE=/home/salvadord/site/nrniv/local/mod
+	#export HOC_LIBRARY_PATH=/home/salvadord/site/nrniv/local/hoc:/home/salvadord/site/nrniv/simctrl/hoc
+
+	# NEURON 7.5
+	#export PYTHONPATH=/projects/ps-nsg/home/nsguser/applications/neuron7.5/installdir/lib/python:$PYTHONPATH
+	export PYTHONPATH=/projects/ps-nsg/home/nsguser/applications/neuron7.5/src/nrnpython/lib/python2.7/site-packages:$PYTHONPATH
+	#export NEURONHOME=/projects/ps-nsg/home/nsguser/applications/neuron7.5/installdir
+
+	#export PYTHONPATH=/home/jwgraham/local/:/home/jwgraham/local/netpyne:$PYTHONPATH
+
+
+Changing local to .local (and removing Netpyne addition, Comet should have Netpyne):
+
+	export PYTHONPATH=/home/jwgraham/local/:/home/jwgraham/local/netpyne:$PYTHONPATH
+
+	-->
+
+	#export PYTHONPATH=/home/jwgraham/local/:/home/jwgraham/local/netpyne:$PYTHONPATH
+	export PYTHONPATH=/home/jwgraham/.local/:$PYTHONPATH
+
+
+** Running to see what happens
+
+While connected to Comet (sshc)
+
+To run:
+	sbatch runeee
+
+Where runeee is:
+
+	#!/bin/bash 
+	#SBATCH --job-name=eee_net_03-25-2019_03
+	#SBATCH -A shs100
+	#SBATCH -t 0:30:00
+	#SBATCH --nodes=1
+	#SBATCH --ntasks-per-node=4
+	#SBATCH -o eee_net_03-25-2019_03.run
+	#SBATCH -e eee_net_03-25-2019_03.err
+	#SBATCH --mail-user=joe.w.graham@gmail.com
+	#SBATCH --mail-type=end
+	#SBATCH --partition=debug
+	source ~/.bashrc
+	cd /home/jwgraham/EEE_network/eee_net/
+	ibrun -np 4 nrniv -python -mpi init.py
+
+Need to remember I'm using the debugginh partition: #SBATCH --partition=debug
+
+Need to delete that line to be in normal operation
+
+First I'll get rid of the old err and run files: eee_net_03-25-2019_03.err and eee_net_03-25-2019_03.run
+
+	rm eee_net_03-25-2019_03*
+
+Now to run it
+
+	[jwgraham@comet-ln3 eee_net]$ sbatch runeee
+	Submitted batch job 22101184
+	[jwgraham@comet-ln3 eee_net]$ squeue -u jwgraham
+	             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+	          22101184     debug eee_net_ jwgraham  R       0:37      1 comet-14-04
+	[jwgraham@comet-ln3 eee_net]$ squeue -u jwgraham
+	             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+	          22101184     debug eee_net_ jwgraham  R       2:40      1 comet-14-04
+	[jwgraham@comet-ln3 eee_net]$ 
+
+Weird, it just keeps running, I thought it would have crashed by now...
+
+But the error and run files showed up.
+
+eee_net_03-25-2019_03.run
+
+	[jwgraham@comet-ln3 eee_net]$ cat eee_net_03-25-2019_03.run
+	numprocs=4
+	first instance of dp_total_L2
+	first instance of dp_total_L5
+	--------------------------------------------------------------------------
+	An MPI process has executed an operation involving a call to the
+	"fork()" system call to create a child process.  Open MPI is currently
+	operating in a condition that could result in memory corruption or
+	other system errors; your MPI job may hang, crash, or produce silent
+	data corruption.  The use of fork() (or system() or other calls that
+	create child processes) is strongly discouraged.  
+
+	The process that invoked fork was:
+
+	  Local host:          comet-14-04 (PID 28014)
+	  MPI_COMM_WORLD rank: 3
+
+	If you are *absolutely sure* that your application will successfully
+	and correctly survive a call to fork(), you may disable this warning
+	by setting the mpi_warn_on_fork MCA parameter to 0.
+	--------------------------------------------------------------------------
+
+	Reading command line arguments using syntax: python file.py [simConfig=filepath] [netParams=filepath]
+
+	Reading command line arguments using syntax: python file.py [simConfig=filepath] [netParams=filepath]
+
+	Reading command line arguments using syntax: python file.py [simConfig=filepath] [netParams=filepath]
+	Note: NeuroML import failed; import/export functions for NeuroML will not be available. 
+	  To install the pyNeuroML & libNeuroML Python packages visit: https://www.neuroml.org/getneuroml
+
+	Reading command line arguments using syntax: python file.py [simConfig=filepath] [netParams=filepath]
+	Balancing each compartment to -73 mV
+	Balancing each compartment to -73 mV
+	Balancing each compartment to -73 mV
+	Balancing each compartment to -73 mV
+
+	Warning: Could not load netParams from command line path or from default netParams.py
+
+	Warning: Could not load netParams from command line path or from default netParams.py
+
+	Warning: Could not load netParams from command line path or from default netParams.py
+	  Number of cells on node 1: 0 
+	  Number of connections on node 1: 0 
+	  Number of stims on node 1: 0 
+
+	Warning: Could not load netParams from command line path or from default netParams.py
+	  Number of cells on node 3: 0 
+	  Number of connections on node 3: 0 
+	  Number of stims on node 3: 0 
+
+	Creating network of 0 cell populations on 4 hosts...
+	  Number of cells on node 0: 0 
+	  Done; cell creation time = 0.00 s.
+	Making connections...
+	  Number of connections on node 0: 0 
+	  Done; cell connection time = 0.00 s.
+	  Number of stims on node 0: 0 
+	  Done; cell stims creation time = 0.00 s.
+	  Number of cells on node 2: 0 
+	  Number of connections on node 2: 0 
+	  Number of stims on node 2: 0 
+
+	Running simulation for 1000 ms...
+	  Done; run time = 0.01 s; real-time ratio: 67.08.
+
+	Gathering data...
+	  Done; gather time = 0.00 s.
+
+	Analyzing...
+	  Cells: 0
+	  Connections: 0 (0.00 per cell)
+	  Spikes: 0 (0.00 Hz)
+	  Simulated time: 1.0 s; 4 workers
+	  Run time: 0.01 s
+
+	Gathering data...
+	[jwgraham@comet-ln3 eee_net]$
+
+Since all the numbers are 0, obviously it didn't work, probably frozen.
+
+Looking at error file.
+
+eee_net_03-25-2019_03.err
+
+	[jwgraham@comet-ln3 eee_net]$ cat eee_net_03-25-2019_03.err 
+	Unloading compiler-dependent module mkl/11.1.2.144
+	Unloading compiler-dependent module gsl/2.1
+	Unloading compiler-dependent module openmpi_ib/1.8.4
+	NEURON -- VERSION 7.5 master (6b4c19f) 2017-09-25
+	Duke, Yale, and the BlueBrain Project -- Copyright 1984-2016
+	See http://neuron.yale.edu/neuron/credits
+
+	Additional mechanisms from files
+	 ampa.mod Cad.mod CaDynamics_E2.mod cadyn.mod Ca_HVA.mod ca.mod canin.mod CaT.mod gabaa.mod gabab.mod Gfluctp.mod glutamate.mod hin.mod h_kole.mod h_migliore.mod Ih.mod IKsin.mod IL.mod kadist.mod kapin.mod kaprox.mod kBK.mod kctin.mod kdrin.mod kv.mod MyExp2SynBB.mod nafx.mod na.mod NMDAeee.mod NMDAmajor.mod NMDA.mod PlateauConductance.mod SK_E2.mod vecstim.mod vmax.mod
+	>>> >>> >>> 
+
+
+	[comet-14-04.sdsc.edu:28009] 3 more processes have sent help message help-mpi-runtime.txt / mpi_init:warn-fork
+	[comet-14-04.sdsc.edu:28009] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+	[jwgraham@comet-ln3 eee_net]$ 
+
+** Whoops
+
+I modified .bashrc but didn't reload the terminal.  Will cancel job and reconnect to Comet.
+
+	[jwgraham@comet-ln3 ~]$ squeue -u jwgraham
+	             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+	          22101184     debug eee_net_ jwgraham  R      24:01      1 comet-14-04
+	[jwgraham@comet-ln3 ~]$ 
+	[jwgraham@comet-ln3 ~]$ scancel 22101184
+	[jwgraham@comet-ln3 ~]$ 
+	[jwgraham@comet-ln3 ~]$ squeue -u jwgraham
+	             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+	[jwgraham@comet-ln3 ~]$
+
+Reconnecting, deleting err and run files, and running.
+
+	graham-mac:~ graham$ sshc
+	[jwgraham@comet-ln2 ~]$ cd EEE_network/eee_net
+	[jwgraham@comet-ln2 eee_net]$ ls
+	batch.py    cfg.py   eee_net_03-25-2019_03.err	init.py       netParams.pyc  runbatch  runsim
+	cfg_old.py  cfg.pyc  eee_net_03-25-2019_03.run	netParams.py  output	     runeee    x86_64
+	[jwgraham@comet-ln2 eee_net]$ rm eee_net_0*
+	[jwgraham@comet-ln2 eee_net]$ ls
+	batch.py  cfg_old.py  cfg.py  cfg.pyc  init.py	netParams.py  netParams.pyc  output  runbatch  runeee  runsim  x86_64
+	[jwgraham@comet-ln2 eee_net]$ 
+	[jwgraham@comet-ln2 eee_net]$ sbatch runeee
+	Submitted batch job 22104710
+	[jwgraham@comet-ln2 eee_net]$ squeue -u jwgraham
+	             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+	[jwgraham@comet-ln2 eee_net]$ 
+	[jwgraham@comet-ln2 eee_net]$ ls
+	batch.py    cfg.py   eee_net_03-25-2019_03.err	init.py       netParams.pyc  runbatch  runsim
+	cfg_old.py  cfg.pyc  eee_net_03-25-2019_03.run	netParams.py  output	     runeee    x86_64
+	[jwgraham@comet-ln2 eee_net]$ 
+	[jwgraham@comet-ln2 eee_net]$ cat eee_net_03-25-2019_03.run 
+	numprocs=4
+	[jwgraham@comet-ln2 eee_net]$ 
+	[jwgraham@comet-ln2 eee_net]$ cat eee_net_03-25-2019_03.err
+	Unloading compiler-dependent module mkl/11.1.2.144
+	Unloading compiler-dependent module gsl/2.1
+	Unloading compiler-dependent module openmpi_ib/1.8.4
+	NEURON -- VERSION 7.5 master (6b4c19f) 2017-09-25
+	Duke, Yale, and the BlueBrain Project -- Copyright 1984-2016
+	See http://neuron.yale.edu/neuron/credits
+
+	Additional mechanisms from files
+	 ampa.mod Cad.mod CaDynamics_E2.mod cadyn.mod Ca_HVA.mod ca.mod canin.mod CaT.mod gabaa.mod gabab.mod Gfluctp.mod glutamate.mod hin.mod h_kole.mod h_migliore.mod Ih.mod IKsin.mod IL.mod kadist.mod kapin.mod kaprox.mod kBK.mod kctin.mod kdrin.mod kv.mod MyExp2SynBB.mod nafx.mod na.mod NMDAeee.mod NMDAmajor.mod NMDA.mod PlateauConductance.mod SK_E2.mod vecstim.mod vmax.mod
+	Traceback (most recent call last):
+	  File "init.py", line 14, in <module>
+	Traceback (most recent call last):
+	  File "init.py", line 14, in <module>
+	Traceback (most recent call last):
+	  File "init.py", line 14, in <module>
+	Traceback (most recent call last):
+	  File "init.py", line 14, in <module>
+	    from netpyne import sim
+	    from netpyne import sim
+	ImportError: No module named netpyne
+	>>>     from netpyne import sim
+	ImportError: No module named netpyne
+	ImportError: No module named netpyne
+	>>> 
+
+	>>> 
+	    from netpyne import sim
+	ImportError: No module named netpyne
+	>>> 
+	[jwgraham@comet-ln2 eee_net]$
+
+
+Looking at err file:
+
+	ImportError: No module named netpyne
+
+Perfect, now to install netpyne and try again.
+
+
+** Installing Netpyne
+
+http://www.netpyne.org/install.html#install-via-pip-development-version
+
+	Install via pip (development version)
+	This will install the version in the github “development” branch – it will include some of the latest enhancements and bug fixes, but could also include temporary bugs:
+
+	git clone https://github.com/Neurosim-lab/netpyne.git
+	cd netpyne
+	git checkout development
+	pip install -e .
+	pip will add a symlink in the default python packages folder to the cloned netpyne folder (so you don’t need to modify PYTHONPATH). If new changes are available just need to pull from cloned netpyne repo.
+
+Making a .local dir in home dir, installing netpyne there
+
+Tried that, and it didn't work... Failed with this:
+
+	OSError: [Errno 13] Permission denied: '/opt/python/lib/python2.7/site-packages/matplotlib_scalebar'
+
+Installed matplotlib_scalebar without error:
+
+	pip install matplotlib-scalebar --user
+
+Tried again to install Netpyne development branch, failed with:
+
+    error: could not create '/opt/python/lib/python2.7/site-packages/_thread': Permission denied
+
+Tried to install default Netpyne:
+
+	pip install netpyne --user
+
+Was successful:
+
+	Successfully installed future-0.17.1 netpyne-0.9.1.3 pandas-0.16.2 python-dateutil-2.4.2
+
+Now to try running on Comet again.
+
+
+** Running sim
+
+[jwgraham@comet-ln2 eee_net]$ rm eee_net_03-25-2019_03.*
+[jwgraham@comet-ln2 eee_net]$ sbatch runeee
+
+Just keeps running, will cancel job
+
+Looking at error and run files, I think I need to make sure all files run.
+
+python cfg.py --> works
+python netParams.py --> crashes
+
+	  File "netParams.py", line 88, in <module>
+	    'g_e0' : 0.0121 * cfg.PV5_exc_noise_amp, 
+	AttributeError: 'SimConfig' object has no attribute 'PV5_exc_noise_amp'
+
+Crap.  The config file was somehow cut off...
+
+Ahh.  The config file Don sent was cut off.  I'm going to git checkout cfg.py and then make Don's changes
+by hand (instead of copying and pasting his file).
+
+The diff:
+
+	diff --git a/eee_net/cfg.py b/eee_net/cfg.py
+	index 496c826..9f78fca 100644
+	--- a/eee_net/cfg.py
+	+++ b/eee_net/cfg.py
+	@@ -3,7 +3,7 @@ import numpy as np
+	 
+	 # Show figures? Save figures?
+	 showFig = False
+	-saveFig = True
+	+saveFig = False
+	 
+	 # Simulation options
+	 cfg = specs.SimConfig()       
+	@@ -11,9 +11,11 @@ cfg.duration = 1000
+	 cfg.dt = 0.025                
+	 cfg.verbose = False           
+	 cfg.recordStep = 1             
+	-cfg.simLabel = 'eee_net'
+	-cfg.saveFolder = 'output'
+	-cfg.savePickle = False         
+	+cfg.simLabel = 'eee_net_20190325'
+	+cfg.saveFolder = 'data'
+	+cfg.savePickle = False
+	+cfg.saveJson = True
+	+cfg.saveDataInclude = ['simData', 'simConfig', 'netParams', 'net']         
+	 cfg.saveMat = False
+	 cfg.seeds = {'conn': 4123,
+	                         'stim': 1234, 
+
+Now to try netParams ... aaand it works.  Cool.  Now to try running sim.
+
+
+** Running sim
+
+It runs!  But it has trouble with the plotting.  I'll have to turn that off next.
+
+*** Output
+
+	[jwgraham@comet-ln2 eee_net]$ cat eee_net_03-25-2019_03.run 
+	numprocs=4
+	first instance of dp_total_L2
+	first instance of dp_total_L5
+	--------------------------------------------------------------------------
+	An MPI process has executed an operation involving a call to the
+	"fork()" system call to create a child process.  Open MPI is currently
+	operating in a condition that could result in memory corruption or
+	other system errors; your MPI job may hang, crash, or produce silent
+	data corruption.  The use of fork() (or system() or other calls that
+	create child processes) is strongly discouraged.  
+
+	The process that invoked fork was:
+
+	  Local host:          comet-14-01 (PID 20662)
+	  MPI_COMM_WORLD rank: 3
+
+	If you are *absolutely sure* that your application will successfully
+	and correctly survive a call to fork(), you may disable this warning
+	by setting the mpi_warn_on_fork MCA parameter to 0.
+	--------------------------------------------------------------------------
+
+	Reading command line arguments using syntax: python file.py [simConfig=filepath] [netParams=filepath]
+
+	Reading command line arguments using syntax: python file.py [simConfig=filepath] [netParams=filepath]
+
+	Reading command line arguments using syntax: python file.py [simConfig=filepath] [netParams=filepath]
+	Note: NeuroML import failed; import/export functions for NeuroML will not be available. 
+	  To install the pyNeuroML & libNeuroML Python packages visit: https://www.neuroml.org/getneuroml
+
+	Reading command line arguments using syntax: python file.py [simConfig=filepath] [netParams=filepath]
+	Balancing each compartment to -73 mV
+	Balancing each compartment to -73 mV
+	Balancing each compartment to -73 mV
+	Balancing each compartment to -73 mV
+
+	Creating network of 5 cell populations on 4 hosts...
+	  Number of cells on node 0: 25 
+	  Done; cell creation time = 0.11 s.
+	Making connections...
+	  Number of cells on node 2: 25 
+	  Number of cells on node 3: 25 
+	  Number of cells on node 1: 25 
+	  Number of connections on node 1: 600 
+	  Number of synaptic contacts on node 1: 1080 
+	  Number of connections on node 0: 600 
+	  Number of synaptic contacts on node 0: 1080 
+	  Number of connections on node 2: 600 
+	  Number of synaptic contacts on node 2: 1080 
+	  Number of connections on node 3: 600 
+	  Number of synaptic contacts on node 3: 1080 
+	  Done; cell connection time = 0.18 s.
+	Adding stims...
+	  Number of stims on node 1: 760 
+	  Number of stims on node 0: 760 
+	  Number of stims on node 3: 760 
+	  Done; cell stims creation time = 0.15 s.
+	  Number of stims on node 2: 760 
+	Recording 0 traces of 0 types on node 3
+	Recording 0 traces of 0 types on node 2
+	Recording 0 traces of 0 types on node 1
+	Recording 17 traces of 4 types on node 0
+
+	Running simulation for 1000 ms...
+	  Done; run time = 17.45 s; real-time ratio: 0.06.
+
+	Gathering data...
+	  Done; gather time = 1.23 s.
+
+	Analyzing...
+	  Cells: 100
+	  Connections: 2460 (24.60 per cell)
+	  Synaptic contacts: 7360 (73.60 per cell)
+	  Spikes: 983 (9.83 Hz)
+	   PT5_1 : 14.100 Hz
+	   PT5_2 : 12.850 Hz
+	   PT5_3 : 9.500 Hz
+	   PT5_4 : 9.500 Hz
+	   PV5 : 3.200 Hz
+	  Simulated time: 1.0 s; 4 workers
+	  Run time: 17.45 s
+	Saving output as data/eee_net_20190325.json  ... 
+	Finished saving!
+	  Done; saving time = 1.44 s.
+	Plotting raster...
+	There was an exception in plotRaster(): 
+	 'DataFrame' object has no attribute 'sort_values' 
+	(<type 'exceptions.AttributeError'>, AttributeError("'DataFrame' object has no attribute 'sort_values'",), <traceback object at 0x2aaabf4f14d0>)
+	Plotting recorded cell traces ...
+	There was an exception in plotTraces(): 
+	 no display name and no $DISPLAY environment variable 
+	(<class '_tkinter.TclError'>, TclError('no display name and no $DISPLAY environment variable',), <traceback object at 0x2aaabeec0950>)
+	Plotting 2D representation of network cell locations and connections...
+	There was an exception in plot2Dnet(): 
+	 no display name and no $DISPLAY environment variable 
+	(<class '_tkinter.TclError'>, TclError('no display name and no $DISPLAY environment variable',), <traceback object at 0x2aaabee14320>)
+	Plotting connectivity matrix...
+	There was an exception in plotConn(): 
+	 no display name and no $DISPLAY environment variable 
+	(<class '_tkinter.TclError'>, TclError('no display name and no $DISPLAY environment variable',), <traceback object at 0x2aaabed8dea8>)
+	  Done; plotting time = 0.29 s
+
+	Total time = 20.88 s
+	[jwgraham@comet-ln2 eee_net]$ 
+
+
+** Turning off plotting
+
+Now it seems to run to completion and end properly.  :)
+
+The following is in the error output from comet, will ask if anything in it is important:
+
+	[jwgraham@comet-ln2 eee_net]$ cat eee_net_03-25-2019_03.err
+	Unloading compiler-dependent module mkl/11.1.2.144
+	Unloading compiler-dependent module gsl/2.1
+	Unloading compiler-dependent module openmpi_ib/1.8.4
+	NEURON -- VERSION 7.5 master (6b4c19f) 2017-09-25
+	Duke, Yale, and the BlueBrain Project -- Copyright 1984-2016
+	See http://neuron.yale.edu/neuron/credits
+
+	Additional mechanisms from files
+	 ampa.mod Cad.mod CaDynamics_E2.mod cadyn.mod Ca_HVA.mod ca.mod canin.mod CaT.mod gabaa.mod gabab.mod Gfluctp.mod glutamate.mod hin.mod h_kole.mod h_migliore.mod Ih.mod IKsin.mod IL.mod kadist.mod kapin.mod kaprox.mod kBK.mod kctin.mod kdrin.mod kv.mod MyExp2SynBB.mod nafx.mod na.mod NMDAeee.mod NMDAmajor.mod NMDA.mod PlateauConductance.mod SK_E2.mod vecstim.mod vmax.mod
+	[comet-14-02.sdsc.edu:25021] 3 more processes have sent help message help-mpi-runtime.txt / mpi_init:warn-fork
+	[comet-14-02.sdsc.edu:25021] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+	>>> >>> 
+	>>> 
+
+	fatal: Not a git repository (or any parent up to mount point /home)
+	Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+	>>> 
+
+
+** Running on normal comet
+
+Had been running it on debug to well, debug.
+
+Need to edit runeee
+
+Changing it from:
+
+	#!/bin/bash 
+	#SBATCH --job-name=eee_net_03-25-2019_03
+	#SBATCH -A shs100
+	#SBATCH -t 0:30:00
+	#SBATCH --nodes=1
+	#SBATCH --ntasks-per-node=4
+	#SBATCH -o eee_net_03-25-2019_03.run
+	#SBATCH -e eee_net_03-25-2019_03.err
+	#SBATCH --mail-user=joe.w.graham@gmail.com
+	#SBATCH --mail-type=end
+	#SBATCH --partition=debug
+	source ~/.bashrc
+	cd /home/jwgraham/EEE_network/eee_net/
+	ibrun -np 4 nrniv -python -mpi init.py
+
+to:
+
+	#!/bin/bash 
+	#SBATCH --job-name=eee_net_03-25-2019_03
+	#SBATCH -A shs100
+	#SBATCH -t 0:30:00
+	#SBATCH --nodes=1
+	#SBATCH --ntasks-per-node=10
+	#SBATCH -o eee_net_03-25-2019_03.run
+	#SBATCH -e eee_net_03-25-2019_03.err
+	#SBATCH --mail-user=joe.w.graham@gmail.com
+	#SBATCH --mail-type=end
+	source ~/.bashrc
+	cd /home/jwgraham/EEE_network/eee_net/
+	ibrun -np 4 nrniv -python -mpi init.py
+
+Removed debug line and changed tasks per node to 10
+
+	sbatch runeee
+
+Pending.  In the meantime, I need to get the changes I made to this notebook locally as 
+well as the changes I made to files on Comet into the repository.
+
+First to commit on comet.
 
 
 

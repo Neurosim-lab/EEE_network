@@ -6254,18 +6254,70 @@ Modifying config file (also has hardcoded date):
 
 That should do it.  Committing, pushing, then pulling on Comet and running.
 
+Running:
+
+[jwgraham@comet-ln2 eee_net]$ sbatch sbatch_sim
+Submitted batch job 22173818
+[jwgraham@comet-ln2 eee_net]$ squeue -u jwgraham
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+          22173818   compute eee_net_ jwgraham PD       0:00      2 (Priority)
+
+Okay, it's in the queue.  Now to get batches going.
 
 
+** Get batching working on Comet
 
+Switching to debug queue to make sure it works.
 
+Adding line to sbatch_batch:
 
+#SBATCH --partition=debug
 
+New sbatch_batch:
 
+	#!/bin/bash 
+	#SBATCH --job-name=eee_net_03-27-2019_03_batch
+	#SBATCH -A shs100
+	#SBATCH -t 0:30:00
+	#SBATCH --nodes=1
+	#SBATCH --ntasks-per-node=4
+	#SBATCH -o eee_net_03-27-2019_03_batch.run
+	#SBATCH -e eee_net_03-27-2019_03_batch.err
+	#SBATCH --mail-user=joe.w.graham@gmail.com
+	#SBATCH --mail-type=end
+	#SBATCH --partition=debug
+	source ~/.bashrc
+	cd /home/jwgraham/EEE_network/eee_net/
+	ibrun -np 4 nrniv -python -mpi batch.py
 
+Now looking at Salva's batch file to see how he does it for Comet.
 
+    b.runCfg = {'type': 'hpc_slurm',
+    'allocation': 'shs100', # bridges='ib4iflp', comet m1='shs100', comet nsg='csd403'
+    #'reservation': 'salva1',
+    'walltime': '4:00:00',
+    'nodes': 5,
+    'coresPerNode': 24,  # comet=24, bridges=28
+    'email': 'salvadordura@gmail.com',
+    'folder': '/home/salvadord/m1/sim/',  # comet='/salvadord', bridges='/salvi82'
+    'script': 'init.py', 
+    'mpiCommand': 'ibrun', # comet='ibrun', bridges='mpirun'
+    'skip': True}
 
+I'll set mine up thusly:
 
+	b.runCfg = {'type': 'hpc_slurm',
+				'allocation': 'shs100', 
+				'walltime': '0:30:00',
+				'nodes': 1,
+				'coresPerNode': 4,
+				'email': 'joe.w.graham@gmail.com',
+				'folder': '/home/jwgraham/EEE_network/eee_net',
+				'script': 'init.py', 
+				'mpiCommand': 'ibrun',
+				'skip': True}
 
+And try running it.  Committing pushing pulling.
 
 
 

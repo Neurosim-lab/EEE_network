@@ -21,9 +21,20 @@ def batchTest():
 	b.batchLabel = 'batch_test'
 	b.saveFolder = 'batch_data'
 	b.method = 'grid'
-	b.runCfg = {'type': 'mpi_bulletin', 
+	b.runCfg = {'type': 'hpc_slurm',
+				'allocation': 'shs100', 
+				'walltime': '0:30:00',
+				'nodes': 1,
+				'coresPerNode': 4,
+				'email': 'joe.w.graham@gmail.com',
+				'folder': '/home/jwgraham/EEE_network/eee_net',
 				'script': 'init.py', 
+				'mpiCommand': 'ibrun',
 				'skip': True}
+
+	#b.runCfg = {'type': 'mpi_bulletin', 
+	#			'script': 'init.py', 
+	#			'skip': True}
 
 	# Run batch simulations
 	b.run()

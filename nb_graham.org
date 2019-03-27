@@ -6137,6 +6137,132 @@ well as the changes I made to files on Comet into the repository.
 
 First to commit on comet.
 
+Then committing locally.  Seems to merge automatically.
+
+Sim is still pending.
+
+Now the next day, job is still pending.
+
+
+* 2019-03-26 -- EEE meeting and batching on Comet
+
+** EEE Meeting
+
+https://docs.google.com/document/d/15Ijjk15i7lQzm7EXXMGHLm4Rm1ZqFkxGG8I9eoM9jZs/edit
+
+
+** Salvador posted some things about running on Comet
+
+*** .bashrc file
+
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+# User specific aliases and functionsi
+source /projects/ps-nsg/home/nsguser/.bashrc 
+module load gsl
+
+module load python
+module load scipy
+
+# update scipy
+export MODULEPATH=/share/apps/compute/modulefiles/applications:$MODULEPATH
+module load python/2.7.13
+export PYTHONPATH=/share/apps/compute/python-2.7.13/lib/python/site-packages:$PYTHONPATH
+
+export SITE=/home/lytton/site
+
+# NEURON 7.5
+export PATH=/home/salvadord/site/nrniv/local/bin:/projects/ps-nsg/home/nsguser/applications/neuron7.5/installdir/x86_64/bin:$PATH
+
+export NEURON_INIT_MPI=0
+export LIBS=-ldl
+export CPU=`uname -p`
+
+export MODL_INCLUDE=/home/salvadord/site/nrniv/local/mod
+export HOC_LIBRARY_PATH=/home/salvadord/site/nrniv/local/hoc:/home/salvadord/site/nrniv/simctrl/hoc
+
+# NEURON 7.5
+export PYTHONPATH=/projects/ps-nsg/home/nsguser/applications/neuron7.5/installdir/lib/python:$PYTHONPATH
+export NEURONHOME=/projects/ps-nsg/home/nsguser/applications/neuron7.5/installdir
+
+export PYTHONPATH=/home/salvadord/site/nrniv/local/python:/home/salvadord/site/nrniv/local/python/netpyne:$PYTHONPATH
+
+alias huc='hg pull; hg up -C'
+alias lsl='ls -lrtah'
+alias upnp='cd ~/site/nrniv/local/python/netpyne/; git pull; cd ~/m1/sim'
+alias sq='squeue -u $USER; squeue -u $USER | wc -l'
+alias sqr='squeue -u $USER -t RUNNING; squeue -u $USER -t RUNNING | wc -l'
+alias sqrr='squeue -u $USER -t RUNNING --reservation=salva1; squeue -u $USER -t RUNNING --reservation=salva1 | wc -l'
+alias sqra='squeue -t RUNNING; squeue -t RUNNING | wc -l'
+alias sqp='squeue -u $USER -t PENDING; squeue -u $USER -t PENDING | wc -l' 
+alias sqpa='squeue -t PENDING --partition=compute -o "%.18i %.9P %.8j %.8u %.2t %.10M %.6D %R %p"; squeue -t PENDING --partition=compute | wc -l'
+alias sdetail='scontrol show job'
+alias tarc='tar -zcvf'
+
+*** useful alias to copy from Comet
+
+alias cpcm
+scp -r comet.sdsc.xsede.org:///home/salvadord/!:1 !:2
+
+
+* 2019-03-27 -- Working on Comet
+
+To do:
+
+Run some long sims on Comet
+Get batching working on Comet
+Run batches 
+
+** Run some long sims on Comet
+
+We have lots of compute time left this month, so I'll set up some long sims to run.
+
+First I'm going to rename `runeee` as `sbatch_sim` and also make a copy named `sbatch_batch` to be used 
+to run the batch sims.
+
+So this is sbatch_sim:
+
+	#!/bin/bash 
+	#SBATCH --job-name=eee_net_03-25-2019_03
+	#SBATCH -A shs100
+	#SBATCH -t 0:30:00
+	#SBATCH --nodes=1
+	#SBATCH --ntasks-per-node=10
+	#SBATCH -o eee_net_03-25-2019_03.run
+	#SBATCH -e eee_net_03-25-2019_03.err
+	#SBATCH --mail-user=joe.w.graham@gmail.com
+	#SBATCH --mail-type=end
+	source ~/.bashrc
+	cd /home/jwgraham/EEE_network/eee_net/
+	ibrun -np 4 nrniv -python -mpi init.py
+
+It has hard-coded dates. I'll change them manually for now, but it would be cool to find a programmatic
+solution.
+
+I'm going to run a sim for 100,000 ms (100 s).  Currently, we run for 1s and Total time = 20.53 s.  
+That would be 33 minutes, with the four cores that used.  So leaving maxtime at 30 min should be fine.  
+
+Modifying config file (also has hardcoded date):
+
+	cfg.duration = 100000
+	cfg.simLabel = 'eee_net_20190327'
+
+That should do it.  Committing, pushing, then pulling on Comet and running.
+
+
+
+
+
+
+
+
+
+
 
 
 

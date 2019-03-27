@@ -7,11 +7,11 @@ saveFig = False
 
 # Simulation options
 cfg = specs.SimConfig()       
-cfg.duration = 1000           
+cfg.duration = 100000           
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_20190325'
+cfg.simLabel = 'eee_net_20190327'
 cfg.saveFolder = 'data'
 cfg.savePickle = False
 cfg.saveJson = True

@@ -6491,6 +6491,112 @@ I'm curious if the `ibrun -np 4 etc` sets it to 4 processors?  Will have to ask 
 
 In the meantime, committing pushing, pulling to Comet.
 
+Running:
+
+	[jwgraham@comet-ln2 eee_net]$ sbatch sbatch_batch 
+	Submitted batch job 22273839
+
+Now to wait for it to finish.
+
+
+** Looking into long sim I ran 
+
+Looks like it worked fine.  Output data is here:
+/home/jwgraham/EEE_network/eee_net/data
+
+	eee_net_20190325.json  
+	eee_net_20190327.json
+
+Need to copy output to my local machine to analyze
+
+https://haydenjames.io/linux-securely-copy-files-using-scp/
+
+SCP examples
+
+	Copy file from a remote host to local host SCP example:
+	$ scp username@from_host:file.txt /local/directory/
+	 
+
+	Copy file from local host to a remote host SCP example:
+	$ scp file.txt username@to_host:/remote/directory/
+	 
+
+	Copy directory from a remote host to local host SCP example:
+	$ scp -r username@from_host:/remote/directory/  /local/directory/
+	 
+
+	Copy directory from local host to a remote hos SCP example:
+	$ scp -r /local/directory/ username@to_host:/remote/directory/
+	 
+
+	Copy file from remote host to remote host SCP example:
+	$ scp username@from_host:/remote/directory/file.txt username@to_host:/remote/directory/
+
+
+I'll copy over the whole dir.
+
+	scp -r jwgraham@comet.sdsc.xsede.org:///home/jwgraham/EEE_network/eee_net/data /Users/graham/EEE_network/eee_net/data
+
+That worked.  Now to figure out how to analyze and plot.
+
+
+** Plotting sims after the fact
+
+Looking at Salva's tutorial 8 analysis file: http://www.netpyne.org/_downloads/6cc61d30b2a441dc5534db9b58e62a71/tut8_analysis.py
+
+Will get back to analysis.  First I'll try to run Netpyne tutorial 8 (batching).
+
+
+
+** Netpyne batch tutorial
+
+Commenting out figure lines in the cfg file.
+
+First to copy over sbatch_batch and rename it sbatch_tut8.  Now to edit.
+
+New version:
+
+	#!/bin/bash 
+	#SBATCH --job-name=tut8_batch
+	#SBATCH -A shs100
+	#SBATCH -t 0:30:00
+	#SBATCH --nodes=1
+	#SBATCH --ntasks-per-node=24
+	#SBATCH -o tut8.run
+	#SBATCH -e tut8.err
+	#SBATCH --mail-user=joe.w.graham@gmail.com
+	#SBATCH --mail-type=end
+	source ~/.bashrc
+	cd /home/jwgraham/EEE_network/batch_tut/
+	ibrun -np 4 nrniv -python -mpi tut8_batch.py
+
+Updating tut8_batch.py:
+
+	b.runCfg = {'type': 'hpc_slurm',
+				'allocation': 'shs100', 
+				'walltime': '0:30:00',
+				'nodes': 1,
+				'coresPerNode': 24,
+				'email': 'joe.w.graham@gmail.com',
+				'folder': '/home/jwgraham/EEE_network/batch_tut',
+				'script': 'tut8_init.py', 
+				'mpiCommand': 'ibrun',
+				'skip': True}
+
+	# b.runCfg = {'type': 'mpi_bulletin', 
+	# 			'script': 'tut8_init.py', 
+	# 			'skip': True}
+
+
+That should be it.  Now to commit and run.
+
+
+
+
+
+
+
+
 
 
 

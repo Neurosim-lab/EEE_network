@@ -16,9 +16,21 @@ def batchTauWeight():
 	b.batchLabel = 'tauWeight'
 	b.saveFolder = 'tut8_data'
 	b.method = 'grid'
-	b.runCfg = {'type': 'mpi_bulletin', 
+	
+	b.runCfg = {'type': 'hpc_slurm',
+				'allocation': 'shs100', 
+				'walltime': '0:30:00',
+				'nodes': 1,
+				'coresPerNode': 24,
+				'email': 'joe.w.graham@gmail.com',
+				'folder': '/home/jwgraham/EEE_network/batch_tut',
 				'script': 'tut8_init.py', 
+				'mpiCommand': 'ibrun',
 				'skip': True}
+
+	# b.runCfg = {'type': 'mpi_bulletin', 
+	# 			'script': 'tut8_init.py', 
+	# 			'skip': True}
 
 	# Run batch simulations
 	b.run()

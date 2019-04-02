@@ -1,0 +1,13 @@
+#!/bin/bash 
+#SBATCH --job-name=tut8_batch
+#SBATCH -A shs100
+#SBATCH -t 0:30:00
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=24
+#SBATCH -o tut8.run
+#SBATCH -e tut8.err
+#SBATCH --mail-user=joe.w.graham@gmail.com
+#SBATCH --mail-type=end
+source ~/.bashrc
+cd /home/jwgraham/EEE_network/batch_tut/
+ibrun -np 4 nrniv -python -mpi tut8_batch.py

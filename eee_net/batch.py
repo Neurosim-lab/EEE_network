@@ -18,14 +18,14 @@ def batchTest():
 	b = Batch(params=params, cfgFile='cfg.py', netParamsFile='netParams.py')
 	
 	# Set output folder, grid method (all param combinations), and run configuration
-	b.batchLabel = 'batch_test'
-	b.saveFolder = 'batch_data'
+	b.batchLabel = 'batch_test_20190401'
+	b.saveFolder = 'batch_data_20190401'
 	b.method = 'grid'
 	b.runCfg = {'type': 'hpc_slurm',
 				'allocation': 'shs100', 
 				'walltime': '0:30:00',
 				'nodes': 1,
-				'coresPerNode': 4,
+				'coresPerNode': 24,
 				'email': 'joe.w.graham@gmail.com',
 				'folder': '/home/jwgraham/EEE_network/eee_net',
 				'script': 'init.py', 

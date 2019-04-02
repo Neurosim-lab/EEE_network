@@ -6319,6 +6319,188 @@ I'll set mine up thusly:
 
 And try running it.  Committing pushing pulling.
 
+	[jwgraham@comet-ln2 eee_net]$ sbatch sbatch_batch
+	Submitted batch job 22187699
+	[jwgraham@comet-ln2 eee_net]$ 
+	[jwgraham@comet-ln2 eee_net]$ squeue -u jwgraham
+	             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+	          22187699     debug eee_net_ jwgraham PD       0:00      1 (None)
+	          22173818   compute eee_net_ jwgraham PD       0:00      2 (Priority)
+
+Aaaaand waiting.
+
+Seems to be running:
+
+	[jwgraham@comet-ln2 eee_net]$ squeue -u jwgraham
+	             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+	          22173818   compute eee_net_ jwgraham PD       0:00      2 (Priority)
+	          22187762   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187763   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187765   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187766   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187768   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187769   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187770   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187771   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187772   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187773   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187774   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187775   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187776   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187777   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187778   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187779   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187780   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187781   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187782   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187783   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187784   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187785   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187786   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187787   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187791   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187792   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187793   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187794   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187795   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187796   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187797   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187798   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187799   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187800   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187801   compute batch_te jwgraham PD       0:00      1 (Priority)
+	          22187802   compute batch_te jwgraham PD       0:00      1 (Priority)
+	[jwgraham@comet-ln2 eee_net]$ 
+
+Although using it on the debug queue might be a mistake, as Netpyne seems to have farmed it out
+to far more cores than the debug queue allows.  Waiting to see.
+
+
+* 2019-04-01 -- Journal club and working on Comet
+
+** Journal club
+
+Distinct descending motor cortex pathways and their roles in movement
+
+https://www.nature.com/articles/s41586-018-0642-9
+https://paperpile.com/view/663a416c-3da7-05e9-9219-0559d53d1698
+
+
+** Working on Comet
+
+Looking into what happened with my last batch run.
+
+cat eee_net_03-27-2019_03_batch.run
+
+Odd thing near the beginning:
+
+	first instance of dp_total_L2
+	first instance of dp_total_L5
+
+The rest of the file looks fine, and the input files were generated:
+
+	ls batch_data
+	batch_test_0_0_cfg.json  batch_test_0_2_cfg.json  batch_test_1_1_cfg.json  batch_test_2_0_cfg.json  batch_test_2_2_cfg.json
+	batch_test_0_0.err	 batch_test_0_2.err	  batch_test_1_1.err	   batch_test_2_0.err	    batch_test_2_2.err
+	batch_test_0_0.run	 batch_test_0_2.run	  batch_test_1_1.run	   batch_test_2_0.run	    batch_test_2_2.run
+	batch_test_0_0.sbatch	 batch_test_0_2.sbatch	  batch_test_1_1.sbatch    batch_test_2_0.sbatch    batch_test_2_2.sbatch
+	batch_test_0_1_cfg.json  batch_test_1_0_cfg.json  batch_test_1_2_cfg.json  batch_test_2_1_cfg.json  batch_test_batch.json
+	batch_test_0_1.err	 batch_test_1_0.err	  batch_test_1_2.err	   batch_test_2_1.err	    batch_test_batchScript.py
+	batch_test_0_1.run	 batch_test_1_0.run	  batch_test_1_2.run	   batch_test_2_1.run	    batch_test_netParams.py
+	batch_test_0_1.sbatch	 batch_test_1_0.sbatch	  batch_test_1_2.sbatch    batch_test_2_1.sbatch
+
+But there don't seem to be output files.  Looking at the error output.
+
+	cat eee_net_03-27-2019_03_batch.err
+	cp: cannot create regular file `batch_data/batch_test_batchScript.py': File exists
+	cp: cannot create regular file `batch_data/batch_test_netParams.py': File exists
+	[comet-14-01.sdsc.edu:27618] 3 more processes have sent help message help-mpi-runtime.txt / mpi_init:warn-fork
+	[comet-14-01.sdsc.edu:27618] Set MCA parameter "orte_base_help_aggregate" to 0 to see all help / error messages
+
+Doesn't seem to be anything crashing...  Looking into files in the batch_data dir.
+
+	cat batch_test_0_0.err
+	Unloading compiler-dependent module mkl/11.1.2.144
+	Unloading compiler-dependent module gsl/2.1
+	Unloading compiler-dependent module openmpi_ib/1.8.4
+
+
+	**********************************************************
+
+	Open MPI does not support recursive
+
+	**********************************************************
+
+	Open MPI does not support recursive
+
+	***************************************************
+
+	**********************************************************
+
+	Open MPI does not support recursive calls of orterun
+
+	**********************************************************
+
+The .run files all seem to be empty...
+
+I did run this on the debug queue.  I'm going to try running it normally and see what we get for output.
+
+
+** Running batch on normal queue
+
+Updating batch.py
+
+	# Set output folder, grid method (all param combinations), and run configuration
+	b.batchLabel = 'batch_test_20190401'
+	b.saveFolder = 'batch_data_20190401'
+	b.method = 'grid'
+	b.runCfg = {'type': 'hpc_slurm',
+				'allocation': 'shs100', 
+				'walltime': '0:30:00',
+				'nodes': 1,
+				'coresPerNode': 24,
+				'email': 'joe.w.graham@gmail.com',
+				'folder': '/home/jwgraham/EEE_network/eee_net',
+				'script': 'init.py', 
+				'mpiCommand': 'ibrun',
+				'skip': True}
+
+Wondering if I even need an sbatch file if I'm running a batch...  It seems like Netpyne might handle it all?
+
+Modifying sbatch_batch
+
+Deleting debuq queue line: #SBATCH --partition=debug
+
+Update:
+
+	#!/bin/bash 
+	#SBATCH --job-name=eee_net_20190401_batch
+	#SBATCH -A shs100
+	#SBATCH -t 0:30:00
+	#SBATCH --nodes=1
+	#SBATCH --ntasks-per-node=24
+	#SBATCH -o eee_net_20190401_batch.run
+	#SBATCH -e eee_net_20190401_batch.err
+	#SBATCH --mail-user=joe.w.graham@gmail.com
+	#SBATCH --mail-type=end
+	source ~/.bashrc
+	cd /home/jwgraham/EEE_network/eee_net/
+	ibrun -np 4 nrniv -python -mpi batch.py
+
+I'm curious if the `ibrun -np 4 etc` sets it to 4 processors?  Will have to ask about this.
+
+In the meantime, committing pushing, pulling to Comet.
+
+
+
+
+
+
+
+
+
+
+
 
 
 

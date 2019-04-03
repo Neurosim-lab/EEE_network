@@ -11,8 +11,8 @@ cfg.duration = 100000
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_20190402'
-cfg.saveFolder = 'data'
+cfg.simLabel = 'eee_net_20190403'
+cfg.saveFolder = 'data_20190403'
 cfg.savePickle = False
 cfg.saveJson = True
 cfg.saveDataInclude = ['simData', 'simConfig', 'netParams', 'net']         
@@ -86,8 +86,8 @@ cfg.glutPuffSyn = {'loc': list(np.linspace(cfg.synLocMiddle-cfg.synLocRadius, cf
 cfg.glutPuffExSyn = {'loc': list(np.linspace(cfg.synLocMiddle-cfg.synLocRadius, cfg.synLocMiddle+cfg.synLocRadius, cfg.numExSyns)), 'sec': 'basal_8', 'synMech': ['NMDA'], 'start': cfg.synTime, 'interval': 1000, 'noise': 0.0, 'number': 1, 'weight': cfg.glutAmp * cfg.glutAmpExSynScale, 'delay': cfg.exSynDelay}
 
 # Recording options
-cfg.recordTraces = {'V_soma': {'sec':'soma', 'loc':0.5, 'var':'v'}} 
-cfg.recordTraces['V_dend_0'] = {'sec':'basal_0', 'loc':0.5, 'var':'v'}
+#cfg.recordTraces = {'V_soma': {'sec':'soma', 'loc':0.5, 'var':'v'}} 
+#cfg.recordTraces['V_dend_0'] = {'sec':'basal_0', 'loc':0.5, 'var':'v'}
 #cfg.recordTraces['V_dend_1'] = {'sec':'basal_1', 'loc':0.5, 'var':'v'}
 #cfg.recordTraces['V_dend_2'] = {'sec':'basal_2', 'loc':0.5, 'var':'v'}
 #cfg.recordTraces['V_dend_3'] = {'sec':'basal_3', 'loc':0.5, 'var':'v'}
@@ -95,12 +95,12 @@ cfg.recordTraces['V_dend_0'] = {'sec':'basal_0', 'loc':0.5, 'var':'v'}
 #cfg.recordTraces['V_dend_5'] = {'sec':'basal_5', 'loc':0.5, 'var':'v'}
 #cfg.recordTraces['V_dend_6'] = {'sec':'basal_6', 'loc':0.5, 'var':'v'}
 #cfg.recordTraces['V_dend_7'] = {'sec':'basal_7', 'loc':0.5, 'var':'v'}
-cfg.recordTraces['V_dend_8'] = {'sec':'basal_8', 'loc':0.5, 'var':'v'}
-cfg.recordTraces['V_dend_9'] = {'sec':'basal_9', 'loc':0.5, 'var':'v'}
+#cfg.recordTraces['V_dend_8'] = {'sec':'basal_8', 'loc':0.5, 'var':'v'}
+#cfg.recordTraces['V_dend_9'] = {'sec':'basal_9', 'loc':0.5, 'var':'v'}
 
-cfg.recordCells = {'include': [('PT5_1', 0), ('PT5_2', 0), ('PT5_3', 0), ('PT5_4', 0), ('PV5', 0)]}
+#cfg.recordCells = {'include': [('PT5_1', 0), ('PT5_2', 0), ('PT5_3', 0), ('PT5_4', 0), ('PV5', 0)]}
 
-cfg.printPopAvgRates = True
+#cfg.printPopAvgRates = True
 
 # Analysis options
 #cfg.analysis['plotRaster'] = {'orderBy': 'y', 'orderInverse': True, 'saveFig': saveFig, 'showFig': showFig}

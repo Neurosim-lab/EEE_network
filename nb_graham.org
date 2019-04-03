@@ -6906,9 +6906,26 @@ cfg.recordCells = {'include': [('PT5_1', 0), ('PT5_2', 0), ('PT5_3', 0), ('PT5_4
 
 Also deleting the file sbatch_batch
 
+Running: cd ~/EEE_network/eee_net ; python batch.py
+
+And waiting.
 
 
+* 2019-04-03 -- Batching on Comet
 
+** TODO 
+
+Fix Netpyne data loading
+Analyze and plot completed sims
+Analyze and plot batch sims
+Get rid of need for password to login to Comet
+Add aliases to Comet and home machine
+
+
+** Looking at completed batches
+
+Looks like it crashed.  Seems to be because of the recording options.  I'm going to comment out that 
+stuff and re-run the sim.  Also need to redo the dates in all the files.
 
 
 

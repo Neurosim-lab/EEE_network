@@ -6590,10 +6590,321 @@ Updating tut8_batch.py:
 
 That should be it.  Now to commit and run.
 
+Running:
+
+	[jwgraham@comet-ln2 EEE_network]$ cd batch_tut/
+	[jwgraham@comet-ln2 batch_tut]$ sbatch sbatch_tut8
+	Submitted batch job 22275809
+
+	[jwgraham@comet-ln2 batch_tut]$ squeue -u jwgraham
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+          22273839   compute eee_net_ jwgraham PD       0:00      1 (Priority)
+          22275809   compute tut8_bat jwgraham PD       0:00      1 (Priority)
+
+Now to wait for that to run.
+
+Back to analyzing the long sim I ran.
+
+
+** Plotting sims after the fact
+
+Looking at Salva's tutorial 8 analysis file: http://www.netpyne.org/_downloads/6cc61d30b2a441dc5534db9b58e62a71/tut8_analysis.py
 
 
 
+* 2019-04-02 -- EEE meeting and working on Comet
 
+** TODO 
+
+Prepare meeting agenda
+Fix Netpyne data loading
+Analyze and plot completed sims
+Analyze and plot batch sims
+Get rid of need for password to login to Comet
+Add aliases to Comet and home machine
+
+
+** Current sims
+
+Still pending.  :|
+
+
+** Analyze and plot completed sims
+
+Looking at Salva's tutorial 8 analysis file: http://www.netpyne.org/_downloads/6cc61d30b2a441dc5534db9b58e62a71/tut8_analysis.py
+
+Turns out the tutorial just loads batches, not individual sim data.
+
+Looking at the Netpyne package reference:
+http://www.netpyne.org/reference.html#package-reference
+
+	Saving and loading:
+
+	sim.saveData(filename)
+	sim.loadSimCfg(filename)
+	sim.loadNetParams(filename)
+	sim.loadNet(filename)
+	sim.loadSimData(filename)
+	sim.loadAll(filename)
+
+Running:
+
+	cd EEE_network/eee_net/data
+	ipython
+	from netpyne import sim, specs  
+	longsim = sim.loadAll('eee_net_20190327.json')
+
+Error:
+
+	Loading file eee_net_20190327.json ... 
+	Loading simConfig...
+	Loading netParams...
+	---------------------------------------------------------------------------
+	AttributeError                            Traceback (most recent call last)
+	<ipython-input-2-342987761975> in <module>
+	----> 1 longsim = sim.loadAll('eee_net_20190327.json')
+
+	~/Applications/netpyne/netpyne/sim/load.py in loadAll(filename, data, instantiate, createNEURONObj)
+	    278     loadSimCfg(filename, data=data)
+	    279     sim.cfg.createNEURONObj = createNEURONObj  # set based on argument
+	--> 280     loadNetParams(filename, data=data)
+	    281     if hasattr(sim.cfg, 'compactConnFormat'):
+	    282         connFormat = sim.cfg.compactConnFormat
+
+	~/Applications/netpyne/netpyne/sim/load.py in loadNetParams(filename, data, setLoaded)
+	    162     if 'net' in data and 'params' in data['net']:
+	    163         if setLoaded:
+	--> 164             setup.setNetParams(data['net']['params'])
+	    165         else:
+	    166             return specs.NetParams(data['net']['params'])
+
+	~/Applications/netpyne/netpyne/sim/setup.py in setNetParams(params)
+	     94     elif params and isinstance(params, dict):
+	     95         params = utils.replaceKeys(params, 'popLabel', 'pop')  # for backward compatibility
+	---> 96         sim.net.params = specs.NetParams(params)
+	     97     else:
+	     98         sim.net.params = specs.NetParams()
+
+	AttributeError: module 'netpyne.sim' has no attribute 'net'
+
+
+I'll try sim.loadSimData(filename) instead...
+
+	cd EEE_network/eee_net/data
+	ipython
+	from netpyne import sim, specs  
+	longsim = sim.loadSimData('eee_net_20190327.json')
+
+That worked, but nothing is assigned to `longsim` and analysis.function doesn't work...
+
+	analysis.plotRaster()                                                                               
+	Plotting raster...
+	There was an exception in plotRaster(): 
+	 module 'netpyne.sim' has no attribute 'net' 
+	(<class 'AttributeError'>, AttributeError("module 'netpyne.sim' has no attribute 'net'"), <traceback object at 0x121498cc8>)
+
+Maybe I need to load the network first...  sim.loadNet(filename)
+
+	cd ~/EEE_network/eee_net/data
+	ipython
+	from netpyne import sim, specs  
+	longsimnet = sim.loadNet('eee_net_20190327.json')
+
+Error:
+
+	Loading file eee_net_20190327.json ... 
+	---------------------------------------------------------------------------
+	AttributeError                            Traceback (most recent call last)
+	<ipython-input-2-9d01245bfe76> in <module>
+	----> 1 longsimnet = sim.loadNet('eee_net_20190327.json')
+
+	~/Applications/netpyne/netpyne/sim/load.py in loadNet(filename, data, instantiate, compactConnFormat)
+	    179     if not data: data = _loadFile(filename)
+	    180     if 'net' in data and 'cells' in data['net'] and 'pops' in data['net']:
+	--> 181         if sim.rank == 0:
+	    182             sim.timing('start', 'loadNetTime')
+	    183             print('Loading net...')
+
+	AttributeError: module 'netpyne.sim' has no attribute 'rank'
+
+
+** Looking into Netpyne data loading
+
+When using loadAll, Netpyne does the following:
+
+	loadSimCfg
+	loadNetParams
+	loadNet
+	loadSimData
+
+I'll try to run these in order to see what errors pop up.
+
+*** loadSimCfg worked:
+
+	cd ~/EEE_network/eee_net/data; ipython
+	from netpyne import sim, specs  
+	sim.loadSimCfg('eee_net_20190327.json')
+	Loading file eee_net_20190327.json ... 
+	Loading simConfig...
+
+*** loadNetParams didn't work:
+
+	sim.loadNetParams('eee_net_20190327.json')
+
+	---------------------------------------------------------------------------
+	AttributeError                            Traceback (most recent call last)
+	<ipython-input-8-1353a2171b2d> in <module>
+	----> 1 sim.loadNetParams('eee_net_20190327.json')
+
+	~/Applications/netpyne/netpyne/sim/load.py in loadNetParams(filename, data, setLoaded)
+	    158 #------------------------------------------------------------------------------
+	    159 def loadNetParams (filename, data=None, setLoaded=True):
+	--> 160     if not data: data = _loadFile(filename)
+	    161     print('Loading netParams...')
+	    162     if 'net' in data and 'params' in data['net']:
+
+	~/Applications/netpyne/netpyne/sim/load.py in _loadFile(filename)
+	     57         return data
+	     58 
+	---> 59     if hasattr(sim, 'cfg') and sim.cfg.timing: sim.timing('start', 'loadFileTime')
+	     60     ext = os.path.basename(filename).split('.')[1]
+	     61 
+
+	~/Applications/netpyne/netpyne/sim/utils.py in timing(mode, processName)
+	     92     from .. import sim
+	     93 
+	---> 94     if sim.rank == 0 and sim.cfg.timing:
+	     95         if mode == 'start':
+	     96             sim.timingData[processName] = time()
+
+	AttributeError: module 'netpyne.sim' has no attribute 'rank'
+
+*** loadNet gets the same error with rank as above
+
+	sim.loadNet('eee_net_20190327.json')
+	AttributeError: module 'netpyne.sim' has no attribute 'rank'
+
+*** loadSimData has the same error with rank
+
+	sim.loadNet('eee_net_20190327.json') 
+	AttributeError: module 'netpyne.sim' has no attribute 'rank'
+
+*** Possible solutions
+
+Temporary
+
+	1) set sim.rank = 0 
+	2) set sim.cfg.timing = False
+
+Permanent
+
+	Add checking for existence of sim.rank in Netpyne
+
+	Some parts of Netpyne code already do this (e.g. line 131 in netpyne/sim/load.py)
+
+	if hasattr(sim, 'rank') and sim.rank == 0 and hasattr(sim, 'cfg') and sim.cfg.timing:
+        sim.timing('stop', 'loadFileTime')
+        print(('  Done; file loading time = %0.2f s' % sim.timingData['loadFileTime']))
+
+
+*** Temp solution for now: set sim.cfg.timing = False
+
+Setting timing to false
+
+	cd ~/EEE_network/eee_net/data; ipython
+	from netpyne import sim, specs  
+	sim.loadSimCfg('eee_net_20190327.json')
+	sim.cfg.timing = False
+	sim.loadNetParams('eee_net_20190327.json')
+
+	AttributeError: module 'netpyne.sim' has no attribute 'net'
+
+Hmmm.  Maybe I need to load the net before the netParams?
+
+	cd ~/EEE_network/eee_net/data; ipython
+	from netpyne import sim, specs  
+	sim.loadSimCfg('eee_net_20190327.json')
+	sim.cfg.timing = False
+	sim.loadNet('eee_net_20190327.json')
+
+Now we're back to the `rank` error...
+
+	--> 181         if sim.rank == 0:
+	    182             sim.timing('start', 'loadNetTime')
+	    183             print('Loading net...')
+
+	AttributeError: module 'netpyne.sim' has no attribute 'rank'
+
+Perhaps I should fix this in Netpyne.  Will ask in meeting and update Netpyne first.
+
+
+** Plotting long sim
+
+Just to have a figure for the meeting
+
+	import json
+	with open("eee_net_20190327.json", "r") as read_file:
+	    data = json.load(read_file)
+
+	V_soma = data['simData']['V_soma']
+	time = data['simData']['t']
+
+Hmmm.  V_soma and all the V_dend_#s are empty.
+
+Looks like the problem is that I commented out the plotting, which specified the cells to
+record... so no cells got recorded.
+
+
+** EEE Meeting
+
+https://docs.google.com/document/d/1IYYKPRcUwd6JMRnRQcC3ozayVF0IUbf9r4bTOwTGOeI/edit
+
+Discussion
+
+We got a six month extension for Comet, so still run sims, but not so desperately
+EEE should automatically get no-cost extension
+Bill is now “distinguished professor”
+Srdjan and Bill attend BRAIN meeting
+BRAIN posters not scheduled yet
+Srdjan will print poster today
+Still waiting to hear back from article submission
+Remember existence of Comet debug queue
+For batch sims, just use `python batch.py`, not sbatch
+Crank up number of cells and time (we are on a supercomputer after all)
+Test small jobs on Neurosim or debug queue
+To run on Neurosim, just need to change a couple lines (MPI vs SLURM)
+Try just sim.load instead of sim.loadAll
+Make sure cfg.saveCellSecs and cfg.saveCellConns = True
+Bill and Srdjan probably miss meeting next week
+
+Action items for next week
+
+Joe updates BRAIN poster today
+Joe updates README for eee repo
+Analysis and figures to show off 
+Big batch exploration
+
+
+
+** Getting batch sims running
+
+All of my batch sims are still pending.
+
+Turns out I was double-queueing: no need to run sbatch to start batch sims, because Netpyne
+sets up all sbatch files needed.
+
+Instead of `sbatch sbatch_batch` it's now just `python batch.py`
+
+I am going to adjust all filenames for today's date, crank up the number of cells and sim length,
+push, and run on Comet.
+
+cfg.simLabel = 'eee_net_20190402'
+cfg.duration = 100000           
+cfg.numPT5cells = 800
+cfg.numPV5cells = 200
+cfg.recordCells = {'include': [('PT5_1', 0), ('PT5_2', 0), ('PT5_3', 0), ('PT5_4', 0), ('PV5', 0)]}
+
+Also deleting the file sbatch_batch
 
 
 

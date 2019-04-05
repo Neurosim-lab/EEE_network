@@ -6927,10 +6927,31 @@ Add aliases to Comet and home machine
 Looks like it crashed.  Seems to be because of the recording options.  I'm going to comment out that 
 stuff and re-run the sim.  Also need to redo the dates in all the files.
 
+[jwgraham@comet-ln3 eee_net]$ squeue -u jwgraham
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+          22329490   compute batch_20 jwgraham PD       0:00      1 (Priority)
+          22329491   compute batch_20 jwgraham PD       0:00      1 (Priority)
+          22329492   compute batch_20 jwgraham PD       0:00      1 (Priority)
+          22329494   compute batch_20 jwgraham PD       0:00      1 (Priority)
+          22329495   compute batch_20 jwgraham PD       0:00      1 (Priority)
+          22329496   compute batch_20 jwgraham PD       0:00      1 (Priority)
+          22329497   compute batch_20 jwgraham PD       0:00      1 (Priority)
+          22329498   compute batch_20 jwgraham PD       0:00      1 (Priority)
+          22329499   compute batch_20 jwgraham PD       0:00      1 (Priority)
+
+And now waiting for that.
+
+Ugh.  Timed out.
+
+	slurmstepd: *** JOB 22329490 ON comet-26-28 CANCELLED AT 2019-04-04T03:18:47 DUE TO TIME LIMIT ***
+	orterun: Forwarding signal 18 to job
 
 
+* 2019-04-03 -- Batching on Comet
 
+** Increasing time and changing dates
 
+'walltime': '1:30:00',
 
 
 

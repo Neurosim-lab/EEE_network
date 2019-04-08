@@ -6947,12 +6947,96 @@ Ugh.  Timed out.
 	orterun: Forwarding signal 18 to job
 
 
-* 2019-04-03 -- Batching on Comet
+* 2019-04-05 -- Batching on Comet
 
 ** Increasing time and changing dates
 
 'walltime': '1:30:00',
 
+Submitted at 11:10 am AZ time.
+
+	[jwgraham@comet-ln3 eee_net]$ squeue -u jwgraham
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+          22377640   compute batch_20 jwgraham PD       0:00      1 (Priority)
+          22377642   compute batch_20 jwgraham PD       0:00      1 (None)
+          22377644   compute batch_20 jwgraham PD       0:00      1 (None)
+          22377645   compute batch_20 jwgraham PD       0:00      1 (None)
+          22377646   compute batch_20 jwgraham PD       0:00      1 (None)
+          22377647   compute batch_20 jwgraham PD       0:00      1 (None)
+          22377648   compute batch_20 jwgraham PD       0:00      1 (None)
+          22377667   compute batch_20 jwgraham PD       0:00      1 (Priority)
+          22377670   compute batch_20 jwgraham PD       0:00      1 (None)
+
+
+* 2019-04-08 -- Batching on Comet
+
+** Downloading apparently successful batch run
+
+scp -r jwgraham@comet.sdsc.xsede.org:///home/jwgraham/EEE_network/eee_net/batch_data_20190405 /Users/graham/EEE_network/eee_net/batch_data_20190405
+
+Looks like the longest runtime was just a bit under 1:30, so that was a good time choice for these 
+sims.
+
+01:11:33
+01:02:48
+00:50:54
+00:50:50
+00:50:42
+00:50:39
+00:50:35
+00:50:12
+00:49:33
+
+** Looking at output data
+
+So no traces were recorded, but spktimes were.  
+
+The output json files average about 150 MB, pretty big, considering there's not even any
+traces recorded...
+
+I am going to set up a run which will include a trace from each cell pop.
+
+cfg.recordTraces = {'V_soma': {'sec':'soma', 'loc':0.5, 'var':'v'}}
+cfg.recordTraces['V_dend_8'] = {'sec':'basal_8', 'loc':0.5, 'var':'v'}
+cfg.recordCells = {'include': [0, 200, 400, 600, 800]}
+
+This may take longer, so I'll increase the timout as well.
+
+Pushing and submitting to Comet.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+** Things to discuss in meeting tomorrow
+
+Work flow
+
+	Naming sims / files
+	Running a single sim
+	Getting data
+	Analyzing data
+
+What data to save
+
+	cfg.saveDataInclude = ['simData', 'simConfig', 'netParams', 'net'] 
+
+Where to save data
+
+How to get data
+
+How to analyze data
 
 
 

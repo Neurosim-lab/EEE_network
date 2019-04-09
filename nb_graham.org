@@ -7037,15 +7037,129 @@ It looks like the problem is with the "include" in cfg.recordCells...  Maybe it 
 word now?
 
 It looks like the problem is that recordCells should be a list instead of a dict like most of 
-the other settings.
+the other settings.  See here: http://netpyne.org/reference.html#simulation-configuration
 
 	cfg.recordCells = [0, 200, 400, 600, 800]
 
 Pushing and trying again.
 
+	[jwgraham@comet-ln3 eee_net]$ squeue -u jwgraham
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+          22455411   compute batch_20 jwgraham PD       0:00      1 (None)
+          22455412   compute batch_20 jwgraham PD       0:00      1 (None)
+          22455413   compute batch_20 jwgraham PD       0:00      1 (None)
+          22455415   compute batch_20 jwgraham PD       0:00      1 (None)
+          22455418   compute batch_20 jwgraham PD       0:00      1 (None)
+          22455421   compute batch_20 jwgraham PD       0:00      1 (None)
+          22455424   compute batch_20 jwgraham PD       0:00      1 (None)
+          22455425   compute batch_20 jwgraham PD       0:00      1 (None)
+          22455427   compute batch_20 jwgraham PD       0:00      1 (None)
 
 
 
+** Missed some messages on Slack
+
+*** What to record
+
+Salva says to record at least cfg.saveDataInclude['net', 'simData'], in order to be able to plot 
+a raster, but he also records simConfig and netParams, because they are small files.
+
+To save space we should also set cfg.saveCellSecs = False and cfg.saveCellConns = False, which I 
+will add to my config file now.
+
+
+	billl [7:08 AM]
+	i mean raster data rather than plot ....
+	gues it's in the cfg.recordCells
+	then if that's only thing ask for that will be all of simData
+	if running the same architecture then don't need to save the rest of it mutiple times
+	guess just the above and then just `cfg.saveDataInclude = ['simData']` ; so only save that
+
+	salvadord [7:10 AM]
+	recordCells is for traces (eg voltage)
+	You'd be missing eg the population information
+
+	billl [10:42 AM]
+	oh which to just get raster
+
+	salvadord [10:47 AM]
+	plotRaster func requires at least `cfg.saveDataInclude['net', 'simData']` , since the plotting options can include eg. ordering by cell yfrac or selecting cells by gids etc
+
+	salvadord [10:52 AM]
+	but if you set `cfg.saveCellSecs = False` and cfg.saveCellConns = False` , it will just save the basic metadata of each cell (type, location, etc), which occupies very little... Kbs
+	I also think useful to save `simConfig` and `netParams` for each sim, for reproduciblity… and also occupies very little
+
+*** Where to save data
+
+We shouldn't be saving data to home, but to scratch and then moving it
+
+Here's scratch: /oasis/scratch/comet/
+Here's longer term: /oasis/projects/nsf/shs100
+
+
+	billl [7:00 AM]
+	ok this is where our account's data goes: 
+	/oasis/projects/nsf/shs100
+	co$ ls
+	ddoherty  jcarre  jwgraham  lytton  msherif  nsguser  salvadord  samnemo  sangulo
+	@don @joe -- make sure you're writing to here and not to your home dir
+	joe -- from the batch file i got from you looks like you are writing to home
+
+	don [7:02 AM]
+	okay. yes, we’ve been writing to home
+
+	salvadord [7:08 AM]
+	I also write to home, I think thats fine... you can then move data to the Oasis disk for long term storage
+
+	billl [7:08 AM]
+	oh is it faster to write to home?
+
+	salvadord [7:09 AM]
+	I believe so
+
+	billl [7:09 AM]
+	note that there is also a scratch -- i think those should be faster and won't risk filing up something that would piss people off
+
+	salvadord [7:09 AM]
+	We can confirm with subha
+
+	billl [7:10 AM]
+	co$ cd /oasis/scratch/comet
+	co$ ls salvadord lytton ddoherty jwgraham
+	eg for checkpointing
+	this is  7 petabytes of 200 GB/second performance storage and 6 petabytes of 100 GB/second durable storage
+	faster is limited number of nodes in the "compute" partition have larger SSDs with a total of 1464 GB available in local scratch. They can be accessed by adding the following to the Slurm script:  #SBATCH --constraint="large_scratch"
+	but we don't do any checkpointing yet anyway
+	what is a globus place? -- acccessible via the Globus endpoint "xsede#comet"
+	bbl
+
+	subha [8:58 PM]
+	Bill you are right. Writing to scratch is preferred. /oasis/scratch/comet/ . and then you can move the files you want to the /oasis/projects/nsf/shs100.  Writing to home is not a good practice at all and will be caught by sys admins if the load goes high.
+
+
+** Changing save location on Comet
+
+Here's scratch: /oasis/scratch/comet/
+Here's longer term: /oasis/projects/nsf/shs100/jwgraham/
+
+So I need to change the output to the scratch drive and then after each run, transfer the 
+output to our longer term storage.
+
+	b.runCfg = {'type': 'hpc_slurm',
+				'allocation': 'shs100', 
+				'walltime': '2:00:00',
+				'nodes': 1,
+				'coresPerNode': 24,
+				'email': 'joe.w.graham@gmail.com',
+				'folder': '/oasis/scratch/comet/', #'/home/jwgraham/EEE_network/eee_net',
+				'script': 'init.py', 
+				'mpiCommand': 'ibrun',
+				'skip': True}
+
+So it should save to scratch.  Once I get one completed, I'll figure out how to scp the output
+into the right place.
+
+Pushing to comet to run batch_data_20190408_3
 
 
 
@@ -7059,9 +7173,11 @@ Pushing and trying again.
 Work flow
 
 	Naming sims / files
-	Running a single sim
+	Running sims
 	Getting data
 	Analyzing data
+
+Where to edit files?  Locally or on Comet?  
 
 What data to save
 
@@ -7069,11 +7185,18 @@ What data to save
 
 Where to save data
 
+	Not to home?
+	To home and then transfer to oasis?
+	There is also a scratch 
+
 How to get data
 
 What data to store
 
 How to analyze data
+
+Problems with Raster plot
+
 
 
 

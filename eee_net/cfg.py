@@ -11,12 +11,14 @@ cfg.duration = 100000
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_20190408_2'
-cfg.saveFolder = 'data_20190408_2'
+cfg.simLabel = 'eee_net_20190408_3'
+cfg.saveFolder = 'data_20190408_3'
 cfg.savePickle = False
 cfg.saveJson = True
 cfg.saveDataInclude = ['simData', 'simConfig', 'netParams', 'net']         
 cfg.saveMat = False
+cfg.saveCellSecs = False
+cfg.saveCellConns = False
 cfg.seeds = {'conn': 4123,
 			 'stim': 1234, 
 			 'loc' : 3214}  

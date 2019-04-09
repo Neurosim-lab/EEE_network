@@ -7387,5 +7387,128 @@ cd ~ ; rm -rf eee_temp ; mkdir eee_temp ; cd eee_temp ; git clone https://github
 
 ** EEE Meeting
 
+https://docs.google.com/document/d/1XDcS61HzDLXsRI94x9z6_ej27TUd8XBAhI4-ROBXo1o/edit?usp=sharing
+
+*** Discussion notes
+
+When is poster presentation for BRAIN
+How to install software for Comet
+Default NEURON in comet (7.5) (Salva and Joe)
+Install Netpyne locally (Salva and Joe)
+Talked about using latest Python, NEURON and Netpyne
+Bill is working on this, should have suggestions
+Don installed Netpyne saving branch (saves data on the fly)
+Don uses default NEURON
+Don tried to use py3 on Stampede, had issues with future package
+Subha: these should have py3 already
+Salva: if you install Netpyne from pip, it will install all dependencies also (if clone from Github repo, need to install deps separately)
+Mike Hines: is there a problem with multiple Python compilations in parallel?
+Subha: shouldn’t be a problem unless the compilation has been explicitly parallelized
+All .pyc files are shared
+Work flow
+File naming
+Joe names by date, has to change names in multiple files
+Best practice?
+Salva: use version number of netParams (for major changes) e.g. v1, v2, v54
+Then underscore batch name (e.g. batch1, batch2)
+Make changes in cfg file or in batch.py file
+Internal variable for netParams version
+Cfg simLabel etc. is overwritten by batch.py settings
+   b.batchLabel = 'v54_batch6'
+   b.saveFolder = '../data/'+b.batchLabel
+Where to save data
+Home directory space is shared by all users (hurts others to use too much)
+Run to scratch, won’t impact other users
+Comet uses NSG’s NEURON
+Bill’s paths were originally still pointing to NSG
+Subha: purge all modules, do Python install, do NEURON install, then do Netpyne install
+b.saveFolder is where to specify scratch drive
+Move from scratch to oasis before too long
+Temp: /oasis/scratch/comet/user_name/temp_project
+Long term: /oasis/projects/nsf/shs100/user_name
+shs100 is for this allocation, may have to use another for other projects
+What's the sweet spot for number of nodes and tasks/node to get relatively shorter queue wait time?
+No magic number
+Debug queue is best for small jobs (max time 30 min, don’t wait long)
+Subha: join newslist for Comet, will tell about downtime and delays
+Push and pull is fine for each batch or sim
+Getting and analyzing data
+Salva does most analysis locally
+On comet, he runs raster plot
+Sometime spike histogram, LFP spectrogram
+Salva working with Google cloud to start doing analysis online
+Histogram/raster
+Shouldn’t be a problem -- Salva
+Don has problems
+Joe tries histograms and rasters today, posts error
+May have to install a missing package
+Should show up in error
+May be a version error with Pandas
+https://github.com/Neurosim-lab/netpyne/issues/406
+
+
+Individual sims on Comet overwrite prior ones (Don)
+Can use batch.py to set folders, etc.
+Would include all info from cfg.py
+Don runs long sims, needs HPC for analysis (e.g. graph analysis)
+There are many tools available on XSEDE
+Easy to fire up Jupyter notebooks on 
+Don will post info
+Data to save
+cfg.saveDataInclude = ['simData', 'simConfig', 'netParams', 'net']
+cfg.saveCellSecs = False
+cfg.saveCellConns = False
+How to analyze data after the fact?
+Salva posts some code
+/u/salvadord/Models/m1/analysis/batchAnalysis.py (and others…)
+
+Action items for next week
+
+Bill pulls together HOWTO for custom install on Comet
+Don posts info on how to use XSEDE analysis tools
+Joe makes histogram on Comet, posts any errors
+Salva posts some analysis code for post-sim analysis
+Joe runs, analyzes and plots batches of sims
+Start Google doc explaining how to do all this stuff
+
+
+** TODOs from meeting
+
+Set output location in batch.py to scratch
+Change filenames to netParams version underscore batch number
+Internal variable for netParams version
+Set .run and .err files to go to scratch as well
+Prepare alias to easily copy from scratch to oasis
+Look into analyzing data after the fact
+
+
+** Set output location in batch.py to scratch
+
+Salva's:
+
+   b.batchLabel = 'v54_batch6'
+   b.saveFolder = '../data/'+b.batchLabel
+
+My new:
+
+	b.batchLabel = 'v01_batch01'
+	b.saveFolder = '/oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/' + b.batchLabel
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

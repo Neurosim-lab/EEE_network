@@ -18,8 +18,8 @@ def batchTest():
 	b = Batch(params=params, cfgFile='cfg.py', netParamsFile='netParams.py')
 	
 	# Set output folder, grid method (all param combinations), and run configuration
-	b.batchLabel = 'batch_20190408'
-	b.saveFolder = 'batch_data_20190408'
+	b.batchLabel = 'batch_20190408_2'
+	b.saveFolder = 'batch_data_20190408_2'
 	b.method = 'grid'
 	b.runCfg = {'type': 'hpc_slurm',
 				'allocation': 'shs100', 

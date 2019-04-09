@@ -7004,9 +7004,44 @@ This may take longer, so I'll increase the timout as well.
 
 Pushing and submitting to Comet.
 
+	[jwgraham@comet-ln3 eee_net]$ squeue -u jwgraham
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+          22452692   compute batch_20 jwgraham PD       0:00      1 (None)
+          22452694   compute batch_20 jwgraham PD       0:00      1 (None)
+          22452695   compute batch_20 jwgraham PD       0:00      1 (None)
+          22452697   compute batch_20 jwgraham PD       0:00      1 (None)
+          22452698   compute batch_20 jwgraham PD       0:00      1 (None)
+          22452699   compute batch_20 jwgraham PD       0:00      1 (None)
+          22452700   compute batch_20 jwgraham PD       0:00      1 (None)
+
+Seems like there was an error.  Looking into it.
+
+	Traceback (most recent call last):
+	  File "init.py", line 27, in <module>
+	    sim.setupRecording()          # setup variables to record (spikes, V traces, etc)
+	  File "/home/jwgraham/.local/lib/python2.7/site-packages/netpyne/sim/setup.py", line 264, in setupRecording
+
+	File "/home/jwgraham/.local/lib/python2.7/site-packages/netpyne/sim/utils.py", line 70, in getCellsList
+    cellsRecord = utils.getCellsList(sim.cfg.recordCells)+cellsPlot
+
+    File "/home/jwgraham/.local/lib/python2.7/site-packages/netpyne/specs/dicts.py", line 184, in __getitem__
+    cellGids.extend(list(sim.net.pops[condition].cellGids))
+
+
+	>>>     return super(ODict, self).__getitem__(k)
+	KeyError: u'include'
 
 
 
+It looks like the problem is with the "include" in cfg.recordCells...  Maybe it uses a different
+word now?
+
+It looks like the problem is that recordCells should be a list instead of a dict like most of 
+the other settings.
+
+	cfg.recordCells = [0, 200, 400, 600, 800]
+
+Pushing and trying again.
 
 
 
@@ -7035,6 +7070,8 @@ What data to save
 Where to save data
 
 How to get data
+
+What data to store
 
 How to analyze data
 

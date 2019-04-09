@@ -7266,7 +7266,6 @@ I'll update the README with my workflow on Comet
 
 * 2019-04-09 -- Batching on Comet, EEE meeting
 
-
 ** Running sims to scratch drive
 
 From the COMET login screen, I see info about file systems:
@@ -7327,9 +7326,63 @@ Getting an error in the .err file:
 
 So it seems like setting b.runCfg.folder is not the way to set up the output location...
 
+** Changing folder back to home and running batch of sims
+
+And it's already running!
+
+	[jwgraham@comet-ln3 eee_net]$ squeue -u jwgraham
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+          22465059   compute batch_20 jwgraham  R       5:26      1 comet-25-13
+          22465062   compute batch_20 jwgraham  R       5:26      1 comet-25-14
+          22465052   compute batch_20 jwgraham  R       5:33      1 comet-25-11
+          22465056   compute batch_20 jwgraham  R       5:33      1 comet-25-12
+          22465048   compute batch_20 jwgraham  R       5:38      1 comet-19-38
+          22465050   compute batch_20 jwgraham  R       5:38      1 comet-25-02
+          22465037   compute batch_20 jwgraham  R       5:40      1 comet-19-34
+          22465041   compute batch_20 jwgraham  R       5:40      1 comet-19-35
+          22465042   compute batch_20 jwgraham  R       5:40      1 comet-19-36
+          22465045   compute batch_20 jwgraham  R       5:40      1 comet-19-37
+          22465022   compute batch_20 jwgraham  R       5:50      1 comet-05-30
+          22465024   compute batch_20 jwgraham  R       5:50      1 comet-05-38
+          22465027   compute batch_20 jwgraham  R       5:50      1 comet-05-49
+          22465030   compute batch_20 jwgraham  R       5:50      1 comet-05-60
+          22465033   compute batch_20 jwgraham  R       5:50      1 comet-05-62
+          22465020   compute batch_20 jwgraham  R       5:58      1 comet-14-69
+
+
 ** Updating README
 
-Will wait until after EEE meeting, once questions are answered
+# EEE_network
+
+## Commands to run sims on Comet
+
+### To run a batch of simulations
+
+1. cd EEE_network/eee_net
+2. python batch.py
+
+### To run a single sim
+
+1. cd EEE_network/eee_net
+2. sbatch sbatch_sim
+
+## Commands to run sim on Neurosim 
+
+### Steps to run the network simulation:
+
+1. cd ~
+2. git clone https://github.com/Neurosim-lab/EEE_network.git
+3. cd EEE_network/
+4. cd mod
+5. nrnivmodl
+6. cd ../eee_net
+7. ln -s "../mod/x86_64" x86_64
+8. ./runsim
+
+### One-liner to run sim from scratch:
+
+cd ~ ; rm -rf eee_temp ; mkdir eee_temp ; cd eee_temp ; git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network/mod ; nrnivmodl ; cd ../eee_net ; ln -s "../mod/x86_64" x86_64 ; ./runsim
+
 
 
 ** EEE Meeting

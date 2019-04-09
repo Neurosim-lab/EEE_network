@@ -18,8 +18,8 @@ def batchTest():
 	b = Batch(params=params, cfgFile='cfg.py', netParamsFile='netParams.py')
 	
 	# Set output folder, grid method (all param combinations), and run configuration
-	b.batchLabel = 'batch_20190409'
-	b.saveFolder = 'batch_data_20190409'
+	b.batchLabel = 'batch_20190409_2'
+	b.saveFolder = 'batch_data_20190409_2'
 	b.method = 'grid'
 	b.runCfg = {'type': 'hpc_slurm',
 				'allocation': 'shs100', 
@@ -27,7 +27,7 @@ def batchTest():
 				'nodes': 1,
 				'coresPerNode': 24,
 				'email': 'joe.w.graham@gmail.com',
-				'folder': '/oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net', #'/home/jwgraham/EEE_network/eee_net',
+				'folder': '/home/jwgraham/EEE_network/eee_net', #'/oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net'
 				'script': 'init.py', 
 				'mpiCommand': 'ibrun',
 				'skip': True}

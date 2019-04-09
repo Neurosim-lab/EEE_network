@@ -7306,10 +7306,30 @@ My new runCfg:
 
 Pushing and running on Comet.
 
+Getting a different squeue output than normal:
+
+	[jwgraham@comet-ln3 eee_net]$ squeue -u jwgraham
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+          22462644   compute batch_20 jwgraham CG       0:04      1 comet-15-71
+          22462656   compute batch_20 jwgraham PD       0:00      1 (Priority)	
+
+What does CG mean?
+
+Nothing shows up in /oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/, 
+instead output still shows up in /home/jwgraham/EEE_network/eee_net/
+
+Need to figure out how to specify output location
+
+Getting an error in the .err file:
+
+	>>> Could not open init.py
 
 
+So it seems like setting b.runCfg.folder is not the way to set up the output location...
 
 ** Updating README
+
+Will wait until after EEE meeting, once questions are answered
 
 
 ** EEE Meeting

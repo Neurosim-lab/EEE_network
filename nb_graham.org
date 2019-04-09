@@ -7161,11 +7161,69 @@ into the right place.
 
 Pushing to comet to run batch_data_20190408_3
 
+	[jwgraham@comet-ln3 eee_net]$ squeue -u jwgraham
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+          22455411   compute batch_20 jwgraham PD       0:00      1 (Priority)
+          22455412   compute batch_20 jwgraham PD       0:00      1 (Priority)
+          22455413   compute batch_20 jwgraham PD       0:00      1 (Priority)
+          22455415   compute batch_20 jwgraham PD       0:00      1 (Priority)
+          22455418   compute batch_20 jwgraham PD       0:00      1 (Priority)
+          22455421   compute batch_20 jwgraham PD       0:00      1 (Priority)
+          22455424   compute batch_20 jwgraham PD       0:00      1 (Priority)
+          22455425   compute batch_20 jwgraham PD       0:00      1 (Priority)
+          22455427   compute batch_20 jwgraham PD       0:00      1 (Priority)
+          22455810   compute batch_20 jwgraham PD       0:00      1 (None)
+          22455811   compute batch_20 jwgraham PD       0:00      1 (None)
+          22455812   compute batch_20 jwgraham PD       0:00      1 (None)
+          22455813   compute batch_20 jwgraham PD       0:00      1 (None)
+          22455814   compute batch_20 jwgraham PD       0:00      1 (None)
+          22455816   compute batch_20 jwgraham PD       0:00      1 (None)
+          22455817   compute batch_20 jwgraham PD       0:00      1 (None)
+          22455819   compute batch_20 jwgraham PD       0:00      1 (None)
+          22455820   compute batch_20 jwgraham PD       0:00      1 (None)
 
+** Moving stuff from my home dir to our shared space
 
+Here are the dirs I need to transfer:
 
+	[jwgraham@comet-ln3 eee_net]$ ls -lh
+	total 371K
+	drwxr-xr-x 2 jwgraham shs100    6 Apr  1 17:54 archive
+	drwxr-xr-x 2 jwgraham shs100   41 Mar 28 20:53 batch_data
+	drwxr-xr-x 2 jwgraham shs100   41 Apr  2 23:54 batch_data_20190401
+	drwxr-xr-x 2 jwgraham shs100   42 Apr  3 04:47 batch_data_20190402
+	drwxr-xr-x 2 jwgraham shs100   42 Apr  4 02:48 batch_data_20190403
+	drwxr-xr-x 2 jwgraham shs100   51 Apr  6 05:06 batch_data_20190405
+	drwxr-xr-x 2 jwgraham shs100   42 Apr  8 16:19 batch_data_20190408
 
+So the commands will be:
 
+	mkdir /oasis/projects/nsf/shs100/jwgraham/EEE_network
+	mkdir /oasis/projects/nsf/shs100/jwgraham/EEE_network/eee_net
+
+	cp -r /home/jwgraham/EEE_network/eee_net/archive /oasis/projects/nsf/shs100/jwgraham/EEE_network/eee_net/archive
+
+	cp -r /home/jwgraham/EEE_network/eee_net/batch_data /oasis/projects/nsf/shs100/jwgraham/EEE_network/eee_net/batch_data
+
+	cp -r /home/jwgraham/EEE_network/eee_net/batch_data_20190401 /oasis/projects/nsf/shs100/jwgraham/EEE_network/eee_net/batch_data_20190401
+
+	cp -r /home/jwgraham/EEE_network/eee_net/batch_data_20190402 /oasis/projects/nsf/shs100/jwgraham/EEE_network/eee_net/batch_data_20190402
+
+	cp -r /home/jwgraham/EEE_network/eee_net/batch_data_20190403 /oasis/projects/nsf/shs100/jwgraham/EEE_network/eee_net/batch_data_20190403
+
+	cp -r /home/jwgraham/EEE_network/eee_net/batch_data_20190405 /oasis/projects/nsf/shs100/jwgraham/EEE_network/eee_net/batch_data_20190405
+
+	cp -r /home/jwgraham/EEE_network/eee_net/batch_data_20190408 /oasis/projects/nsf/shs100/jwgraham/EEE_network/eee_net/batch_data_20190408
+
+	rm -rf /home/jwgraham/EEE_network/eee_net/archive
+	rm -rf /home/jwgraham/EEE_network/eee_net/batch_data
+	rm -rf /home/jwgraham/EEE_network/eee_net/batch_data_20190401
+	rm -rf /home/jwgraham/EEE_network/eee_net/batch_data_20190402
+	rm -rf /home/jwgraham/EEE_network/eee_net/batch_data_20190403
+	rm -rf /home/jwgraham/EEE_network/eee_net/batch_data_20190405
+	rm -rf /home/jwgraham/EEE_network/eee_net/batch_data_20190408
+
+Done.
 
 
 ** Things to discuss in meeting tomorrow
@@ -7197,11 +7255,64 @@ How to analyze data
 
 Problems with Raster plot
 
+what's the sweet spot for number of nodes and tasks/node to get relatively shorter queue wait time?
+
+
+** Updating the README
+
+I'll update the README with my workflow on Comet
+
+
+
+* 2019-04-09 -- Batching on Comet, EEE meeting
+
+
+** Running sims to scratch drive
+
+From the COMET login screen, I see info about file systems:
+
+	[2] Filesystems:
+
+	     (a) Lustre scratch filesystem : /oasis/scratch/comet/$USER/temp_project
+	         (Preferred: Scalable large block I/O)
+	            *** Meant for storing data required for active simulations
+	            *** Not backed up and should not be used for storing data long term
+	            *** Periodically clear old data not required for active simulations
+
+	     (b) Compute/GPU node local SSD storage: /scratch/$USER/$SLURM_JOBID
+	         (Meta-data intensive jobs, high IOPs)
+
+	     (c) Lustre projects filesystem: /oasis/projects/nsf
+	     
+	     (d) /home/$USER : Only for source files, libraries, binaries.
+	         *Do not* use for I/O intensive jobs.
+
+So I shouldn't just dump work into scratch, it should go into:
+
+	/oasis/scratch/comet/jwgraham/temp_project
+
+My new runCfg:
+
+	b.runCfg = {'type': 'hpc_slurm',
+				'allocation': 'shs100', 
+				'walltime': '2:00:00',
+				'nodes': 1,
+				'coresPerNode': 24,
+				'email': 'joe.w.graham@gmail.com',
+				'folder': '/oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net', #'/home/jwgraham/EEE_network/eee_net',
+				'script': 'init.py', 
+				'mpiCommand': 'ibrun',
+				'skip': True}
+
+Pushing and running on Comet.
 
 
 
 
+** Updating README
 
+
+** EEE Meeting
 
 
 

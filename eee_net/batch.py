@@ -7,8 +7,8 @@ def batchTest():
 
 	# fill in with parameters to explore and range of values (key has to coincide with a variable in simConfig) 
 	
-	params['EEconv'] = [0.0, 3.0, 6.0] # Default 3.0
-	params['IEconv'] = [0.0, 12.0, 24.0] # Default 12.0
+	params['EEconv'] = [1.5, 3.0, 4.5, 6.0] # Default 3.0
+	params['IEconv'] = [6.0, 12.0, 18.0, 24.0] # Default 12.0
 
 	#params['ampIClamp1'] = [0.1, 0.5, 1.0]
 	#params['GABAAfastWeight'] = [0.0001, 0.01, 1.0]   
@@ -18,8 +18,8 @@ def batchTest():
 	b = Batch(params=params, cfgFile='cfg.py', netParamsFile='netParams.py')
 	
 	# Set output folder, grid method (all param combinations), and run configuration
-	b.batchLabel = 'batch_20190408_3'
-	b.saveFolder = 'batch_data_20190408_3'
+	b.batchLabel = 'batch_20190409'
+	b.saveFolder = 'batch_data_20190409'
 	b.method = 'grid'
 	b.runCfg = {'type': 'hpc_slurm',
 				'allocation': 'shs100', 
@@ -27,7 +27,7 @@ def batchTest():
 				'nodes': 1,
 				'coresPerNode': 24,
 				'email': 'joe.w.graham@gmail.com',
-				'folder': '/oasis/scratch/comet/', #'/home/jwgraham/EEE_network/eee_net',
+				'folder': '/oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net', #'/home/jwgraham/EEE_network/eee_net',
 				'script': 'init.py', 
 				'mpiCommand': 'ibrun',
 				'skip': True}

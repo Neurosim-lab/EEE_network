@@ -7495,14 +7495,64 @@ My new:
 	b.saveFolder = '/oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/' + b.batchLabel
 
 
+** Running a batch
+
+[jwgraham@comet-ln2 eee_net]$ squeue -u jwgraham
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+          22489366   compute v01_batc jwgraham PD       0:00      1 (Resources)
+          22489369   compute v01_batc jwgraham PD       0:00      1 (Resources)
+          22489370   compute v01_batc jwgraham PD       0:00      1 (Resources)
+          22489372   compute v01_batc jwgraham PD       0:00      1 (Resources)
+          22489374   compute v01_batc jwgraham PD       0:00      1 (Resources)
+          22489378   compute v01_batc jwgraham PD       0:00      1 (Resources)
+          22489380   compute v01_batc jwgraham PD       0:00      1 (Resources)
+          22489382   compute v01_batc jwgraham PD       0:00      1 (Resources)
+          22489383   compute v01_batc jwgraham PD       0:00      1 (Resources)
+          22489384   compute v01_batc jwgraham PD       0:00      1 (Resources)
+          22489385   compute v01_batc jwgraham PD       0:00      1 (Priority)
+          22489386   compute v01_batc jwgraham PD       0:00      1 (Priority)
+          22489387   compute v01_batc jwgraham PD       0:00      1 (Priority)
+          22489388   compute v01_batc jwgraham PD       0:00      1 (Priority)
+          22489389   compute v01_batc jwgraham PD       0:00      1 (Priority)
+          22489390   compute v01_batc jwgraham PD       0:00      1 (Priority)
 
 
+* 2019-04-10 -- Batching on Comet, plotting
+
+** Looking at last batch sim
+
+Nothing showed up in eee_net, so moving the output seems to have worked.
+
+Want to move from:
+
+	/oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/v01_batch01
+
+To:
+
+	/oasis/projects/nsf/shs100/jwgraham/EEE_network/eee_net/v01_batch01
+
+Commands: 
+
+	cp -r /oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/v01_batch01 /oasis/projects/nsf/shs100/jwgraham/EEE_network/eee_net/v01_batch01
+
+	rm -rf /oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/v01_batch01
+
+Also to copy it to my local machine to play around with analysis:
+
+	scp -r jwgraham@comet.sdsc.xsede.org:///oasis/projects/nsf/shs100/jwgraham/EEE_network/eee_net/v01_batch01 /Users/graham/EEE_network/eee_net/v01_batch01
 
 
+** Running batch sim that produces plots
 
+In cfg.py:
 
+	saveFig = True
 
+	cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True,'saveFig': saveFig, 'labels':'overlay','showFig': showFig} #'timeRange':[0,500], 'popColors': {'PT5':'red','PV5': 'blue'}}
 
+	cfg.analysis['plotTraces'] = {'include': [('PT5_1',0), ('PT5_2', 0), ('PT5_3', 0), ('PT5_4', 0), ('PV5', 0)], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}  
+
+Pushing to Comet and running.
 
 
 

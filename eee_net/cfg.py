@@ -3,7 +3,7 @@ import numpy as np
 
 # Show figures? Save figures?
 showFig = False
-saveFig = False
+saveFig = True
 
 # Simulation options
 cfg = specs.SimConfig()       
@@ -108,9 +108,9 @@ cfg.recordCells = [0, 200, 400, 600, 800]
 # Analysis options
 #cfg.analysis['plotRaster'] = {'orderBy': 'y', 'orderInverse': True, 'saveFig': saveFig, 'showFig': showFig}
 
-#cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True,'saveFig': saveFig, 'labels':'overlay','showFig': showFig} #'timeRange':[0,500], 'popColors': {'PT5':'red','PV5': 'blue'}}
+cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True,'saveFig': saveFig, 'labels':'overlay','showFig': showFig} #'timeRange':[0,500], 'popColors': {'PT5':'red','PV5': 'blue'}}
 
-#cfg.analysis['plotTraces'] = {'include': [('PT5_1',0), ('PT5_2', 0), ('PT5_3', 0), ('PT5_4', 0), ('PV5', 0)], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}      
+cfg.analysis['plotTraces'] = {'include': [('PT5_1',0), ('PT5_2', 0), ('PT5_3', 0), ('PT5_4', 0), ('PV5', 0)], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}      
 #cfg.analysis['plot2Dnet'] = {'saveFig': saveFig, 'showFig': showFig}            
 #cfg.analysis['plotConn'] = {'saveFig': saveFig, 'showFig': showFig}           
 

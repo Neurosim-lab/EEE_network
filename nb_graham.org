@@ -7554,6 +7554,10 @@ In cfg.py:
 
 Pushing to Comet and running.
 
+Whoops, forgot to update the batch number.  Doing that now.
+
+
+
 
 
 

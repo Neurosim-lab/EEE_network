@@ -7556,12 +7556,121 @@ Pushing to Comet and running.
 
 Whoops, forgot to update the batch number.  Doing that now.
 
+And running: python batch.py
+
+	[jwgraham@comet-ln2 eee_net]$ squeue -u jwgraham
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+          22508269   compute v01_batc jwgraham  R       0:15      1 comet-06-72
+          22508270   compute v01_batc jwgraham  R       0:15      1 comet-11-26
+          22508271   compute v01_batc jwgraham  R       0:15      1 comet-11-33
+          22508272   compute v01_batc jwgraham  R       0:15      1 comet-11-35
+          22508273   compute v01_batc jwgraham  R       0:15      1 comet-11-38
+          22508274   compute v01_batc jwgraham  R       0:15      1 comet-11-41
+          22508275   compute v01_batc jwgraham  R       0:15      1 comet-20-28
+          22508276   compute v01_batc jwgraham  R       0:15      1 comet-20-31
+          22508277   compute v01_batc jwgraham  R       0:15      1 comet-20-32
+          22508278   compute v01_batc jwgraham  R       0:15      1 comet-20-35
+          22508280   compute v01_batc jwgraham  R       0:15      1 comet-20-36
+          22508282   compute v01_batc jwgraham  R       0:15      1 comet-20-57
+          22508283   compute v01_batc jwgraham  R       0:15      1 comet-20-58
+          22508284   compute v01_batc jwgraham  R       0:15      1 comet-20-61
+          22508267   compute v01_batc jwgraham  R       0:45      1 comet-01-50
+          22508268   compute v01_batc jwgraham  R       0:45      1 comet-06-40
+
+Looks successful, but there was errors in plotting:
+
+	Plotting raster...
+	There was an exception in plotRaster(): 
+	 'DataFrame' object has no attribute 'sort_values' 
+	(<type 'exceptions.AttributeError'>, AttributeError("'DataFrame' object has no attribute 'sort_values'",), <traceback object at 0x2aaac4a3add0>)
+	Plotting recorded cell traces ...
+	There was an exception in plotTraces(): 
+	 no display name and no $DISPLAY environment variable 
+	(<class '_tkinter.TclError'>, TclError('no display name and no $DISPLAY environment variable',), <traceback object at 0x2aaac4a3ab90>)
+	  Done; plotting time = 0.53 s
+
+Posting errors in Slack.
+
+** Misc stuff to do
+
+Get rid of password for Comet
+Add aliases to Comet and local (squeue, etc.)
+Look into Salva's analysis routines
 
 
+** Get rid of password for Comet
+
+https://www.sdsc.edu/support/user_guides/comet.html
+
+	Please feel free to append your public RSA key to your ~/.ssh/authorized_keys file to enable access from authorized hosts without having to enter your password. Make sure you have a password on the private key on your local machine. You can use ssh-agent or keychain to avoid repeatedly typing the private key password.
+
+https://www.linode.com/docs/security/authentication/use-public-key-authentication-with-ssh/
+
+Ugh.  I'll have to ask someone how to do this.
 
 
+** Add aliases to Comet and local
+
+Other people's aliases:
+
+	alias huc='hg pull; hg up -C'
+	alias lsl='ls -lrtah'
+	alias upnp='cd ~/site/nrniv/local/python/netpyne/; git pull; cd ~/m1/sim'
+	alias sq='squeue -u $USER; squeue -u $USER | wc -l'
+	alias sqr='squeue -u $USER -t RUNNING; squeue -u $USER -t RUNNING | wc -l'
+	alias sqrr='squeue -u $USER -t RUNNING --reservation=salva1; squeue -u $USER -t RUNNING --reservation=salva1 | wc -l'
+	alias sqra='squeue -t RUNNING; squeue -t RUNNING | wc -l'
+	alias sqp='squeue -u $USER -t PENDING; squeue -u $USER -t PENDING | wc -l' 
+	alias sqpa='squeue -t PENDING --partition=compute -o "%.18i %.9P %.8j %.8u %.2t %.10M %.6D %R %p"; squeue -t PENDING --partition=compute | wc -l'
+	alias sdetail='scontrol show job'
+	alias tarc='tar -zcvf'
+	alias cpcm scp -r comet.sdsc.xsede.org:///home/salvadord/!:1 !:2
+
+Will get back to this.
 
 
+* 2019-04-11 -- Batching on Comet, plotting
+
+** Running using Bill's install
+
+Bill's .bashrc:
+
+	# .bashrc
+
+	# Source global definitions
+	if [ -f /etc/bashrc ]; then
+	        . /etc/bashrc
+	fi
+
+	module purge
+	export PATH=/home/lytton/anaconda3/bin:/home/lytton/anaconda3/condabin:/home/lytton/nrn/x86_64/bin:/home/lytton/site/bin:/home/lytton/site/scripts:/opt/gnu/gcc/bin:/opt/gsl/2.1/gnu/bin:/opt/ibutils/bin:/opt/openmpi/gnu/ib/bin:/opt/pdsh/bin:/opt/rocks/bin:/opt/rocks/sbin:/opt/sdsc/bin:/opt/sdsc/sbin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/lib64/qt-3.3/bin:/usr/local/bin:/usr/local/sbin:/usr/X11R6/bin
+	module load gnu
+	module load openmpi_ib
+	module load gsl
+	module load gnutools/2.69
+	# module load gnubase/2.69
+
+	export NEURONHOME=/home/lytton/nrn/share/nrn
+	export PYTHONPATH=  # clear it
+	export LD_LIBRARY_PATH=/opt/intel/composer_xe_2013_sp1.2.144/compiler/lib/intel64:/home/lytton/anaconda3/lib
+	. /home/lytton/anaconda3/etc/profile.d/conda.sh
+	conda activate
+	export PS1="co$ "
+	export PYTHONPATH=/home/lytton/netpyne:/home/lytton/nrn/lib/python:$PYTHONPATH:/home/lytton/site/nrniv/local/python
+
+I'll copy it into my Comet home dir as bashrc_bill
+I'll rename my own .bashrc as .bashrc_joe
+Then copy bashrc_bill as .bashrc
+Then try running a sim.
+
+Locally:
+scp /Users/graham/EEE_network/bashrc_bill jwgraham@comet.sdsc.xsede.org:/home/jwgraham/
+
+On Comet:
+mv .bashrc bashrc_joe
+cp bashrc_bill .bashrc
+
+Now to run a sim.  Modifying batch.py.  Pushing and running.
 
 
 

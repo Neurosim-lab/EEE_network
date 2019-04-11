@@ -101,7 +101,7 @@ cfg.recordTraces['V_dend_8'] = {'sec':'basal_8', 'loc':0.5, 'var':'v'}
 #cfg.recordTraces['V_dend_9'] = {'sec':'basal_9', 'loc':0.5, 'var':'v'}
 
 #cfg.recordCells = {'include': [('PT5_1', 0), ('PT5_2', 0), ('PT5_3', 0), ('PT5_4', 0), ('PV5', 0)]}
-cfg.recordCells = [0, 200, 400, 600, 800]
+#cfg.recordCells = [0, 200, 400, 600, 800]
 
 #cfg.printPopAvgRates = True
 

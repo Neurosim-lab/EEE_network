@@ -7664,13 +7664,121 @@ Then copy bashrc_bill as .bashrc
 Then try running a sim.
 
 Locally:
-scp /Users/graham/EEE_network/bashrc_bill jwgraham@comet.sdsc.xsede.org:/home/jwgraham/
+	scp /Users/graham/EEE_network/bashrc_bill jwgraham@comet.sdsc.xsede.org:/home/jwgraham/
 
 On Comet:
-mv .bashrc bashrc_joe
-cp bashrc_bill .bashrc
+	mv .bashrc bashrc_joe
+	cp bashrc_bill .bashrc
 
 Now to run a sim.  Modifying batch.py.  Pushing and running.
+
+Got an error when connecting to Comet:
+
+	: command not found
+	-bash: /home/jwgraham/.bashrc: line 24: syntax error: unexpected end of file
+	-bash-4.1$
+
+Got a copy from Bill:
+
+[jwgraham@comet-ln3 ~]$ cp /home/lytton/.bashrc /home/jwgraham/bashrc_bill_comet
+[jwgraham@comet-ln3 ~]$ rm bashrc_bill .bashrc
+[jwgraham@comet-ln3 ~]$ cp bashrc_bill_comet .bashrc
+
+Logging into Comet.
+
+Haha!  My [jwgraham@comet-ln3 EEE_network]$  shrunk to  co$
+
+Got an error:
+
+	co$ python batch.py
+	Warning: no DISPLAY environment variable.
+	--No graphics will be displayed.
+	Mechanism AMPA needs to be re-translated.
+	It's version 6.2.0 "c" code is incompatible with this neuron version.
+
+Bill helped fix all errors in compiling.
+
+Running a batch:
+
+	co$ cd EEE_network/eee_net
+	co$ python batch.py
+	co$ squeue -u jwgraham
+	             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+	          22547248   compute bill_bat jwgraham PD       0:00      1 (None)
+	          22547249   compute bill_bat jwgraham PD       0:00      1 (None)
+	          22547250   compute bill_bat jwgraham PD       0:00      1 (None)
+	          22547251   compute bill_bat jwgraham PD       0:00      1 (None)
+	          22547252   compute bill_bat jwgraham PD       0:00      1 (None)
+	          22547253   compute bill_bat jwgraham PD       0:00      1 (None)
+	          22547254   compute bill_bat jwgraham PD       0:00      1 (None)
+	          22547255   compute bill_bat jwgraham PD       0:00      1 (None)
+	          22547256   compute bill_bat jwgraham PD       0:00      1 (None)
+	          22547257   compute bill_bat jwgraham PD       0:00      1 (None)
+	          22547258   compute bill_bat jwgraham PD       0:00      1 (None)
+	          22547260   compute bill_bat jwgraham PD       0:00      1 (None)
+	          22547261   compute bill_bat jwgraham PD       0:00      1 (None)
+	          22547262   compute bill_bat jwgraham PD       0:00      1 (None)
+	          22547263   compute bill_bat jwgraham PD       0:00      1 (None)
+	          22547264   compute bill_bat jwgraham PD       0:00      1 (None)
+
+To get to Python 2:
+
+	conda create -n python2 python=2.7 anaconda
+	source activate python2
+
+Bill's setup seems to have run successfully.  I'll take a look at the data in a little bit.
+
+
+* 2019-04-15 -- Batching on Comet, plotting
+
+** Setting up RSA key
+
+So i don't have to type my password into Comet every time.
+
+https://www.cyberciti.biz/faq/how-to-set-up-ssh-keys-on-linux-unix/
+
+	#1: Create the key pair
+	On the computer (such as client1.cyberciti.biz), generate a key pair for the protocol.
+
+	ssh-keygen -t rsa
+
+	#2: Install the public key in remote server
+	Use scp or ssh-copy-id command to copy your public key file (e.g., $HOME/.ssh/id_rsa.pub) to your account on the remote server/host (e.g., nixcraft@server1.cyberciti.biz). To do so, enter the following command on your client1.cyberciti.biz:
+
+	ssh-copy-id -i $HOME/.ssh/id_rsa.pub user@server1.cyberciti.biz
+	OR just copy the public key in remote server as authorized_keys in ~/.ssh/ directory:
+
+	scp $HOME/.ssh/id_rsa.pub user@server1.cyberciti.biz:~/.ssh/authorized_keys
+
+ssh-keygen -t rsa
+ssh-copy-id -i $HOME/.ssh/id_rsa.pub jwgraham@comet.sdsc.edu
+
+Okay, that worked.  :)  No more password on Comet.
+
+
+** Need to set up Comet SSH with display
+
+Changing the alias in my .bash_profile:
+
+alias sshc='ssh -X jwgraham@comet.sdsc.edu'
+
+
+** Running a batch using Bill's setup
+
+graham-mac:~ graham$ sshc
+Warning: untrusted X11 forwarding setup failed: xauth key data not generated
+
+Hmmm.  But when I do:
+
+	ssh -Y jwgraham@comet.sdsc.edu
+
+I get:
+
+	Warning: No xauth data; using fake authentication data for X11 forwarding.
+
+Asking on Slack about best way to do this.
+
+For now I'll change the sshc alias to use -Y
 
 
 

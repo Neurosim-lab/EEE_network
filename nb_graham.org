@@ -7849,7 +7849,7 @@ Salva's code is here: /u/salvadord/Models/m1/analysis/
 
 
 
-** Copying over data from scratch to long-
+** Copying over data from scratch to long-term
 
 co$ cd /oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/
 co$ ls -l
@@ -7892,8 +7892,44 @@ file:nb_gif/20190416_063243.png
 
 Pushing to Comet and running.
 
+	co$ squeue -u jwgraham
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+          22622953   compute bill_bat jwgraham  R       0:50      1 comet-29-53
+          22622954   compute bill_bat jwgraham  R       0:50      1 comet-29-56
+          22622955   compute bill_bat jwgraham  R       0:50      1 comet-17-63
+          22622956   compute bill_bat jwgraham  R       0:50      1 comet-17-67
+          22622957   compute bill_bat jwgraham  R       0:50      1 comet-17-69
+          22622936   compute bill_bat jwgraham  R       1:03      1 comet-29-65
+          22622938   compute bill_bat jwgraham  R       1:03      1 comet-17-01
+          22622939   compute bill_bat jwgraham  R       1:03      1 comet-17-27
+          22622941   compute bill_bat jwgraham  R       1:03      1 comet-17-30
+          22622943   compute bill_bat jwgraham  R       1:03      1 comet-17-37
+          22622948   compute bill_bat jwgraham  R       1:03      1 comet-17-38
+          22622951   compute bill_bat jwgraham  R       1:03      1 comet-17-39
+          22622952   compute bill_bat jwgraham  R       1:03      1 comet-17-52
+          22622932   compute bill_bat jwgraham  R       1:19      1 comet-04-55
+          22622934   compute bill_bat jwgraham  R       1:19      1 comet-04-57
+          22622935   compute bill_bat jwgraham  R       1:19      1 comet-04-58
+          22622928   compute bill_bat jwgraham  R       1:26      1 comet-04-40
+          22622931   compute bill_bat jwgraham  R       1:26      1 comet-04-41
+          22622986   compute bill_bat jwgraham  R       0:39      1 comet-23-43
+          22622988   compute bill_bat jwgraham  R       0:39      1 comet-23-44
+          22622968   compute bill_bat jwgraham  R       0:42      1 comet-23-38
+          22622975   compute bill_bat jwgraham  R       0:42      1 comet-23-39
+          22622982   compute bill_bat jwgraham  R       0:42      1 comet-23-40
+          22622961   compute bill_bat jwgraham  R       0:48      1 comet-23-37
+          22622958   compute bill_bat jwgraham  R       0:50      1 comet-17-71
 
+Running already.  :)
 
+** Back to own setup
+
+Using Bill's setup didn't produce figures. I'm going to change back to my own setup and run the batch.
+
+co$ rm .bashrc
+co$ cp bashrc_joe .bashrc
+
+Changing batch name, pushing and running.
 
 
 

@@ -18,7 +18,7 @@ def batchTest():
 	b = Batch(params=params, cfgFile='cfg.py', netParamsFile='netParams.py')
 	
 	# Set output folder, grid method (all param combinations), and run configuration
-	b.batchLabel = 'bill_batch_03' #'v01_batch02'
+	b.batchLabel = 'v01_batch03' #'bill_batch_03' 
 	b.saveFolder = '/oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/' + b.batchLabel
 	b.method = 'grid'
 	b.runCfg = {'type': 'hpc_slurm',

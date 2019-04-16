@@ -7979,6 +7979,10 @@ Switching back to use Bill's setup.
 
 ** Running short sim on Bill's setup
 
+And adding plotSpikeHist to bill_batch_05
+
+cfg.analysis['plotSpikeHist'] = {'saveFig': saveFig,'showFig': showFig}
+
 
 
 

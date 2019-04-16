@@ -7931,7 +7931,53 @@ co$ cp bashrc_joe .bashrc
 
 Changing batch name, pushing and running.
 
+Got an error or warning:
 
+	loading membrane mechanisms from x86_64/.libs/libnrnmech.so
+	dlopen failed - 
+	x86_64/.libs/libnrnmech.so: undefined symbol: hoc_reg_nmodl_text
+
+We'll see if it works.
+
+
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+          22623224   compute v01_batc jwgraham  R       1:15      1 comet-14-68
+          22623225   compute v01_batc jwgraham  R       1:15      1 comet-14-72
+          22623226   compute v01_batc jwgraham  R       1:15      1 comet-17-67
+          22623227   compute v01_batc jwgraham  R       1:15      1 comet-17-69
+          22623229   compute v01_batc jwgraham  R       1:15      1 comet-17-71
+          22623230   compute v01_batc jwgraham  R       1:15      1 comet-03-20
+          22623254   compute v01_batc jwgraham  R       0:41      1 comet-23-46
+          22623255   compute v01_batc jwgraham  R       0:41      1 comet-23-47
+          22623253   compute v01_batc jwgraham  R       0:43      1 comet-23-44
+          22623250   compute v01_batc jwgraham  R       0:47      1 comet-05-06
+          22623251   compute v01_batc jwgraham  R       0:47      1 comet-23-43
+          22623245   compute v01_batc jwgraham  R       0:51      1 comet-23-37
+          22623247   compute v01_batc jwgraham  R       0:51      1 comet-23-38
+          22623248   compute v01_batc jwgraham  R       0:51      1 comet-23-39
+          22623249   compute v01_batc jwgraham  R       0:51      1 comet-23-40
+          22623232   compute v01_batc jwgraham  R       0:58      1 comet-03-24
+          22623234   compute v01_batc jwgraham  R       0:58      1 comet-03-57
+          22623235   compute v01_batc jwgraham  R       0:58      1 comet-03-62
+          22623236   compute v01_batc jwgraham  R       0:58      1 comet-04-41
+          22623238   compute v01_batc jwgraham  R       0:58      1 comet-04-53
+          22623239   compute v01_batc jwgraham  R       0:58      1 comet-04-55
+          22623243   compute v01_batc jwgraham  R       0:58      1 comet-04-58
+          22623244   compute v01_batc jwgraham  R       0:58      1 comet-04-60
+          22623231   compute v01_batc jwgraham  R       1:15      1 comet-03-22
+
+
+Looked at the error file, and it's not working and getting huge.  Canceling jobs.
+
+Need to recompile mods to use with different NEURON version, I think.
+
+Switching back to use Bill's setup.
+
+[jwgraham@comet-ln2 ~]$ rm .bashrc 
+[jwgraham@comet-ln2 ~]$ cp bashrc_bill_comet .bashrc
+
+
+** Running short sim on Bill's setup
 
 
 

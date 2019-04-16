@@ -7,7 +7,7 @@ saveFig = True
 
 # Simulation options
 cfg = specs.SimConfig()       
-cfg.duration = 100000           
+cfg.duration = 2000           
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             

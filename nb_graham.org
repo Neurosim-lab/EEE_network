@@ -7780,6 +7780,131 @@ Asking on Slack about best way to do this.
 
 For now I'll change the sshc alias to use -Y
 
+	co$ cd EEE_network/eee_net
+	co$ python batch.py
+	co$ squeue -u jwgraham
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+          22606469   compute bill_bat jwgraham PD       0:00      1 (None)
+          22606470   compute bill_bat jwgraham PD       0:00      1 (None)
+          22606471   compute bill_bat jwgraham PD       0:00      1 (None)
+          22606472   compute bill_bat jwgraham PD       0:00      1 (None)
+          22606474   compute bill_bat jwgraham PD       0:00      1 (None)
+          22606475   compute bill_bat jwgraham PD       0:00      1 (None)
+          22606476   compute bill_bat jwgraham PD       0:00      1 (None)
+          22606477   compute bill_bat jwgraham PD       0:00      1 (None)
+          22606485   compute bill_bat jwgraham PD       0:00      1 (None)
+          22606492   compute bill_bat jwgraham PD       0:00      1 (None)
+          22606494   compute bill_bat jwgraham PD       0:00      1 (None)
+          22606502   compute bill_bat jwgraham PD       0:00      1 (None)
+          22606509   compute bill_bat jwgraham PD       0:00      1 (None)
+          22606517   compute bill_bat jwgraham PD       0:00      1 (None)
+          22606525   compute bill_bat jwgraham PD       0:00      1 (None)
+          22606532   compute bill_bat jwgraham PD       0:00      1 (None)
+
+
+** I overwrote my RSA key for Neurosim
+
+Need to fix that so I don't need a password there.
+
+But of course I forgot my password.  Requesting a new one:
+
+	http://www.neurosimlab.com/user/password
+
+Needed to ask for password change (website uses diff password).  But got it changed.
+
+Now to get an RSA key working on Neurosim again.
+
+graham-mac:.ssh graham$ ssh-keygen -t rsa
+Generating public/private rsa key pair.
+Enter file in which to save the key (/Users/graham/.ssh/id_rsa): /Users/graham/.ssh/id_rsa_suny
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /Users/graham/.ssh/id_rsa_suny.
+Your public key has been saved in /Users/graham/.ssh/id_rsa_suny.pub.
+
+Then tried two different ways:
+
+	ssh-copy-id -i $HOME/.ssh/id_rsa_suny.pub graham@no.neurosim.downstate.edu
+
+	scp $HOME/.ssh/id_rsa_suny.pub graham@no.neurosim.downstate.edu:~/.ssh/authorized_keys
+
+I still have to use my password...  Will have to try to fix this later.
+
+
+** Looking into batch analysis
+
+Salva's analysis stuff here:
+
+/u/salvadord/Models/m1/analysis/batchAnalysis.py
+
+cd
+scp -r no.neurosim.downstate.edu:///u/salvadord/Models/m1/analysis/ /Users/graham/batch_analysis
+
+
+* 2019-04-16 -- Batching on Comet, EEE meeting
+
+** Looking into batch analysis
+
+Salva's code is here: /u/salvadord/Models/m1/analysis/
+
+
+
+** Copying over data from scratch to long-
+
+co$ cd /oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/
+co$ ls -l
+total 138
+drwxr-xr-x 3 jwgraham shs100 57856 Apr 11 18:45 bill_batch
+drwxr-xr-x 3 jwgraham shs100 41472 Apr 15 10:58 bill_batch_02
+drwxr-xr-x 2 jwgraham shs100 41472 Apr 10 08:02 v01_batch02
+
+Commands:
+
+	cp -r /oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/v01_batch02 /oasis/projects/nsf/shs100/jwgraham/EEE_network/eee_net/v01_batch02
+
+	scp -r jwgraham@comet.sdsc.xsede.org:///oasis/projects/nsf/shs100/jwgraham/EEE_network/eee_net/v01_batch02 /Users/graham/EEE_network/eee_net/v01_batch02
+
+	rm -rf /oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/v01_batch02
+
+
+	cp -r /oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/bill_batch /oasis/projects/nsf/shs100/jwgraham/EEE_network/eee_net/bill_batch
+
+	scp -r jwgraham@comet.sdsc.xsede.org:///oasis/projects/nsf/shs100/jwgraham/EEE_network/eee_net/bill_batch /Users/graham/EEE_network/eee_net/bill_batch
+
+	rm -rf /oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/bill_batch
+
+
+	cp -r /oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/bill_batch_02 /oasis/projects/nsf/shs100/jwgraham/EEE_network/eee_net/bill_batch_02
+
+	scp -r jwgraham@comet.sdsc.xsede.org:///oasis/projects/nsf/shs100/jwgraham/EEE_network/eee_net/bill_batch_02 /Users/graham/EEE_network/eee_net/bill_batch_02
+
+	rm -rf /oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/bill_batch_02
+
+
+** Looking at output of sims
+
+Hmmm.  Hard to see much in rasters and traces when the sim lasts 100 seconds.
+
+file:nb_gif/20190416_063243.png
+
+
+** Setting up shorter sim (2 s)
+
+Pushing to Comet and running.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

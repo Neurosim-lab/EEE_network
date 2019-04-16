@@ -7,8 +7,8 @@ def batchTest():
 
 	# fill in with parameters to explore and range of values (key has to coincide with a variable in simConfig) 
 	
-	params['EEconv'] = [1.5, 3.0, 4.5, 6.0] # Default 3.0
-	params['IEconv'] = [6.0, 12.0, 18.0, 24.0] # Default 12.0
+	params['EEconv'] = [0.0, 1.5, 3.0, 4.5, 6.0] # Default 3.0
+	params['IEconv'] = [0.0, 6.0, 12.0, 18.0, 24.0] # Default 12.0
 
 	#params['ampIClamp1'] = [0.1, 0.5, 1.0]
 	#params['GABAAfastWeight'] = [0.0001, 0.01, 1.0]   
@@ -18,12 +18,12 @@ def batchTest():
 	b = Batch(params=params, cfgFile='cfg.py', netParamsFile='netParams.py')
 	
 	# Set output folder, grid method (all param combinations), and run configuration
-	b.batchLabel = 'bill_batch_02' #'v01_batch02'
+	b.batchLabel = 'bill_batch_03' #'v01_batch02'
 	b.saveFolder = '/oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/' + b.batchLabel
 	b.method = 'grid'
 	b.runCfg = {'type': 'hpc_slurm',
 				'allocation': 'shs100', 
-				'walltime': '2:00:00',
+				'walltime': '00:30:00',
 				'nodes': 1,
 				'coresPerNode': 24,
 				'email': 'joe.w.graham@gmail.com',

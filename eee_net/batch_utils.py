@@ -18,6 +18,12 @@ from netpyne import specs
 
 batchdatadir = "data"
 
+# The following ensures py2 and py3 compatibility
+try:
+    basestring
+except NameError:
+    basestring = str
+
 
 def getspineLocs(numspines, spinedist=[1]):
     numspines += 2

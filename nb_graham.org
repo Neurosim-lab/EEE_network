@@ -8053,6 +8053,56 @@ Updating the files for Python 3.
 
 Committing now before I make too many changes.
 
+*** Problem with basestring (no longer works in py3):
+
+	~/EEE_network/eee_net/batch_utils.py in readBatchData(dataFolder, batchLabel, loadAll, saveAll, vars, maxCombs, listCombs)
+	     74         return params, data
+	     75 
+	---> 76     if isinstance(listCombs, basestring):
+	     77         filename = str(listCombs)
+	     78         with open(filename, 'r') as fileObj:
+
+	NameError: name 'basestring' is not defined
+
+Looking into solution.
+
+It looks like I can either rename all 'basestr' as 'str' (which then will only work in py3):
+
+	https://docs.python.org/3.0/whatsnew/3.0.html
+
+	The builtin basestring abstract type was removed. Use str instead. The str and bytes types don’t have functionality enough in common to warrant a shared base class. The 2to3 tool (see below) replaces every occurrence of basestring with str.
+
+Or I can try to make it py2 and py3 compatible with:
+
+https://stackoverflow.com/questions/11301138/how-to-check-if-variable-is-string-with-python-2-and-3-compatibility
+
+	The most terse approach I've found without relying on packages like six, is:
+
+		try:
+		  basestring
+		except NameError:
+		  basestring = str
+	
+	then, assuming you've been checking for strings in Python 2 in the most generic manner,
+
+		isinstance(s, basestring)
+	
+	will now also work for Python 3+.
+
+I'll try the second option.  
+
+It worked.
+
+*** The data is not being loaded
+
+Output of running dev.py:
+
+	ipython -i dev.py
+	Reading data...
+	25 files missing
+
+Looking into solution.  First committing py2/3 compatibility changes.
+
 
 
 

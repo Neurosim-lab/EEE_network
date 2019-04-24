@@ -8044,7 +8044,9 @@ Plot figures
 Last batch was bill_batch_05 and it seems to have worked.
 
 
-** Looking at my old batch analysis code
+** Load batch data
+
+Looking at my old batch analysis code
 
 Copying batch_utils.py and batch_analysis.py from no.neurosim.downstate.edu//u/graham/projects/eee/sim
 to EEE_network/eee_net/
@@ -8103,11 +8105,106 @@ Output of running dev.py:
 
 Looking into solution.  First committing py2/3 compatibility changes.
 
+Got rid of try/except in batch_utils readBatchData, and got this error:
+
+	~/EEE_network/eee_net/batch_utils.py in readBatchData(dataFolder, batchLabel, loadAll, saveAll, vars, maxCombs, listCombs)
+	    110                 outFile = b['saveFolder']+'/'+simLabel+'.json'
+	    111                 # try:
+	--> 112                 with open(outFile, 'r') as fileObj:
+	    113                     output = json.load(fileObj, object_pairs_hook=specs.OrderedDict)
+	    114 
+
+	FileNotFoundError: [Errno 2] No such file or directory: '/oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/bill_batch_05/bill_batch_05_0_0.json'
+
+So the problem is that the files have been moved from scratch to my local machine, and are 
+no longer at b['saveFolder']
+
+Looking into what's all in b 
+
+	In [1]: b                                                                                                
+	Out[1]: 
+	{'batchLabel': 'bill_batch_05',
+	 'cfgFile': 'cfg.py',
+	 'evolCfg': {'fitnessFunc': 'removed'},
+	 'initCfg': {},
+	 'method': 'grid',
+	 'netParamsFile': 'netParams.py',
+	 'params': [{'label': 'EEconv', 'values': [0.0, 1.5, 3.0, 4.5, 6.0]},
+	  {'label': 'IEconv', 'values': [0.0, 6.0, 12.0, 18.0, 24.0]}],
+	 'runCfg': {'allocation': 'shs100',
+	  'coresPerNode': 24,
+	  'email': 'joe.w.graham@gmail.com',
+	  'folder': '/home/jwgraham/EEE_network/eee_net/',
+	  'mpiCommand': 'ibrun',
+	  'nodes': 1,
+	  'script': 'init.py',
+	  'skip': True,
+	  'type': 'hpc_slurm',
+	  'walltime': '00:30:00'},
+	 'saveFolder': '/oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/bill_batch_05',
+	 'seed': None}
+
+So yeah, outFile coming from saveFolder is the only problem.  
+
+I'll change outFile to use dataFolder, batchLabel, batchLabel instead.
+
+Old:
+
+	outFile = b['saveFolder']+'/'+simLabel+'.json'
+
+New:
+
+	outFile = dataFolder+'/'+batchLabel+'/'+simLabel+'.json'
+
+Now getting a Netpyne error.
+
+*** Netpyne Error
+
+Error:
+
+	~/EEE_network/eee_net/batch_utils.py in readBatchData(dataFolder, batchLabel, loadAll, saveAll, vars, maxCombs, listCombs)
+	    113 
+	    114                 with open(outFile, 'r') as fileObj:
+	--> 115                     output = json.load(fileObj, object_pairs_hook=specs.OrderedDict)
+	    116 
+	    117                 # save output file in data dict
+
+	AttributeError: module 'netpyne.specs' has no attribute 'OrderedDict'
+
+Looking at Salva's code to see if it's been updated.  Not in his code, but on the Netpyne
+documents, it looks like it should be 'ODict' now instead of 'OrderedDict'.
+
+That seems to have worked.  Changing all to ODict.
+
+*** Looks like batch data loads now
+
+Currently working in dev.py:
+
+	import batch_utils
+	import batch_analysis
+	batchLabel = "bill_batch_05"
+	params, data = batch_utils.load_batch(batchLabel, "data")
+
+Which produces:
+
+	graham$ ipython -i dev.py
+
+	Reading data...
+	0 files missing
+
+	In [1]: whos                                                                                             
+	Variable         Type      Data/Info
+	------------------------------------
+	batchLabel       str       bill_batch_05
+	batch_analysis   module    <module 'batch_analysis' <...>e_net/batch_analysis.py'>
+	batch_utils      module    <module 'batch_utils' fro<...>/eee_net/batch_utils.py'>
+	data             dict      n=25
+	params           list      n=2
+
+Committing.
 
 
 
-
-** Looking at Salva's batch analysis code
 
 
 

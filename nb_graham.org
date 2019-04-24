@@ -7985,12 +7985,79 @@ cfg.analysis['plotSpikeHist'] = {'saveFig': saveFig,'showFig': showFig}
 
 
 
+* 2019-04-23 -- Aliases and batch analysis
+
+
+** Adding aliases
+
+*** Local aliases
+
+alias gs='git status'
+alias ga='git add -u'
+alias gc='git commit -m'
+alias gsh='git push'
+alias gll='git pull'
+
+
+*** Comet aliases
+
+ls, cd, and du (disk usage)
+
+For scratch storage:
+
+	alias lssc="echo 'Contents of /oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net:' ; ls -l /oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/"
+	alias cdsc="cd /oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/ && echo 'Changed to dir: /oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/'"
+	alias dusc="du -h --max-depth=1 /oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/ | sort -k 2"
+
+For longterm storage:
+
+	alias lslt="echo 'Contents of /oasis/projects/nsf/shs100/jwgraham/EEE_network/eee_net/:' ; ls -l /oasis/projects/nsf/shs100/jwgraham/EEE_network/eee_net/"
+	alias cdlt="cd /oasis/projects/nsf/shs100/jwgraham/EEE_network/eee_net/ && echo 'Changed to dir: /oasis/projects/nsf/shs100/jwgraham/EEE_network/eee_net/'"
+	alias dult="du -h --max-depth=1 /oasis/projects/nsf/shs100/jwgraham/EEE_network/eee_net/ | sort -k 2"
+
+I need an alias to move dirs over from scratch to longterm storage.  
+
+mvlt() {
+    if [ -d "/oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/$1" ]; then
+        echo "Moving: /oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/$1/"
+        mv /oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/$1 /oasis/projects/nsf/shs100/jwgraham/EEE_network/eee_net/
+        echo "To    : /oasis/projects/nsf/shs100/jwgraham/EEE_network/eee_net/$1/"
+    else
+        echo "$1 is not a directory in /oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/"
+    fi
+}
+
+
+
+* 2019-04-24 -- Batch analysis
+
+** Needs for batch analysis
+
+Ensure last batch was good
+Load batch data
+Analyze data
+Plot figures
+
+
+** Ensure last batch was good
+
+Last batch was bill_batch_05 and it seems to have worked.
+
+
+** Looking at my old batch analysis code
+
+Copying batch_utils.py and batch_analysis.py from no.neurosim.downstate.edu//u/graham/projects/eee/sim
+to EEE_network/eee_net/
+
+Updating the files for Python 3.
+
+Committing now before I make too many changes.
 
 
 
 
 
-
+** Looking at Salva's batch analysis code
 
 
 

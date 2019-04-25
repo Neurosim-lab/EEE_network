@@ -8204,6 +8204,90 @@ Which produces:
 Committing.
 
 
+** Analyze and plot data
+
+I recorded traces in bill_batch_05.  Trying to get and plot those now.
+
+Here's how I plotted batch traces before:
+
+    vtraces = get_vtraces(params, data)
+    fig = plot_relation(**vtraces)
+    fig.savefig(os.path.join(batchfigdir, batch + "_vtrace_soma.png"))
+    fig = plot_relation(swapaxes=True, **vtraces)
+    fig.savefig(os.path.join(batchfigdir, batch + "_vtrace_soma_2.png"))
+
+    vtraces = get_vtraces(params, data, section="Bdend1")
+    fig = plot_relation(**vtraces)
+    fig.savefig(os.path.join(batchfigdir, batch + "_vtrace_Bdend1.png"))
+    fig = plot_relation(swapaxes=True, **vtraces)
+    fig.savefig(os.path.join(batchfigdir, batch + "_vtrace_Bdend1_2.png"))
+
+So I will need to figure out how to pull cell IDs that have traces
+
+	def get_vtraces(params, data, cellID=0, section="soma", stable=None):
+
+Looking into `data` to see if I can pull out traces automatically.
+
+datum = data['_0_0']                                                                               
+datum.keys()                                                                                       
+Out: dict_keys(['paramValues', 'net', 'netParams_version', 'netpyne_changeset', 'netpyne_version', 'simConfig', 'simData'])
+datum['simData'].keys()                                                                                   
+Out: odict_keys(['V_dend_8', 'V_soma', 'avgRate', 'spkid', 'spkt', 't'])
+datum['simData']['V_soma'].keys()                                                                
+Out: odict_keys(['cell_0', 'cell_216', 'cell_408', 'cell_600', 'cell_816'])
+datum['simData']['V_dend_8'].keys()                                                             
+Out: odict_keys(['cell_0', 'cell_216', 'cell_408', 'cell_600'])
+
+Actually, I'll just add the following line to the end of dev.py:
+
+	vtraces = batch_analysis.get_vtraces(params, data)
+
+It should plot the soma trace for cell 0.
+
+Error:
+
+	~/EEE_network/eee_net/batch_analysis.py in get_vtraces(params, data, cellID, section, stable)
+	    621     For use with plot_relation()."""
+	    622 
+	--> 623     if data[data.keys()[0]]['net']['cells'][cellID]['gid'] != cellID:
+	    624         raise Exception("Problem in batch_analysis.get_vtraces: cellID doesn't match gid.")
+	    625 
+
+	TypeError: 'dict_keys' object does not support indexing
+
+This is an unnecessary error check. Commenting them out.
+
+Error:
+
+	~/EEE_network/eee_net/batch_analysis.py in get_vtraces(params, data, cellID, section, stable)
+	    624     #     raise Exception("Problem in batch_analysis.get_vtraces: cellID doesn't match gid.")
+	    625 
+	--> 626     cellType = str(data[data.keys()[0]]['net']['cells'][cellID]['tags']['cellType'])
+	    627 
+	    628     seckey = "V_" + section
+
+	TypeError: 'dict_keys' object does not support indexing
+
+Need a different way to get cellType into the output.
+
+Need to change .iteritems to .items for py2 -> py3
+
+It works.  I get vtraces out.  Now to plot.
+
+fig = batch_analysis.plot_relation(**vtraces)
+
+It works. :)
+
+file:nb_gif/20190424_210153.png
+
+Committing.
+
+
+
+
+
+
+
 
 
 

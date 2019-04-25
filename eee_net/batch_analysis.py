@@ -26,7 +26,7 @@ platthresh   = 10.0 #10.0 #5.0    # threshold for a plateau
 stable       = 50     # ms required for trace to stabilize
 syntime      = 200    # time in ms when glutamate is released (synapse time)
 spikewidth   = 3.0
-batchdatadir = "batch_data"
+batchdatadir = "data"
 
 
 ###############################################################################
@@ -286,7 +286,7 @@ def meas_batch_plat_amp(params, data, cellID=0, platthresh=platthresh, stable=st
     
     time = None
 
-    for key, d in data.iteritems():
+    for key, d in data.items():
         
         vsoma = d['simData']['V_soma'][cellLabel]
         if time is None:
@@ -361,7 +361,7 @@ def meas_batch_plat_dur(params, data, cellID=0, platthresh=platthresh, stable=st
     
     time = None
     
-    for key, d in data.iteritems():
+    for key, d in data.items():
         
         vsoma = d['simData']['V_soma'][cellLabel]
         if time is None:
@@ -427,7 +427,7 @@ def meas_batch_num_spikes(params, data, cellID=0, showwork=False):
         p2valsdic = {val: i for i,val in enumerate(p2vals)}
         numspikes = [[0 for p1 in range(len(p1vals))] for p2 in range(len(p2vals))]
 
-    for key, d in data.iteritems():
+    for key, d in data.items():
         
         cellLabel = "cell_" + str(cellID)
         spiketimes = d['simData']['spkt']
@@ -482,7 +482,7 @@ def meas_batch_freq(params, data, cellID=0, showwork=False):
         p2valsdic = {val: i for i,val in enumerate(p2vals)}
         freqs = [[0 for p1 in range(len(p1vals))] for p2 in range(len(p2vals))]
 
-    for key, d in data.iteritems():
+    for key, d in data.items():
 
         cellLabel = "cell_" + str(cellID)
         spiketimes = d['simData']['spkt']
@@ -547,7 +547,7 @@ def meas_batch_time_to_spike(params, data, cellID=0, platthresh=platthresh, stab
     
     time = None
     
-    for key, d in data.iteritems():
+    for key, d in data.items():
         
         vsoma = d['simData']['V_soma'][cellLabel]
         if time is None:
@@ -592,7 +592,7 @@ def meas_batch_first_interspike(params, data, cellID=0, platthresh=platthresh, s
 
     time = None
     
-    for key, d in data.iteritems():
+    for key, d in data.items():
         
         vsoma = d['simData']['V_soma'][cellLabel]
         if time is None:
@@ -620,10 +620,10 @@ def get_vtraces(params, data, cellID=0, section="soma", stable=None):
     """Gets the voltage traces for each batch for the chosen section.
     For use with plot_relation()."""
 
-    if data[data.keys()[0]]['net']['cells'][cellID]['gid'] != cellID:
-        raise Exception("Problem in batch_analysis.get_vtraces: cellID doesn't match gid.")
+    # if data[data.keys()[0]]['net']['cells'][cellID]['gid'] != cellID:
+    #     raise Exception("Problem in batch_analysis.get_vtraces: cellID doesn't match gid.")
 
-    cellType = str(data[data.keys()[0]]['net']['cells'][cellID]['tags']['cellType'])
+    #cellType = str(data[data.keys()[0]]['net']['cells'][cellID]['tags']['cellType'])
 
     seckey = "V_" + section
     if stable is not None: 
@@ -650,7 +650,7 @@ def get_vtraces(params, data, cellID=0, section="soma", stable=None):
     traces = np.array([])
     timesteps = []
 
-    for key, datum in data.iteritems():
+    for key, datum in data.items():
         grouped = False
         cellLabel = "cell_" + str(cellID)
         
@@ -685,7 +685,7 @@ def get_vtraces(params, data, cellID=0, section="soma", stable=None):
     output['params'] = params
     output['autoylabel'] = "Membrane Potential (mV)"
     output['autoxlabel'] = "Time (ms)"
-    output['autotitle'] = "Voltage Traces from " + cellLabel + " (" + cellType + ")"
+    output['autotitle'] = "Voltage Traces from " + cellLabel #+ " (" + cellType + ")"
     output['legendlabel'] = section
     return output
 
@@ -726,7 +726,7 @@ def get_traces(params, data, cellID=0, trace="V_soma", tracename=None, stable=No
     traces = np.array([])
     timesteps = []
 
-    for key, datum in data.iteritems():
+    for key, datum in data.items():
         grouped = False
         cellLabel = "cell_" + str(cellID)
         
@@ -784,7 +784,7 @@ def get_bapamp_distance(params, data, cellID=0, section="Bdend1", stimtime=200):
     bapamps = [[ [] for p1 in range(len(p1vals))] for p2 in range(len(p2vals))]
     stimtime = int(stimtime / recstep)
 
-    for index, (key, d) in enumerate(data.iteritems()):
+    for index, (key, d) in enumerate(data.items()):
 
         p1index = p1valsdic[d['paramValues'][0]]
         p2index = p2valsdic[d['paramValues'][1]]

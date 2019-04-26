@@ -8349,6 +8349,71 @@ Finally got it working.  Still need to allow "params, data" as an input instead 
 
 But committing for now.
 
+Also need to allow choice of time period plotted.
+
+** Improvements to plot_vtraces
+
+Allow input of (params, data) tuple as well as just "batch_name", which reloads the batch data every
+time.
+
+    if type(batchname) == str:
+        params, data = batch_utils.load_batch(batchname)
+    elif type(batchname) == tuple:
+        params, data = batchname
+
+Allow time period choice
+
+Looks like I should implement it in get_vtraces.  I'll get rid of `stable` int (which just cuts off the 
+beginning) and instead have `timerange` list pair which cuts off beginning and end.
+
+Actually, I'll leave stable, but have timerange override it if both are not None.
+
+    if timerange is not None:
+        time = time[timerange[0]:timerange[1]]
+    elif stable is not None:
+        time = time[stable:]
+
+New error:
+
+	---------------------------------------------------------------------------
+	TypeError                                 Traceback (most recent call last)
+	~/EEE_network/eee_net/dev.py in <module>
+	     11 
+	     12 batch = (params, data)
+	---> 13 batch_analysis.plot_vtraces(batch, timerange=[0, 1000])
+	     14 
+	     15 
+
+	~/EEE_network/eee_net/batch_analysis.py in plot_vtraces(batchname, cellIDs, secs, timerange, param_labels, title, filename, save, outputdir)
+	   1056                 os.mkdir(outputdir)
+	   1057             if filename is None:
+	-> 1058                 fig1.savefig(os.path.join(outputdir, batchname + "_" + cellLabel + "_vtrace_1.png"))
+	   1059                 fig2.savefig(os.path.join(outputdir, batchname + "_" + cellLabel + "_vtrace_2.png"))
+	   1060             else:
+
+	TypeError: can only concatenate tuple (not "str") to tuple
+
+Still need batchname to be a string... so:
+
+	batch = (batchLabel, params, data)
+	batch_analysis.plot_vtraces(batch)
+
+and
+
+	if type(batchname) == str:
+        params, data = batch_utils.load_batch(batchname)
+    elif type(batchname) == tuple:
+        batchname, params, data = batchname
+    else:
+        raise Exception()
+
+That works.  Now trying out timerange.
+
+That works, but the xlabels are off by a power of ten.
+
+Committing.
+
+
 
 
 

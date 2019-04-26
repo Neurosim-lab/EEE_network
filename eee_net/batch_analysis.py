@@ -583,7 +583,7 @@ def meas_batch_first_interspike(params, data, cellID=0, platthresh=platthresh, s
 
 
 
-def get_vtraces(params, data, cellID=0, section="soma", stable=None):
+def get_vtraces(params, data, cellID=0, section="soma", timerange=None, stable=None):
     """Gets the voltage traces for each batch for the chosen section.
     For use with plot_relation()."""
 
@@ -624,7 +624,9 @@ def get_vtraces(params, data, cellID=0, section="soma", stable=None):
             vtrace = datum['simData'][seckey][cellLabel]
             if not timesteps:
                 timesteps = len(vtrace)
-            if stable is not None:
+            if timerange is not None:
+                vtrace = vtrace[timerange[0]:timerange[1]]
+            elif stable is not None:
                 vtrace = vtrace[stable:]
             if traces.size == 0:
                 traces = np.empty(shape=tuple(arrayshape)+(len(vtrace),))
@@ -642,7 +644,9 @@ def get_vtraces(params, data, cellID=0, section="soma", stable=None):
             traces[tuple(tracesindex)] = vtrace
 
     time = recstep * np.arange(0, timesteps, 1)
-    if stable is not None:
+    if timerange is not None:
+        time = time[timerange[0]:timerange[1]]
+    elif stable is not None:
         time = time[stable:]
 
     output = {}
@@ -1003,11 +1007,16 @@ def plot_relation(yarray, xvector, params, swapaxes=False, param_labels=None, ti
         return fig
 
 
-def plot_vtraces(batchname, cellIDs=None, secs=None, param_labels=None, title=None, filename=None, save=True, outputdir="batch_figs"):
+def plot_vtraces(batchname, cellIDs=None, secs=None, timerange=None, param_labels=None, title=None, filename=None, save=True, outputdir="batch_figs"):
     """If secs is None, all compartment voltage traces are plotted. secs can also be a list of compartment names, e.g. secs=['soma', 'Bdend1'].
     If cellID is None, all cells will be plotted (individually).  cellID can also be a list of cell IDs or an integer value."""
 
-    params, data = batch_utils.load_batch(batchname)
+    if type(batchname) == str:
+        params, data = batch_utils.load_batch(batchname)
+    elif type(batchname) == tuple:
+        batchname, params, data = batchname
+    else:
+        raise Exception()
 
     if secs is None:
         sim_data = data[list(data.keys())[0]]['simData']
@@ -1034,7 +1043,7 @@ def plot_vtraces(batchname, cellIDs=None, secs=None, param_labels=None, title=No
             secs.insert(0, secs.pop(secs.index("soma")))
 
         for ind, sec in enumerate(secs):
-            output = get_vtraces(params, data, cellID=cellID, section=sec)
+            output = get_vtraces(params, data, cellID=cellID, section=sec, timerange=timerange)
             if ind == 0:
                 fig1 = plot_relation(param_labels=param_labels, title=title, swapaxes=False, **output)
                 fig2 = plot_relation(param_labels=param_labels, title=title, swapaxes=True, **output)

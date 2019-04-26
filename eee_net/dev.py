@@ -7,10 +7,11 @@ batchLabel = "bill_batch_05"
 params, data = batch_utils.load_batch(batchLabel, "data")
 
 #vtraces = batch_analysis.get_vtraces(params, data)
-
 #fig = batch_analysis.plot_relation(**vtraces)
 
-fig2 = batch_analysis.plot_vtraces(batchLabel)
+batch = (batchLabel, params, data)
+batch_analysis.plot_vtraces(batch, timerange=[100, 1000])
+
 
 plt.show()
 

@@ -8283,9 +8283,71 @@ file:nb_gif/20190424_210153.png
 Committing.
 
 
+* 2019-04-25 -- Batch analysis
+
+** Fixing problems with indexing dicts
+
+Deleting old error-checking (no longer needed):
+
+    if data[data.keys()[0]]['net']['cells'][cellID]['gid'] != cellID:
+        raise Exception("Problem in batch_analysis.meas_batch_time_to_spike: cellID doesn't match gid.")
+
+Old way to get cellType from the data:
+
+	cellType = str(data[data.keys()[0]]['net']['cells'][cellID]['tags']['cellType'])
+
+Doesn't work, and really want the cellPop anyway, so here's how:
+
+    cellPop = None
+
+    for key, datum in data.items():
+        ...
+        if not cellPop:
+            cellPop = datum['net']['cells'][cellID]['tags']['pop']
+
+Replacing all `data.keys()[0]` with `list(data.keys())[0]`
+
+Because: TypeError: 'dict_keys' object does not support indexing
+
+That works.  Having a problem with plot_vtraces...
+
+** Fixing problem with plot_vtraces
+
+Error:
+
+	---------------------------------------------------------------------------
+	IndexError                                Traceback (most recent call last)
+	~/EEE_network/eee_net/dev.py in <module>
+	     11 #fig = batch_analysis.plot_relation(**vtraces)
+	     12 
+	---> 13 fig2 = batch_analysis.plot_vtraces(batchLabel)
+	     14 
+	     15 plt.show()
+
+	~/EEE_network/eee_net/batch_analysis.py in plot_vtraces(batchname, cellIDs, secs, param_labels, title, filename, save, outputdir)
+	   1047             output = get_vtraces(params, data, cellID=cellID, section=sec)
+	   1048             if ind == 0:
+	-> 1049                 fig1 = plot_relation(param_labels=param_labels, title=title, swapaxes=False, **output)
+	   1050                 fig2 = plot_relation(param_labels=param_labels, title=title, swapaxes=True, **output)
+	   1051             else:
+
+	~/EEE_network/eee_net/batch_analysis.py in plot_relation(yarray, xvector, params, swapaxes, param_labels, title, xlabel, ylabel, marker, shareyall, color, fig, **kwargs)
+	    950                 axes.append(ax)
+	    951 
+	--> 952                 plt.plot(xvector, yarray[p1ind][p2ind], marker=marker, color=color, label=legendlabel)
+	    953 
+	    954                 plt.setp(ax.get_xticklabels()[0], visible=False)
+
+	IndexError: index 0 is out of bounds for axis 0 with size 0
 
 
+It tries to plot traces from every cell, whether it has traces or not.
 
+Need to check for each cell whether it has traces.  Looking at it.
+
+Finally got it working.  Still need to allow "params, data" as an input instead of just "batch_name".
+
+But committing for now.
 
 
 

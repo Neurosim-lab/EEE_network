@@ -1,13 +1,6 @@
 """
 batch_analysis.py
 Functions to read and plot figures from the EEE batch simulation results.
-
-
-Originally:
-analysis.py 
-Functions to read and plot figures from the batch simulation results. 
-Can call readPlotNa() or readPlotNMDA() from __main__() or import analysis and call interactively. 
-Contributors: salvadordura@gmail.com
 """
 
 from cfg import cfg
@@ -268,11 +261,7 @@ def meas_trace_first_interspike(trace, time=None, recstep=recstep, syntime=synti
 def meas_batch_plat_amp(params, data, cellID=0, platthresh=platthresh, stable=stable, syntime=syntime, recstep=recstep, showwork=False):
     """Measures plateau amplitude for a Netpyne batch"""
 
-    if data[data.keys()[0]]['net']['cells'][cellID]['gid'] != cellID:
-        raise Exception("Problem in batch_analysis.meas_batch_plat_amp: cellID doesn't match gid.")
-
     cellLabel = "cell_" + str(cellID)
-    cellType = str(data[data.keys()[0]]['net']['cells'][cellID]['tags']['cellType'])
     stable_index = int(stable / recstep)
     syntime_index = int(syntime / recstep)
 
@@ -341,12 +330,8 @@ def meas_batch_plat_dur(params, data, cellID=0, platthresh=platthresh, stable=st
             less than time at which stimulation occurs)
        platthresh is voltage (mv) above baseline to define plateau
        set show=True to see plots demonstrating plateau duration on voltage traces"""
-    
-    if data[data.keys()[0]]['net']['cells'][cellID]['gid'] != cellID:
-        raise Exception("Problem in batch_analysis.meas_batch_plat_dur: cellID doesn't match gid.")
 
     cellLabel = "cell_" + str(cellID)
-    cellType = str(data[data.keys()[0]]['net']['cells'][cellID]['tags']['cellType'])
     stable_index = int(stable / recstep)
     syntime_index = int(syntime / recstep)
     
@@ -413,11 +398,6 @@ def meas_batch_plat_dur(params, data, cellID=0, platthresh=platthresh, stable=st
 def meas_batch_num_spikes(params, data, cellID=0, showwork=False):
     """Measures the number of spikes in the voltage trace."""
 
-    if data[data.keys()[0]]['net']['cells'][cellID]['gid'] != cellID:
-        raise Exception("Problem in batch_analysis.meas_num_spikes: cellID doesn't match gid.")
-
-    cellType = str(data[data.keys()[0]]['net']['cells'][cellID]['tags']['cellType'])
-
     p1vals = params[0]['values']
     p1valsdic = {val: i for i,val in enumerate(p1vals)}
     numspikes = [0 for p1 in range(len(p1vals))]
@@ -467,11 +447,6 @@ def meas_batch_num_spikes(params, data, cellID=0, showwork=False):
 def meas_batch_freq(params, data, cellID=0, showwork=False):
     """Measures the overall frequency of spiking.  Calculated as:
     (number of spikes - 1) / (time of last spike - time of first spike)"""
-
-    if data[data.keys()[0]]['net']['cells'][cellID]['gid'] != cellID:
-        raise Exception("Problem in batch_analysis.meas_freq: cellID doesn't match gid.")
-
-    cellType = str(data[data.keys()[0]]['net']['cells'][cellID]['tags']['cellType'])
 
     p1vals = params[0]['values']
     p1valsdic = {val: i for i,val in enumerate(p1vals)}
@@ -527,12 +502,8 @@ def meas_batch_freq(params, data, cellID=0, showwork=False):
 
 def meas_batch_time_to_spike(params, data, cellID=0, platthresh=platthresh, stable=stable, syntime=syntime, recstep=recstep, showwork=False):
     """Measures the time to the first spike from the syntime"""
-    
-    if data[data.keys()[0]]['net']['cells'][cellID]['gid'] != cellID:
-        raise Exception("Problem in batch_analysis.meas_batch_time_to_spike: cellID doesn't match gid.")
 
     cellLabel = "cell_" + str(cellID)
-    cellType = str(data[data.keys()[0]]['net']['cells'][cellID]['tags']['cellType'])
     stable_index = int(stable / recstep)
     syntime_index = int(syntime / recstep)
 
@@ -572,12 +543,8 @@ def meas_batch_time_to_spike(params, data, cellID=0, platthresh=platthresh, stab
 
 def meas_batch_first_interspike(params, data, cellID=0, platthresh=platthresh, stable=stable, syntime=syntime, recstep=recstep, showwork=False):
     """Measures the first interspike interval"""
-    
-    if data[data.keys()[0]]['net']['cells'][cellID]['gid'] != cellID:
-        raise Exception("Problem in batch_analysis.meas_batch_first_interspike: cellID doesn't match gid.")
 
     cellLabel = "cell_" + str(cellID)
-    cellType = str(data[data.keys()[0]]['net']['cells'][cellID]['tags']['cellType'])
     stable_index = int(stable / recstep)
     syntime_index = int(syntime / recstep)
     
@@ -620,11 +587,6 @@ def get_vtraces(params, data, cellID=0, section="soma", stable=None):
     """Gets the voltage traces for each batch for the chosen section.
     For use with plot_relation()."""
 
-    # if data[data.keys()[0]]['net']['cells'][cellID]['gid'] != cellID:
-    #     raise Exception("Problem in batch_analysis.get_vtraces: cellID doesn't match gid.")
-
-    #cellType = str(data[data.keys()[0]]['net']['cells'][cellID]['tags']['cellType'])
-
     seckey = "V_" + section
     if stable is not None: 
         stable = int(stable / recstep)
@@ -648,11 +610,15 @@ def get_vtraces(params, data, cellID=0, section="soma", stable=None):
             grouped = True
 
     traces = np.array([])
-    timesteps = []
+    timesteps = None
+
+    cellPop = None
 
     for key, datum in data.items():
         grouped = False
         cellLabel = "cell_" + str(cellID)
+        if not cellPop:
+            cellPop = datum['net']['cells'][cellID]['tags']['pop']
         
         if cellLabel in datum['simData'][seckey].keys():
             vtrace = datum['simData'][seckey][cellLabel]
@@ -685,7 +651,7 @@ def get_vtraces(params, data, cellID=0, section="soma", stable=None):
     output['params'] = params
     output['autoylabel'] = "Membrane Potential (mV)"
     output['autoxlabel'] = "Time (ms)"
-    output['autotitle'] = "Voltage Traces from " + cellLabel #+ " (" + cellType + ")"
+    output['autotitle'] = "Voltage Traces from " + cellLabel + " (" + cellPop + ")"
     output['legendlabel'] = section
     return output
 
@@ -693,11 +659,6 @@ def get_vtraces(params, data, cellID=0, section="soma", stable=None):
 def get_traces(params, data, cellID=0, trace="V_soma", tracename=None, stable=None):
     """Gets the voltage traces for each batch for the chosen section.
     For use with plot_relation()."""
-
-    if data[data.keys()[0]]['net']['cells'][cellID]['gid'] != cellID:
-        raise Exception("Problem in batch_analysis.get_vtraces: cellID doesn't match gid.")
-
-    cellType = str(data[data.keys()[0]]['net']['cells'][cellID]['tags']['cellType'])
 
     if tracename is None:
         tracename = trace
@@ -726,9 +687,14 @@ def get_traces(params, data, cellID=0, trace="V_soma", tracename=None, stable=No
     traces = np.array([])
     timesteps = []
 
+    cellPop = None
+
     for key, datum in data.items():
         grouped = False
         cellLabel = "cell_" + str(cellID)
+        
+        if not cellPop:
+            cellPop = datum['net']['cells'][cellID]['tags']['pop']
         
         if cellLabel in datum['simData'][trace].keys():
             vtrace = datum['simData'][trace][cellLabel]
@@ -764,7 +730,7 @@ def get_traces(params, data, cellID=0, trace="V_soma", tracename=None, stable=No
     output['params'] = params
     output['autoylabel'] = tracename
     output['autoxlabel'] = "Time (ms)"
-    output['autotitle'] = "Traces from " + cellLabel + " (" + cellType + ")"
+    output['autotitle'] = "Traces from " + cellLabel + " (" + cellPop + ")"
     output['legendlabel'] = tracename
     return output
 
@@ -1043,25 +1009,29 @@ def plot_vtraces(batchname, cellIDs=None, secs=None, param_labels=None, title=No
 
     params, data = batch_utils.load_batch(batchname)
 
+    if secs is None:
+        sim_data = data[list(data.keys())[0]]['simData']
+        simdata_keys = data[list(data.keys())[0]]['simData'].keys()
+        secs_all = [d for d in simdata_keys if str(d[0:2]) == "V_"]
+
     if type(cellIDs) is int:
         cellIDs = [cellIDs]
     elif cellIDs is None:
-        cellIDs = []
-        for cell in data[data.keys()[0]]['net']['cells']:
-            cellIDs.append(cell['gid'])
-
+        cellLabels = []
+        for sec_ind in secs_all:
+            cellLabels += list(sim_data[sec_ind].keys())
+        cellLabels = sorted(list(set(cellLabels)))
+        cellIDs = [int(cL[5:]) for cL in cellLabels]
+        
     for cellID in cellIDs:
         cellLabel = "cell_" + str(cellID)
-    
-        if secs is None:
-            sim_data = data[data.keys()[0]]['simData']
-            simdata_keys = data[data.keys()[0]]['simData'].keys()
-            secs_all = [d for d in simdata_keys if str(d[0:2]) == "V_"]
-            secs_present = [sec for sec in secs_all if cellLabel in sim_data[sec].keys()]
-            secs = [sec[2:] for sec in secs_present if len(sim_data[sec].keys()) > 0]
-            secs.sort()
-            if "soma" in secs:
-                secs.insert(0, secs.pop(secs.index("soma")))
+                
+        secs_present = [sec for sec in secs_all if cellLabel in sim_data[sec].keys()]
+        secs = [sec[2:] for sec in secs_present if len(sim_data[sec].keys()) > 0]
+        secs.sort()
+        
+        if "soma" in secs:
+            secs.insert(0, secs.pop(secs.index("soma")))
 
         for ind, sec in enumerate(secs):
             output = get_vtraces(params, data, cellID=cellID, section=sec)
@@ -1094,7 +1064,7 @@ def plot_traces(batchname, traces, cellIDs=None, param_labels=None, title=None, 
         cellIDs = [cellIDs]
     elif cellIDs is None:
         cellIDs = []
-        for cell in data[data.keys()[0]]['net']['cells']:
+        for cell in data[list(data.keys())[0]]['net']['cells']:
             cellIDs.append(cell['gid'])
 
     if type(traces) is str:
@@ -1136,8 +1106,8 @@ def plot_vtraces_multicell(batchname, cellIDs=None, secs=None, param_labels=None
     params, data = batch_utils.load_batch(batchname)
 
     if secs is None:
-        sim_data = data[data.keys()[0]]['simData']
-        simdata_keys = data[data.keys()[0]]['simData'].keys()
+        sim_data = data[list(data.keys())[0]]['simData']
+        simdata_keys = data[list(data.keys())[0]]['simData'].keys()
         v_secs = [d for d in simdata_keys if str(d[0:2]) == "V_"]
         secs = [sec[2:] for sec in v_secs if len(sim_data[sec].keys()) > 0]
         secs.sort()
@@ -1148,7 +1118,7 @@ def plot_vtraces_multicell(batchname, cellIDs=None, secs=None, param_labels=None
         cellIDs = [cellIDs]
     elif cellIDs is None:
         cellIDs = []
-        for cell in data[data.keys()[0]]['net']['cells']:
+        for cell in data[list(data.keys())[0]]['net']['cells']:
             cellIDs.append(cell['gid'])
 
     sec0cells = sim_data[v_secs[0]].keys()
@@ -1163,11 +1133,11 @@ def plot_vtraces_multicell(batchname, cellIDs=None, secs=None, param_labels=None
     for cellindex, cellID in enumerate(cellIDs):
         if celllabel is None or "cell" in celllabel:
             cellparams['label'] = "Cell"
-            cellType = data[data.keys()[0]]['net']['cells'][cellID]['tags']['cellType']
+            cellType = data[list(data.keys())[0]]['net']['cells'][cellID]['tags']['cellType']
             cellparams['values'].append(cellType + "_" + str(cellID))
         elif "pop" in celllabel:
             cellparams['label'] = "Pop"
-            cellPop = data[data.keys()[0]]['net']['cells'][cellID]['tags']['pop']
+            cellPop = data[list(data.keys())[0]]['net']['cells'][cellID]['tags']['pop']
             cellparams['values'].append(cellPop)
 
     for secindex, sec in enumerate(secs):
@@ -1177,7 +1147,6 @@ def plot_vtraces_multicell(batchname, cellIDs=None, secs=None, param_labels=None
 
         for cellindex, cellID in enumerate(cellIDs):
             cellLabel = "cell_" + str(cellID)
-            cellType = data[data.keys()[0]]['net']['cells'][cellID]['tags']['cellType']
             
             if cellLabel in sim_data[secLabel].keys():
                 temp_output = get_vtraces(params, data, cellID=cellID, section=sec)
@@ -1223,7 +1192,7 @@ def plot_antic_plateaus(batch="glutAmp", cellIDs=None, syntime=syntime, section=
         cellIDs = [cellIDs]
     elif cellIDs is None:
         cellIDs = []
-        for cell in data[data.keys()[0]]['net']['cells']:
+        for cell in data[list(data.keys())[0]]['net']['cells']:
             cellIDs.append(cell['gid'])
 
     keys = sorted(data.keys(), key=lambda x: int(x[1:])) #sorts numerically instead of alphabetically
@@ -1341,7 +1310,7 @@ def plot_plat_dur(batchname, cellIDs=None, platthresh=platthresh, stable=stable,
         if cellIDs == "all":
             ind_plots = False
         cellIDs = []
-        for cell in data[data.keys()[0]]['net']['cells']:
+        for cell in data[list(data.keys())[0]]['net']['cells']:
             cellIDs.append(cell['gid'])
     elif type(cellIDs) is list and len(cellIDs) > 1:
         ind_plots = False
@@ -1399,7 +1368,7 @@ def plot_plat_amp(batchname, cellIDs=None, platthresh=platthresh, stable=stable,
         if cellIDs == "all":
             ind_plots = False
         cellIDs = []
-        for cell in data[data.keys()[0]]['net']['cells']:
+        for cell in data[list(data.keys())[0]]['net']['cells']:
             cellIDs.append(cell['gid'])
     elif type(cellIDs) is list and len(cellIDs) > 1:
         ind_plots = False
@@ -1457,7 +1426,7 @@ def plot_num_spikes(batchname, cellIDs=None, platthresh=platthresh, stable=stabl
         if cellIDs == "all":
             ind_plots = False
         cellIDs = []
-        for cell in data[data.keys()[0]]['net']['cells']:
+        for cell in data[list(data.keys())[0]]['net']['cells']:
             cellIDs.append(cell['gid'])
     elif type(cellIDs) is list and len(cellIDs) > 1:
         ind_plots = False
@@ -1515,7 +1484,7 @@ def plot_freq(batchname, cellIDs=None, platthresh=platthresh, stable=stable, syn
         if cellIDs == "all":
             ind_plots = False
         cellIDs = []
-        for cell in data[data.keys()[0]]['net']['cells']:
+        for cell in data[list(data.keys())[0]]['net']['cells']:
             cellIDs.append(cell['gid'])
     elif type(cellIDs) is list and len(cellIDs) > 1:
         ind_plots = False
@@ -1573,7 +1542,7 @@ def plot_time_to_spike(batchname, cellIDs=None, platthresh=platthresh, stable=st
         if cellIDs == "all":
             ind_plots = False
         cellIDs = []
-        for cell in data[data.keys()[0]]['net']['cells']:
+        for cell in data[list(data.keys())[0]]['net']['cells']:
             cellIDs.append(cell['gid'])
     elif type(cellIDs) is list and len(cellIDs) > 1:
         ind_plots = False
@@ -1631,7 +1600,7 @@ def plot_first_interspike(batchname, cellIDs=None, platthresh=platthresh, stable
         if cellIDs == "all":
             ind_plots = False
         cellIDs = []
-        for cell in data[data.keys()[0]]['net']['cells']:
+        for cell in data[list(data.keys())[0]]['net']['cells']:
             cellIDs.append(cell['gid'])
     elif type(cellIDs) is list and len(cellIDs) > 1:
         ind_plots = False
@@ -1684,7 +1653,7 @@ def plot_baps(batchname, cellIDs=None, section="basal_34", outputdir="batch_figs
         cellIDs = [cellIDs]
     elif cellIDs is None:
         cellIDs = []
-        for cell in data[data.keys()[0]]['net']['cells']:
+        for cell in data[list(data.keys())[0]]['net']['cells']:
             cellIDs.append(cell['gid'])
 
     for cellID in cellIDs:

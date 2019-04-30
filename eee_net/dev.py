@@ -5,18 +5,34 @@ from netpyne import sim
 plt.ion()
 
 batchdatadir = "data"
-batchLabel = "bill_batch_05"
 
-curSim = "_0_0"
 
-params, data = batch_utils.load_batch(batchLabel, batchdatadir=batchdatadir)
-batch = (batchLabel, params, data)
+def analyze_batch(batchLabel, batchdatadir=batchdatadir):
 
-#batch_analysis.plot_batch_raster(batch, timeRange=[100, 500], markerSize=2)
+	params, data = batch_utils.load_batch(batchLabel, batchdatadir=batchdatadir)
+	batch = (batchLabel, params, data)
 
-#batch_analysis.plot_batch_raster(batch, timeRange=[100, 500], markerSize=1)
 
-batch_analysis.plot_batch_raster(batch, timeRange=[100, 500], markerSize=0.5)
+	batch_analysis.plot_batch_raster(batch, timeRange=[100, 1000], markerSize=0.5)
+	batch_analysis.plot_vtraces(batch, timerange=[100, 1000])
+
+
+analyze_batch('v01_batch03')
+
+analyze_batch('v01_batch04')
+
+analyze_batch('v01_batch05')
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -34,25 +50,7 @@ batch_analysis.plot_batch_raster(batch, timeRange=[100, 500], markerSize=0.5)
 # fig7 = sim.analysis.plot2Dnet()
 
 
-# Code to get three rasters and plot them as subplots
 
-# bigfig = plt.figure()
-
-# bfax0 = plt.subplot(1,3,1)
-# bfax1 = plt.subplot(1,3,2)
-# bfax2 = plt.subplot(1,3,3)
-
-# curSim = "_0_0"
-# sim.load(batchdatadir + '/' + batchLabel + '/' + batchLabel + curSim + '.json', instantiate=False)
-# sim.analysis.plotRaster(orderInverse=True, altAx=bfax0)
-
-# curSim = "_0_1"
-# sim.load(batchdatadir + '/' + batchLabel + '/' + batchLabel + curSim + '.json', instantiate=False)
-# sim.analysis.plotRaster(orderInverse=True, altAx=bfax1, labels=None)
-
-# curSim = "_0_2"
-# sim.load(batchdatadir + '/' + batchLabel + '/' + batchLabel + curSim + '.json', instantiate=False)
-# sim.analysis.plotRaster(orderInverse=True, altAx=bfax2, labels=None)
 
 
 

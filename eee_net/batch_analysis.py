@@ -1944,7 +1944,7 @@ def plot_all(redoall=False):
 
 
 
-def plot_batch_raster(batchname, batchdatadir='data', swapaxes=False, param_labels=None, title=None, xlabel=None, ylabel=None, include =['allCells'], timeRange=None, maxSpikes=1e8, orderBy='gid', orderInverse=True, syncLines=False, figSize=(10,8), fig=None, lw=2, marker='|', markerSize=2, **kwargs):
+def plot_batch_raster(batchname, batchdatadir='data', swapaxes=False, param_labels=None, title=None, xlabel=None, ylabel=None, include =['allCells'], timeRange=None, maxSpikes=1e8, orderBy='gid', orderInverse=True, syncLines=False, figSize=(10,8), fig=None, lw=2, marker='|', markerSize=2, save=True, outputdir="batch_figs", filename=None, **kwargs):
     """Plots raster plots for each parameter combination."""
 
     if type(batchname) == str:
@@ -2076,7 +2076,7 @@ def plot_batch_raster(batchname, batchdatadir='data', swapaxes=False, param_labe
 
     xlabel = 'Time (ms)'
     ylabel = 'Cells (ordered by %s)' % (orderBy)
-    title = 'Raster plot for batch: ' + batchname 
+    title = 'Raster plots for batch: ' + batchname 
 
     if xlabel:
         figure.text(0.5, 0.04, xlabel, ha="center")
@@ -2088,8 +2088,20 @@ def plot_batch_raster(batchname, batchdatadir='data', swapaxes=False, param_labe
         axes[0].legend(fontsize="x-small")
 
     if fig is None:
+        if save:
+            if filename is None:
+                if not swapaxes:
+                    figure.savefig(os.path.join(outputdir, batchname + "_raster_1.png"))
+                else:
+                    figure.savefig(os.path.join(outputdir, batchname + "_raster_2.png"))
         return figure
     else:
+        if save:
+            if filename is None:
+                if not swapaxes:
+                    fig.savefig(os.path.join(outputdir, batchname + "_raster_1_" + filename + ".png"))
+                else:
+                    fig.savefig(os.path.join(outputdir, batchname + "_raster_2_" + filename + ".png"))
         return fig
 
 

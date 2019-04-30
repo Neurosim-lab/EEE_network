@@ -8729,3 +8729,74 @@ Will commit and push to Comet, then run:
 	python batch05.py
 
 
+* 2019-04-30 -- Batch analysis and synchrony
+
+** Moving batch outputs
+
+It looks like the batches succesfully completed last night.
+
+Now to move that data from scratch to long-term and to download locally.
+
+graham$ cpsc v01_batch03
+graham$ cpsc v01_batch04
+graham$ cpsc v01_batch05
+
+Once that's done I can `sshc` and then `mvlt` each of those dirs.
+
+
+** Analyzing batch outputs
+
+Here's my current dev.py:
+
+	import batch_utils
+	import batch_analysis
+	import matplotlib.pyplot as plt
+	from netpyne import sim
+	plt.ion()
+
+	batchdatadir = "data"
+
+	def analyze_batch(batchLabel, batchdatadir=batchdatadir):
+
+		params, data = batch_utils.load_batch(batchLabel, batchdatadir=batchdatadir)
+		batch = (batchLabel, params, data)
+
+		batch_analysis.plot_batch_raster(batch, timeRange=[100, 1000], markerSize=0.5)
+		batch_analysis.plot_vtraces(batch, timerange=[100, 1000])
+
+	analyze_batch('v01_batch03')
+	analyze_batch('v01_batch04')
+	analyze_batch('v01_batch05')
+
+Trace figures are properly saved (although I think I should disable the automatic swapAxes)
+
+I need to get raster figures to save.
+
+** Disabling auto axes swap in plot traces
+
+Will do this later.
+
+
+** Saving raster figures
+
+Saving rasters works now.  Committing.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -12,9 +12,11 @@ curSim = "_0_0"
 params, data = batch_utils.load_batch(batchLabel, batchdatadir=batchdatadir)
 batch = (batchLabel, params, data)
 
-batch_analysis.plot_batch_raster(batch)
+#batch_analysis.plot_batch_raster(batch, timeRange=[100, 500], markerSize=2)
 
+#batch_analysis.plot_batch_raster(batch, timeRange=[100, 500], markerSize=1)
 
+batch_analysis.plot_batch_raster(batch, timeRange=[100, 500], markerSize=0.5)
 
 
 

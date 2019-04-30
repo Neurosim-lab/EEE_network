@@ -1944,10 +1944,7 @@ def plot_all(redoall=False):
 
 
 
-
-
-
-def plot_batch_raster(batchname, batchdatadir='data', swapaxes=False, param_labels=None, title=None, xlabel=None, ylabel=None, marker=None, shareyall=True, color=None, fig=None, **kwargs):
+def plot_batch_raster(batchname, batchdatadir='data', swapaxes=False, param_labels=None, title=None, xlabel=None, ylabel=None, include =['allCells'], timeRange=None, maxSpikes=1e8, orderBy='gid', orderInverse=True, syncLines=False, figSize=(10,8), fig=None, lw=2, marker='|', markerSize=2, **kwargs):
     """Plots raster plots for each parameter combination."""
 
     if type(batchname) == str:
@@ -1984,10 +1981,9 @@ def plot_batch_raster(batchname, batchdatadir='data', swapaxes=False, param_labe
     if swapaxes:
         param_vals[0], param_vals[1] = param_vals[1], param_vals[0]
         param_labels[0], param_labels[1] = param_labels[1], param_labels[0]
-        #yarray = np.swapaxes(yarray, 0, 1)
 
     if fig is None:
-        figure = plt.figure(figsize=(12, 8))
+        figure = plt.figure(figsize=figSize)
         axes = []
     
     rows = len(param_vals[0])
@@ -2022,9 +2018,10 @@ def plot_batch_raster(batchname, batchdatadir='data', swapaxes=False, param_labe
 
             sim.load(batchdatadir + '/' + batchname + '/' + batchname + dataKey + '.json', instantiate=False)
 
-            #plt.plot(xvector, yarray[p1ind][p2ind], marker=marker, color=color, label=legendlabel)
-
-            sim.analysis.plotRaster(orderInverse=True, altAx=ax, labels=False)
+            if subplotind == 1:
+                sim.analysis.plotRaster(altAx=ax, include=include, timeRange=timeRange, maxSpikes=maxSpikes, orderBy=orderBy, orderInverse=orderInverse, syncLines=syncLines, labels='legend', lw=lw, marker=marker, markerSize=markerSize)
+            else:
+                sim.analysis.plotRaster(altAx=ax, include=include, timeRange=timeRange, maxSpikes=maxSpikes, orderBy=orderBy, orderInverse=orderInverse, syncLines=syncLines, labels=False, lw=lw, marker=marker, markerSize=markerSize)
 
             # print('dataKey: %s' % dataKey)
             # print('p1ind: %s' % str(p1ind))
@@ -2076,6 +2073,11 @@ def plot_batch_raster(batchname, batchdatadir='data', swapaxes=False, param_labe
         figure.subplots_adjust(hspace=0, wspace=0)
 
     # Create axis labels and title across all subplots
+
+    xlabel = 'Time (ms)'
+    ylabel = 'Cells (ordered by %s)' % (orderBy)
+    title = 'Raster plot for batch: ' + batchname 
+
     if xlabel:
         figure.text(0.5, 0.04, xlabel, ha="center")
     if ylabel:

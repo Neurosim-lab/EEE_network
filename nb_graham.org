@@ -8544,12 +8544,35 @@ file:nb_gif/20190429_201238.png
 
 Committing now.
 
+Need to add options like lineWidth...
+
+From netpyne:
+
+	analysis.plotRaster (include = [‘allCells’], timeRange = None, maxSpikes = 1e8, orderBy = ‘gid’, orderInverse = False, labels = ‘legend’, popRates = False, spikeHist = None, spikeHistBin = 5, syncLines = False, figSize = (10,8), saveData = None, saveFig = None, showFig = True)
+
+Options I want in plot_batch_raster
+
+	include = [‘allCells’], 
+	timeRange = None, 
+	maxSpikes = 1e8, 
+	orderBy = ‘gid’, 
+	orderInverse = False, 
+	syncLines = False, 
+	figSize = (10,8), 
+	lw = 2, 
+	marker = '|', 
+	markerSize=5,
 
 
+Options I want to set internal to plot_batch_raster (i.e. in analysis.plotRaster inside plot_batch_raster)
 
-
-
-
+	labels = False, (unless it's subplotind 1, in which case put in the labels='legend')
+	popRates = False,
+	spikeHist = None, 
+	spikeHistBin = 5, 
+	saveData = None, 
+	saveFig = None, 
+	showFig = False
 
 
 
@@ -8558,11 +8581,121 @@ Committing now.
 Currently I can plot a variety of measures for individual cells.  I want a "master plot" which overlays
 all the individual plots with a population mean and standard deviation bars.
 
-
+Getting back to later.
 
 ** Synchrony measures
 
 We want to measure synchrony in pops with and without plateaus.
+
+Getting back to later.
+
+
+** plot_batch_raster functional
+
+And working well!
+
+file:nb_gif/20190429_211144.png
+
+But it does require some changes to Netpyne.  
+
+*** Here's my diff:
+
+diff --git a/netpyne/analysis/spikes.py b/netpyne/analysis/spikes.py
+index f0e808c..5433e18 100644
+--- a/netpyne/analysis/spikes.py
++++ b/netpyne/analysis/spikes.py
+@@ -294,7 +294,7 @@ def plotSyncs (include =['allCells', 'eachPop'], timeRanges = None, timeRangeLab
+ @exception
+ def plotRaster (include = ['allCells'], timeRange = None, maxSpikes = 1e8, orderBy = 'gid', orderInverse = False, labels = 'legend', popRates = False,
+         spikeHist = None, spikeHistBin = 5, syncLines = False, lw = 2, marker = '|', markerSize=5, popColors = None, figSize = (10,8), dpi = 100, saveData = None, saveFig = None,
+-        showFig = True):
++        showFig = True, altAx=None):
+     '''
+     Raster plot of network cells
+         - include (['all',|'allCells',|'allNetStims',|,120,|,'E1'|,('L2', 56)|,('L5',[4,5,6])]): Cells to include (default: 'allCells')
+@@ -422,8 +422,13 @@ def plotRaster (include = ['allCells'], timeRange = None, maxSpikes = 1e8, order
+         histo = np.histogram(sel['spkt'].tolist(), bins = np.arange(timeRange[0], timeRange[1], spikeHistBin))
+         histoT = histo[1][:-1]+spikeHistBin/2
+         histoCount = histo[0]
++    
+     # Plot spikes
+-    fig,ax1 = plt.subplots(figsize=figSize)
++    if not altAx:
++        fig,ax1 = plt.subplots(figsize=figSize)
++    else:
++        ax1 = altAx
++        spikeHist = False
+     fontsiz = 12
+ 
+     if spikeHist == 'subplot':
+@@ -432,6 +437,8 @@ def plotRaster (include = ['allCells'], timeRange = None, maxSpikes = 1e8, order
+     sel['spkt'] = sel['spkt'].apply(pd.to_numeric)
+     sel.plot.scatter(ax=ax1, x='spkt', y='spkind', lw=lw, s=markerSize, marker=marker, c=sel['spkgidColor'].tolist()) # Create raster
+     ax1.set_xlim(timeRange)
++    ax1.set_xlabel(None)
++    ax1.set_ylabel(None)
+ 
+     # Plot stats
+     gidPops = df['pop'].tolist()
+@@ -459,12 +466,13 @@ def plotRaster (include = ['allCells'], timeRange = None, maxSpikes = 1e8, order
+     if syncLines:
+         for spkt in sel['spkt'].tolist():
+             ax1.plot((spkt, spkt), (0, len(cells)+numNetStims), 'r-', linewidth=0.1)
+-        plt.title('cells=%i syns/cell=%0.1f rate=%0.1f Hz sync=%0.2f' % (numCells,connsPerCell,firingRate,syncMeasure()), fontsize=fontsiz)
++        if not altAx: plt.title('cells=%i syns/cell=%0.1f rate=%0.1f Hz sync=%0.2f' % (numCells,connsPerCell,firingRate,syncMeasure()), fontsize=fontsiz)
+     else:
+-        plt.title('cells=%i syns/cell=%0.1f rate=%0.1f Hz' % (numCells,connsPerCell,firingRate), fontsize=fontsiz)
++        if not altAx: plt.title('cells=%i syns/cell=%0.1f rate=%0.1f Hz' % (numCells,connsPerCell,firingRate), fontsize=fontsiz)
+     # Axis
+-    ax1.set_xlabel('Time (ms)', fontsize=fontsiz)
+-    ax1.set_ylabel(ylabelText, fontsize=fontsiz)
++    if not altAx:
++        ax1.set_xlabel('Time (ms)', fontsize=fontsiz)
++        ax1.set_ylabel(ylabelText, fontsize=fontsiz)
+     ax1.set_xlim(timeRange)
+     ax1.set_ylim(-1, len(cells)+numNetStims+1)
+ 
+@@ -476,10 +484,11 @@ def plotRaster (include = ['allCells'], timeRange = None, maxSpikes = 1e8, order
+         for ipop,popLabel in enumerate(popLabels):
+             label = popLabelRates[ipop] if popRates else popLabel
+             plt.plot(0,0,color=popColors[popLabel],label=label)
+-        plt.legend(fontsize=fontsiz, bbox_to_anchor=(1.04, 1), loc=2, borderaxespad=0.)
+-        maxLabelLen = max([len(l) for l in popLabels])
+-        rightOffset = 0.85 if popRates else 0.9
+-        plt.subplots_adjust(right=(rightOffset-0.012*maxLabelLen))
++            plt.legend(fontsize="x-small")
++        #plt.legend(fontsize=fontsiz, bbox_to_anchor=(1.04, 1), loc=2, borderaxespad=0.)
++        #maxLabelLen = max([len(l) for l in popLabels])
++        #rightOffset = 0.85 if popRates else 0.9
++        #plt.subplots_adjust(right=(rightOffset-0.012*maxLabelLen))
+ 
+     elif labels == 'overlay':
+         ax = plt.gca()
+@@ -515,7 +524,8 @@ def plotRaster (include = ['allCells'], timeRange = None, maxSpikes = 1e8, order
+         ax2.set_ylabel('Spike count', fontsize=fontsiz)
+         ax2.set_xlim(timeRange)
+ 
+-    if orderInverse: plt.gca().invert_yaxis()
++    #if orderInverse: plt.gca().invert_yaxis()
++    if orderInverse: ax1.invert_yaxis()
+ 
+     # save figure data
+     if saveData:
+@@ -535,7 +545,10 @@ def plotRaster (include = ['allCells'], timeRange = None, maxSpikes = 1e8, order
+     # show fig
+     if showFig: _showFigure()
+ 
+-    return fig, {'include': include, 'spkts': spkts, 'spkinds': sel['spkind'].tolist(), 'timeRange': timeRange}
++    if not altAx:
++        return fig, {'include': include, 'spkts': spkts, 'spkinds': sel['spkind'].tolist(), 'timeRange': timeRange}
++    else:
++        return ax1
+ 
+ 
+ # -------------------------------------------------------------------------------------------------------------------
+
+** Committing now
+
 
 
 

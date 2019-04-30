@@ -8782,6 +8782,16 @@ Will do this later.
 Saving rasters works now.  Committing.
 
 
+** Running new batch
+
+v01_batch06
+
+	params['noisePT5'] = [True, False] 
+	params['noisePV5'] = [True, False] 
+
+Committ/push/run.
+
+
 
 
 

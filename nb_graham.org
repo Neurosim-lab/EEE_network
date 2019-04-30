@@ -8694,10 +8694,38 @@ index f0e808c..5433e18 100644
  
  # -------------------------------------------------------------------------------------------------------------------
 
-** Committing now
 
 
 
 
+
+Committing now
+
+
+
+** Running a few batches to explore
+
+Switching back to v01batch# naming strategy.
+
+v01_batch03
+
+	params['EEconv'] = [0.0, 3.0, 6.0] # Default 3.0
+	params['IEconv'] = [0.0, 12.0, 24.0] # Default 12.0
+
+v01_batch04
+
+	params['PT5_exc_noise_amp'] = [0.0, 0.5, 1.0, 2.0] # Default 1.0
+	params['PT5_inh_noise_amp'] = [0.0, 0.5, 1.0, 2.0] # Default 1.0
+
+v01_batch05
+
+	params['PV5_exc_noise_amp'] = [0.0, 0.5, 1.0, 2.0] # Default 1.0
+	params['PV5_inh_noise_amp'] = [0.0, 0.5, 1.0, 2.0] # Default 1.0
+
+Will commit and push to Comet, then run:
+
+	python batch03.py
+	python batch04.py
+	python batch05.py
 
 

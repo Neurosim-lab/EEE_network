@@ -8413,7 +8413,156 @@ That works, but the xlabels are off by a power of ten.
 
 Committing.
 
+Will also want to be able to set the lineWidth (too thick right now).  That's a task for later.
 
+* 2019-04-26 -- Batch analysis
+
+** Weird cell numbers chosen
+
+I set plotTraces as [('PT5_1',0), ('PT5_2', 0), ('PT5_3', 0), ('PT5_4', 0), ('PV5', 0)], which I think
+would come out as 0, 200, 400, 600, and 800, instead I see:
+
+	In [5]: data['_0_0']['simData']['V_dend_8'].keys()                                                       
+	Out[5]: odict_keys(['cell_0', 'cell_216', 'cell_408', 'cell_600'])
+
+	In [6]: data['_0_0']['simData']['V_soma'].keys()                                                         
+	Out[6]: odict_keys(['cell_0', 'cell_216', 'cell_408', 'cell_600', 'cell_816'])
+
+I'll have to look into this.  Later.  Synchrony for now.
+
+** Looking into synchrony measures
+
+Want to compare synchrony among:
+
+1) plateau neurons during plateau
+2) plateau neurons without plateau
+3) non-plateau neurons during plateau
+4) non-plateau neurons without plateau
+
+From netpyne.org/reference:
+
+	analysis.plotSpikeStats (include = [‘allCells’, ‘eachPop’], timeRange = None, graphType=’boxplot’, stats = [‘rate’, ‘isicv’], popColors = [], figSize = (6,8), saveData = None, saveFig = None, showFig = True)
+
+	Plot spike histogram. Optional arguments:
+
+	include: List of data series to include. Note: one line per item, not grouped ([‘all’|,'allCells'|,’allNetStims’|,120|,’L4’|,('L2', 56)|,(‘L5’,[4,5,6])])
+	timeRange: Time range of spikes shown; if None shows all ([start:stop])
+	graphType: Type of graph to use (‘boxplot’)
+	stats: List of types measure to calculate stats over: cell firing rates, interspike interval coefficient of variation (ISI CV), pairwise synchrony, and/or overall synchrony (sync measures calculated using PySpike SPIKE-Synchrony measure) ([‘rate’, |'isicv'| ‘pairsync’ |'sync'|])
+	popColors: Dictionary with color (value) used for each population/key
+	figSize: Size of figure ((width, height))
+	saveData: File name where to save the final data used to generate the figure (None|’fileName’)
+	saveFig: File name where to save the figure (None|’fileName’)
+	showFig: Whether to show the figure or not (True|False)
+	Returns figure handle
+
+
+But actually for now, I think I'll try to run my simpler measures on the data.
+
+** Running Joe's old batch analysis stuff
+
+batch_analysis.plot_num_spikes(batchLabel) works! Although, without specifying, it generates a plot
+for every cell.  I'd like to improve this to generate a combined plot for all cells specified, with 
+mean and stdv bars overlaying gray lines...
+
+
+* 2019-04-29 -- Batch analysis and synchrony
+
+** Try plotting existing analyses
+
+First thing, I want to try using the existing analyses/plots.  It should be possible to run them 
+after the fact.
+
+From the documentation: http://netpyne.org/reference.html#analysis-related-functions
+
+It looks like once I have a `sim` loaded, I can then: sim.analysis.FUNCTIONNAME()
+
+	.plotRaster (include = [‘allCells’], timeRange = None, maxSpikes = 1e8, orderBy = ‘gid’, orderInverse = False, labels = ‘legend’, popRates = False, spikeHist = None, spikeHistBin = 5, syncLines = False, figSize = (10,8), saveData = None, saveFig = None, showFig = True)
+
+	.plotSpikeHist (include = [‘allCells’, ‘eachPop’], timeRange = None, binSize = 5, overlay=True, graphType=’line’, yaxis = ‘rate’, figSize = (10,8), saveData = None, saveFig = None, showFig = True)
+
+	.plotSpikeStats (include = [‘allCells’, ‘eachPop’], timeRange = None, graphType=’boxplot’, stats = [‘rate’, ‘isicv’], popColors = [], figSize = (6,8), saveData = None, saveFig = None, showFig = True)
+
+	.plotConn (include = [‘all’], feature = ‘strength’, orderBy = ‘gid’, figSize = (10,10), groupBy = ‘pop’, saveData = None, saveFig = None, showFig = True)
+
+
+I'll try loading the sim data from one batch sim and then plotting.
+
+Looks like I have to use netpyne's load function (from Salva's analysis code):
+
+	sim.load(dataFolder+simLabel+'.json', instantiate=False)
+
+    # plot param grids
+    fig = sim.analysis.plotTraces(include=[0,1], colors=[[0,0,0], [0,0,0]], oneFigPer= 'trace', overlay=0, figSize=(7,5), timeRange=[0,5000], ylim=[-90, 25], saveFig=False, showFig=0)
+
+This is what I put in dev.py:
+
+	batchdatadir = "data"
+	batchLabel = "bill_batch_05"
+
+	curSim = "_0_0"
+
+	# params, data = batch_utils.load_batch(batchLabel, batchdatadir=batchdatadir)
+
+	sim.load(batchdatadir + '/' + batchLabel + '/' + batchLabel + curSim + '.json', instantiate=False)
+
+	fig = sim.analysis.plotTraces()
+
+And that succesfully plots traces (though not all of them).
+
+The other plotting functions seem to work as well.
+
+** To do now
+
+Synchrony measures
+Pop plotting measures
+Batch plotting existing analyses
+
+
+
+** Batch plotting existing analyses?
+
+What I'd like is to be able to plot any existing analyses in batch format (grid of plots).
+Looking into how to do this.
+
+Transplanting axes from Netpyne figures to batch figure is not going to work well.
+
+Better to adjust Netpyne plotting functions to accept an axis, e.g.:
+
+	def plotRaster(..., altAx=None, ...):
+		
+		if not altAx:
+			new figure and axis
+		else:
+			plot into altAx
+
+Copying my batch_analysis/plot_relation to plot_batch_raster
+
+It's coming along nicely!
+
+file:nb_gif/20190429_201238.png
+
+Committing now.
+
+
+
+
+
+
+
+
+
+
+** Pop plotting measures
+
+Currently I can plot a variety of measures for individual cells.  I want a "master plot" which overlays
+all the individual plots with a population mean and standard deviation bars.
+
+
+
+** Synchrony measures
+
+We want to measure synchrony in pops with and without plateaus.
 
 
 

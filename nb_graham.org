@@ -8928,6 +8928,37 @@ cfg.analysis['plotTraces'] = {'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4'] 's
 
 Commit, push, Comet.
 
+*** Got an error:
+
+co$ python batch07.py
+Note: NeuroML import failed; import/export functions for NeuroML will not be available. 
+  To install the pyNeuroML & libNeuroML Python packages visit: https://www.neuroml.org/getneuroml
+Saving batch to /oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/v01_batch07/v01_batch07_batch.json ... 
+Traceback (most recent call last):
+  File "batch07.py", line 44, in <module>
+    batchRun() 
+  File "batch07.py", line 40, in batchRun
+    b.run()
+  File "/home/lytton/netpyne/netpyne/batch/batch.py", line 232, in run
+    cfgModule = imp.load_source(cfgModuleName, self.cfgFile)
+  File "/home/lytton/anaconda3/lib/python3.7/imp.py", line 171, in load_source
+    module = _load(spec)
+  File "<frozen importlib._bootstrap>", line 696, in _load
+  File "<frozen importlib._bootstrap>", line 677, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 724, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 860, in get_code
+  File "<frozen importlib._bootstrap_external>", line 791, in source_to_code
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "cfg.py", line 117
+    cfg.analysis['plotTraces'] = {'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4'] 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}   
+                                                                                          ^
+SyntaxError: invalid syntax
+
+*** Fixed error
+
+In the future, I'll run `python cfg.py` and `python netParams.py` locally before committing and pushing.
+
+
 
 
 

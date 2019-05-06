@@ -114,7 +114,7 @@ cfg.analysis['plotSpikeHist'] = {'saveFig': saveFig,'showFig': showFig}
 
 #cfg.analysis['plotTraces'] = {'include': [('PT5_1',0), ('PT5_2', 0), ('PT5_3', 0), ('PT5_4', 0), ('PV5', 0)], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}   
 
-cfg.analysis['plotTraces'] = {'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4'] 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}   
+cfg.analysis['plotTraces'] = {'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4'], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}   
 
 
 #cfg.analysis['plot2Dnet'] = {'saveFig': saveFig, 'showFig': showFig}            

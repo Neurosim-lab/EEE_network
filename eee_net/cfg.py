@@ -26,8 +26,8 @@ cfg.hParams.celsius = 32.0
 cfg.hParams.v_init  = -73.7
 
 # Network variables
-cfg.numPT5cells = 800
-cfg.numPV5cells = 200
+cfg.numPT5cells = 8000
+cfg.numPV5cells = 2000
 cfg.sizeY       = 1600
 cfg.sizeX       = 400
 cfg.sizeZ       = 300
@@ -68,7 +68,7 @@ cfg.IEconv = 12.0
 cfg.IIconv = 12.0
 
 # Glutamate stim parameters
-cfg.glutamate         = True
+cfg.glutamate         = False #True
 cfg.glutPops          = ['PT5_1', 'PT5_2']
 
 cfg.synTime           = 200.0
@@ -112,7 +112,9 @@ cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True,'saveFig': 
 
 cfg.analysis['plotSpikeHist'] = {'saveFig': saveFig,'showFig': showFig}
 
-cfg.analysis['plotTraces'] = {'include': [('PT5_1',0), ('PT5_2', 0), ('PT5_3', 0), ('PT5_4', 0), ('PV5', 0)], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}      
+#cfg.analysis['plotTraces'] = {'include': [('PT5_1',0), ('PT5_2', 0), ('PT5_3', 0), ('PT5_4', 0), ('PV5', 0)], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}   
+
+cfg.analysis['plotTraces'] = {'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4'] 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}   
 
 
 #cfg.analysis['plot2Dnet'] = {'saveFig': saveFig, 'showFig': showFig}            
@@ -133,7 +135,7 @@ cfg.IClamp1 = {'pop': cfg.popIClamp1, 'sec': cfg.secIClamp1, 'loc': cfg.locIClam
 
 
 # Common synaptic input
-cfg.addCommonInput1 = True
+cfg.addCommonInput1 = False #True
 cfg.popCommonInput1 = ['PT5_1', 'PT5_3']
 
 cfg.secCommonInput1 = 'soma'
@@ -144,7 +146,7 @@ cfg.numCommonInput1 = 5    # number
 cfg.intCommonInput1 = 20   # interval
 
 
-cfg.addCommonInput2 = True
+cfg.addCommonInput2 = False #True
 cfg.popCommonInput2 = ['PT5_1', 'PT5_3']
 
 cfg.secCommonInput2 = 'soma'

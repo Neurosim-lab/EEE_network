@@ -8729,7 +8729,7 @@ Will commit and push to Comet, then run:
 	python batch05.py
 
 
-* 2019-04-30 -- Batch analysis and synchrony
+* 2019-04-30 -- Batch analysis and synchrony, EEE meeting
 
 ** Moving batch outputs
 
@@ -8790,6 +8790,145 @@ v01_batch06
 	params['noisePV5'] = [True, False] 
 
 Committ/push/run.
+
+
+** EEE Meeting
+
+Agenda:
+https://docs.google.com/document/d/16b0js-DPFVRSmGRo0DB8AiAyoQ0QgxSNS0VKX7snGHA/edit
+
+
+Discussion
+
+SfN abstract
+See last year’s abstract below
+Just submitting for network simulations
+Joe pulls together preliminary abstract today
+Penny can’t attend, Srdjan can’t
+
+Article resubmission
+Declined by J Neurosci
+Went over changes from reviewers
+Will submit elsewhere (Nature Communications?)
+Still debating Nature or Science
+
+Simulations
+Batch analysis and figures
+Joe’s batch_utils.py and batch_analysis.py now allow plotting of voltage traces and raster plots
+Requires minor changes to Netpyne (plotting funcs must accept axis)
+Sample code:
+params, data = batch_utils.load_batch(batchLabel, batchdatadir)
+batch = (batchLabel, params, data)
+batch_analysis.plot_batch_raster(batch, timeRange=[100, 1000])
+batch_analysis.plot_vtraces(batch, timerange=[100, 1000])
+Joe is now working on synchrony measures, histograms, various spike measures
+Will apply measurements to plateau and non-plateau portions of data
+Connectivity
+Convergence has less effect than Joe expected (see Fig 1 and 2 below)
+Is convergence the best way to set connectivity?
+Joe wants to analyze output connectivity from convergence batches
+Noise 
+Noise to PT cells
+Noise to PV cells
+Noise on/off altogether
+Others items?
+Srdjan concerned about size of soma plateau
+With noise on, it’s not as clear
+With noise off, we see 20 mV somatic 
+Maybe need to explore noise to find balance
+Explore synaptic strengths
+Want a cleaner plateau
+What do traces look like in vivo?
+Which matches most closely?
+Bill: not much available?
+Bill: explore long sims without stimulation
+Record soma from all cells
+Search for plateaus
+Don can help dumping data
+Try with 10,000 cells
+Need to balance EI
+Need to play with noise
+Start with short sims
+Then go into seconds range
+
+
+
+Other items?
+
+
+Action items for next week
+
+Explore reducing noise to improve plateaus
+Explore connectivity (measure and plot)
+Explore synaptic strengths 
+Run bigger, longer sims without stim (look for plateau emergence)
+SfN abstracts due May 2
+
+
+
+* 2019-05-03 -- SfN abstract
+
+** 2018 SfN abstract
+
+https://docs.google.com/document/d/1bxVlVp5ykAzpdzXNkHsPCV7fPs8I9WAygM7inXWenJo/edit
+
+
+** 2019 SfN abstract
+
+https://docs.google.com/document/d/1OX31jQmSIdxC3oC6L0mkAI4mlYzQtKuG2OfEaLFUrdc/edit
+
+
+Modeling network effects of dendritic plateau potentials in cortical pyramidal neurons
+
+Joe W Graham1, Peng P Gao2, Salvador Dura-Bernal1, Subhashini Sivagnanam1,3, Michael L Hines4, Srdjan D Antic2, William W Lytton1,5
+
+1 Physiology & Pharmacology Dept., SUNY Downstate, Brooklyn NY 11203, USA
+2 Neuroscience Dept., Univ. of Connecticut Health, Farmington CT 06030, USA
+3 San Diego SuperComputer Center, UCSD, La Jolla CA 92093, USA 
+4 Neuroscience Dept., Yale School of Medicine, New Haven CT 06510, USA
+5 Neurology Dept., Kings County Hospital Center, Brooklyn NY 11203, USA
+
+It has been demonstrated in brain slices that releasing glutamate near the basal dendrites of cortical pyramidal neurons can generate dendritic plateau potentials—long-lasting depolarizations of the dendritic membrane mediated by activation of synaptic NMDA and AMPA receptors and extrasynaptic NMDA receptors.  Depending on the location and strength of the glutamate stimulus, as well as on local dendritic morphology and activity, the depolarization from dendritic plateaus can spread into the soma, reducing membrane time constant and bringing the cell closer to the spiking threshold.  Using data from voltage-sensitive dye imaging in dendrites and whole-cell patch measurements in somata of prefrontal cortex pyramidal neurons from rat brain slices, we developed a morphologically-detailed cortical pyramidal neuron model with active dendrites that reproduced experimental observations: a threshold for activation of the plateau, saturation of plateau amplitude but increasing plateau duration with increasing glutamate application, depolarization of the soma by approximately 20 mV, and back-propagating action potential amplitude attenuation and time delay.  For use in network modeling, this cell model was then simplified morphologically while maintaining overall electrophysiological and plateau behavior.  Network simulations demonstrated increased synchrony between cells during induced dendritic plateaus. These results support our hypothesis that dendritic plateaus provide a 200-500 ms time window during which a neuron is particularly excitable. At the network level, this predicts that sets of cells with simultaneous plateaus would provide an activated ensemble of responsive cells with increased firing. Synchronously spiking subsets of these cells would then create an embedded ensemble. This embedded ensemble would demonstrate a temporal code, at the same time as the activated (embedded) ensemble showed rate coding.  This line of research may help to understand the implications of dendritic plateaus at the cellular and network level, and may lead to a better understanding of ensemble synchronization and multimodal cortical information processing. 
+
+
+
+* 2019-05-06 -- Batch connectivity analyses, big simulation
+
+** Big simulation
+
+I'm going to set up to run a 10,000 cell network model
+
+8,000 PT5
+2,000 PV5
+
+Run at a few connectivity strengths.
+
+Saving it as batch07.py
+
+Connectivity to vary:
+
+	params['EEconv'] = [0.0, 1.5, 3.0, 4.5, 6.0] # Default 3.0
+	params['IEconv'] = [0.0, 6.0, 12.0, 18.0, 24.0] # Default 12.0
+
+Asking for 10 nodes, with a run time of 2:00:00
+
+cfg.duration = 200
+
+cfg.numPT5cells = 8000
+cfg.numPV5cells = 2000
+
+cfg.glutamate         = False #True
+
+cfg.addCommonInput1 = False #True
+cfg.addCommonInput2 = False #True
+
+Setting to record from all cells, so we can look for plateaus:
+
+cfg.analysis['plotTraces'] = {'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4'] 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}
+
+Commit, push, Comet.
+
+
 
 
 

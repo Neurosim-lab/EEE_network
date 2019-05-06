@@ -17,11 +17,10 @@ def analyze_batch(batchLabel, batchdatadir=batchdatadir):
 	batch_analysis.plot_vtraces(batch, timerange=[100, 1000])
 
 
-analyze_batch('v01_batch03')
-
-analyze_batch('v01_batch04')
-
-analyze_batch('v01_batch05')
+#analyze_batch('v01_batch03')
+#analyze_batch('v01_batch04')
+#analyze_batch('v01_batch05')
+analyze_batch('v01_batch06')
 
 
 

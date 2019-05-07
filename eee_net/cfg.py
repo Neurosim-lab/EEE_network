@@ -7,7 +7,7 @@ saveFig = True
 
 # Simulation options
 cfg = specs.SimConfig()       
-cfg.duration = 2000           
+cfg.duration = 1000           
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
@@ -26,8 +26,8 @@ cfg.hParams.celsius = 32.0
 cfg.hParams.v_init  = -73.7
 
 # Network variables
-cfg.numPT5cells = 8000
-cfg.numPV5cells = 2000
+cfg.numPT5cells = 4000
+cfg.numPV5cells = 1000
 cfg.sizeY       = 1600
 cfg.sizeX       = 400
 cfg.sizeZ       = 300

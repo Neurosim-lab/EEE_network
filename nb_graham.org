@@ -9048,8 +9048,30 @@ This is what's in the error file:
 	[comet-27-21:19561] [ 5] /lib64/libc.so.6(clone+0x6d)[0x3948ce8c4d]
 	[comet-27-21:19561] *** End of error message ***
 
+I'm going to try it again as batch08
 
 
+** Big sim take two
+
+Commit, push, Comet.
+
+python batch08.py
+
+
+
+* 2019-05-07 -- Batch connectivity analyses, big simulation
+
+** Big sim
+
+Unfortunately I got timeout errors, as some sims lasted longer than the 3 hours I requested.
+
+But not all timed out... 
+
+I am going to start batch09.py and only have 5000 cells (4000 PT and 1000 PV)
+
+Reducing time of sim to 1000 ms
+
+Commit, push, Comet.
 
 
 

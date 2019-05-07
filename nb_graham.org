@@ -8958,10 +8958,95 @@ SyntaxError: invalid syntax
 
 In the future, I'll run `python cfg.py` and `python netParams.py` locally before committing and pushing.
 
+Cool. Some are already running.
+
+*** Comet jobs
+
+co$ sq
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+          23195631   compute v01_batc jwgraham PD       0:00     10 (Resources)
+          23195632   compute v01_batc jwgraham PD       0:00     10 (Priority)
+          23195633   compute v01_batc jwgraham PD       0:00     10 (Resources)
+          23195634   compute v01_batc jwgraham PD       0:00     10 (Resources)
+          23195635   compute v01_batc jwgraham PD       0:00     10 (Resources)
+          23195636   compute v01_batc jwgraham PD       0:00     10 (Resources)
+          23195637   compute v01_batc jwgraham PD       0:00     10 (Resources)
+          23195638   compute v01_batc jwgraham PD       0:00     10 (Resources)
+          23195639   compute v01_batc jwgraham PD       0:00     10 (Resources)
+          23195640   compute v01_batc jwgraham PD       0:00     10 (Resources)
+          23195641   compute v01_batc jwgraham PD       0:00     10 (Resources)
+          23195642   compute v01_batc jwgraham PD       0:00     10 (Resources)
+          23195643   compute v01_batc jwgraham PD       0:00     10 (Resources)
+          23195644   compute v01_batc jwgraham PD       0:00     10 (Resources)
+          23195645   compute v01_batc jwgraham PD       0:00     10 (Resources)
+          23195627   compute v01_batc jwgraham  R       6:07     10 comet-22-[06-10,26-30]
+          23195625   compute v01_batc jwgraham  R       8:07     10 comet-15-[28,52-54,56],comet-23-[35,37,39-41]
+          23195626   compute v01_batc jwgraham  R       8:07     10 comet-02-[52,54],comet-14-24,comet-17-50,comet-19-32,comet-26-69,comet-27-[39-40,65-66]
+          23195622   compute v01_batc jwgraham  R      12:07     10 comet-27-[29-38]
 
 
+** Connectivity analysis
+
+Since we're scaling up, we'll need to adjust connectivity.  First to measure it.
+
+For that we'll need to add an alternate axis input (altAx) into the Netpyne connectivity
+plotting code, like I did for plotRaster
+
+Tomorrow at the EEE meeting I'll talk to Salva about how/if to incorporate these batch 
+plots into Netpyne.
+
+Working in plotConn in:
+
+/Users/graham/Applications/netpyne/netpyne/analysis/network.py
+
+Before starting, I'll look at updating Netpyne.
+
+error: Your local changes to the following files would be overwritten by merge:
+	netpyne/analysis/spikes.py
+Please commit your changes or stash them before you merge.
+Aborting
+
+Ugh. I saved a copy of spikes.py to my Desktop so I can reimplement the altAx stuff once
+I get Netpyne properly updated.
+
+https://support.beanstalkapp.com/article/1004-how-do-i-undo-things-in-git#1
+
+        git checkout -- path/to/the/file.txt
+
+git checkout -- netpyne/analysis/spikes.py
+git pull
+
+Okay, that worked cleanly now. Now to update spikes.py and the network.py
+
+Updated spikes.py attempting to plot batch rasters.
 
 
+** Big sim
+
+Getting enormous error files.  This is in a run file:
+
+	--------------------------------------------------------------------------
+	orterun detected that one or more processes exited with non-zero status, thus causing
+	the job to be terminated. The first process to do so was:
+
+	  Process name: [[44793,1],232]
+	  Exit code:    255
+	--------------------------------------------------------------------------
+
+
+This is what's in the error file:
+
+	[comet-27-21:19561] *** Process received signal ***
+	[comet-27-21:19561] Signal: Segmentation fault (11)
+	[comet-27-21:19561] Signal code:  (0)
+	[comet-27-21:19561] Failing at address: (nil)
+	[comet-27-21:19561] [ 0] /lib64/libc.so.6[0x3948c32570]
+	[comet-27-21:19561] [ 1] /opt/openmpi/gnu/ib/lib/libmpi.so.1(+0x113a5e)[0x2b79790d9a5e]
+	[comet-27-21:19561] [ 2] /opt/openmpi/gnu/ib/lib/libmpi.so.1(+0x113cbc)[0x2b79790d9cbc]
+	[comet-27-21:19561] [ 3] /opt/openmpi/gnu/ib/lib/libmpi.so.1(+0x10b488)[0x2b79790d1488]
+	[comet-27-21:19561] [ 4] /lib64/libpthread.so.0[0x3948807aa1]
+	[comet-27-21:19561] [ 5] /lib64/libc.so.6(clone+0x6d)[0x3948ce8c4d]
+	[comet-27-21:19561] *** End of error message ***
 
 
 

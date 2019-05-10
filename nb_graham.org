@@ -9193,6 +9193,51 @@ Will now always use 'batch.py' instead of new files each time.  Will just update
 *** Committing now to test.
 
 
+** Testing locally
+
+Temp setup:
+
+	cd
+	mkdir temp
+	cd temp
+	git clone https://github.com/Neurosim-lab/EEE_network.git
+	cd EEE_network/mod ; nrnivmodl
+	cd ../eee_net ; ln -s "../mod/x86_64" x86_64
+
+That worked.
+
+Trying single sim:
+
+	./runsim 4
+
+That worked.
+
+Trying batch sim:
+
+Changing runType to mpi_bulletin.
+
+	./runbatch 4
+
+Error: Could not create batch_data/v01_batch10_local
+
+Adding this to batch.py:
+
+		if not os.path.isdir('batch_data'):
+			os.mkdir('batch_data')
+
+Trying again.  Works now.
+
+
+** Testing on Neurosim
+
+Cranking up number of cells from 10 to 100.
+
+
+
+
+
+
+
 
 
 

@@ -3,7 +3,7 @@ from netpyne.batch import Batch
 import os
 
 runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
-batchLabel = 'v01_batch10_local'
+batchLabel = 'v01_batch10_neurosim'
 
 def batchRun():
 	# Create variable of type ordered dictionary (NetPyNE's customized version) 

@@ -26,8 +26,8 @@ cfg.hParams.celsius = 32.0
 cfg.hParams.v_init  = -73.7
 
 # Network variables
-cfg.numPT5cells = 8
-cfg.numPV5cells = 2
+cfg.numPT5cells = 80
+cfg.numPV5cells = 20
 cfg.sizeY       = 1600
 cfg.sizeX       = 400
 cfg.sizeZ       = 300

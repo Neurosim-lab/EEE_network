@@ -3,6 +3,7 @@ from netpyne.batch import Batch
 import os
 
 runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
+#runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
 batchLabel = 'v01_batch10_comet'
 
 def batchRun():

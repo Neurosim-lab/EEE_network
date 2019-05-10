@@ -9293,7 +9293,7 @@ Will test two on Comet with 4 x 24 cores
 	joe [11:26 AM]
 	Perfect, thanks.
 
-Testing a single sim.
+*** Testing a single sim.
 
 Beefing it up to 1000 cells.
 
@@ -9313,15 +9313,230 @@ Updating `runsim_comet`
 	cd /home/jwgraham/EEE_network/eee_net/
 	ibrun -np 4 nrniv -python -mpi init.py
 
+Commit, push, Comet.
+
+	mkdir temp ; cd temp ; git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network/mod ; nrnivmodl ; cd ../eee_net ; ln -s "../mod/x86_64" x86_64
+
+	co$ sbatch runsim_comet
+	Submitted batch job 23263730
+	co$
+	co$ squeue -u jwgraham
+	             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+	          23263730   compute eee_net_ jwgraham PD       0:00      4 (Priority)
+
+*** Testing a batch of sims
+
+python batch.py
+
+	co$ sq
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+          23263747   compute v01_batc jwgraham PD       0:00      4 (None)
+          23263749   compute v01_batc jwgraham PD       0:00      4 (None)
+          23263750   compute v01_batc jwgraham PD       0:00      4 (None)
+          23263751   compute v01_batc jwgraham PD       0:00      4 (None)
+          23263752   compute v01_batc jwgraham PD       0:00      4 (None)
+          23263754   compute v01_batc jwgraham PD       0:00      4 (None)
+          23263755   compute v01_batc jwgraham PD       0:00      4 (None)
+          23263757   compute v01_batc jwgraham PD       0:00      4 (None)
+          23263758   compute v01_batc jwgraham PD       0:00      4 (None)
+          23263730   compute eee_net_ jwgraham  R       2:26      4 comet-12-51,comet-14-[69-71]
+
+
+** Single sim results
+
+eee_net_01_comet Ended, Run time 00:23:08, COMPLETED, ExitCode 0
+
+*** .run file
+
+	co$ cat eee_net_01_comet.run
+	numprocs=4
+	Note: NeuroML import failed; import/export functions for NeuroML will not be available. 
+	  To install the pyNeuroML & libNeuroML Python packages visit: https://www.neuroml.org/getneuroml
+
+	Reading command line arguments using syntax: python file.py [simConfig=filepath] [netParams=filepath]
+
+	Reading command line arguments using syntax: python file.py [simConfig=filepath] [netParams=filepath]
+
+	Reading command line arguments using syntax: python file.py [simConfig=filepath] [netParams=filepath]
+
+	Reading command line arguments using syntax: python file.py [simConfig=filepath] [netParams=filepath]
+	Balancing each compartment to -73 mV
+	Balancing each compartment to -73 mV
+	Balancing each compartment to -73 mV
+	Balancing each compartment to -73 mV
+
+	Creating network of 5 cell populations on 4 hosts...
+	  Number of cells on node 0: 1250 
+	  Number of cells on node 3: 1250 
+	  Number of cells on node 2: 1250 
+	  Done; cell creation time = 4.82 s.
+	Making connections...
+	  Number of cells on node 1: 1250 
+	  Number of connections on node 0: 30000 
+	  Number of synaptic contacts on node 0: 54000 
+	  Number of connections on node 1: 30000 
+	  Number of synaptic contacts on node 1: 54000 
+	  Number of connections on node 3: 30000 
+	  Number of synaptic contacts on node 3: 54000 
+	  Done; cell connection time = 5.15 s.
+	  Number of connections on node 2: 30000 
+	  Number of synaptic contacts on node 2: 54000 
+	  Number of stims on node 1: 0 
+	  Number of stims on node 0: 0 
+	  Done; cell stims creation time = 0.00 s.
+	  Number of stims on node 2: 0 
+	  Number of stims on node 3: 0 
+	Recording 2000 traces of 2 types on node 2
+	Recording 2000 traces of 2 types on node 3
+	Recording 2000 traces of 2 types on node 0
+	Recording 2000 traces of 2 types on node 1
+
+	Running simulation for 1000 ms...
+	  Done; run time = 1336.48 s; real-time ratio: 0.00.
+
+	Gathering data...
+	  Done; gather time = 1.36 s.
+
+	Analyzing...
+	  Cells: 5000
+	  Connections: 0 (0.00 per cell)
+	  Spikes: 39347 (7.87 Hz)
+	  Simulated time: 1.0 s; 4 workers
+	  Run time: 1336.48 s
+	--------------------------------------------------------------------------
+	An MPI process has executed an operation involving a call to the
+	"fork()" system call to create a child process.  Open MPI is currently
+	operating in a condition that could result in memory corruption or
+	other system errors; your MPI job may hang, crash, or produce silent
+	data corruption.  The use of fork() (or system() or other calls that
+	create child processes) is strongly discouraged.  
+
+	The process that invoked fork was:
+
+	  Local host:          comet-12-51 (PID 8292)
+	  MPI_COMM_WORLD rank: 0
+
+	If you are *absolutely sure* that your application will successfully
+	and correctly survive a call to fork(), you may disable this warning
+	by setting the mpi_warn_on_fork MCA parameter to 0.
+	--------------------------------------------------------------------------
+	Saving output as data/eee_net.json  ... 
+	Finished saving!
+	  Done; saving time = 19.15 s.
+	Plotting raster...
+	-------------------------------------------------------
+	Primary job  terminated normally, but 1 process returned
+	a non-zero exit code.. Per user-direction, the job has been aborted.
+	-------------------------------------------------------
+	--------------------------------------------------------------------------
+	orterun detected that one or more processes exited with non-zero status, thus causing
+	the job to be terminated. The first process to do so was:
+
+	  Process name: [[37865,1],0]
+	  Exit code:    1
+	--------------------------------------------------------------------------
+
+*** .err file
+
+	co$ cat eee_net_01_comet.err
+	Unloading compiler-dependent module gsl/2.1
+	Unloading compiler-dependent module openmpi_ib/1.8.4
+	NEURON -- VERSION 7.7.0-46-ga3a462a master (a3a462a) 2019-04-09
+	Duke, Yale, and the BlueBrain Project -- Copyright 1984-2018
+	See http://neuron.yale.edu/neuron/credits
+
+	Additional mechanisms from files
+	 ampa.mod Cad.mod CaDynamics_E2.mod cadyn.mod Ca_HVA.mod ca.mod canin.mod CaT.mod gabaa.mod gabab.mod Gfluctp.mod glutamate.mod hin.mod h_kole.mod h_migliore.mod Ih.mod IKsin.mod IL.mod kadist.mod kapin.mod kaprox.mod kBK.mod kctin.mod kdrin.mod kv.mod MyExp2SynBB.mod nafx.mod na.mod NMDAeee.mod NMDAmajor.mod NMDA.mod PlateauConductance.mod SK_E2.mod vecstim.mod vmax.mod
+	>>> 
+	>>> >>> 
+
+	QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-jwgraham'
+	qt.qpa.screen: QXcbConnection: Could not connect to display localhost:52.0
+	Could not connect to any X display.
+
+*** discussion
+
+The .run and .err files ended up right in the eee_net dir.  
+
+Looking at the .run file, it seems everything ran fine until the end (where there is the 
+weird fork error I've seen before and some process exited non-zero).
+
+But I can't find the output file.  It says: "Saving output as data/eee_net.json" but there is no 
+"data" dir.  I wonder if it didn't crash somehow because of the lack of the data dir...
+
+I will make a data dir on Comet and re-run the sim.
+
+	co$ sbatch runsim_comet
+	Submitted batch job 23264271
+	co$ sq
+	             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+	          23264271   compute eee_net_ jwgraham PD       0:00      4 (None)
+	          23263757   compute v01_batc jwgraham  R      51:52      4 comet-12-[47,49],comet-21-[26,30]
+
+Oddly, one of the batch sims is still running.
+
+
+** New single sim results
+
+eee_net_01_comet Ended, Run time 00:23:30, COMPLETED, ExitCode 0
+
+Ugh, I ran it in the temp dir.  
+
+*** From the .run file
+
+Analyzing...
+  Cells: 5000
+  Connections: 0 (0.00 per cell)
+  Spikes: 39903 (7.98 Hz)
+  Simulated time: 1.0 s; 4 workers
+  Run time: 1373.25 s
+--------------------------------------------------------------------------
+An MPI process has executed an operation involving a call to the
+"fork()" system call to create a child process.  Open MPI is currently
+operating in a condition that could result in memory corruption or
+other system errors; your MPI job may hang, crash, or produce silent
+data corruption.  The use of fork() (or system() or other calls that
+create child processes) is strongly discouraged.  
+
+The process that invoked fork was:
+
+  Local host:          comet-04-43 (PID 6045)
+  MPI_COMM_WORLD rank: 0
+
+If you are *absolutely sure* that your application will successfully
+and correctly survive a call to fork(), you may disable this warning
+by setting the mpi_warn_on_fork MCA parameter to 0.
+--------------------------------------------------------------------------
+Saving output as data/eee_net.json  ... 
+Finished saving!
+  Done; saving time = 18.57 s.
+Plotting raster...
+-------------------------------------------------------
+Primary job  terminated normally, but 1 process returned
+a non-zero exit code.. Per user-direction, the job has been aborted.
+-------------------------------------------------------
+--------------------------------------------------------------------------
+orterun detected that one or more processes exited with non-zero status, thus causing
+the job to be terminated. The first process to do so was:
+
+  Process name: [[13087,1],0]
+  Exit code:    1
+--------------------------------------------------------------------------
+
+
+*** Discussion
+
+Still no data/output...
 
 
 
+** Running single sim locally 
 
+In a temp dir, just to see what happens.
 
+Reducing cells to 100.  Commit, push, then:
 
-
-
-
+cd ; mkdir temp ; cd temp ; git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network/mod ; nrnivmodl ; cd ../eee_net ; ln -s "../mod/x86_64" x86_64 ; ./runsim 4
 
 
 

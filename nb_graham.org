@@ -9538,6 +9538,14 @@ Reducing cells to 100.  Commit, push, then:
 
 cd ; mkdir temp ; cd temp ; git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network/mod ; nrnivmodl ; cd ../eee_net ; ln -s "../mod/x86_64" x86_64 ; ./runsim 4
 
+So it worked locally.  A data dir was created and filled with data and figs.
+
+I am going to set cfg.saveFigs to False.
+
+Trying to run on zn.  Commit push and then the one-liner above.
+
+
+
 
 
 

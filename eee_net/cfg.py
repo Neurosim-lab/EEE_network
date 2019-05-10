@@ -3,7 +3,7 @@ import numpy as np
 
 # Show figures? Save figures?
 showFig = False
-saveFig = True
+saveFig = False
 
 # Simulation options
 cfg = specs.SimConfig()       

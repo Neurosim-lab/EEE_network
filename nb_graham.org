@@ -9232,7 +9232,86 @@ Trying again.  Works now.
 
 Cranking up number of cells from 10 to 100.
 
+	sshzn
+	mkdir temp
+	cd temp
+	git clone https://github.com/Neurosim-lab/EEE_network.git
+	cd EEE_network/mod ; nrnivmodl
+	cd ../eee_net ; ln -s "../mod/x86_64" x86_64
+	./runsim 20
 
+Apparently there is no pandas on zn.
+
+	joe [11:27 AM]
+	Our EEE code is still crashing on Neurosim machines because they don’t have `pandas` installed.  Could someone install Pandas? Or tell me how to do it? :sweat_smile:
+
+	joe [11:28 AM]
+	New README for EEE_network: https://github.com/Neurosim-lab/EEE_network/blob/master/README.md
+	GitHub
+	Neurosim-lab/EEE_network
+	Contribute to Neurosim-lab/EEE_network development by creating an account on GitHub.
+
+	billl [11:28 AM]
+	thx
+
+	joe [11:28 AM]
+	It works on my local machine, crashes on `my` and `no` for lack of Pandas.
+	About to make sure it works on Comet, and then I’ll beef it up and share.
+
+	billl [11:29 AM]
+	how about seg faults?
+
+	joe [11:29 AM]
+	About to run on Comet, and I’ll let you know.  No seg faults locally.
+
+	billl [11:30 AM]
+	I'll install pandas. thought came with netpyne
+
+	salvadord [11:30 AM]
+	was trying to install but at dmc and can’t ssh into machines from here
+
+	billl [11:30 AM]
+	ironic
+
+	salvadord [11:30 AM]
+	comes with netpyne if pip install, but I git cloned to have dev
+
+	billl [11:31 AM]
+	I've been doing both
+
+
+** Testing on Comet
+
+Will test two on Comet with 4 x 24 cores
+
+	joe [11:25 AM]
+	Question for @salvadord: you were saying that running with <96 cores results in much less crashing.  I was wondering how you divide that between `nodes` and `coresPerNode`?
+
+	salvadord [11:25 AM]
+	4*24
+
+	joe [11:26 AM]
+	Perfect, thanks.
+
+Testing a single sim.
+
+Beefing it up to 1000 cells.
+
+Updating `runsim_comet`
+
+	#!/bin/bash 
+	#SBATCH --job-name=eee_net_01_comet
+	#SBATCH -A shs100
+	#SBATCH -t 2:00:00
+	#SBATCH --nodes=4
+	#SBATCH --ntasks-per-node=24
+	#SBATCH -o eee_net_01_comet.run
+	#SBATCH -e eee_net_01_comet.err
+	#SBATCH --mail-user=joe.w.graham@gmail.com
+	#SBATCH --mail-type=end
+	source ~/.bashrc
+	cd /home/jwgraham/EEE_network/eee_net/
+	ibrun -np 4 nrniv -python -mpi init.py
 
 
 

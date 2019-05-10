@@ -2,8 +2,8 @@ from netpyne import specs
 from netpyne.batch import Batch 
 import os
 
-runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
-batchLabel = 'v01_batch10_neurosim'
+runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
+batchLabel = 'v01_batch10_comet'
 
 def batchRun():
 	# Create variable of type ordered dictionary (NetPyNE's customized version) 
@@ -29,8 +29,8 @@ def batchRun():
 		b.saveFolder = '/oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/' + b.batchLabel
 		b.runCfg = {'type': 'hpc_slurm',
 					'allocation': 'shs100', 
-					'walltime': '03:00:00',
-					'nodes': 10,
+					'walltime': '02:00:00',
+					'nodes': 4,
 					'coresPerNode': 24,
 					'email': 'joe.w.graham@gmail.com',
 					'folder': '/home/jwgraham/EEE_network/eee_net/',

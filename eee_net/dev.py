@@ -13,13 +13,16 @@ def analyze_batch(batchLabel, batchdatadir=batchdatadir):
 	batch = (batchLabel, params, data)
 
 
-	batch_analysis.plot_batch_raster(batch, timeRange=[100, 1000], markerSize=0.5, orderInverse=False)
+	#batch_analysis.plot_batch_raster(batch, timeRange=[100, 1000], markerSize=0.5, orderInverse=False)
+	
 	#batch_analysis.plot_vtraces(batch, timerange=[100, 1000])
 
+	batch_analysis.plot_batch_conn(batch)
 
-#analyze_batch('v01_batch03')
+
+analyze_batch('v01_batch03')
 #analyze_batch('v01_batch04')
-analyze_batch('v01_batch05')
+#analyze_batch('v01_batch05')
 #analyze_batch('v01_batch06')
 
 

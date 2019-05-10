@@ -7,11 +7,11 @@ saveFig = True
 
 # Simulation options
 cfg = specs.SimConfig()       
-cfg.duration = 1000           
+cfg.duration = 1000          
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net'
+cfg.simLabel = 'eee_net_01'
 cfg.saveFolder = 'data'
 cfg.savePickle = False
 cfg.saveJson = True
@@ -26,8 +26,8 @@ cfg.hParams.celsius = 32.0
 cfg.hParams.v_init  = -73.7
 
 # Network variables
-cfg.numPT5cells = 4000
-cfg.numPV5cells = 1000
+cfg.numPT5cells = 8
+cfg.numPV5cells = 2
 cfg.sizeY       = 1600
 cfg.sizeX       = 400
 cfg.sizeZ       = 300
@@ -89,16 +89,8 @@ cfg.glutPuffExSyn = {'loc': list(np.linspace(cfg.synLocMiddle-cfg.synLocRadius, 
 
 # Recording options
 cfg.recordTraces = {'V_soma': {'sec':'soma', 'loc':0.5, 'var':'v'}} 
-#cfg.recordTraces['V_dend_0'] = {'sec':'basal_0', 'loc':0.5, 'var':'v'}
-#cfg.recordTraces['V_dend_1'] = {'sec':'basal_1', 'loc':0.5, 'var':'v'}
-#cfg.recordTraces['V_dend_2'] = {'sec':'basal_2', 'loc':0.5, 'var':'v'}
-#cfg.recordTraces['V_dend_3'] = {'sec':'basal_3', 'loc':0.5, 'var':'v'}
-#cfg.recordTraces['V_dend_4'] = {'sec':'basal_4', 'loc':0.5, 'var':'v'}
-#cfg.recordTraces['V_dend_5'] = {'sec':'basal_5', 'loc':0.5, 'var':'v'}
-#cfg.recordTraces['V_dend_6'] = {'sec':'basal_6', 'loc':0.5, 'var':'v'}
-#cfg.recordTraces['V_dend_7'] = {'sec':'basal_7', 'loc':0.5, 'var':'v'}
-cfg.recordTraces['V_dend_8'] = {'sec':'basal_8', 'loc':0.5, 'var':'v'}
-#cfg.recordTraces['V_dend_9'] = {'sec':'basal_9', 'loc':0.5, 'var':'v'}
+#cfg.recordTraces['V_dend_8'] = {'sec':'basal_8', 'loc':0.5, 'var':'v'}
+
 
 #cfg.recordCells = {'include': [('PT5_1', 0), ('PT5_2', 0), ('PT5_3', 0), ('PT5_4', 0), ('PV5', 0)]}
 #cfg.recordCells = [0, 200, 400, 600, 800]

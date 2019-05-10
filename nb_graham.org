@@ -9073,6 +9073,140 @@ Reducing time of sim to 1000 ms
 
 Commit, push, Comet.
 
+That should be running.  Back to getting connectivity analysis out.
+
+** Connectivity analysis
+
+Want to be able to see connectivity for increasing network sizes
+
+I want a batch figure like the batch rasters.  Working in Netpyne
+
+	/Users/graham/Applications/netpyne/netpyne/analysis/network.py
+
+in plotConn to add altAx and in my batch_analysis.py to add plot_batch_conn
+
+
+** EEE meeting
+
+https://docs.google.com/document/d/1UMmMwbuBY3mbCfPKWA1GIKO3TjbKi8HAonNz5OUo1k4/edit?usp=sharing
+
+Action items for next week
+
+Report any new findings in Na channel
+People (Joe) look into sims not completing -- try to reproduce
+Bill gets NEURON onto Stampede
+Try running sims on Stampede
+Joe tries running on < 96 cores to see if that helps
+Hines suggests repo clone with README explaining how to do sim
+Hines would like to run big model (M1) on BBP machine at large scale
+Joe updates EEE README and sends Mike Hines the repo to run on BBP
+Bill and Mike work together to get stuff installed on Marconi
+Joe does Netpyne pull request for “altAx” batch plotting
+
+
+* 2019-05-09 -- Plotting batch figures in Netpyne 
+
+Working on adding altAx to Netpyne plots so that multiple plots can be combined into a batch plot.
+
+
+
+* 2019-05-10 -- Working on batches crashing
+
+
+** Preparing big sim and README
+
+Bill and Mike Hines want to try running the code and seeing if they get the crashes also.
+
+Fixing up README
+
+
+Adding a runType option to batch file so that it can be used for either hpc_slurm or 
+mpi_bulletin.
+
+	runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
+
+		if runType == 'hpc_slurm':
+			b.runCfg = {'type': 'hpc_slurm',
+						'allocation': 'shs100', 
+						'walltime': '03:00:00',
+						'nodes': 10,
+						'coresPerNode': 24,
+						'email': 'joe.w.graham@gmail.com',
+						'folder': '/home/jwgraham/EEE_network/eee_net/',
+						'script': 'init.py', 
+						'mpiCommand': 'ibrun',
+						'skip': True}
+		elif runType == 'mpi_bulletin':
+			b.runCfg = {'type': 'mpi_bulletin', 
+						'script': 'init.py', 
+						'skip': True}
+
+
+Will now always use 'batch.py' instead of new files each time.  Will just update batchLabel.
+
+*** New README
+
+# EEE_network
+
+## Prepare for simulations
+
+1. Clone the repo (`git clone https://github.com/Neurosim-lab/EEE_network.git`)
+2. Compile the mod files (`cd EEE_network/mod ; nrnivmodl`)
+3. Symlink the mod dir (`cd ../eee_net ; ln -s "../mod/x86_64" x86_64`)
+
+## Running simulations using MPI
+
+### To run a single sim using MPI 
+
+1. Change to the 'eee_net' directory (`cd EEE_network/eee_net`)
+2. Two options to run sim:
+	1. Execute `mpiexec -np #processes nrniv -python -mpi init.py` after replacing #processes with the number of processes you want to use (e.g. `mpiexec -np 4 nrniv -python -mpi init.py`)
+	2. Execute `runsim #processes` (e.g. `./runsim 4`)
+
+### To run a batch of sims using MPI 
+
+1. Change to the 'eee_net' directory (`cd EEE_network/eee_net`)
+2. Open 'batch.py'
+3. Ensure `runType = mpi_bulletin`
+4. Update the `batchLabel`
+5. Two options to run batch:
+	1. Execute `mpiexec -np #processes nrniv -python -mpi batch.py` (e.g. `mpiexec -np 4 nrniv -python -mpi batch.py`)
+	2. Execute `runbatch #processes` (e.g. `./runbatch 4`)
+
+## Running simulations on Comet
+
+### To run a single sim on Comet
+
+1. Change to the 'eee_net' directory (`cd EEE_network/eee_net`)
+2. Modify the file `runsim_comet` to your settings
+3. Execute `sbatch runsim_comet`
+
+### To run a batch of simulations on Comet
+
+1. Change to the 'eee_net' directory (`cd EEE_network/eee_net`)
+2. Open 'batch.py'
+3. Ensure `runType = hpc_slurm`
+4. Update the `batchLabel`
+5. Execute `python batch.py`
+
+
+*** Committing now to test.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

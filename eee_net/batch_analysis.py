@@ -2105,7 +2105,169 @@ def plot_batch_raster(batchname, batchdatadir='data', swapaxes=False, param_labe
         return fig
 
 
+def plot_batch_conn(batchname, batchdatadir='data', swapaxes=False, param_labels=None, title=None, xlabel=None, ylabel=None, includePre = ['all'], includePost = ['all'], feature = 'strength', orderBy = 'gid', figSize = (10,10), groupBy = 'pop', groupByIntervalPre = None, groupByIntervalPost = None, graphType = 'matrix', synOrConn = 'syn', synMech = None, connsFile = None, tagsFile = None, clim = None, fontSize = 12, saveData = None, saveFig = None, showFig = True, save=True, outputdir="batch_figs", filename=None, **kwargs):
+    """Plots raster plots for each parameter combination."""
 
+    if type(batchname) == str:
+        params, data = batch_utils.load_batch(batchname, batchdatadir=batchdatadir)
+    elif type(batchname) == tuple:
+        batchname, params, data = batchname
+    else:
+        raise Exception()
+
+    param_vals = []
+    param_autolabels = []
+
+    for param in params:
+        param_vals.append(param['values'])
+        param_autolabel = param['label']
+        if type(param_autolabel) == list:
+            param_autolabel = param_autolabel[0] + " " + param_autolabel[1]
+        param_autolabels.append(param_autolabel)
+
+    if param_labels is None:
+        param_labels = param_autolabels
+    else:
+        for ind, param_label in enumerate(param_labels):
+            if param_label is None:
+                param_labels[ind] = param_autolabels[ind]     
+
+    if title is None and "autotitle" in kwargs:
+        title = kwargs["autotitle"]
+    if xlabel is None and "autoxlabel" in kwargs:
+        xlabel = kwargs['autoxlabel']
+    if ylabel is None and "autoylabel" in kwargs:
+        ylabel = kwargs['autoylabel']
+
+    if swapaxes:
+        param_vals[0], param_vals[1] = param_vals[1], param_vals[0]
+        param_labels[0], param_labels[1] = param_labels[1], param_labels[0]
+
+    # if fig is None:
+    #     figure = plt.figure(figsize=figSize)
+    #     axes = []
+    figure = plt.figure(figsize=figSize)
+    axes = []
+    
+    rows = len(param_vals[0])
+    cols = len(param_vals[1])
+    
+    toprow = np.arange(1, cols+1, 1)
+    bottomrow = np.arange(rows*cols, rows*cols-cols, -1)
+    leftcolumn = np.arange(1, rows*cols, cols)
+    subplotind = 0
+
+    if "legendlabel" in kwargs:
+        legendlabel = kwargs['legendlabel']
+    else:
+        legendlabel = None
+
+    for p1ind, p1val in enumerate(param_vals[0]):
+
+        for p2ind, p2val in enumerate (param_vals[1]):
+
+            subplotind += 1
+            if subplotind == 1:
+                ax = plt.subplot(rows, cols, subplotind)
+                ax_share = ax
+            else:
+                ax = plt.subplot(rows, cols, subplotind, sharex=ax_share, sharey=ax_share)
+            axes.append(ax)
+
+            if not swapaxes:
+                dataKey = '_' + str(p1ind) + '_' + str(p2ind)
+            else:
+                dataKey = '_' + str(p2ind) + '_' + str(p1ind)
+
+            sim.load(batchdatadir + '/' + batchname + '/' + batchname + dataKey + '.json', instantiate=False)
+
+            if subplotind == 1:
+                sim.analysis.plotConn(altAx=ax, includePre=includePre, includePost=includePost, feature=feature, orderBy=orderBy, figSize=figSize, groupBy=groupBy, groupByIntervalPre=groupByIntervalPre, groupByIntervalPost=groupByIntervalPost, graphType=graphType, synOrConn=synOrConn, synMech=synMech, connsFile=connsFile, tagsFile=tagsFile, clim=clim, fontSize=fontSize, saveData=saveData, saveFig=saveFig, showFig=showFig)
+            else:
+                sim.analysis.plotConn(altAx=ax, includePre=includePre, includePost=includePost, feature=feature, orderBy=orderBy, figSize=figSize, groupBy=groupBy, groupByIntervalPre=groupByIntervalPre, groupByIntervalPost=groupByIntervalPost, graphType=graphType, synOrConn=synOrConn, synMech=synMech, connsFile=connsFile, tagsFile=tagsFile, clim=clim, fontSize=fontSize, saveData=saveData, saveFig=saveFig, showFig=showFig)
+
+            #def plotConn (includePre = ['all'], includePost = ['all'], feature = 'strength', orderBy = 'gid', figSize = (10,10), groupBy = 'pop', groupByIntervalPre = None, groupByIntervalPost = None, graphType = 'matrix', synOrConn = 'syn', synMech = None, connsFile = None, tagsFile = None, clim = None, fontSize = 12, saveData = None, saveFig = None, showFig = True, altAx = None)
+
+            # print('dataKey: %s' % dataKey)
+            # print('p1ind: %s' % str(p1ind))
+            # print('p1val: %s' % str(p1val))
+            # print('p2ind: %s' % str(p2ind))
+            # print('p2val: %s' % str(p2val))
+            # print
+            
+            plt.setp(ax.get_xticklabels()[0], visible=False)
+            plt.setp(ax.get_xticklabels()[-1], visible=False)
+            plt.setp(ax.get_yticklabels()[0], visible=False)
+            plt.setp(ax.get_yticklabels()[-1], visible=False)
+           
+            if (subplotind) not in bottomrow:
+                plt.setp(ax.get_xticklabels(), visible=False)
+            if (subplotind) not in leftcolumn:
+                plt.setp(ax.get_yticklabels(), visible=False)
+            else:
+                plt.ylabel(param_labels[0] + " = " + str(p1val), fontsize="x-small")
+            if subplotind in toprow:
+                plt.title(param_labels[1] + " = " + str(p2val), fontsize="x-small")
+            plt.tick_params(labelsize='xx-small')
+
+    # # Make all plots on the same row use the same y axis limits
+    # for row in np.arange(rows):
+    #     rowax = axes[row*cols : row*cols+cols]
+    #     ylims = []
+    #     for ax in rowax:
+    #         ylims.extend(list(ax.get_ylim()))
+    #     ylim = (min(ylims), max(ylims))
+    #     for ax in rowax:
+    #         ax.set_ylim(ylim)
+
+    # # Make all plots use the same y axis limits, if shareyall option is True
+    # if shareyall:
+    #     ylims = []
+    #     for row in np.arange(rows):
+    #         rowax = axes[row*cols : row*cols+cols]
+    #         for ax in rowax:
+    #             ylims.extend(list(ax.get_ylim()))
+    #     ylim = (min(ylims), max(ylims))
+    #     for row in np.arange(rows):
+    #         rowax = axes[row*cols : row*cols+cols]
+    #         for ax in rowax:
+    #             ax.set_ylim(ylim)
+
+    # Remove space between subplots
+    # if fig is None:
+    #     figure.subplots_adjust(hspace=0, wspace=0)
+
+    # Create axis labels and title across all subplots
+
+    xlabel = 'Time (ms)'
+    ylabel = 'Cells (ordered by %s)' % (orderBy)
+    title = 'Connectivity plots for batch: ' + batchname 
+
+    if xlabel:
+        figure.text(0.5, 0.04, xlabel, ha="center")
+    if ylabel:
+        figure.text(0.04, 0.5, ylabel, va="center", rotation="vertical")
+    if title:
+        figure.text(0.5, 0.95, title, ha="center")
+    if legendlabel:
+        axes[0].legend(fontsize="x-small")
+
+    if fig is None:
+        if save:
+            if filename is None:
+                if not swapaxes:
+                    figure.savefig(os.path.join(outputdir, batchname + "_conn_1.png"))
+                else:
+                    figure.savefig(os.path.join(outputdir, batchname + "_conn_2.png"))
+        return figure
+    else:
+        if save:
+            if filename is None:
+                if not swapaxes:
+                    fig.savefig(os.path.join(outputdir, batchname + "_conn_1_" + filename + ".png"))
+                else:
+                    fig.savefig(os.path.join(outputdir, batchname + "_conn_2_" + filename + ".png"))
+        return fig
 
 
 

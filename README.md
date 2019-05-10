@@ -1,30 +1,48 @@
 # EEE_network
 
-## Commands to run sims on Comet
+## Prepare for simulations
 
-### To run a batch of simulations
+1. Clone the repo (`git clone https://github.com/Neurosim-lab/EEE_network.git`)
+2. Compile the mod files (`cd EEE_network/mod ; nrnivmodl`)
+3. Symlink the mod dir (`cd ../eee_net ; ln -s "../mod/x86_64" x86_64`)
+	
 
-1. cd EEE_network/eee_net
-2. python batch.py
 
-### To run a single sim
+## Running simulations using MPI
 
-1. cd EEE_network/eee_net
-2. sbatch sbatch_sim
+### To run a single sim using MPI 
 
-## Commands to run sim on Neurosim 
+1. Change to the 'eee_net' directory (`cd EEE_network/eee_net`)
+2. Two options to run sim:
+	1. Execute `mpiexec -np #processes nrniv -python -mpi init.py` after replacing #processes with the number of processes you want to use (e.g. `mpiexec -np 4 nrniv -python -mpi init.py`)
+	2. Execute `runsim #processes` (e.g. `./runsim 4`)
 
-### Steps to run the network simulation:
+### To run a batch of sims using MPI 
 
-1. cd ~
-2. git clone https://github.com/Neurosim-lab/EEE_network.git
-3. cd EEE_network/
-4. cd mod
-5. nrnivmodl
-6. cd ../eee_net
-7. ln -s "../mod/x86_64" x86_64
-8. ./runsim
+1. Change to the 'eee_net' directory (`cd EEE_network/eee_net`)
+2. Open 'batch.py'
+3. Ensure `runType = mpi_bulletin`
+4. Update the `batchLabel`
+5. Two options to run batch:
+	1. Execute `mpiexec -np #processes nrniv -python -mpi batch.py` (e.g. `mpiexec -np 4 nrniv -python -mpi batch.py`)
+	2. Execute `runbatch #processes` (e.g. `./runbatch 4`)
 
-### One-liner to run sim from scratch:
 
-cd ~ ; rm -rf eee_temp ; mkdir eee_temp ; cd eee_temp ; git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network/mod ; nrnivmodl ; cd ../eee_net ; ln -s "../mod/x86_64" x86_64 ; ./runsim
+
+## Running simulations on Comet
+
+### To run a single sim on Comet
+
+1. Change to the 'eee_net' directory (`cd EEE_network/eee_net`)
+2. Modify the file `runsim_comet` to your settings
+3. Execute `sbatch runsim_comet`
+
+### To run a batch of simulations on Comet
+
+1. Change to the 'eee_net' directory (`cd EEE_network/eee_net`)
+2. Open 'batch.py'
+3. Ensure `runType = hpc_slurm`
+4. Update the `batchLabel`
+5. Execute `python batch.py`
+
+

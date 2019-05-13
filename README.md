@@ -17,18 +17,18 @@ Single line command:
 ### To run a single sim using MPI 
 
 1. Change to the *eee_net* directory (`cd EEE_network/eee_net`)
-2. Modify *cfg.py*
+2. Modify the file *cfg.py*
 	1. Update sim label
 	2. Set desired parameter values
 3. Run the simulation (two options):
 	1. Execute `runsim #processes` (e.g. `./runsim 4`)
-	2. Execute `mpiexec -np #processes nrniv -python -mpi init.py` after replacing #processes with the number of processes you want to use (e.g. `mpiexec -np 4 nrniv -python -mpi init.py`)
+	2. Execute `mpiexec -np #processes nrniv -python -mpi init.py` (e.g. `mpiexec -np 4 nrniv -python -mpi init.py`)
 	
 
 ### To run a batch of sims using MPI 
 
 1. Change to the *eee_net* directory (`cd EEE_network/eee_net`)
-2. Open *batch.py*
+2. Open the file *batch.py*
 	1. Ensure `runType = mpi_bulletin`
 	2. Update the `batchLabel`
 3. Run the batch of sims (two options):
@@ -43,10 +43,12 @@ Single line command:
 ### To run a single sim on Comet
 
 1. Change to the *eee_net* directory (`cd EEE_network/eee_net`)
-2. Modify *cfg.py*
+2. Modify the file *cfg.py*
 	1. Update sim label
 	2. Set desired parameter values
-3. Modify the file *runsim_comet* to desired HPC settings
+3. Modify the file *runsim_comet* 
+	1. Update names for job, output file, error file
+	2. Set desired HPC settings
 4. Execute `sbatch runsim_comet`
 
 ### To run a batch of simulations on Comet

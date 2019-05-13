@@ -9793,15 +9793,32 @@ New version:
 Committing and pushing to share README.
 
 
+** Looking at new batch
 
+v01_batch11
 
+So on Friday 2/9 sims were seg faulty, on this batch 1/9 are.
 
-
-
+I'll post this to Slack and ask others to run as well.
 
 
 
 ** Looking for single sim output
+
+Running a single sim to see if I can find output.
+
+label: eee_net_02
+
+I will make a `data` dir in `eee_net` dir to ensure that's not reason for lack of output.
+
+Updating cfg.py and runsim_comet
+
+Commit, push, Comet.
+
+
+
+
+
 
 
 ** Working on altAx for Netpyne batch figures

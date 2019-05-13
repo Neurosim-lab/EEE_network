@@ -9840,6 +9840,15 @@ It completed, and the output showed up in data.  :)
 
 I'm going to increase number of cells to 10,000 and run as 04
 
+co$ sbatch runsim_comet 
+Submitted batch job 23409560
+
+That finished.
+
+For eee_net_05, I am increasing time to 10,000 ms
+
+
+
 
 ** Adding an easy number of cells config option
 

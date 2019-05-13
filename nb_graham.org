@@ -9847,7 +9847,12 @@ That finished.
 
 For eee_net_05, I am increasing time to 10,000 ms
 
+co$ sbatch runsim_comet 
+Submitted batch job 23409694
 
+Run time was only 23 minutes.
+
+For eee_net_06, increasing time to 100,000 ms
 
 
 ** Adding an easy number of cells config option

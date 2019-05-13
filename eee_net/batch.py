@@ -4,7 +4,7 @@ import os
 
 runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
 #runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
-batchLabel = 'v01_batch11'
+batchLabel = 'v01_batch12'
 
 def batchRun():
 	# Create variable of type ordered dictionary (NetPyNE's customized version) 
@@ -14,6 +14,7 @@ def batchRun():
 	
 	params['EEconv'] = [1.5, 3.0, 6.0] # Default 3.0
 	params['IEconv'] = [6.0, 12.0, 24.0] # Default 12.0
+	params['numCells'] = [1000, 5000, 10000]
 
 	#params['ampIClamp1'] = [0.1, 0.5, 1.0]
 	#params['GABAAfastWeight'] = [0.0001, 0.01, 1.0]   

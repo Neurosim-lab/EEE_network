@@ -9854,6 +9854,9 @@ Run time was only 23 minutes.
 
 For eee_net_06, increasing time to 100,000 ms
 
+co$ sbatch runsim_comet 
+Submitted batch job 23414394
+
 
 ** Adding an easy number of cells config option
 
@@ -9866,6 +9869,14 @@ cfg.numCells = 10000
 cfg.numPT5cells = int(0.8 * cfg.numCells)
 cfg.numPV5cells = cfg.numCells - cfg.numPT5cells
 
+
+** Running a big batch
+
+v01_batch12
+
+	params['EEconv'] = [1.5, 3.0, 6.0] # Default 3.0
+	params['IEconv'] = [6.0, 12.0, 24.0] # Default 12.0
+	params['numCells'] = [1000, 5000, 10000]
 
 
 

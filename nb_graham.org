@@ -9544,6 +9544,198 @@ I am going to set cfg.saveFigs to False.
 
 Trying to run on zn.  Commit push and then the one-liner above.
 
+Ugh.  Still no Pandas.
+
+Taking a break.
+
+
+
+* 2019-05-13 -- Seg faults in batch sims, output from single sims
+
+** Looking at last set of batch sims
+
+v01_batch10_comet
+
+So most of the sims took only around 30 seconds -- something's not right.
+
+But sim _2_1 timed out after two hours -- also not right.
+
+Here are the output files:
+
+	v01_batch10_comet_0_0.json
+	v01_batch10_comet_0_2.json
+	v01_batch10_comet_1_0.json
+	v01_batch10_comet_1_1.json
+	v01_batch10_comet_1_2.json
+	v01_batch10_comet_2_0.json
+	v01_batch10_comet_2_2.json
+
+Some are missing: 
+
+	_0_1
+	_2_1
+
+
+Looking at .run and .err files for _0_0, _0_1, and _2_1
+
+*** _0_0 
+
+Has an output file
+
+**** .run
+
+Everything looks okay until Netpyne analysis, when I get the fork error warning, and I
+get a process with exit code 1
+
+
+	Analyzing...
+	  Cells: 1000
+	  Connections: 0 (0.00 per cell)
+	  Spikes: 7984 (7.98 Hz)
+	  Simulated time: 1.0 s; 96 workers
+	  Run time: 9.73 s
+	--------------------------------------------------------------------------
+	An MPI process has executed an operation involving a call to the
+	"fork()" system call to create a child process.  Open MPI is currently
+	operating in a condition that could result in memory corruption or
+	other system errors; your MPI job may hang, crash, or produce silent
+	data corruption.  The use of fork() (or system() or other calls that
+	create child processes) is strongly discouraged.  
+
+	The process that invoked fork was:
+
+	  Local host:          comet-16-04 (PID 32312)
+	  MPI_COMM_WORLD rank: 0
+
+	If you are *absolutely sure* that your application will successfully
+	and correctly survive a call to fork(), you may disable this warning
+	by setting the mpi_warn_on_fork MCA parameter to 0.
+	--------------------------------------------------------------------------
+	Saving output as /oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/v01_batch10_comet/v01_batch10_comet_0_0.json  ... 
+	Finished saving!
+	  Done; saving time = 1.88 s.
+	Plotting raster...
+	-------------------------------------------------------
+	Primary job  terminated normally, but 1 process returned
+	a non-zero exit code.. Per user-direction, the job has been aborted.
+	-------------------------------------------------------
+	--------------------------------------------------------------------------
+	orterun detected that one or more processes exited with non-zero status, thus causing
+	the job to be terminated. The first process to do so was:
+
+	  Process name: [[6609,1],0]
+	  Exit code:    1
+	--------------------------------------------------------------------------
+
+**** .err
+
+Looks like there's maybe a display problem:
+
+	QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-jwgraham'
+	qt.qpa.screen: QXcbConnection: Could not connect to display localhost:52.0
+	Could not connect to any X display.
+
+But that shouldn't affect simulation or saving.
+
+
+**** Output file
+
+Copying to local so I can take a look:
+
+	scp jwgraham@comet.sdsc.edu://oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/v01_batch10_comet/v01_batch10_comet_0_0.json /Users/graham/comet_transfer/
+
+The output looks fine, so I guess the sims run quite quickly with 96 cores.
+
+
+*** _0_1
+
+Doesn't have an output file
+
+**** .run
+
+Seems to have crashed during making connections
+
+	Making connections...
+	  Number of cells on node 15: 11 
+	  Number of cells on node 6: 11 
+	  ...
+	  ...
+	  ...
+	-------------------------------------------------------
+	Primary job  terminated normally, but 1 process returned
+	a non-zero exit code.. Per user-direction, the job has been aborted.
+	-------------------------------------------------------
+	--------------------------------------------------------------------------
+	orterun detected that one or more processes exited with non-zero status, thus causing
+	the job to be terminated. The first process to do so was:
+
+	  Process name: [[44242,1],52]
+	  Exit code:    255
+	--------------------------------------------------------------------------
+
+
+**** .err
+
+Huge file full of seg faults.
+
+
+*** _2_1
+
+Doesn't have an output file
+
+**** .run
+
+It just seems to have stopped while making cell connections, without an error in the 
+run file.
+
+
+**** .err
+
+Massive error file with seg faults.
+
+
+** Running another batch sim
+
+I am going to run another batch sim to see if I get seg faults again.
+
+It looks like the last batch may have only used 100 cells, looking on Comet to ensure
+
+No, it was actually 1000 cells, so I'll bump up to 5000.
+
+I will rename to v01batch11
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+** Looking for single sim output
+
+
+** Working on altAx for Netpyne batch figures
 
 
 

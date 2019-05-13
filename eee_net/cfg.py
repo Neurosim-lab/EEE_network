@@ -11,7 +11,7 @@ cfg.duration = 1000
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_01_local'
+cfg.simLabel = 'eee_net_02'
 cfg.saveFolder = 'data'
 cfg.savePickle = False
 cfg.saveJson = True
@@ -26,8 +26,8 @@ cfg.hParams.celsius = 32.0
 cfg.hParams.v_init  = -73.7
 
 # Network variables
-cfg.numPT5cells = 80
-cfg.numPV5cells = 20
+cfg.numPT5cells = 4000
+cfg.numPV5cells = 1000
 cfg.sizeY       = 1600
 cfg.sizeX       = 400
 cfg.sizeZ       = 300

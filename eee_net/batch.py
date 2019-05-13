@@ -4,7 +4,7 @@ import os
 
 runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
 #runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
-batchLabel = 'v01_batch10_comet'
+batchLabel = 'v01_batch11'
 
 def batchRun():
 	# Create variable of type ordered dictionary (NetPyNE's customized version) 

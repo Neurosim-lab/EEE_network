@@ -1,13 +1,13 @@
 #!/bin/bash 
-#SBATCH --job-name=eee_net_02
+#SBATCH --job-name=eee_net_03
 #SBATCH -A shs100
 #SBATCH -t 2:00:00
 #SBATCH --nodes=4
 #SBATCH --ntasks-per-node=24
-#SBATCH -o eee_net_02_comet.run
-#SBATCH -e eee_net_02_comet.err
+#SBATCH -o eee_net_03.run
+#SBATCH -e eee_net_03.err
 #SBATCH --mail-user=joe.w.graham@gmail.com
 #SBATCH --mail-type=end
 source ~/.bashrc
 cd /home/jwgraham/EEE_network/eee_net/
-ibrun -np 4 nrniv -python -mpi init.py
+ibrun nrniv -python -mpi init.py

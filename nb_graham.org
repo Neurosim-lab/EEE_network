@@ -9815,6 +9815,24 @@ Updating cfg.py and runsim_comet
 
 Commit, push, Comet.
 
+co$ sbatch runsim_comet 
+Submitted batch job 23408542
+
+
+** Single sim
+
+It seems to be only running on four cores
+
+I am going to modify runsim_comet, from:
+
+	ibrun -np 4 nrniv -python -mpi init.py
+
+to:
+
+	ibrun nrniv -python -mpi init.py
+
+Now will run single sim eee_net_03
+
 
 
 

@@ -9702,26 +9702,95 @@ It looks like the last batch may have only used 100 cells, looking on Comet to e
 
 No, it was actually 1000 cells, so I'll bump up to 5000.
 
-I will rename to v01batch11
+I will rename to v01_batch11
+
+I deleted my old EEE_network on Comet and will reclone.
+
+	git clone https://github.com/Neurosim-lab/EEE_network.git
+	cd EEE_network/mod ; nrnivmodl
+	cd ../eee_net ; ln -s "../mod/x86_64" x86_64
+
+And now run the batch.
+
+	python batch.py
+	sq
+
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+          23407196   compute v01_batc jwgraham PD       0:00      4 (Priority)
+          23407199   compute v01_batc jwgraham PD       0:00      4 (Priority)
+          23407202   compute v01_batc jwgraham PD       0:00      4 (Priority)
+          23407204   compute v01_batc jwgraham PD       0:00      4 (Priority)
+          23407205   compute v01_batc jwgraham PD       0:00      4 (Priority)
+          23407208   compute v01_batc jwgraham PD       0:00      4 (Priority)
+          23407212   compute v01_batc jwgraham PD       0:00      4 (Priority)
+          23407217   compute v01_batc jwgraham PD       0:00      4 (Priority)
+          23407222   compute v01_batc jwgraham PD       0:00      4 (Priority)
+
+Now to wait and see how these sims turn out.
 
 
+** Improve README
+
+To include preparation steps
+
+New version:
+
+	# EEE_network
+
+	## Prepare for simulations
+
+	1. Clone the repo (`git clone https://github.com/Neurosim-lab/EEE_network.git`)
+	2. Compile the mod files (`cd EEE_network/mod ; nrnivmodl`)
+	3. Symlink the mod dir (`cd ../eee_net ; ln -s "../mod/x86_64" x86_64`)
+
+	Single line command:
+
+	`git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network/mod ; nrnivmodl ; cd ../eee_net ; ln -s "../mod/x86_64" x86_64`
+		
+	## Running simulations using MPI
+
+	### To run a single sim using MPI 
+
+	1. Change to the *eee_net* directory (`cd EEE_network/eee_net`)
+	2. Modify *cfg.py*
+		1. Update sim label
+		2. Set desired parameter values
+	3. Run the simulation (two options):
+		1. Execute `runsim #processes` (e.g. `./runsim 4`)
+		2. Execute `mpiexec -np #processes nrniv -python -mpi init.py` after replacing #processes with the number of processes you want to use (e.g. `mpiexec -np 4 nrniv -python -mpi init.py`)
+		
+	### To run a batch of sims using MPI 
+
+	1. Change to the *eee_net* directory (`cd EEE_network/eee_net`)
+	2. Open *batch.py*
+		1. Ensure `runType = mpi_bulletin`
+		2. Update the `batchLabel`
+	3. Run the batch of sims (two options):
+		1. Execute `runbatch #processes` (e.g. `./runbatch 4`)
+		2. Execute `mpiexec -np #processes nrniv -python -mpi batch.py` (e.g. `mpiexec -np 4 nrniv -python -mpi batch.py`)
+
+	## Running simulations on Comet
+
+	### To run a single sim on Comet
+
+	1. Change to the *eee_net* directory (`cd EEE_network/eee_net`)
+	2. Modify *cfg.py*
+		1. Update sim label
+		2. Set desired parameter values
+	3. Modify the file *runsim_comet* to desired HPC settings
+	4. Execute `sbatch runsim_comet`
+
+	### To run a batch of simulations on Comet
+
+	1. Change to the *eee_net* directory (`cd EEE_network/eee_net`)
+	2. Open *batch.py*
+		1. Ensure `runType = hpc_slurm`
+		2. Update the `batchLabel`
+		3. Set desired HPC settings in `runCfg`
+	5. Execute `python batch.py`
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Committing and pushing to share README.
 
 
 

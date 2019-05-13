@@ -9833,7 +9833,24 @@ to:
 
 Now will run single sim eee_net_03
 
+co$ sbatch runsim_comet 
+Submitted batch job 23408828
 
+It completed, and the output showed up in data.  :)
+
+I'm going to increase number of cells to 10,000 and run as 04
+
+
+** Adding an easy number of cells config option
+
+Old: 
+cfg.numPT5cells = 8000
+cfg.numPV5cells = 2000
+
+New:
+cfg.numCells = 10000
+cfg.numPT5cells = int(0.8 * cfg.numCells)
+cfg.numPV5cells = cfg.numCells - cfg.numPT5cells
 
 
 

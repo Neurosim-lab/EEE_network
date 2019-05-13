@@ -7,11 +7,12 @@ saveFig = False
 
 # Simulation options
 cfg = specs.SimConfig()       
-cfg.duration = 1000          
+cfg.duration = 1000
+cfg.numCells = 10000          
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_03'
+cfg.simLabel = 'eee_net_04'
 cfg.saveFolder = 'data'
 cfg.savePickle = False
 cfg.saveJson = True
@@ -26,8 +27,8 @@ cfg.hParams.celsius = 32.0
 cfg.hParams.v_init  = -73.7
 
 # Network variables
-cfg.numPT5cells = 4000
-cfg.numPV5cells = 1000
+cfg.numPT5cells = int(0.8 * cfg.numCells)
+cfg.numPV5cells = cfg.numCells - cfg.numPT5cells
 cfg.sizeY       = 1600
 cfg.sizeX       = 400
 cfg.sizeZ       = 300

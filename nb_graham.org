@@ -9922,8 +9922,13 @@ Turning glutamate puff back on
 
 * 2019-05-14 -- Working on batch analysis
 
+** Currently working on 
 
-** Ran a big batch
+generate analysis figures individually for sims in batch
+altAx for Netpyne batch figures
+batch figures
+
+** Ran a big batch yesterday
 
 v01_batch12
 
@@ -9965,10 +9970,46 @@ Batch params:
 
 Commit, push, Comet.
 
+*** JOBIDs
+
+co$ sq
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+          23425604   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425605   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425607   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425608   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425609   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425610   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425611   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425612   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425613   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425614   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425615   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425616   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425617   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425618   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425619   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425620   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425621   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425622   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425624   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425626   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425627   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425628   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425629   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425630   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425631   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425632   compute v01_batc jwgraham PD       0:00      4 (None)
+          23425633   compute v01_batc jwgraham PD       0:00      4 (None)
 
 
+** Running big long single sim
 
-** Working on altAx for Netpyne batch figures
+Trying to get a reproducible seg fault.
+
+eee_net_07
+
+
 
 
 

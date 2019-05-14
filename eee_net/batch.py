@@ -31,7 +31,7 @@ def batchRun():
 		b.saveFolder = '/oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/' + b.batchLabel
 		b.runCfg = {'type': 'hpc_slurm',
 					'allocation': 'shs100', 
-					'walltime': '02:00:00',
+					'walltime': '04:00:00',
 					'nodes': 4,
 					'coresPerNode': 24,
 					'email': 'joe.w.graham@gmail.com',

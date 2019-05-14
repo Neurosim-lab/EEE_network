@@ -9878,6 +9878,46 @@ v01_batch12
 	params['IEconv'] = [6.0, 12.0, 24.0] # Default 12.0
 	params['numCells'] = [1000, 5000, 10000]
 
+co$ python batch.py
+
+	co$ sq
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+          23414436   compute v01_batc jwgraham PD       0:00      4 (Priority)
+          23414437   compute v01_batc jwgraham PD       0:00      4 (Priority)
+          23414438   compute v01_batc jwgraham PD       0:00      4 (Priority)
+          23414442   compute v01_batc jwgraham PD       0:00      4 (Priority)
+          23414444   compute v01_batc jwgraham PD       0:00      4 (Priority)
+          23414446   compute v01_batc jwgraham PD       0:00      4 (Priority)
+          23414447   compute v01_batc jwgraham PD       0:00      4 (Priority)
+          23414450   compute v01_batc jwgraham PD       0:00      4 (Priority)
+          23414452   compute v01_batc jwgraham PD       0:00      4 (Priority)
+          23414453   compute v01_batc jwgraham PD       0:00      4 (Priority)
+          23414454   compute v01_batc jwgraham PD       0:00      4 (Priority)
+          23414455   compute v01_batc jwgraham PD       0:00      4 (Priority)
+          23414456   compute v01_batc jwgraham PD       0:00      4 (Priority)
+          23414457   compute v01_batc jwgraham PD       0:00      4 (Priority)
+          23414459   compute v01_batc jwgraham PD       0:00      4 (Priority)
+          23414460   compute v01_batc jwgraham PD       0:00      4 (Priority)
+          23414394   compute eee_net_ jwgraham  R       7:13      4 comet-25-[02,04,10,15]
+          23414423   compute v01_batc jwgraham  R       0:22      4 comet-23-[49,56,63-64]
+          23414424   compute v01_batc jwgraham  R       0:22      4 comet-25-[03,09,66-67]
+          23414425   compute v01_batc jwgraham  R       0:22      4 comet-17-[34,52-53,66]
+          23414426   compute v01_batc jwgraham  R       0:22      4 comet-18-[25-28]
+          23414427   compute v01_batc jwgraham  R       0:22      4 comet-18-[29-32]
+          23414428   compute v01_batc jwgraham  R       0:22      4 comet-18-[33-35,38]
+          23414430   compute v01_batc jwgraham  R       0:22      4 comet-21-[04-05,07-08]
+          23414432   compute v01_batc jwgraham  R       0:22      4 comet-21-[12,22,26-27]
+          23414433   compute v01_batc jwgraham  R       0:22      4 comet-21-[29-31,37]
+          23414434   compute v01_batc jwgraham  R       0:22      4 comet-21-[47,54,57,59]
+          23414435   compute v01_batc jwgraham  R       0:22      4 comet-11-[35,70-71],comet-13-64
+
+Those batches timed out.
+
+Shortening sim time to 50000 ms
+Increasing wall time to 4 hours
+Turning glutamate puff back on
+
+
 
 
 

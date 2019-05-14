@@ -9857,6 +9857,8 @@ For eee_net_06, increasing time to 100,000 ms
 co$ sbatch runsim_comet 
 Submitted batch job 23414394
 
+eee_net_06 timed out.
+
 
 ** Adding an easy number of cells config option
 
@@ -9917,6 +9919,51 @@ Shortening sim time to 50000 ms
 Increasing wall time to 4 hours
 Turning glutamate puff back on
 
+
+* 2019-05-14 -- Working on batch analysis
+
+
+** Ran a big batch
+
+v01_batch12
+
+None completed.  Seems to be the same error in all sims.
+
+Error:
+
+	terminate called after throwing an instance of 'std::bad_alloc'
+	  what():  std::bad_alloc
+	[comet-23-15:15017] *** Process received signal ***
+	[comet-23-15:15017] Signal: Aborted (6)
+	[comet-23-15:15017] Signal code:  (-6)
+
+In the run file, it completes the simulation but crashes while gathering data (similar
+message for each sim):
+
+	Running simulation for 50000 ms...
+	  Done; run time = 8049.48 s; real-time ratio: 0.01.
+
+	Gathering data...
+	--------------------------------------------------------------------------
+	orterun noticed that process rank 0 with PID 15017 on node comet-23-15 exited on signal 6 (Aborted).
+	--------------------------------------------------------------------------
+
+I'm guessing that there was too much data (this was set up to record from all cell somas).
+
+
+** Running big batch with less time
+
+v01_batch13
+
+Reducing time to 5000
+
+Batch params:
+
+	params['EEconv'] = [1.5, 3.0, 6.0] # Default 3.0
+	params['IEconv'] = [6.0, 12.0, 24.0] # Default 12.0
+	params['numCells'] = [1000, 5000, 10000]
+
+Commit, push, Comet.
 
 
 

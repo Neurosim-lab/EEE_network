@@ -10199,8 +10199,25 @@ Maybe because in my cfg file: cfg.saveCellConns = False
 
 Setting it to true and preparing to run v01_batch14
 
+** v01_batch14
+
+co$ sq
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+          23805947   compute v01_batc jwgraham  R       0:03      4 comet-20-[25,29,31,35]
+          23805948   compute v01_batc jwgraham  R       0:03      4 comet-12-[01-02,04-05]
+          23805941   compute v01_batc jwgraham  R       0:07      4 comet-22-[08-09,43,49]
+          23805942   compute v01_batc jwgraham  R       0:07      4 comet-13-[31,36-37,40]
+          23805944   compute v01_batc jwgraham  R       0:07      4 comet-13-[44-45,47-48]
+          23805945   compute v01_batc jwgraham  R       0:07      4 comet-20-[01,06,10,15]
+          23805939   compute v01_batc jwgraham  R       0:14      4 comet-14-[09,12,26,30]
+          23805940   compute v01_batc jwgraham  R       0:14      4 comet-19-[02,67-69]
+          23805937   compute v01_batc jwgraham  R       0:18      4 comet-10-[10,13,20,34]
 
 
+** v01_batch15
+
+Will run v01_batch15 overnight, with params['numCells'] = [1000, 5000, 10000] to see how
+number of cells affects connectivity.
 
 
 

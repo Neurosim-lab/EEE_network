@@ -7,7 +7,7 @@ saveFig = False
 
 # Simulation options
 cfg = specs.SimConfig()       
-cfg.duration = 10000
+cfg.duration = 1000
 cfg.numCells = 10000          
 cfg.dt = 0.025                
 cfg.verbose = False           
@@ -19,7 +19,7 @@ cfg.saveJson = True
 cfg.saveDataInclude = ['simData', 'simConfig', 'netParams', 'net']         
 cfg.saveMat = False
 cfg.saveCellSecs = False
-cfg.saveCellConns = False
+cfg.saveCellConns = True
 cfg.seeds = {'conn': 4123,
 			 'stim': 1234, 
 			 'loc' : 3214}  

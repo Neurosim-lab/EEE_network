@@ -9920,7 +9920,7 @@ Increasing wall time to 4 hours
 Turning glutamate puff back on
 
 
-* 2019-05-14 -- Working on batch analysis
+* 2019-05-14 -- Working on batch analysis, EEE meeting
 
 ** Currently working on 
 
@@ -10009,19 +10009,195 @@ Trying to get a reproducible seg fault.
 
 eee_net_07
 
+cfg.duration = 10000
+cfg.numCells = 10000    
+
+co$ sbatch runsim_comet 
+Submitted batch job 23425728
+
+
+** Plotting analyses
+
+Here are the batch outputs:
+
+	co$ cdsc
+	Changed to dir: /oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/
+	co$ ls
+	drwxr-xr-x 3 jwgraham shs100 41472 Apr 29 21:43 v01_batch03
+	drwxr-xr-x 3 jwgraham shs100 41472 Apr 29 21:43 v01_batch04
+	drwxr-xr-x 3 jwgraham shs100 41472 Apr 29 21:46 v01_batch05
+	drwxr-xr-x 3 jwgraham shs100 33280 Apr 30 06:20 v01_batch06
+	drwxr-xr-x 3 jwgraham shs100 41472 May  6 18:00 v01_batch07
+	drwxr-xr-x 3 jwgraham shs100 41472 May  6 19:20 v01_batch08
+	drwxr-xr-x 3 jwgraham shs100 41472 May  7 08:41 v01_batch09
+	drwxr-xr-x 3 jwgraham shs100 41472 May 10 11:54 v01_batch10_comet
+	drwxr-xr-x 3 jwgraham shs100 41472 May 13 10:07 v01_batch11
+	drwxr-xr-x 3 jwgraham shs100 41472 May 13 20:14 v01_batch12
+	drwxr-xr-x 3 jwgraham shs100 41472 May 14 07:10 v01_batch13
+
+Batches that completed:
+
+	v01_batch03
+	v01_batch04
+	v01_batch05
+	v01_batch06
+	v01_batch13
+
+Batches with missing sims:
+
+	v01_batch07 (only has _2_2, _3_2, _4_2)
+	v01_batch08 (only has _0_0, _0_1, _2_0, _2_1)
+	v01_batch09 (none completed)
+	v01_batch10_comet (only has _0_0, _0_2, _1_0, _1_1, _1_2, _2_0, _2_2)
+	v01_batch11 (missing _2_1)
+	v01_batch12 (all missing)
+
+Working in dev.py
+
+
+** EEE Meeting
+
+Sodium channel
+Only difference is temperature dependence
+Penny doesn’t see other diffs
+Looks fine to Penny, Srdjan and Bill should weigh in
+Simulation updates
+Joe updated EEE README, shows how to run single sims and batches using MPI or Comet (please try!)
+Pip install netpyne handles all dependencies
+Netpyne needs: install_requires=[‘numpy’, ‘scipy’, ‘matplotlib’, ‘matplotlib-scalebar’, ‘future’, ‘pandas>=0.23’]
+Can install local versions using pip install --target
+Works for Joe locally and on Comet (Neurosim machines still need Pandas)
+To switch to py3
+py3env
+Decreased number of processors to 96
+Still getting some seg faults in batches (2/9, 1/9, 0/12)
+Ran batch of big, long sims, got error:
+terminate called after throwing an instance of 'std::bad_alloc'
+  what():  std::bad_alloc
+[comet-23-15:15017] *** Process received signal ***
+[comet-23-15:15017] Signal: Aborted (6)
+[comet-23-15:15017] Signal code:  (-6)
+Due to too much data? Salva: yes
+
+Other items?
+
+Pandas still not installed on Neurosim (check if works on py3: use py3env)
+Google cloud is up and running
+Salva: if you re-run batches with seg faults, Netpyne will re-try failed sims
+Article submission
+Srdjan: Busy teaching, not much time for paper
+Back to working on paper
+Reviewer concerns:
+Effect on Tau driven by membrane voltage?
+How does moving plateau potential along dendrite affect tau?
+Wants to simplify figures -- only include most important stuff
+Srdjan and Penny discuss figures today
+
+Action items for next week
+
+Salva gets Joe and Don onto Google cloud
+Batch analyses to explore
+
+
+** Re-running batches with missing sims
+
+I'll try it with v01_batch07 (only has _2_2, _3_2, _4_2)
+
+I'll need the original batch.py file...
+
+Looking at the git log
+
+	commit ea8360a5bc1cda2fd4b80f4a410f439f3c4e49a6
+	Author: graham <joe.w.graham@gmail.com>
+	Date:   Mon May 6 15:56:44 2019 -0700
+
+	    Running big Comet sim v01_batch07 take 2
+
+I think I'll clone the repo at that commit in a temp dir and try re-running the batch.
 
 
 
+* 2019-06-03 -- 
+
+** Currently working on 
+
+generate analysis figures individually for sims in batch
+altAx for Netpyne batch figures
+batch figures
 
 
+** Updating password
+
+New password works on no.  Trying to connect to my
+
+	ssgraham-mac:~ graham$ sshmy
+	graham@no.neurosim.downstate.edu's password: 
+	Warning: No xauth data; using fake authentication data for X11 forwarding.
+	@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+	@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+	Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+	It is also possible that a host key has just been changed.
+	The fingerprint for the ECDSA key sent by the remote host is
+	SHA256:NKciHzkThCn7HaOw0/etMLQWsPvCtn4eG76eGKo6i3E.
+	Please contact your system administrator.
+	Add correct host key in /u/graham/.ssh/known_hosts to get rid of this message.
+	Offending ECDSA key in /u/graham/.ssh/known_hosts:5
+	  remove with:
+	  ssh-keygen -f "/u/graham/.ssh/known_hosts" -R "my"
+	ECDSA host key for my has changed and you have requested strict checking.
+	Host key verification failed.
+	Connection to no.neurosim.downstate.edu closed.
+	graham-mac:~ graham$ 
+
+	graham-mac:~ graham$ ssh-keygen -f "/u/graham/.ssh/known_hosts" -R "my"
+	mkstemp: No such file or directory
+
+Ah, have to do it on `no`
+
+	no% ssh-keygen -f "/u/graham/.ssh/known_hosts" -R "my"
+	# Host my found: line 5
+	/u/graham/.ssh/known_hosts updated.
+	Original contents retained as /u/graham/.ssh/known_hosts.old
+	no% 
+
+Now I can connect to `my`
+
+	graham-mac:~ graham$ sshmy
+	graham@no.neurosim.downstate.edu's password: 
+	Warning: No xauth data; using fake authentication data for X11 forwarding.
+	The authenticity of host 'my (138.5.101.142)' can't be established.
+	ECDSA key fingerprint is SHA256:NKciHzkThCn7HaOw0/etMLQWsPvCtn4eG76eGKo6i3E.
+	Are you sure you want to continue connecting (yes/no)? yes
+	Warning: Permanently added 'my' (ECDSA) to the list of known hosts.
+	Warning: the ECDSA host key for 'my' differs from the key for the IP address '138.5.101.142'
+	Offending key for IP in /u/graham/.ssh/known_hosts:5
+	Are you sure you want to continue connecting (yes/no)? yes
+	graham@my's password: 
+	my%
+
+Now to connect to `zn`.  It works.
 
 
+** Starting by analyzing v01_batch03
 
+Param values:
 
+	params['EEconv'] = [0.0, 3.0, 6.0] # Default 3.0
+	params['IEconv'] = [0.0, 12.0, 24.0] # Default 12.0
 
+I'll create some code that generates a figure for each sim.
 
+Working in dev.py
 
+There's a problem with connectivity... plotConn shows all 0 matrix...
 
+Looking into if there is any connectivity...
+
+Maybe because in my cfg file: cfg.saveCellConns = False
+
+Setting it to true and preparing to run v01_batch14
 
 
 

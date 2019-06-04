@@ -1,2 +1,2 @@
 #!/bin/bash 
-python batch.python
+python batch.py

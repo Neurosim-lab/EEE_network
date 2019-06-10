@@ -7,8 +7,8 @@ saveFig = False
 
 # Simulation options
 cfg = specs.SimConfig()       
-cfg.duration = 1000
-cfg.numCells = 10000          
+cfg.duration = 10000
+cfg.numCells = 1000          
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             

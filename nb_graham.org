@@ -10117,7 +10117,7 @@ I think I'll clone the repo at that commit in a temp dir and try re-running the 
 
 
 
-* 2019-06-03 -- 
+* 2019-06-03 -- Batch analysis
 
 ** Currently working on 
 
@@ -10223,6 +10223,237 @@ number of cells affects connectivity.
 ** 'v01_batch16'
 
 'v01_batch16' with params['numCells'] = [10000, 20000, 30000]
+
+co$ sq
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+          23806547   compute v01_batc jwgraham  R       2:32      4 comet-16-[07,13-14,18]
+          23806548   compute v01_batc jwgraham  R       2:32      4 comet-17-[04,18,22,38]
+          23806546   compute v01_batc jwgraham  R       2:41      4 comet-29-[01,04,09-10]
+          23806561   compute v01_batc jwgraham  R       0:10      4 comet-07-[29,31,34,36]
+          23806560   compute v01_batc jwgraham  R       0:18      4 comet-23-[25,54,56,59]
+          23806559   compute v01_batc jwgraham  R       0:20      4 comet-21-[11,14,40,46]
+
+
+
+* 2019-06-04 -- Batch analysis
+
+** Currently working on 
+
+generate analysis figures individually for sims in batch
+altAx for Netpyne batch figures
+batch figures
+
+** Downloading and analyzing batch sims
+
+graham-mac:~ graham$ cpsc v01_batch15
+Attempting to copy: v01_batch15
+  From: comet.sdsc.xsede.org/oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/
+  To  : /Users/graham/EEE_network/eee_net/v01_batch15
+
+graham-mac:~ graham$ cpsc v01_batch16
+Attempting to copy: v01_batch16
+  From: comet.sdsc.xsede.org/oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/
+  To  : /Users/graham/EEE_network/eee_net/v01_batch16
+
+graham-mac:~ graham$ cdeee ; ipython -i dev.py
+
+*** Strange error
+
+Which I didn't get before...
+
+	graham-mac:~ graham$ cdeee ; ipython -i dev.py
+	Python 3.7.1 (default, Dec 14 2018, 13:28:58) 
+	Type 'copyright', 'credits' or 'license' for more information
+	IPython 7.2.0 -- An enhanced Interactive Python. Type '?' for help.
+	Reading data...
+	0 files missing
+	(0,) (1000,)
+	numCells = 1000
+	v01_batch15_0
+	Loading file data/v01_batch15/v01_batch15_0.json ... 
+	  Done; file loading time = 20.15 s
+	Loading simConfig...
+	Loading netParams...
+	Loading net...
+	Loading simData...
+	---------------------------------------------------------------------------
+	KeyError                                  Traceback (most recent call last)
+	~/EEE_network/eee_net/dev.py in <module>
+	    114 
+	    115 include = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5']
+	--> 116 plot_batch_ind_conn("v01_batch15") #, includePre=include, includePost=include, saveFig=True)
+	    117 #plot_batch_ind_conn("v01_batch15", includePre=include, includePost=include, saveFig=True)
+	    118 #plot_batch_ind_conn("v01_batch16", includePre=include, includePost=include, saveFig=True)
+
+	~/EEE_network/eee_net/dev.py in plot_batch_ind_conn(batchLabel, batchdatadir, includePre, includePost, feature, orderBy, figSize, groupBy, groupByIntervalPre, groupByIntervalPost, graphType, synOrConn, synMech, connsFile, tagsFile, clim, fontSize, saveData, saveFig, showFig, save, outputdir, filename, **kwargs)
+	     95             simFile = simLabel + ".json"
+	     96 
+	---> 97             sim.load(batchdatadir + '/' + batchLabel + '/' + simFile, instantiate=False)
+	     98 
+	     99             if saveFig:
+
+	~/Applications/netpyne/netpyne/sim/wrappers.py in load(filename, simConfig, output, instantiate, createNEURONObj)
+	    128         rxd = sim.net.addRxD()                    # add reaction-diffusion (RxD)
+	    129 
+	--> 130     simData = sim.setupRecording()              # setup variables to record for each cell (spikes, V traces, etc)
+	    131 
+	    132     if output:
+
+	~/Applications/netpyne/netpyne/sim/setup.py in setupRecording()
+	    259         # get list of cells from argument of plotTraces function
+	    260         if 'plotTraces' in sim.cfg.analysis and 'include' in sim.cfg.analysis['plotTraces']:
+	--> 261             cellsPlot = utils.getCellsList(sim.cfg.analysis['plotTraces']['include'])
+	    262         else:
+	    263             cellsPlot = []
+
+	~/Applications/netpyne/netpyne/sim/utils.py in getCellsList(include, returnGids)
+	     68 
+	     69         elif isinstance(condition, basestring):  # entire pop
+	---> 70             cellGids.extend(list(sim.net.pops[condition].cellGids))
+	     71 
+	     72         elif isinstance(condition, tuple) or isinstance(condition, list):  # subset of a pop with relative indices
+
+	~/Applications/netpyne/netpyne/specs/dicts.py in __getitem__(self, k)
+	    182 
+	    183     def __getitem__(self, k):
+	--> 184         return super(ODict, self).__getitem__(k)
+	    185 
+	    186 
+
+	KeyError: 'PT5_1'
+
+
+** Looking into error
+
+First, let's see what the data looks like when it's loaded as a batch or from individual
+batch sims.
+
+So it looks like readBatchData uses json.load to load each sim output file into a 
+dict entry (e.g. '_0_0', '_0_1', etc.)
+
+It looks like sim.load does the same thing.  Let's actually load and compare.
+
+
+
+* 2019-06-09 -- Batch analysis
+
+** Currently working on 
+
+generate analysis figures individually for sims in batch
+altAx for Netpyne batch figures
+batch figures
+
+** Simplify plot_batch_ind_conn
+
+*** Old code
+
+def plot_batch_ind_conn(batchLabel, batchdatadir='data', includePre = ['all'], includePost = ['all'], feature = 'strength', orderBy = 'gid', figSize = (10,10), groupBy = 'pop', groupByIntervalPre = None, groupByIntervalPost = None, graphType = 'matrix', synOrConn = 'syn', synMech = None, connsFile = None, tagsFile = None, clim = None, fontSize = 12, saveData = None, saveFig = None, showFig = True, save=True, outputdir="batch_figs", filename=None, **kwargs):
+    """Plots individual raster plots for each parameter combination."""
+
+    if type(batchLabel) == str:
+        params, data = batch_utils.load_batch(batchLabel, batchdatadir=batchdatadir)
+    elif type(batchLabel) == tuple:
+        batchLabel, params, data = batchLabel
+    else:
+        raise Exception()
+
+    groupedParams = False
+    ungroupedParams = False
+
+    for p in params:
+        if 'group' not in p: 
+            p['group'] = False
+            ungroupedParams = True
+        elif p['group'] == True: 
+            groupedParams = True
+
+    if ungroupedParams:
+        labelList, valuesList = zip(*[(p['label'], p['values']) for p in params if p['group'] == False])
+        valueCombinations = list(product(*(valuesList)))
+        indexCombinations = list(product(*[range(len(x)) for x in valuesList]))
+    else:
+        valueCombinations = [(0,)] # this is a hack -- improve!
+        indexCombinations = [(0,)]
+        labelList = ()
+        valuesList = ()
+
+    if groupedParams:
+        labelListGroup, valuesListGroup = zip(*[(p['label'], p['values']) for p in params if p['group'] == True])
+        valueCombGroups = zip(*(valuesListGroup))
+        indexCombGroups = zip(*[range(len(x)) for x in valuesListGroup])
+        labelList = labelListGroup+labelList
+    else:
+        valueCombGroups = [(0,)] # this is a hack -- improve!
+        indexCombGroups = [(0,)]
+
+    for iCombG, pCombG in zip(indexCombGroups, valueCombGroups):
+        for iCombNG, pCombNG in zip(indexCombinations, valueCombinations):
+            if groupedParams and ungroupedParams: # temporary hack - improve
+                iComb = iCombG+iCombNG
+                pComb = pCombG+pCombNG
+            elif ungroupedParams:
+                iComb = iCombNG
+                pComb = pCombNG
+            elif groupedParams:
+                iComb = iCombG
+                pComb = pCombG
+            else:
+                iComb = []
+                pComb = []
+                
+            print(iComb, pComb)
+
+            for i, paramVal in enumerate(pComb):
+                paramLabel = labelList[i]
+                print(str(paramLabel)+' = '+str(paramVal))
+
+            simLabel = batchLabel +''.join([''.join('_'+str(i)) for i in iComb])
+            print(simLabel)
+
+            simFile = simLabel + ".json"
+
+            sim.load(batchdatadir + '/' + batchLabel + '/' + simFile, instantiate=False)
+
+            if saveFig:
+           		saveFig = batchdatadir + '/' + batchLabel + '/' + 'connFig_' + simLabel + '.png'
+
+            sim.analysis.plotConn(includePre=includePre, includePost=includePost, feature=feature, orderBy=orderBy, figSize=figSize, groupBy=groupBy, groupByIntervalPre=groupByIntervalPre, groupByIntervalPost=groupByIntervalPost, graphType=graphType, synOrConn=synOrConn, synMech=synMech, connsFile=connsFile, tagsFile=tagsFile, clim=clim, fontSize=fontSize, saveData=saveData, saveFig=saveFig, showFig=showFig)
+
+*** New code
+
+Will use sim.loadAll in a loop over the sims in the batch.
+
+
+** Need new batches
+
+v01_batch06 doesn't have the connectivity data, and v01_batch16 doesn't vary connectivity.
+
+Running a new batch.
+
+v01_batch17
+
+	params['EEconv'] = [0.0, 3.0, 6.0] # Default 3.0
+	params['IEconv'] = [0.0, 12.0, 24.0] # Default 12.0
+
+	cfg.duration = 10000
+	cfg.numCells = 1000        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

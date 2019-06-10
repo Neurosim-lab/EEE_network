@@ -19,7 +19,7 @@ cfg.saveJson = True
 cfg.saveDataInclude = ['simData', 'simConfig', 'netParams', 'net']         
 cfg.saveMat = False
 cfg.saveCellSecs = False
-cfg.saveCellConns = True
+cfg.saveCellConns = False #True
 cfg.seeds = {'conn': 4123,
 			 'stim': 1234, 
 			 'loc' : 3214}  

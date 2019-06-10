@@ -10485,9 +10485,12 @@ In particular, I want to measure synchrony during plateaus in plat and non-plat 
 
 Increasing number of cells to 10,000
 
+** Running v01_batch20
 
+Same as 19, except:
+cfg.saveCellConns = False #True
 
-
+To reduce data.
 
 
 

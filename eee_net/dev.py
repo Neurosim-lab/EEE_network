@@ -3,7 +3,7 @@ import batch_analysis
 import matplotlib.pyplot as plt
 from netpyne import sim
 from itertools import product
-plt.ion()
+# plt.ion()
 
 batchdatadir = "data"
 
@@ -26,7 +26,7 @@ def analyze_batch(batchLabel, batchdatadir=batchdatadir):
 
 # Individual plots
 
-def plot_batch_ind_conn(batchLabel, batchdatadir='data', includePre = ['all'], includePost = ['all'], feature = 'strength', orderBy = 'gid', figSize = (10,10), groupBy = 'pop', groupByIntervalPre = None, groupByIntervalPost = None, graphType = 'matrix', synOrConn = 'syn', synMech = None, connsFile = None, tagsFile = None, clim = None, fontSize = 12, saveData = None, saveFig = True, showFig = True, save=True, outputdir="batch_figs", filename=None, **kwargs):
+def plot_batch_ind_conn(batchLabel, batchdatadir='data', includePre = ['all'], includePost = ['all'], feature = 'strength', orderBy = 'gid', figSize = (10,10), groupBy = 'pop', groupByIntervalPre = None, groupByIntervalPost = None, graphType = 'matrix', synOrConn = 'syn', synMech = None, connsFile = None, tagsFile = None, clim = None, fontSize = 12, saveData = None, saveFig = True, showFig = False, save=True, outputdir="batch_figs", filename=None, **kwargs):
     """Plots individual connectivity plots for each parameter combination."""
 
     from netpyne import specs
@@ -103,7 +103,6 @@ plot_batch_ind_conn(batchData, includePre=include, includePost=include)
 # fig5 = sim.analysis.plotConn()
 # fig6 = sim.analysis.plotRatePSD()
 # fig7 = sim.analysis.plot2Dnet()
-
 
 
 # vtraces = batch_analysis.get_vtraces(params, data)

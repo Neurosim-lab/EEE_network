@@ -10479,6 +10479,14 @@ I also want to plot for all sims: raster plot and spike stats
 
 But committing for now.
 
+In particular, I want to measure synchrony during plateaus in plat and non-plat cells.
+
+** Running v01_batch19
+
+Increasing number of cells to 10,000
+
+
+
 
 
 

@@ -8,7 +8,7 @@ saveFig = False
 # Simulation options
 cfg = specs.SimConfig()       
 cfg.duration = 1000
-cfg.numCells = 1000          
+cfg.numCells = 10000          
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
@@ -69,7 +69,7 @@ cfg.IEconv = 12.0
 cfg.IIconv = 12.0
 
 # Glutamate stim parameters
-cfg.glutamate         = True # False
+cfg.glutamate         = True 
 cfg.glutPops          = ['PT5_1', 'PT5_2']
 
 cfg.synTime           = 200.0

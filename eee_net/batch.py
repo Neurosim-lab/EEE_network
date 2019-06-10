@@ -4,7 +4,7 @@ import os
 
 runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
 #runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
-batchLabel = 'v01_batch18'
+batchLabel = 'v01_batch19'
 
 def batchRun():
 	# Create variable of type ordered dictionary (NetPyNE's customized version) 
@@ -12,8 +12,8 @@ def batchRun():
 
 	# fill in with parameters to explore and range of values (key has to coincide with a variable in simConfig) 
 	
-	params['EEconv'] = [0.0, 3.0, 6.0] # Default 3.0
-	params['IEconv'] = [0.0, 12.0, 24.0] # Default 12.0
+	params['EEconv'] = [1.5, 3.0, 6.0] # Default 3.0
+	params['IEconv'] = [6.0, 12.0, 24.0] # Default 12.0
 	#params['numCells'] = [10000, 20000, 30000]
 
 	#params['ampIClamp1'] = [0.1, 0.5, 1.0]
@@ -31,7 +31,7 @@ def batchRun():
 		b.saveFolder = '/oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/' + b.batchLabel
 		b.runCfg = {'type': 'hpc_slurm',
 					'allocation': 'shs100', 
-					'walltime': '00:30:00',
+					'walltime': '01:00:00',
 					'nodes': 4,
 					'coresPerNode': 24,
 					'email': 'joe.w.graham@gmail.com',

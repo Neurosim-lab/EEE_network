@@ -10438,9 +10438,30 @@ v01_batch17
 	cfg.duration = 10000
 	cfg.numCells = 1000        
 
+co$ sq
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+          23941944   compute v01_batc jwgraham  R       0:02      4 comet-14-[57-58,60-61]
+          23941942   compute v01_batc jwgraham  R       0:06      4 comet-04-[69-72]
+          23941943   compute v01_batc jwgraham  R       0:06      4 comet-14-[53-56]
+          23941941   compute v01_batc jwgraham  R       0:09      4 comet-04-[59-60,62,68]
+          23941938   compute v01_batc jwgraham  R       0:11      4 comet-22-[05,08,30,50]
+          23941939   compute v01_batc jwgraham  R       0:11      4 comet-04-[51-52,56-57]
+          23941935   compute v01_batc jwgraham  R       0:16      4 comet-20-[07,12-13,37]
+          23941936   compute v01_batc jwgraham  R       0:16      4 comet-05-[09,11,15-16]
+          23941937   compute v01_batc jwgraham  R       0:16      4 comet-10-[24-25,41,52]
 
 
+Downloading data
 
+	graham$ cpsc v01_batch17
+	Attempting to copy: v01_batch17
+	  From: comet.sdsc.xsede.org/oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/
+	  To  : /Users/graham/EEE_network/eee_net/data/v01_batch17
+
+
+** Running v01_batch18
+
+Same as 17, but for only 1000 ms, to have a quick batch to debug analysis with
 
 
 

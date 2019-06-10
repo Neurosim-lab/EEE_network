@@ -10463,6 +10463,24 @@ Downloading data
 
 Same as 17, but for only 1000 ms, to have a quick batch to debug analysis with
 
+Downloading.
+
+
+** Plotting 
+
+Running dev.py right now plots all the various connectivity features for each sim in batch18
+
+It's great to be able to see them all, but comparison is difficult because the scale is 
+different on each...  Need to look into how to set scale the same for all sims...
+
+I also want to plot for all sims: raster plot and spike stats
+
+	stats: List of types measure to calculate stats over: cell firing rates, interspike interval coefficient of variation (ISI CV), pairwise synchrony, and/or overall synchrony (sync measures calculated using PySpike SPIKE-Synchrony measure) ([‘rate’, |'isicv'| ‘pairsync’ |'sync'|])
+
+But committing for now.
+
+
+
 
 
 

@@ -46,9 +46,6 @@ def plot_batch_ind_conn(batchLabel, batchdatadir='data', includePre = ['all'], i
 
         datum = data[simLabel]
 
-        if saveFig:
-            saveFig = batchdatadir + '/' + batchLabel + '/' + 'connFig_' + simLabel + '.png'
-
         cfg = specs.SimConfig(datum['simConfig'])
         cfg.createNEURONObj = False
 
@@ -66,14 +63,22 @@ def plot_batch_ind_conn(batchLabel, batchdatadir='data', includePre = ['all'], i
 
         sim.allSimData = datum['simData']
 
-        sim.analysis.plotConn(includePre=includePre, includePost=includePost, feature=feature, orderBy=orderBy, figSize=figSize, groupBy=groupBy, groupByIntervalPre=groupByIntervalPre, groupByIntervalPost=groupByIntervalPost, graphType=graphType, synOrConn=synOrConn, synMech=synMech, connsFile=connsFile, tagsFile=tagsFile, clim=clim, fontSize=fontSize, saveData=saveData, saveFig=saveFig, showFig=showFig)
+        features = ['weight', 'delay', 'numConns', 'probability', 'strength', 'convergence', 'divergence']
+
+        for feature in features:
+
+            if saveFig:
+                saveFig = batchdatadir + '/' + batchLabel + '/' + 'connFig_' + feature + simLabel + '.png'
+
+            sim.analysis.plotConn(includePre=includePre, includePost=includePost, feature=feature, orderBy=orderBy, figSize=figSize, groupBy=groupBy, groupByIntervalPre=groupByIntervalPre, groupByIntervalPost=groupByIntervalPost, graphType=graphType, synOrConn=synOrConn, synMech=synMech, connsFile=connsFile, tagsFile=tagsFile, clim=clim, fontSize=fontSize, saveData=saveData, saveFig=saveFig, showFig=showFig)
 
 
-batchLabel = 'v01_batch06'
+batchLabel = 'v01_batch18'
 params, data = batch_utils.load_batch(batchLabel, batchdatadir=batchdatadir)
 batchData = (batchLabel, params, data)
+include = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5']
 
-plot_batch_ind_conn(batchData)
+plot_batch_ind_conn(batchData, includePre=include, includePost=include)
 
 
 
@@ -109,5 +114,5 @@ plot_batch_ind_conn(batchData)
 
 # batch_analysis.plot_num_spikes(batchLabel)
 
-plt.show()
+# plt.show()
 

@@ -10493,6 +10493,37 @@ cfg.saveCellConns = False #True
 To reduce data.
 
 
+* 2019-06-10 -- Batch analysis
+
+** Currently working on 
+
+generate analysis figures individually for sims in batch
+altAx for Netpyne batch figures
+batch figures
+
+** Plotting connectivity
+
+It is literally taking all day to plotConn on v01_batch19 (10,000 cells).
+
+I should profile the code and see what is taking so long.  But first I want to get
+raster plots and stats plots.
+
+Also, would like to rescale all figs to same limits, so easier to compare.
+
+Also, would like to include batch param labels and values in plot title.
+
+But first to get more analysis going.
+
+
+** Plotting individual raster plots
+
+Working in dev.py on plot_batch_ind_raster
+
+Got it working. Running dev.py generates raster plots for v01_batch20.
+
+Committing.
+
+
 
 
 

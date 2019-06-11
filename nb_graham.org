@@ -10524,6 +10524,30 @@ Got it working. Running dev.py generates raster plots for v01_batch20.
 Committing.
 
 
+** Plotting stats
+
+Working in dev.py on plot_batch_ind_stats
+
+Error: plotSpikeStats() requires the PySpike python package to calculate synchrony (try: pip install pyspike)
+
+Got a strange error with `pip install pyspike`
+
+Installed from git (http://mariomulansky.github.io/PySpike/):
+
+	git clone https://github.com/mariomulansky/PySpike.git
+	cd PySpike
+	python setup.py build_ext --inplace
+
+	Finally, you should make PySpike’s installation folder known to Python to be able to import pyspike in your own projects. Therefore, add your /path/to/PySpike to the $PYTHONPATH environment variable.
+
+Added the following to my .bash_profile
+	export PYTHONPATH="/Users/graham/Applications/PySpike:$PYTHONPATH"
+
+Now it works.  Committing.
+
+
+
+
 
 
 

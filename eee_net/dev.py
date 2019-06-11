@@ -17,11 +17,12 @@ def analyze_batch(batchLabel, batchdatadir=batchdatadir):
     batch_analysis.plot_vtraces(batch, timerange=[100, 1000])
     #batch_analysis.plot_batch_conn(batch)
 
-
 #analyze_batch('v01_batch03')
 #analyze_batch('v01_batch04')
 #analyze_batch('v01_batch05')
 #analyze_batch('v01_batch06')
+
+
 
 
 # Individual plots
@@ -75,12 +76,6 @@ def plot_batch_ind_conn(batchLabel, batchdatadir='data', includePre = ['all'], i
             sim.analysis.plotConn(includePre=includePre, includePost=includePost, feature=feature, orderBy=orderBy, figSize=figSize, groupBy=groupBy, groupByIntervalPre=groupByIntervalPre, groupByIntervalPost=groupByIntervalPost, graphType=graphType, synOrConn=synOrConn, synMech=synMech, connsFile=connsFile, tagsFile=tagsFile, clim=clim, fontSize=fontSize, saveData=saveData, saveFig=saveFig, showFig=showFig)
 
 
-batchLabel = 'v01_batch20'
-params, data = batch_utils.load_batch(batchLabel, batchdatadir=batchdatadir)
-batchData = (batchLabel, params, data)
-include = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5']
-
-plot_batch_ind_conn(batchData, includePre=include, includePost=include)
 
 
 
@@ -150,6 +145,55 @@ def plot_batch_ind_raster(batchLabel, batchdatadir='data', include=['allCells'],
 
 
 
+def plot_batch_ind_stats(batchLabel, batchdatadir='data', include=['allCells', 'eachPop'], statDataIn={}, timeRange=None, graphType='boxplot', stats=['rate', 'isicv'], bins=50, popColors=[], histlogy=False, histlogx=False, histmin=0.0, density=False, includeRate0=False, legendLabels=None, normfit=False, histShading=True, xlim=None, dpi=100, figSize=(6,8), fontSize=12, saveData=None, showFig=True, save=True, outputdir='batch_figs'):
+    """Plots individual connectivity plots for each parameter combination."""
+
+    from netpyne import specs
+
+    if type(batchLabel) == str:
+        params, data = batch_utils.load_batch(batchLabel, batchdatadir=batchdatadir)
+    elif type(batchLabel) == tuple:
+        batchLabel, params, data = batchLabel
+    else:
+        raise Exception()
+
+    simLabels = data.keys()
+
+    for simLabel in simLabels:
+
+        print('Plotting sim: ' + simLabel)
+
+        datum = data[simLabel]
+
+        cfg = specs.SimConfig(datum['simConfig'])
+        cfg.createNEURONObj = False
+
+        sim.initialize()  # create network object and set cfg and net params
+        sim.loadAll('', data=datum, instantiate=False)
+        sim.setSimCfg(cfg)
+        try:
+            print('Cells created: ' + str(len(sim.net.allCells)))
+        except:
+            print('Alternate sim loading...')
+            sim.net.createPops()     
+            sim.net.createCells()
+            sim.setupRecording()
+            sim.gatherData() 
+
+        sim.allSimData = datum['simData']
+
+        if save:
+            saveFig = batchdatadir + '/' + batchLabel + '/' + 'statFig_' + simLabel
+        else:
+            saveFig = None
+
+        sim.analysis.plotSpikeStats(include=include, statDataIn=statDataIn, timeRange=timeRange, graphType=graphType, stats=stats, bins=bins, popColors=popColors, histlogy=histlogy, histlogx=histlogx, histmin=histmin, density=density, includeRate0=includeRate0, legendLabels=legendLabels, normfit=normfit, histShading=histShading, xlim=xlim, dpi=dpi, figSize=figSize, fontSize=fontSize, saveData=saveData, saveFig=saveFig, showFig=showFig)
+
+
+
+
+
+
 
 
 
@@ -157,13 +201,13 @@ batchLabel = 'v01_batch20'
 params, data = batch_utils.load_batch(batchLabel, batchdatadir=batchdatadir)
 batchData = (batchLabel, params, data)
 
-include = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5']
+#include = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5']
 #plot_batch_ind_conn(batchData, includePre=include, includePost=include)
 
-plot_batch_ind_raster(batchData)
+#plot_batch_ind_raster(batchData)
 
-
-
+stats = ['rate', 'isicv', 'sync', 'pairsync']
+plot_batch_ind_stats(batchData, stats=stats)
 
 
 

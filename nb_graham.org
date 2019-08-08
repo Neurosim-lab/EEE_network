@@ -10547,18 +10547,135 @@ Now it works.  Committing.
 
 
 
+* 2019-06-11 -- Batch analysis and EEE meeting
+
+** Currently working on 
+
+generate analysis figures individually for sims in batch
+altAx for Netpyne batch figures
+batch figures
+
+** Exploring synchrony
+
+Want to plot synchrony for each pop during plateau
+
+Should look at traces to ensure plateaus and choose time window
+
+Plotting traces for v01_batch20
+
+	batch_analysis.plot_vtraces(batchData)
+
+Now to run spike stat synchrony for timerange = [200, 400]
+
+** EEE meeting
+
+https://docs.google.com/document/d/1ic7jF4aou7vLQcL8gHjmkbYtFkeL3IAXjRTp0FVh6Uc/edit
+
+Discussion:
+
+Very slow plotting
+	Use neurosim machines for analyzing/plotting
+	May not have enough memory
+Rate plotting
+	Low average with high inds looks like a bug
+	Raster plot, show only portion of pops (too much now)
+	Check rates myself, compare with Netpyne measures
+	A lot more spacing in y-axis
+	Raster more interesting with fewer cells (just cells of interest)
+Look into numConns
+	Check conns in single cell, compare with Netpyne
+Synchronization measure in Netpyne
+	Odd that 1 and 2 (get plateaus) have lower sync
+	Need to look into
+Raster and spike stats freq don’t seem to match up
 
 
+** Currently working on
+
+Get analysis/plotting going on Neurosim machines
+Individual plots from batch
+	Rescale all figs to same limits, so easier to compare
+	Include batch param labels and values in plot title
+Batch figures
+	Get batch raster plot working
+	Implement altAx in Netpyne
+	Get conn plot working (all same scale)
+Check rates in single cells, compare with Netpyne analysis
+Look into numConns, explore in single cells
+Look into synchrony measures
 
 
+* 2019-08-06 -- EEE meeting
+
+** Meeting agenda and notes
+
+Today’s agenda
+
+Upcoming deadlines
+SfN meeting poster	
+October 19
+https://www.sfn.org/Meetings/Neuroscience-2019
+Abstract (also copied below)
+Network modeling
+
+Single cell article resubmission updates
+
+CNS meeting
+
+Moving forward with network simulations
+Need synchronization measures
+Joe will work on measuring synchrony in two cell pops: with and without induced plateaus
+syncLines option in raster plots
+plotSpikeStats options: ‘pairsync’ and ‘sync’
+Any other existing synchrony measures?
+Other things to work on?
+
+Other items?
+
+Discussion
+
+Single cell article updates
+Huge progress
+No changes fig 1, 2
+Fig 3 -- condensed information
+Fig 4 -- improve size and clutter
+Fig 5 -- simplified, added cartoon
+Fig 6 -- positive pulses smaller during plateau, negative pulses same size
+Model doesn’t match precise voltage changes, taus from real neurons
+Interesting to Srdjan: positive pulse smaller, reaches amplitude sooner
+Some taus slower, some faster during plateau
+Why difference between positive and negative pulses?
+Ready to deliver manuscript today
+Model results pretty good! Qualitative rather than quantitative comparisons.
+Supp figures essentially the same -- more detail than article figs
+Srdjan would like light editing
+Perhaps submit to Nature Communications
+	
+CNS meeting
+Lots of young interest, not too much advice/critiques
+
+Moving forward with network simulations
+Synchrony measures
+Hoping plats emerge spontaneously with long large sims, requires analysis program to find them
+Combine prolonged activity with plateau stims at certain times (random or configured, perhaps this will trigger spontaneous plateaus)
+Same set of neurons driving certain cells during plats, others without plats
+Srdjan: make as simple as possible, find one network parameter that significantly changes when cells get plateaus, compare with network where cells don’t have plateaus
+Question between absolutely same networks versus need for different networks to have plateau differences
+Bill: get phenomenology first (gumball machine -- cells lighting up, synching during plateaus)
+Srdjan: look for ensembles, compare with and without plateaus
+Run for long periods, use up HPC (Comet and Stampede)
 
 
+* 2019-08-08 -- 
 
+** Diving back into EEE
 
+Steps to take now:
 
-
-
-
+Commit and push to repo
+Pull repo and follow README
+Run single sim on Comet
+Run batch sims on Comet
 
 
 

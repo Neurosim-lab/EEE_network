@@ -1012,6 +1012,8 @@ def plot_vtraces(batchname, cellIDs=None, secs=None, timerange=None, param_label
     """If secs is None, all compartment voltage traces are plotted. secs can also be a list of compartment names, e.g. secs=['soma', 'Bdend1'].
     If cellID is None, all cells will be plotted (individually).  cellID can also be a list of cell IDs or an integer value."""
 
+    print("Plotting voltage traces...")
+
     if type(batchname) == str:
         params, data = batch_utils.load_batch(batchname)
     elif type(batchname) == tuple:
@@ -1035,6 +1037,8 @@ def plot_vtraces(batchname, cellIDs=None, secs=None, timerange=None, param_label
         
     for cellID in cellIDs:
         cellLabel = "cell_" + str(cellID)
+
+        print("  " + cellLabel)
                 
         secs_present = [sec for sec in secs_all if cellLabel in sim_data[sec].keys()]
         secs = [sec[2:] for sec in secs_present if len(sim_data[sec].keys()) > 0]
@@ -1056,6 +1060,7 @@ def plot_vtraces(batchname, cellIDs=None, secs=None, timerange=None, param_label
             if not os.path.isdir(outputdir):
                 os.mkdir(outputdir)
             if filename is None:
+                print(str(os.path.join(outputdir, batchname + "_" + cellLabel + "_vtrace_1.png")))
                 fig1.savefig(os.path.join(outputdir, batchname + "_" + cellLabel + "_vtrace_1.png"))
                 fig2.savefig(os.path.join(outputdir, batchname + "_" + cellLabel + "_vtrace_2.png"))
             else:

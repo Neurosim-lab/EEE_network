@@ -196,7 +196,6 @@ def plot_batch_ind_stats(batchLabel, batchdatadir='data', include=['allCells', '
 
 
 
-
 batchLabel = 'v01_batch20'
 params, data = batch_utils.load_batch(batchLabel, batchdatadir=batchdatadir)
 batchData = (batchLabel, params, data)
@@ -206,17 +205,19 @@ batchData = (batchLabel, params, data)
 
 #plot_batch_ind_raster(batchData)
 
-stats = ['rate', 'isicv', 'sync', 'pairsync']
-plot_batch_ind_stats(batchData, stats=stats)
+#stats = ['rate', 'isicv', 'sync', 'pairsync']
+#plot_batch_ind_stats(batchData, stats=stats)
+
+stats = ['sync']
+timeRange = [200, 400]
+#plot_batch_ind_stats(batchData, stats=stats, timeRange=timeRange)
+batch_analysis.plot_batch_raster(batchData)
 
 
 
 
 
-
-
-
-
+## To load a single sim from file:
 # sim.load(batchdatadir + '/' + batchLabel + '/' + batchLabel + curSim + '.json', instantiate=False)
 
 # fig1 = sim.analysis.plotTraces()

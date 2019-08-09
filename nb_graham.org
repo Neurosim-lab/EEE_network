@@ -10702,7 +10702,7 @@ Everything seems to work.
 Run single sim on Comet
 Run batch sims on Comet
 
-*** Run single sim on Comet
+** Run single sim on Comet
 
 Just making sure everything still works.
 
@@ -10719,9 +10719,24 @@ cd ../eee_net ; ln -s "../mod/x86_64" x86_64
 
 Whoops.  Need to commit and push, then pull from Comet.
 
+sshc
+cd EEE_network/eee_net
+git pull 
+sbatch runsim_comet
+Submitted batch job 25574184
 
 
+** Run batch of sims on Comet
 
+Modifying batch.py:
+batchLabel = 'v01_batch21'
+
+Committing and pushing, then pulling from Comet and running:
+
+sshc
+cd EEE_network/eee_net
+git pull
+python batch.py
 
 
 

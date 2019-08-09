@@ -10666,7 +10666,7 @@ Srdjan: look for ensembles, compare with and without plateaus
 Run for long periods, use up HPC (Comet and Stampede)
 
 
-* 2019-08-08 -- 
+* 2019-08-08 -- Aborted reentry into EEE
 
 ** Diving back into EEE
 
@@ -10676,6 +10676,54 @@ Commit and push to repo
 Pull repo and follow README
 Run single sim on Comet
 Run batch sims on Comet
+
+
+*** Commit and push
+
+Done.  Now cloning into Neurosim and copying over nb_gif.
+
+scp -r nb_gif graham@no.neurosim.downstate.edu:/u/graham/EEE_network/nb_gif
+
+
+*** Pull repo and follow README
+
+cd /u/graham
+git clone https://github.com/Neurosim-lab/EEE_network.git
+cd EEE_network/mod ; nrnivmodl
+cd ../eee_net ; ln -s "../mod/x86_64" x86_64
+
+Everything seems to work.
+
+
+* 2019-08-09 -- Reentry into EEE
+
+** To do now:
+
+Run single sim on Comet
+Run batch sims on Comet
+
+*** Run single sim on Comet
+
+Just making sure everything still works.
+
+Running eee_net_08, modified cfg.py and runsim_comet accordingly.
+
+Existing alias:
+alias sshc='ssh -Y jwgraham@comet.sdsc.edu'
+
+sshc
+mv EEE_network EEE_network_old
+git clone https://github.com/Neurosim-lab/EEE_network.git
+cd EEE_network/mod ; nrnivmodl
+cd ../eee_net ; ln -s "../mod/x86_64" x86_64
+
+Whoops.  Need to commit and push, then pull from Comet.
+
+
+
+
+
+
 
 
 

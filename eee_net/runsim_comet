@@ -1,11 +1,11 @@
 #!/bin/bash 
-#SBATCH --job-name=eee_net_07
+#SBATCH --job-name=eee_net_08
 #SBATCH -A shs100
-#SBATCH -t 4:00:00
+#SBATCH -t 1:00:00
 #SBATCH --nodes=4
 #SBATCH --ntasks-per-node=24
-#SBATCH -o eee_net_07.run
-#SBATCH -e eee_net_07.err
+#SBATCH -o eee_net_08.run
+#SBATCH -e eee_net_08.err
 #SBATCH --mail-user=joe.w.graham@gmail.com
 #SBATCH --mail-type=end
 source ~/.bashrc

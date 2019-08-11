@@ -10738,6 +10738,111 @@ cd EEE_network/eee_net
 git pull
 python batch.py
 
+Jobs are all pending:
+
+co$ sq
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+          25574184   compute eee_net_ jwgraham PD       0:00      4 (Resources)
+          25574244   compute v01_batc jwgraham PD       0:00      4 (Resources)
+          25574245   compute v01_batc jwgraham PD       0:00      4 (Resources)
+          25574247   compute v01_batc jwgraham PD       0:00      4 (Resources)
+          25574248   compute v01_batc jwgraham PD       0:00      4 (Resources)
+          25574249   compute v01_batc jwgraham PD       0:00      4 (Resources)
+          25574250   compute v01_batc jwgraham PD       0:00      4 (Resources)
+          25574251   compute v01_batc jwgraham PD       0:00      4 (Resources)
+          25574252   compute v01_batc jwgraham PD       0:00      4 (Resources)
+          25574253   compute v01_batc jwgraham PD       0:00      4 (Resources)
+
+
+** Prepare interesting sim looking for synchrony
+
+While waiting on Comet to complete, I'll start working on a longer sim that does the 
+following (4 pops total):
+
+pop 1: nothing
+pop 1: 5 inputs
+pop 1: plateau
+pop 1: plateau + 5 inputs
+
+pops 1+2: same as above
+
+pops 1+2+3: same as above
+
+pops 1+2+3+4: same as above
+
+Then measure synchrony within each pop and across all pops
+
+Working on code in eee_net_09
+
+Increasing sim duration: cfg.duration = 10000
+
+
+
+* 2019-08-09 -- Sunday afternoon Comet submissions
+
+** The ind sim and batch sims finally ran
+
+All with exit code 0, average time 3.5 minutes
+
+Except SLURM Job_id=25574251 Name=v01_batch21_2_0 Ended, Run time 00:00:45
+
+Looking into output
+
+*** eee_net_08
+
+Took 3:38 to run
+
+eee_net_08.err and eee_net_08.run show up in EEE_network/eee_net
+
+Can change output location in runsim_comet
+
+eee_net_08.json shows up in /EEE_network/eee_net/data ('data' dir is set in cfg file)
+
+This output file is 395 MB and seems good.
+
+
+*** v01_batch21
+
+Output appears in /oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/v01_batch21
+
+All sims took about 3.5 minutes to complete, and each has about 395 MB in output json file,
+and has small .err files
+
+Except: 
+	Name=v01_batch21_2_0 Ended, Run time 00:00:45
+
+	-rw-r--r-- 1 jwgraham shs100      7540 Aug  9 10:57 v01_batch21_2_0_cfg.json
+	-rw-r--r-- 1 jwgraham shs100  63931413 Aug 10 00:27 v01_batch21_2_0.err
+	-rw-r--r-- 1 jwgraham shs100     43030 Aug 10 00:27 v01_batch21_2_0.run
+	-rw-r--r-- 1 jwgraham shs100       764 Aug  9 10:57 v01_batch21_2_0.sbatch
+
+This one had tiny output file and large .err file
+
+Looking at .err file
+
+It's the seg faults that we were getting earlier (before switching to only 96 cores):
+
+	[comet-26-46:15676] *** Process received signal ***
+	[comet-26-46:15676] Signal: Segmentation fault (11)
+	[comet-26-46:15676] Signal code:  (0)
+	[comet-26-46:15676] Failing at address: (nil)
+	[comet-26-46:15676] [ 0] /lib64/libc.so.6[0x3328832570]
+	[comet-26-46:15676] [ 1] /opt/openmpi/gnu/ib/lib/libmpi.so.1(+0x113a5e)[0x2b66ac0e4a5e]
+	[comet-26-46:15676] [ 2] /opt/openmpi/gnu/ib/lib/libmpi.so.1(+0x113cbc)[0x2b66ac0e4cbc]
+	[comet-26-46:15676] [ 3] /opt/openmpi/gnu/ib/lib/libmpi.so.1(+0x10b488)[0x2b66ac0dc488]
+	[comet-26-46:15676] [ 4] /lib64/libpthread.so.0[0x3329007aa1]
+	[comet-26-46:15676] [ 5] /lib64/libc.so.6(clone+0x6d)[0x33288e8c4d]
+	[comet-26-46:15676] *** End of error message ***
+
+I am going to submit the same batch again to see if we get seg fault on the same sim
+
+** Submitting batch to see if seg fault happens
+
+Updating batch label: batchLabel = 'v01_batch22'
+Dropping wall time to 30 min for quicker queueing
+
+Committing, pushing, submitting to Comet.
+
 
 
 

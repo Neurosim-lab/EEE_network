@@ -10843,6 +10843,552 @@ Dropping wall time to 30 min for quicker queueing
 
 Committing, pushing, submitting to Comet.
 
+Wow, they ran almost immediately.  Weekend queues are short.
+
+This time there was no seg fault, all sims ran fine.
+
+
+
+* 2019-08-12 -- Working on sync analyses
+
+** Analysis needs
+
+Need to figure out analyses on Comet -- too slow to download large outputs and
+analyze locally
+
+Need synchrony measures
+Need plateau detection
+
+Working locally, running small sim, then getting analyses going
+
+Once it works locally, will try on Comet
+
+** Working locally
+
+Running single sim with 100 cells: eee_net_09
+
+	cd EEE_network/eee_net
+	./runsim 4
+
+run time = 15.05 s
+output size = 4.4 MB
+
+Running sim with 1000 cells: eee_net_10
+
+run time = 266.93 s
+output size = 39.9 MB
+
+** Analyzing locally
+
+*** Loading data incorrectly
+
+from netpyne import sim
+sim.load('eee_net_09.json')
+	
+	Loading file eee_net_09.json ... 
+	  Done; file loading time = 0.04 s
+	Loading simConfig...
+	Loading netParams...
+	Loading net...
+	  Created 100 cells
+	  Created 0 connections
+	  Created 2880 stims
+	---------------------------------------------------------------------------
+	AttributeError                            Traceback (most recent call last)
+	<ipython-input-10-513f73834fcd> in <module>()
+	----> 1 sim.load('eee_net_09.json')
+
+	/usr/site/nrniv/local/python/anaconda3/lib/python3.7/site-packages/netpyne/sim/wrappers.py in load(filename, simConfig, output, instantiate, createNEURONObj)
+	     88     sim.initialize()  # create network object and set cfg and net params
+	     89     sim.cfg.createNEURONObj = createNEURONObj
+	---> 90     sim.loadAll(filename, instantiate=instantiate, createNEURONObj=createNEURONObj)
+	     91     if simConfig: sim.setSimCfg(simConfig)  # set after to replace potentially loaded cfg
+	     92     if len(sim.net.cells) == 0 and instantiate:
+
+	/usr/site/nrniv/local/python/anaconda3/lib/python3.7/site-packages/netpyne/sim/load.py in loadAll(filename, data, instantiate, createNEURONObj)
+	    284         print('Error: no connFormat provided in simConfig')
+	    285         sys.exit()
+	--> 286     loadNet(filename, data=data, instantiate=instantiate, compactConnFormat=connFormat)
+	    287     loadSimData(filename, data=data)
+	    288 
+
+	/usr/site/nrniv/local/python/anaconda3/lib/python3.7/site-packages/netpyne/sim/load.py in loadNet(filename, data, instantiate, compactConnFormat)
+	    233                     for cell in sim.net.cells:
+	    234                         prop = {'secs': cell.secs}
+	--> 235                         cell.createNEURONObj(prop)  # use same syntax as when creating based on high-level specs
+	    236                         cell.associateGid()  # can only associate once the hSection obj has been created
+	    237                     # create all NEURON Netcons, NetStims, etc
+
+	/usr/site/nrniv/local/python/anaconda3/lib/python3.7/site-packages/netpyne/cell/compartCell.py in createNEURONObj(self, prop)
+	    400                     if pointpName not in sec['pointps']:
+	    401                         sec['pointps'][pointpName] = Dict()
+	--> 402                     pointpObj = getattr(h, pointpParams['mod'])
+	    403                     loc = pointpParams['loc'] if 'loc' in pointpParams else 0.5  # set location
+	    404                     sec['pointps'][pointpName]['hObj'] = pointpObj(loc, sec = sec['hObj'])  # create h Pointp object (eg. h.Izhi2007b)
+
+	AttributeError: 'hoc.HocObject' object has no attribute 'Gfluctp'
+
+*** Loading data incorrectly
+
+Maybe if I load from eee_net, where the mod symlink is...
+
+from netpyne import sim
+sim.load('data/eee_net_09.json')
+
+	Loading file data/eee_net_09.json ... 
+	  Done; file loading time = 0.04 s
+	Loading simConfig...
+	Loading netParams...
+	Loading net...
+	  Created 100 cells
+	  Created 0 connections
+	  Created 2880 stims
+	---------------------------------------------------------------------------
+	LookupError                               Traceback (most recent call last)
+	<ipython-input-3-2b63cf57ac72> in <module>()
+	----> 1 sim.load('data/eee_net_09.json')
+
+	/usr/site/nrniv/local/python/anaconda3/lib/python3.7/site-packages/netpyne/sim/wrappers.py in load(filename, simConfig, output, instantiate, createNEURONObj)
+	     88     sim.initialize()  # create network object and set cfg and net params
+	     89     sim.cfg.createNEURONObj = createNEURONObj
+	---> 90     sim.loadAll(filename, instantiate=instantiate, createNEURONObj=createNEURONObj)
+	     91     if simConfig: sim.setSimCfg(simConfig)  # set after to replace potentially loaded cfg
+	     92     if len(sim.net.cells) == 0 and instantiate:
+
+	/usr/site/nrniv/local/python/anaconda3/lib/python3.7/site-packages/netpyne/sim/load.py in loadAll(filename, data, instantiate, createNEURONObj)
+	    284         print('Error: no connFormat provided in simConfig')
+	    285         sys.exit()
+	--> 286     loadNet(filename, data=data, instantiate=instantiate, compactConnFormat=connFormat)
+	    287     loadSimData(filename, data=data)
+	    288 
+
+	/usr/site/nrniv/local/python/anaconda3/lib/python3.7/site-packages/netpyne/sim/load.py in loadNet(filename, data, instantiate, compactConnFormat)
+	    233                     for cell in sim.net.cells:
+	    234                         prop = {'secs': cell.secs}
+	--> 235                         cell.createNEURONObj(prop)  # use same syntax as when creating based on high-level specs
+	    236                         cell.associateGid()  # can only associate once the hSection obj has been created
+	    237                     # create all NEURON Netcons, NetStims, etc
+
+	/usr/site/nrniv/local/python/anaconda3/lib/python3.7/site-packages/netpyne/cell/compartCell.py in createNEURONObj(self, prop)
+	    407                             pointpParamValue = self.gid
+	    408                         if pointpParamName not in ['mod', 'loc', 'vref', 'synList'] and not pointpParamName.startswith('_'):
+	--> 409                             setattr(sec['pointps'][pointpName]['hObj'], pointpParamName, pointpParamValue)
+	    410 
+	    411         # set topology
+
+	LookupError: 'hObj' is not a defined hoc variable name.
+
+A different error...
+
+Maybe if I try not instantiating...
+
+*** Loading data incorrectly
+
+sim.load('data/eee_net_09.json', instantiate=False)
+
+	Loading file data/eee_net_09.json ... 
+	  Done; file loading time = 0.04 s
+	Loading simConfig...
+	Loading netParams...
+	Loading net...
+	Loading simData...
+	---------------------------------------------------------------------------
+	KeyError                                  Traceback (most recent call last)
+	<ipython-input-4-8fa3e8d346d3> in <module>()
+	----> 1 sim.load('data/eee_net_09.json', instantiate=False)
+
+	/usr/site/nrniv/local/python/anaconda3/lib/python3.7/site-packages/netpyne/sim/wrappers.py in load(filename, simConfig, output, instantiate, createNEURONObj)
+	     97         rxd = sim.net.addRxD()                    # add reaction-diffusion (RxD)
+	     98 
+	---> 99     simData = sim.setupRecording()              # setup variables to record for each cell (spikes, V traces, etc)
+	    100 
+	    101     if output:
+
+	/usr/site/nrniv/local/python/anaconda3/lib/python3.7/site-packages/netpyne/sim/setup.py in setupRecording()
+	    257         # get list of cells from argument of plotTraces function
+	    258         if 'plotTraces' in sim.cfg.analysis and 'include' in sim.cfg.analysis['plotTraces']:
+	--> 259             cellsPlot = utils.getCellsList(sim.cfg.analysis['plotTraces']['include'])
+	    260         else:
+	    261             cellsPlot = []
+
+	/usr/site/nrniv/local/python/anaconda3/lib/python3.7/site-packages/netpyne/sim/utils.py in getCellsList(include, returnGids)
+	     68 
+	     69         elif isinstance(condition, basestring):  # entire pop
+	---> 70             cellGids.extend(list(sim.net.pops[condition].cellGids))
+	     71 
+	     72         elif isinstance(condition, tuple) or isinstance(condition, list):  # subset of a pop with relative indices
+
+	/usr/site/nrniv/local/python/anaconda3/lib/python3.7/site-packages/netpyne/specs/dicts.py in __getitem__(self, k)
+	    182 
+	    183     def __getitem__(self, k):
+	--> 184         return super(ODict, self).__getitem__(k)
+	    185 
+	    186 
+
+	KeyError: 'PT5_1'
+
+Nope, then it doesn't know what the populations are.
+
+Ahh, maybe I just need to not instantiate a NEURON object...
+
+*** Loading data correctly
+
+sim.load('data/eee_net_09.json', createNEURONObj=False)
+
+	Loading file data/eee_net_09.json ... 
+	  Done; file loading time = 0.04 s
+	Loading simConfig...
+	Loading netParams...
+	Loading net...
+	  Created 100 cells
+	  Created 0 connections
+	  Created 2880 stims
+	  Done; re-instantiate net time = 0.09 s
+	Loading simData...
+	Recording 0 traces of 0 types on node 0
+
+Now it works.  Plotting raster:
+
+sim.analysis.plotRaster()
+Plotting raster...
+
+That works, and creates output necessary for plotting (good to pull from Comet, since
+can't seem to generate plots there).
+
+*** Getting Raster data out, seeing sync value
+
+rasterData = sim.analysis.plotRaster(orderInverse=True, syncLines=True)
+
+When including synclines, the sync value is included in the plot title
+
+Now to induce plateaus and measure sync with and without plateaus, with and without
+external inputs
+
+** Inducing plateaus
+
+Actually, there should be plateaus in PT5_1 and _2 already, but perhaps too much noise.
+
+Turning noise off in PT cells and running sim.
+
+cfg.simLabel = 'eee_net_11'
+sim.load('data/eee_net_11.json', createNEURONObj=False)
+rasterData = sim.analysis.plotRaster(orderInverse=True, syncLines=True)
+
+There's definitely plateaus under the noise:
+file:gif/20190812_205928.png
+
+Reducing number of cells to 100 for easier analysis and reducing noise
+
+cfg.PT5_exc_noise_amp = 0.1 #1.0
+cfg.PT5_exc_noise_e   = 0.0
+cfg.PT5_exc_noise_tau = 1.0
+cfg.PT5_inh_noise_amp = 0.1 #1.0
+cfg.PT5_inh_noise_e   = -75.0
+cfg.PT5_inh_noise_tau = 1.0
+
+Seems like there is still a lot of noise...
+file:gif/20190812_210744.png
+
+Reducing noise by another factor of 10
+
+cfg.PT5_exc_noise_amp = 0.01 #1.0
+cfg.PT5_exc_noise_e   = 0.0
+cfg.PT5_exc_noise_tau = 1.0
+cfg.PT5_inh_noise_amp = 0.01 #1.0
+cfg.PT5_inh_noise_e   = -75.0
+cfg.PT5_inh_noise_tau = 1.0
+
+cfg.simLabel = 'eee_net_13'
+
+Still a lot of noise. Might have more to do with e values than amplitudes...
+
+But will worry about that later.
+
+Looking at sync:
+rasterData = sim.analysis.plotRaster(orderInverse=True, syncLines=True, include=['PT5_1'])
+rasterData = sim.analysis.plotRaster(orderInverse=True, syncLines=True, include=['PT5_3'])
+
+file:gif/20190812_211543.png
+
+PT5_1 (w/ plateau) and PT5_3 (w/o plateau) have samy sync...
+
+Will include only time range of plateau... 200 to 400 ms
+
+rasterData = sim.analysis.plotRaster(orderInverse=True, syncLines=True, include=['PT5_1'], timeRange=[200,400])
+
+Sync values are still the same... timeRange must not have an effect.
+file:gif/20190812_211951.png
+
+Will have to look into calculating sync myself...
+
+But first, adding in external inputs and looking at sync
+
+** Adding external inputs
+
+cfg.simLabel = 'eee_net_14'
+
+cfg.addCommonInput1 = True
+cfg.addCommonInput2 = True 
+ 
+Can't see common inputs.  Turning off noise and running again.
+
+cfg.simLabel = 'eee_net_15'
+
+The inputs are there (see trace):
+file:gif/20190813_074510.png
+
+There should be more synchrony (see raster):
+file:gif/20190813_074616.png
+
+Total sync = 0.85
+Raster with sync lines:
+sim.analysis.plotRaster(orderInverse=True, syncLines=True)
+file:gif/20190813_074759.png
+
+Looking at just PT5_1 during plateau:
+sim.analysis.plotRaster(orderInverse=True, syncLines=True, include=['PT5_1'], timeRange=[200,400])
+file:gif/20190813_074959.png
+
+It says sync is still 0.85
+
+
+* 2019-08-13 -- EEE meeting, Working on sync analyses
+
+** Trying to measure sync in ind pops, specific time ranges
+
+So the sync measure from the raster plot seems to be an overall, but we need to 
+measure sync individually in certain pops and certain time ranges
+
+Looking into analysis.plotSpikeStats
+
+	analysis.plotSpikeStats (include = [‘allCells’, ‘eachPop’], timeRange = None, graphType=’boxplot’, stats = [‘rate’, ‘isicv’], popColors = [], figSize = (6,8), saveData = None, saveFig = None, showFig = True)
+
+	Plot spike histogram. Optional arguments:
+
+	include: List of data series to include. Note: one line per item, not grouped ([‘all’|,'allCells'|,’allNetStims’|,120|,’L4’|,('L2', 56)|,(‘L5’,[4,5,6])])
+	timeRange: Time range of spikes shown; if None shows all ([start:stop])
+	graphType: Type of graph to use (‘boxplot’)
+	stats: List of types measure to calculate stats over: cell firing rates, interspike interval coefficient of variation (ISI CV), pairwise synchrony, and/or overall synchrony (sync measures calculated using PySpike SPIKE-Synchrony measure) ([‘rate’, |'isicv'| ‘pairsync’ |'sync'|])
+	popColors: Dictionary with color (value) used for each population/key
+	figSize: Size of figure ((width, height))
+	saveData: File name where to save the final data used to generate the figure (None|’fileName’)
+	saveFig: File name where to save the figure (None|’fileName’)
+	showFig: Whether to show the figure or not (True|False)
+	Returns figure handle
+
+** plotSpikeStats
+
+Trying for all cells
+
+sim.analysis.plotSpikeStats(include = ['allCells'], timeRange = None, graphType='boxplot', stats = ['sync'], popColors = [], figSize = (6,8), saveData = None, saveFig = None, showFig = True)
+
+0.5393
+
+Trying for eachPop
+
+sim.analysis.plotSpikeStats(include = ['eachPop'], timeRange = None, graphType='boxplot', stats = ['sync'], popColors = [], figSize = (6,8), saveData = None, saveFig = None, showFig = True)
+
+Output with raster:
+file:gif/20190813_080128.png
+
+Seems problematic: PT5_1 has very low sync (0.1038), while all the other pops have high 
+sync (near 1.0)
+
+Perhaps its a problem because of the low number of spikes.
+
+First I'll check 'pairsync', then try for plateau timeRange, then try with noise turned 
+on
+
+*** pairsync
+
+sim.analysis.plotSpikeStats(include = ['eachPop'], timeRange = None, graphType='boxplot', stats = ['pairsync'], popColors = [], figSize = (6,8), saveData = None, saveFig = None, showFig = True)
+
+pairsync and pairSync don't work:
+
+There was an exception in plotSpikeStats(): 
+ 'pairsync' 
+(<class 'KeyError'>, KeyError('pairsync'), <traceback object at 0x119550288>)
+
+There was an exception in plotSpikeStats(): 
+ 'pairSync' 
+(<class 'KeyError'>, KeyError('pairSync'), <traceback object at 0x1197fb408>)
+
+
+*** plateau timeRange
+
+sim.analysis.plotSpikeStats(include = ['eachPop'], timeRange = [200,400], graphType='boxplot', stats = ['sync'], popColors = [], figSize = (6,8), saveData = None, saveFig = None, showFig = True)
+
+Sync data without timeRange:
+
+ {'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5'],
+  'statData': 
+  [[0.1038135593220339],
+   [1.0],
+   [0.9873417721518988],
+   [0.9889538661468485],
+   [0.963244176013805]],
+  'gidsData': [],
+  'ynormsData': []})
+
+Sync data during plateau (timeRange=[200,400]):
+
+ {'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5'],
+  'statData': 
+  [[0.125],
+   [1.0],
+   [0.9830508474576272],
+   [1.0],
+   [0.9744360902255639]],
+  'gidsData': [],
+  'ynormsData': []})
+
+Only very slight differences.  It seems there is a problem with sync measurements.
+
+Making a figure for the EEE meeting: don't invert raster so easier to compare with sync 
+plot
+
+	rasterData = sim.analysis.plotRaster()
+	sim.analysis.plotSpikeStats(include = ['eachPop'], timeRange = None, graphType='boxplot', stats = ['sync'], figSize = (6,8), saveData = None, saveFig = None, showFig = True)
+
+Figure:
+file:gif/20190813_081343.png
+
+Comparing rasterplot sync value with boxplot sync value
+
+Raster plot: 0.85
+Boxplot    : 0.54
+
+Figure:
+file:gif/20190813_081617.png
+
+Clearly a problem here...
+
+
+** EEE meeting
+
+Discussion
+
+Single cell article updates
+Should be almost ready to submit
+	
+Measuring synchrony
+Working on measuring synchrony in four populations (Fig 1: old sims, Fig 2, 3: latest sims):
+PT5_1: induced plateau and external inputs
+PT5_2: induced plateau
+PT5_3: external inputs
+PT5_4: nothing
+Netpyne synchrony measurements don’t seem to work as expected
+rasterPlot sync measure doesn’t change with specific pop or time range (see Fig 4 and Fig 5)
+plotSpikeStats gives odd results (see Fig 6)
+overall sync measures don’t match up between rasterPlot (0.85) and spikeStats (0.54) (see Fig 7)
+Discussion
+Get synchrony going first, then worry about synchrony measures
+Work with plotSpikeStats synchrony measures
+More important to get interesting sims going
+Automatically find regions of high synchrony? Don may be able to help
+Interesting things may only show up in massive sims
+
+Using Stampede
+Bill’s error (different ones)
+Problems with both sims, seems to be setup error
+Use ControlMaster -- avoids double authentication
+Stampede may allow larger scales
+
+Other items
+Contrib section for Netpyne?  Allows user contributions of new analyses, etc.
+Random seg faults still an issue on Comet
+Google batch sims don’t get seg faults
+Joe updates Netpyne, Bill and Joe look at plotSpikeStats sync issues
+Reduce plateau amplitude so less spiking solely due to plateau
+
+** TACC Stampede
+
+Got my TACC username -- tg856217 -- from XSEDE portal and was able to use TACC Android 
+app to scan QR code for multifactor authentication
+
+Can now logon with: ssh tg856217@stampede2.tacc.xsede.org
+
+Copying Bill's .bashrc file to take a look:
+scp tg856217@stampede2.tacc.xsede.org:/home1/03337/wwlytton/.bashrc bill_tacc_bashrc
+
+That worked.  :)
+
+*** Chat about using Stampede
+
+billl 4:33 PM
+this is on stampede now
+i've got stampede all setup if you want to use that
+
+joe 4:34 PM
+Cool, I’ll get details during meeting tomorrow.
+
+billl 4:34 PM
+i won't know details to speak them but can give them to you anytime
+basically should ("should") work from the paths set up in my .bashrc
+/home1/03337/wwlytton/.bashrc
+
+joe 4:40 PM
+How do I request access to Stampede?
+
+billl 4:55 PM
+via tacc ?  -- thought we all got both stampede and comet -- lms our allocation
+logon to xsede 1st
+you are on stampede2 according to the alloc
+try to logon -- this will set up a controlmaster to make easy to send files back and forth:
+setenv STANAME jwgraham
+alias stacon ssh ${STANAME}@stampede2.tacc.xsede.org -fNxTMS /tmp/sta:+home1+03337+${STANAME}:22
+you may have to go to the TACC website to set/reset your passwd
+portal.tacc.utexas.edu
+i'm very happy with the ControlMaster connects now especially for stampede since they have 2 factor authentication so without ControlMaster end up having to enter a 6 digit number from my phone each time i want to scp or rsync or hg pull or otherwise send files back and forth
+adding those connectors to csh_defaults
+
+don 7:35 PM
+@joe did you get onto Stampede?
+
+use:
+ssh [your-xsede-username]@stampede2.tacc.xsede.org
+password is your xsede password plus the TACC Token Code from a TACC Token app (for iOS and Android)
+
+
+* 2019-08-15 -- 
+
+** Changing FS3 cell from hoc to Python
+
+The EEE network sims are crashing on Stampede in FS3.hoc cell
+
+*** Chat from yesterday
+
+billl 2:54 PM
+** getting seg faults traced back to
+printf("Balancing each compartment to %d mV\n", $1) in (EEE_network/cells/FS3.hoc:140)
+better if we just calculate the e_pas once and set it i think?
+also looks like FS3 is a simple sort of cell -- soma,axon,dend   ; wy not make this a .py file as did with the PV cell?
+joe 3:39 PM
+Sergio found FS3 somewhere and we’ve just been using it as is.
+But I agree, can be much simpler and would be better in Python.
+I’ll get on that.
+
+*** Preparing to switch
+
+First I'll set to record from FS3 cells and run a sim, then switch to Python version 
+and run another to see differences
+
+cfg.simLabel = 'eee_net_16'
+
+cfg.analysis['plotTraces'] = {'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4'], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}   
+
+-->
+
+cfg.analysis['plotTraces'] = {'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5'], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}   
+
+Raster before: file:gif/20190815_133718.png
+Sample traces: file:gif/20190815_133939.png
+
+
+*** Making the switch
+
+Committing first.
+
 
 
 

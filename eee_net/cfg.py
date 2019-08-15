@@ -3,16 +3,16 @@ import numpy as np
 
 # Show figures? Save figures?
 showFig = False
-saveFig = False
+saveFig = True
 
 # Simulation options
 cfg = specs.SimConfig()       
 cfg.duration = 1000
-cfg.numCells = 10000          
+cfg.numCells = 100 
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_09'
+cfg.simLabel = 'eee_net_16'
 cfg.saveFolder = 'data'
 cfg.savePickle = False
 cfg.saveJson = True
@@ -45,13 +45,13 @@ cfg.GABAAfast_e     = -80
 cfg.GABAAslow_e     = -90
 
 # Noise variables
-cfg.noisePT5 = True
+cfg.noisePT5 = False #True
 cfg.noisePV5 = True
 
-cfg.PT5_exc_noise_amp = 1.0
+cfg.PT5_exc_noise_amp = 0.01 #1.0
 cfg.PT5_exc_noise_e   = 0.0
 cfg.PT5_exc_noise_tau = 1.0
-cfg.PT5_inh_noise_amp = 1.0
+cfg.PT5_inh_noise_amp = 0.01 #1.0
 cfg.PT5_inh_noise_e   = -75.0
 cfg.PT5_inh_noise_tau = 1.0
 
@@ -107,7 +107,8 @@ cfg.analysis['plotSpikeHist'] = {'saveFig': saveFig,'showFig': showFig}
 
 #cfg.analysis['plotTraces'] = {'include': [('PT5_1',0), ('PT5_2', 0), ('PT5_3', 0), ('PT5_4', 0), ('PV5', 0)], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}   
 
-cfg.analysis['plotTraces'] = {'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4'], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}   
+#cfg.analysis['plotTraces'] = {'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4'], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}   
+cfg.analysis['plotTraces'] = {'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5'], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}   
 
 
 #cfg.analysis['plot2Dnet'] = {'saveFig': saveFig, 'showFig': showFig}            
@@ -128,7 +129,7 @@ cfg.IClamp1 = {'pop': cfg.popIClamp1, 'sec': cfg.secIClamp1, 'loc': cfg.locIClam
 
 
 # Common synaptic input
-cfg.addCommonInput1 = False #True
+cfg.addCommonInput1 = True
 cfg.popCommonInput1 = ['PT5_1', 'PT5_3']
 
 cfg.secCommonInput1 = 'soma'
@@ -139,7 +140,7 @@ cfg.numCommonInput1 = 5    # number
 cfg.intCommonInput1 = 20   # interval
 
 
-cfg.addCommonInput2 = False #True
+cfg.addCommonInput2 = True
 cfg.popCommonInput2 = ['PT5_1', 'PT5_3']
 
 cfg.secCommonInput2 = 'soma'

@@ -11350,7 +11350,7 @@ ssh [your-xsede-username]@stampede2.tacc.xsede.org
 password is your xsede password plus the TACC Token Code from a TACC Token app (for iOS and Android)
 
 
-* 2019-08-15 -- 
+* 2019-08-15 -- Converting FS3 from hoc to Python
 
 ** Changing FS3 cell from hoc to Python
 
@@ -11381,13 +11381,42 @@ cfg.analysis['plotTraces'] = {'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4'], '
 
 cfg.analysis['plotTraces'] = {'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5'], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}   
 
-Raster before: file:gif/20190815_133718.png
-Sample traces: file:gif/20190815_133939.png
+Raster before: 
+file:gif/20190815_133718.png
+
+Sample traces: 
+file:gif/20190815_133939.png
 
 
 *** Making the switch
 
 Committing first.
+
+Finished converting FS3.hoc to FS3.py, now to try it out.
+
+Changes in netParams.py:
+
+	#PV_path   = os.path.join(cellpath, 'FS3.hoc')
+	PV_path   = os.path.join(cellpath, 'FS3.py')
+
+	#cellRule = netParams.importCellParams(label='PV5', conds={'cellType':'PV5'}, fileName=PV_path, cellName='FScell1', cellInstance=True)
+	cellRule = netParams.importCellParams(label='PV5', conds={'cellType':'PV5'}, fileName=PV_path, cellName='MakeCell', cellInstance=True)
+
+cfg.simLabel = 'eee_net_17'
+
+Had to add `from neuron import h` to FS3.py but then it worked.  :)
+
+Raster output: 
+file:gif/20190815_160339.png
+
+Looks very similar, good sign.
+
+Sample traces: 
+file:gif/20190815_160819.png
+
+Also very similar.  Calling this translation a success.
+
+Cleaning up cfg and netParams and committing.
 
 
 

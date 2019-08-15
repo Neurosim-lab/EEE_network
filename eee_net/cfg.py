@@ -3,7 +3,7 @@ import numpy as np
 
 # Show figures? Save figures?
 showFig = False
-saveFig = True
+saveFig = False
 
 # Simulation options
 cfg = specs.SimConfig()       
@@ -12,7 +12,7 @@ cfg.numCells = 100
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_16'
+cfg.simLabel = 'eee_net_18'
 cfg.saveFolder = 'data'
 cfg.savePickle = False
 cfg.saveJson = True
@@ -107,8 +107,7 @@ cfg.analysis['plotSpikeHist'] = {'saveFig': saveFig,'showFig': showFig}
 
 #cfg.analysis['plotTraces'] = {'include': [('PT5_1',0), ('PT5_2', 0), ('PT5_3', 0), ('PT5_4', 0), ('PV5', 0)], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}   
 
-#cfg.analysis['plotTraces'] = {'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4'], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}   
-cfg.analysis['plotTraces'] = {'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5'], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}   
+cfg.analysis['plotTraces'] = {'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4'], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}   
 
 
 #cfg.analysis['plot2Dnet'] = {'saveFig': saveFig, 'showFig': showFig}            

@@ -37,11 +37,12 @@ netParams.popParams['PV5'] = {'cellType': 'PV5', 'numCells': cfg.numPV5cells, 'y
 ## Set path to cells directory
 cellpath = '../cells'
 eeeS_path = os.path.join(cellpath, 'eeeS.py')
-PV_path   = os.path.join(cellpath, 'FS3.hoc')
+PV_path   = os.path.join(cellpath, 'FS3.py')
+
 
 
 ## Import PV5 cell
-cellRule = netParams.importCellParams(label='PV5', conds={'cellType':'PV5'}, fileName=PV_path, cellName='FScell1', cellInstance=True)
+cellRule = netParams.importCellParams(label='PV5', conds={'cellType':'PV5'}, fileName=PV_path, cellName='MakeCell', cellInstance=True)
 netParams.cellParams['PV5'] = cellRule
 
 ## Import eeeS cell (PT5)

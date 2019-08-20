@@ -13,7 +13,7 @@ cfg.numCells = 100
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_21'
+cfg.simLabel = 'eee_net_25'
 cfg.saveFolder = os.path.join('data', cfg.simLabel)
 cfg.savePickle = False
 cfg.saveJson = True
@@ -132,7 +132,7 @@ cfg.popCommonInput1 = ['PT5_1', 'PT5_3']
 cfg.secCommonInput1 = 'soma'
 cfg.locCommonInput1 = 0.5
 cfg.wgtCommonInput1 = 4.0
-cfg.delCommonInput1 = 800  # delay or start
+cfg.delCommonInput1 = 1400  # delay or start
 cfg.numCommonInput1 = 10    # number
 cfg.intCommonInput1 = 20   # interval
 

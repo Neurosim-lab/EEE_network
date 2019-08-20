@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from netpyne import sim
 from itertools import product
 import os
-# plt.ion()
+plt.ion()
 
 batchdatadir = "data"
 
@@ -171,7 +171,7 @@ def plot_batch_ind_stats(batchLabel, batchdatadir='data', include=['allCells', '
 
 
 
-simLabel = 'eee_net_19'
+simLabel = 'eee_net_25'
 
 simPath = os.path.join('data', simLabel, simLabel + '.json')
 sim.load(simPath, createNEURONObj=False)
@@ -187,6 +187,60 @@ syncFigPlat, syncDataPlat = sim.analysis.plotSpikeStats(include=['PT5_1', 'PT5_2
 syncFigInput, syncDataInput = sim.analysis.plotSpikeStats(include=['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5'], timeRange = [1400, 1600], graphType='boxplot', stats = ['sync'], figSize = (6,8), saveData = None, saveFig = None, showFig = True)
 
 syncFigPlatInput, syncDataPlatInput = sim.analysis.plotSpikeStats(include=['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5'], timeRange = [2000, 2200], graphType='boxplot', stats = ['sync'], figSize = (6,8), saveData = None, saveFig = None, showFig = True)
+
+
+# Bar plot of synchrony
+
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+labels = ['Nothing', 'Plats', 'Inputs', 'Plats+Inputs']
+
+PT51_sync = []
+PT51_sync.append(syncDataPre['statData'][0][0])
+PT51_sync.append(syncDataPlat['statData'][0][0])
+PT51_sync.append(syncDataInput['statData'][0][0])
+PT51_sync.append(syncDataPlatInput['statData'][0][0])
+
+PT52_sync = []
+PT52_sync.append(syncDataPre['statData'][1][0])
+PT52_sync.append(syncDataPlat['statData'][1][0])
+PT52_sync.append(syncDataInput['statData'][1][0])
+PT52_sync.append(syncDataPlatInput['statData'][1][0])
+
+PT53_sync = []
+PT53_sync.append(syncDataPre['statData'][2][0])
+PT53_sync.append(syncDataPlat['statData'][2][0])
+PT53_sync.append(syncDataInput['statData'][2][0])
+PT53_sync.append(syncDataPlatInput['statData'][2][0])
+
+PT54_sync = []
+PT54_sync.append(syncDataPre['statData'][3][0])
+PT54_sync.append(syncDataPlat['statData'][3][0])
+PT54_sync.append(syncDataInput['statData'][3][0])
+PT54_sync.append(syncDataPlatInput['statData'][3][0])
+
+
+x = np.arange(len(labels))  # the label locations
+width = 0.2  # the width of the bars
+
+fig, ax = plt.subplots()
+rects1 = ax.bar(x - width*(3/2), PT51_sync, width, label='PT5_1')
+rects2 = ax.bar(x - width/(2), PT52_sync, width, label='PT5_2')
+rects3 = ax.bar(x + width/(2), PT53_sync, width, label='PT5_3')
+rects4 = ax.bar(x + width*(3/2), PT54_sync, width, label='PT5_4')
+
+# Add some text for labels, title and custom x-axis tick labels, etc.
+ax.set_ylabel('Synchrony')
+ax.set_title('Synchrony by population and condition')
+ax.set_xticks(x)
+ax.set_xticklabels(labels)
+ax.legend()
+
+fig.tight_layout()
+
 
 
 

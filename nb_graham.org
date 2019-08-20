@@ -11419,7 +11419,7 @@ Also very similar.  Calling this translation a success.
 Cleaning up cfg and netParams and committing.
 
 
-* 2019-08-19 -- 
+* 2019-08-19 -- Synchrony and simulation improvements
 
 ** To do today
 
@@ -11553,3 +11553,65 @@ cfg.simLabel = 'eee_net_21'
 It runs, but I need to look into why second plateau doesn't seem to be appearing...
 
 Committing for now.
+
+** Turning noise off
+
+cfg.simLabel = 'eee_net_22'
+
+Everything looks okay, though PT cells may not be getting enough IPSP effect
+(will look into this tomorrow)
+
+
+** Turning noise back on
+
+Running sim to analyze synchrony
+cfg.simLabel = 'eee_net_23'
+
+
+* 2019-08-20 -- EEE meeting and
+
+** To work on today
+
+Plotting synchrony
+Noise exploration
+Look into IPSPS or lack thereof
+Connectivity exploration 
+
+** First common input was at wrong time
+
+Re-running sim without noise 
+cfg.simLabel = 'eee_net_24'
+
+Re-running sim with noise
+cfg.simLabel = 'eee_net_25'
+
+Raster comparisons: 
+file:gif/20190820_064430.png
+
+Sync (with noise):
+file:gif/20190820_070227.png
+
+
+** Plotting synchrony
+
+Got synchrony plot working in dev.py:
+file:gif/20190820_072838.png
+
+Looks great!
+
+Committing.
+
+
+
+
+** Noise exploration
+
+Running a batch of sims to explore noise amplitude
+
+** Getting dev.py to automatically analyze latest sim
+
+list.sort()
+list[-1]
+
+
+

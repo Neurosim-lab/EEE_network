@@ -11419,11 +11419,137 @@ Also very similar.  Calling this translation a success.
 Cleaning up cfg and netParams and committing.
 
 
+* 2019-08-19 -- 
+
+** To do today
+
+Update Netpyne
+Look into plotSpikeStats synchrony measure
+Look into synchrony measures
+Measure synchrony in specific timeRanges
+Compare synchrony across pops
+Reduce plateau amplitudes to eliminate plateau-driven spiking?
+
+
+** Updating Netpyne
+
+Updating Netpyne locally before looking into synchrony measures
+
+Local version of Netpyne: 0.9.1.1
+Checking version of Netpyne on Comet: 0.9.1.1
+Github development version: 0.9.4
+Github release version: 0.9.3.1
+
+I see that the latest Netpyne commit "Fixed bug in plotSpikeStats pop order", this 
+may explain the problem discussed in last week's meeting, where the sync measures
+were obviously wrong... (see file:gif/20190813_081343.png)
+
+It looks like the labeling was just wrong.
+
+Updating Netpyne locally:
+
+	graham$ cd ~/Applications/netpyne
+	graham$ git pull
+	graham$ pip install -e .
+
+That worked.  Now to play around with plotSpikeStats.
+
+** Creating subdirs for each sim's data
+
+Adding to cfg.py:
+
+	import os
+	...
+	cfg.saveFolder = os.path.join('data', cfg.simLabel)
+
+
+** Adding auto loading and analysis to dev.py
+
+simLabel = 'eee_net_18'
+simPath = os.path.join('data', simLabel, simLabel + '.json')
+sim.load(simPath, createNEURONObj=False)
+rasterData = sim.analysis.plotRaster()
+sim.analysis.plotSpikeStats(include = ['eachPop'], timeRange = None, graphType='boxplot', stats = ['sync'], figSize = (6,8), saveData = None, saveFig = None, showFig = True)
+
+
+** plotSpikeStats
+
+Need to see if plotSpikeStats measures synchrony only within timeRange
+
+cfg.simLabel = 'eee_net_18'
+
+Turning noise to PT5 cells back on and running sim.
+
+	cd /u/graham/EEE_network/eee_net/
+	./runsim
+
+Then to analyze:
+
+	cd /u/graham/EEE_network/eee_net/
+	ipython -i dev.py
+
+Looks good:
+file:gif/20190819_201450.png
+
+In [1]: syncData
+Out[1]: 
+{'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5'],
+ 'statData': [
+  [0.502123730378578],
+  [0.5152954588637659],
+  [0.41847380143007856],
+  [0.39760159893404395],
+  [0.11555555555555555]],
+ 'gidsData': [],
+ 'ynormsData': []}
+
+Now to check on timeRange.  Setting timeRange = [200, 400] to center on plateau.
+
+In [1]: syncDataPlat
+Out[1]: 
+{'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5'],
+ 'statData': [
+  [0.6366723259762309],
+  [0.6720969089390142],
+  [0.4750110570544007],
+  [0.45519203413940257],
+  [0.25]],
+ 'gidsData': [],
+ 'ynormsData': []}
+
+Good, timeRange seems to work with the sync calculations.
+
+
+** Adding ability to induce multiple plateaus
+
+I want to induce one plateau without external inputs and one with the inputs.
+
+Currently the code only allows induction of one plateau.
+
+Did a bunch of work in cfg.py and netParams.py...
+
+Testing after setting up new experiment ('eee_net_19')
 
 
 
+** Comparing sync in different pops/conditions
 
+Now to compare nonPlat timeRange with plat timeRange.
 
+Increasing sim time to 1800 ms, shifting plateau to 2400 ms
+(Each 200 ms timeRange will be in the middle of 600 ms)
 
+pre-everything timeRange  : [200, 400]
+plateau timeRange         : [800, 1000]
+input alone timeRange     : [1400, 1600]
+plateau + input timeRange : [2000, 2200]
 
+cfg.simLabel = 'eee_net_20'
 
+Whoops.  Needed to change second common input time...
+
+cfg.simLabel = 'eee_net_21'
+
+It runs, but I need to look into why second plateau doesn't seem to be appearing...
+
+Committing for now.

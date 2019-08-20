@@ -1,5 +1,6 @@
 from netpyne import specs, sim
 import numpy as np
+import os
 
 # Show figures? Save figures?
 showFig = False
@@ -7,13 +8,13 @@ saveFig = False
 
 # Simulation options
 cfg = specs.SimConfig()       
-cfg.duration = 1000
+cfg.duration = 2400
 cfg.numCells = 100 
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_18'
-cfg.saveFolder = 'data'
+cfg.simLabel = 'eee_net_21'
+cfg.saveFolder = os.path.join('data', cfg.simLabel)
 cfg.savePickle = False
 cfg.saveJson = True
 cfg.saveDataInclude = ['simData', 'simConfig', 'netParams', 'net']         
@@ -45,7 +46,7 @@ cfg.GABAAfast_e     = -80
 cfg.GABAAslow_e     = -90
 
 # Noise variables
-cfg.noisePT5 = False #True
+cfg.noisePT5 = True
 cfg.noisePV5 = True
 
 cfg.PT5_exc_noise_amp = 0.01 #1.0
@@ -72,7 +73,7 @@ cfg.IIconv = 12.0
 cfg.glutamate         = True 
 cfg.glutPops          = ['PT5_1', 'PT5_2']
 
-cfg.synTime           = 200.0
+cfg.glutTimes         = [800.0, 2000.0]
 cfg.numSyns           = 24
 cfg.numExSyns         = cfg.numSyns
 cfg.glutAmp           = 2.0
@@ -84,9 +85,6 @@ cfg.initDelay         = 10.0
 cfg.synDelay          = 2.0 # ms/um
 cfg.exSynDelay        = 4.0 # ms/um
 
-cfg.glutPuffSyn = {'loc': list(np.linspace(cfg.synLocMiddle-cfg.synLocRadius, cfg.synLocMiddle+cfg.synLocRadius, cfg.numSyns)), 'sec': 'basal_8', 'synMech': ['NMDA','AMPA'], 'start': cfg.synTime, 'interval': 1000, 'noise': 0.0, 'number': 1, 'weight': cfg.glutAmp, 'delay': cfg.synDelay}
-
-cfg.glutPuffExSyn = {'loc': list(np.linspace(cfg.synLocMiddle-cfg.synLocRadius, cfg.synLocMiddle+cfg.synLocRadius, cfg.numExSyns)), 'sec': 'basal_8', 'synMech': ['NMDA'], 'start': cfg.synTime, 'interval': 1000, 'noise': 0.0, 'number': 1, 'weight': cfg.glutAmp * cfg.glutAmpExSynScale, 'delay': cfg.exSynDelay}
 
 # Recording options
 cfg.recordTraces = {'V_soma': {'sec':'soma', 'loc':0.5, 'var':'v'}} 
@@ -134,8 +132,8 @@ cfg.popCommonInput1 = ['PT5_1', 'PT5_3']
 cfg.secCommonInput1 = 'soma'
 cfg.locCommonInput1 = 0.5
 cfg.wgtCommonInput1 = 4.0
-cfg.delCommonInput1 = 220  # delay or start
-cfg.numCommonInput1 = 5    # number
+cfg.delCommonInput1 = 800  # delay or start
+cfg.numCommonInput1 = 10    # number
 cfg.intCommonInput1 = 20   # interval
 
 
@@ -145,8 +143,8 @@ cfg.popCommonInput2 = ['PT5_1', 'PT5_3']
 cfg.secCommonInput2 = 'soma'
 cfg.locCommonInput2 = 0.5
 cfg.wgtCommonInput2 = 4.0
-cfg.delCommonInput2 = 620  # delay or start
-cfg.numCommonInput2 = 5    # number
+cfg.delCommonInput2 = 2000  # delay or start
+cfg.numCommonInput2 = 10    # number
 cfg.intCommonInput2 = 20   # interval
 
 

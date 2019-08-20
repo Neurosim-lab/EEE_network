@@ -113,11 +113,9 @@ for label in ['PT5_2', 'PT5_3', 'PT5_4']:
 
 
 ## Cell connectivity rules
-
-# Excitatory --> Excitatory
-
 EPops = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4']
 
+# Excitatory --> Excitatory
 for prePop in EPops:
     for postPop in EPops:
         ruleLabel = prePop+'->'+postPop
@@ -132,7 +130,6 @@ for prePop in EPops:
             'sec': 'basal_8'}
 
 # Excitatory --> Inhibitory
-
 for prePop in EPops:
     for postPop in ['PV5']:
         ruleLabel = prePop+'->'+postPop
@@ -147,7 +144,6 @@ for prePop in EPops:
             'sec': 'soma'}
 
 # Inhibitory --> Excitatory
-
 for prePop in ['PV5']:
     for postPop in EPops:
         ruleLabel = prePop+'->'+postPop
@@ -161,9 +157,7 @@ for prePop in ['PV5']:
             'loc': 0.5,
             'sec': 'soma'}
 
-
 # Inhibitory --> Inhibitory
-
 for prePop in ['PV5']:
     for postPop in ['PV5']:
         ruleLabel = prePop+'->'+postPop
@@ -177,41 +171,37 @@ for prePop in ['PV5']:
             'loc': 0.5,
             'sec': 'soma'}
 
+
+## Glutamate puff
 if cfg.glutamate:
 
-    for nslabel in [k for k in dir(cfg) if k.startswith('glutPuff')]:
+    branch_length = netParams.cellParams['PT5_1']['secs']['basal_8']['geom']['L']
+    glutLocs = np.linspace(cfg.synLocMiddle-cfg.synLocRadius, cfg.synLocMiddle+cfg.synLocRadius, cfg.numSyns)
+    dists = branch_length * np.abs(glutLocs - cfg.synLocMiddle)
+    glutLocs = list(glutLocs)
 
-        ns = getattr(cfg, nslabel, None)        
-            
-        branch_length = netParams.cellParams['PT5_1']['secs'][ns['sec']]['geom']['L']
+    syn_weights = cfg.glutAmp * (1 - dists * cfg.glutAmpDecay/100)
+    syn_weights = list([weight if weight > 0.0 else 0.0 for weight in syn_weights])
+    syn_delays  = list(cfg.initDelay + (cfg.synDelay * dists))
 
-        if "ExSyn" in nslabel:
-            cur_locs = np.linspace(cfg.synLocMiddle-cfg.synLocRadius, cfg.synLocMiddle+cfg.synLocRadius, cfg.numExSyns)
-            cur_dists = branch_length * np.abs(cur_locs - cfg.synLocMiddle)
-            cur_weights = (cfg.glutAmp * cfg.glutAmpExSynScale) * (1 - cur_dists * cfg.glutAmpDecay/100)
-            cur_weights = [weight if weight > 0.0 else 0.0 for weight in cur_weights]
-            cur_delays = cfg.initDelay + (cfg.exSynDelay * cur_dists)
-                  
-              
-        elif "Syn" in nslabel:
-            cur_locs = np.linspace(cfg.synLocMiddle-cfg.synLocRadius, cfg.synLocMiddle+cfg.synLocRadius, cfg.numSyns)
-            cur_dists = branch_length * np.abs(cur_locs - cfg.synLocMiddle)
-            cur_weights = cfg.glutAmp * (1 - cur_dists * cfg.glutAmpDecay/100)
-            cur_weights = [weight if weight > 0.0 else 0.0 for weight in cur_weights]
-            cur_delays = cfg.initDelay + (cfg.synDelay * cur_dists)                
-              
-        else:
-            raise Exception("Should have had Syn or ExSyn in name. See netParams.py")             
-        
-        # add stim source
-        netParams.stimSourceParams[nslabel] = {'type': 'NetStim', 'start': ns['start'], 'interval': ns['interval'], 'noise': ns['noise'], 'number': ns['number']}  
+    exSyn_weights = (cfg.glutAmp * cfg.glutAmpExSynScale) * (1 - dists * cfg.glutAmpDecay/100)
+    exSyn_weights = list([weight if weight > 0.0 else 0.0 for weight in exSyn_weights])
+    exSyn_delays  = list(cfg.initDelay + (cfg.exSynDelay * dists))
 
-        # connect stim source to target
-        for cur_pop in cfg.glutPops:    
+    for glutTime in cfg.glutTimes:
 
-            for i in range(len(ns['synMech'])):
-                
-                netParams.stimTargetParams[nslabel+'_'+cur_pop+'_'+ns['synMech'][i]] = {'source': nslabel, 'conds': {'pop': cur_pop}, 'sec': ns['sec'], 'synsPerConn': cfg.numSyns, 'loc': list(cur_locs), 'synMech': ns['synMech'][i], 'weight': list(cur_weights), 'delay': list(cur_delays)}
+        nslabel = 'glut_' + str(int(glutTime))
+        netParams.stimSourceParams[nslabel] = {'type': 'NetStim', 'start': glutTime, 'interval': 1, 'noise': 0, 'number': 1}  
+
+        for cur_pop in cfg.glutPops:
+
+            # Synaptic glutamate
+            netParams.stimTargetParams[nslabel+'_Syn_'+cur_pop+'_'+'NMDA'] = {'source': nslabel, 'conds': {'pop': cur_pop}, 'sec': 'basal_8', 'synsPerConn': cfg.numSyns, 'loc': glutLocs, 'synMech': 'NMDA', 'weight': syn_weights, 'delay': syn_delays}
+
+            netParams.stimTargetParams[nslabel+'_Syn_'+cur_pop+'_'+'AMPA'] = {'source': nslabel, 'conds': {'pop': cur_pop}, 'sec': 'basal_8', 'synsPerConn': cfg.numSyns, 'loc': glutLocs, 'synMech': 'AMPA', 'weight': syn_weights, 'delay': syn_delays}
+
+            # Extrasynaptic glutamate
+            netParams.stimTargetParams[nslabel+'_exSyn_'+cur_pop+'_'+'NMDA'] = {'source': nslabel, 'conds': {'pop': cur_pop}, 'sec': 'basal_8', 'synsPerConn': cfg.numSyns, 'loc': glutLocs, 'synMech': 'NMDA', 'weight': exSyn_weights, 'delay': exSyn_delays}
 
 
 if cfg.addIClamp:

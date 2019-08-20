@@ -3,6 +3,7 @@ import batch_analysis
 import matplotlib.pyplot as plt
 from netpyne import sim
 from itertools import product
+import os
 # plt.ion()
 
 batchdatadir = "data"
@@ -77,19 +78,6 @@ def plot_batch_ind_conn(batchLabel, batchdatadir='data', includePre = ['all'], i
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 def plot_batch_ind_raster(batchLabel, batchdatadir='data', include=['allCells'], timeRange=None, maxSpikes=1e8, orderBy='gid', orderInverse=False, labels='legend', popRates=False, spikeHist=None, spikeHistBin=5, syncLines=False, figSize=(10,8), saveData=None, showFig=False, save=True, outputdir='batch_figs'):
     """Plots individual raster plots for each parameter combination."""
 
@@ -133,14 +121,6 @@ def plot_batch_ind_raster(batchLabel, batchdatadir='data', include=['allCells'],
             saveFig = None
 
         sim.analysis.plotRaster(include=include, timeRange=timeRange, maxSpikes=maxSpikes, orderBy=orderBy, orderInverse=orderInverse, labels=labels, popRates=popRates, spikeHist=spikeHist, spikeHistBin=spikeHistBin, syncLines=syncLines, figSize=figSize, saveData=saveData, saveFig=saveFig, showFig=showFig)
-
-
-
-
-
-
-
-
 
 
 
@@ -191,14 +171,28 @@ def plot_batch_ind_stats(batchLabel, batchdatadir='data', include=['allCells', '
 
 
 
+simLabel = 'eee_net_19'
+
+simPath = os.path.join('data', simLabel, simLabel + '.json')
+sim.load(simPath, createNEURONObj=False)
+
+#sim.analysis.plotTraces()
+
+rasterFig, rasterData = sim.analysis.plotRaster(include=['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5' ], orderInverse=False)
+
+syncFigPre, syncDataPre = sim.analysis.plotSpikeStats(include=['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5'], timeRange = [200, 400], graphType='boxplot', stats = ['sync'], figSize = (6,8), saveData = None, saveFig = None, showFig = True)
+
+syncFigPlat, syncDataPlat = sim.analysis.plotSpikeStats(include=['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5'], timeRange = [800, 1000], graphType='boxplot', stats = ['sync'], figSize = (6,8), saveData = None, saveFig = None, showFig = True)
+
+syncFigInput, syncDataInput = sim.analysis.plotSpikeStats(include=['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5'], timeRange = [1400, 1600], graphType='boxplot', stats = ['sync'], figSize = (6,8), saveData = None, saveFig = None, showFig = True)
+
+syncFigPlatInput, syncDataPlatInput = sim.analysis.plotSpikeStats(include=['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5'], timeRange = [2000, 2200], graphType='boxplot', stats = ['sync'], figSize = (6,8), saveData = None, saveFig = None, showFig = True)
 
 
 
-
-
-batchLabel = 'v01_batch20'
-params, data = batch_utils.load_batch(batchLabel, batchdatadir=batchdatadir)
-batchData = (batchLabel, params, data)
+#batchLabel = 'v01_batch20'
+#params, data = batch_utils.load_batch(batchLabel, batchdatadir=batchdatadir)
+#batchData = (batchLabel, params, data)
 
 #include = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5']
 #plot_batch_ind_conn(batchData, includePre=include, includePost=include)
@@ -208,10 +202,10 @@ batchData = (batchLabel, params, data)
 #stats = ['rate', 'isicv', 'sync', 'pairsync']
 #plot_batch_ind_stats(batchData, stats=stats)
 
-stats = ['sync']
-timeRange = [200, 400]
+#stats = ['sync']
+#timeRange = [200, 400]
 #plot_batch_ind_stats(batchData, stats=stats, timeRange=timeRange)
-batch_analysis.plot_batch_raster(batchData)
+#batch_analysis.plot_batch_raster(batchData)
 
 
 
@@ -238,4 +232,7 @@ batch_analysis.plot_batch_raster(batchData)
 # batch_analysis.plot_num_spikes(batchLabel)
 
 # plt.show()
+
+
+
 

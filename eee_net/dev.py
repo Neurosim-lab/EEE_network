@@ -3,6 +3,7 @@ import batch_analysis
 import matplotlib.pyplot as plt
 from netpyne import sim
 from itertools import product
+import numpy as np
 import os
 plt.ion()
 
@@ -171,75 +172,145 @@ def plot_batch_ind_stats(batchLabel, batchdatadir='data', include=['allCells', '
 
 
 
-simLabel = 'eee_net_25'
+def plotSimSync(simPath='data', simLabel='eee_net_25', showFigs=False, batchLabel=None):
 
-simPath = os.path.join('data', simLabel, simLabel + '.json')
-sim.load(simPath, createNEURONObj=False)
+    if not batchLabel:
+        simPath = os.path.join(simPath, simLabel, simLabel + '.json')
+        sim.load(simPath, createNEURONObj=False)
+    else:
+        simPath = os.path.join(simPath, batchLabel, simLabel + '.json')
+        sim.load(simPath, createNEURONObj=False)
 
-#sim.analysis.plotTraces()
+    #sim.analysis.plotTraces()
 
-rasterFig, rasterData = sim.analysis.plotRaster(include=['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5' ], orderInverse=False)
+    rasterFig, rasterData = sim.analysis.plotRaster(include=['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5' ], orderInverse=False)
 
-syncFigPre, syncDataPre = sim.analysis.plotSpikeStats(include=['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5'], timeRange = [200, 400], graphType='boxplot', stats = ['sync'], figSize = (6,8), saveData = None, saveFig = None, showFig = True)
+    syncFigPre, syncDataPre = sim.analysis.plotSpikeStats(include=['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5'], timeRange = [200, 400], graphType='boxplot', stats = ['sync'], figSize = (6,8), saveData = None, saveFig = None, showFig = showFigs)
 
-syncFigPlat, syncDataPlat = sim.analysis.plotSpikeStats(include=['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5'], timeRange = [800, 1000], graphType='boxplot', stats = ['sync'], figSize = (6,8), saveData = None, saveFig = None, showFig = True)
+    syncFigPlat, syncDataPlat = sim.analysis.plotSpikeStats(include=['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5'], timeRange = [800, 1000], graphType='boxplot', stats = ['sync'], figSize = (6,8), saveData = None, saveFig = None, showFig = showFigs)
 
-syncFigInput, syncDataInput = sim.analysis.plotSpikeStats(include=['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5'], timeRange = [1400, 1600], graphType='boxplot', stats = ['sync'], figSize = (6,8), saveData = None, saveFig = None, showFig = True)
+    syncFigInput, syncDataInput = sim.analysis.plotSpikeStats(include=['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5'], timeRange = [1400, 1600], graphType='boxplot', stats = ['sync'], figSize = (6,8), saveData = None, saveFig = None, showFig = showFigs)
 
-syncFigPlatInput, syncDataPlatInput = sim.analysis.plotSpikeStats(include=['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5'], timeRange = [2000, 2200], graphType='boxplot', stats = ['sync'], figSize = (6,8), saveData = None, saveFig = None, showFig = True)
-
-
-# Bar plot of synchrony
-
-import matplotlib
-import matplotlib.pyplot as plt
-import numpy as np
+    syncFigPlatInput, syncDataPlatInput = sim.analysis.plotSpikeStats(include=['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5'], timeRange = [2000, 2200], graphType='boxplot', stats = ['sync'], figSize = (6,8), saveData = None, saveFig = None, showFig = showFigs)
 
 
-labels = ['Nothing', 'Plats', 'Inputs', 'Plats+Inputs']
+    # Bar plot of synchrony
+    labels = ['Control', 'Plats', 'Inputs', 'Plats+Inputs']
 
-PT51_sync = []
-PT51_sync.append(syncDataPre['statData'][0][0])
-PT51_sync.append(syncDataPlat['statData'][0][0])
-PT51_sync.append(syncDataInput['statData'][0][0])
-PT51_sync.append(syncDataPlatInput['statData'][0][0])
+    PT51_sync = []
+    PT51_sync.append(syncDataPre['statData'][0][0])
+    PT51_sync.append(syncDataPlat['statData'][0][0])
+    PT51_sync.append(syncDataInput['statData'][0][0])
+    PT51_sync.append(syncDataPlatInput['statData'][0][0])
 
-PT52_sync = []
-PT52_sync.append(syncDataPre['statData'][1][0])
-PT52_sync.append(syncDataPlat['statData'][1][0])
-PT52_sync.append(syncDataInput['statData'][1][0])
-PT52_sync.append(syncDataPlatInput['statData'][1][0])
+    PT52_sync = []
+    PT52_sync.append(syncDataPre['statData'][1][0])
+    PT52_sync.append(syncDataPlat['statData'][1][0])
+    PT52_sync.append(syncDataInput['statData'][1][0])
+    PT52_sync.append(syncDataPlatInput['statData'][1][0])
 
-PT53_sync = []
-PT53_sync.append(syncDataPre['statData'][2][0])
-PT53_sync.append(syncDataPlat['statData'][2][0])
-PT53_sync.append(syncDataInput['statData'][2][0])
-PT53_sync.append(syncDataPlatInput['statData'][2][0])
+    PT53_sync = []
+    PT53_sync.append(syncDataPre['statData'][2][0])
+    PT53_sync.append(syncDataPlat['statData'][2][0])
+    PT53_sync.append(syncDataInput['statData'][2][0])
+    PT53_sync.append(syncDataPlatInput['statData'][2][0])
 
-PT54_sync = []
-PT54_sync.append(syncDataPre['statData'][3][0])
-PT54_sync.append(syncDataPlat['statData'][3][0])
-PT54_sync.append(syncDataInput['statData'][3][0])
-PT54_sync.append(syncDataPlatInput['statData'][3][0])
+    PT54_sync = []
+    PT54_sync.append(syncDataPre['statData'][3][0])
+    PT54_sync.append(syncDataPlat['statData'][3][0])
+    PT54_sync.append(syncDataInput['statData'][3][0])
+    PT54_sync.append(syncDataPlatInput['statData'][3][0])
 
 
-x = np.arange(len(labels))  # the label locations
-width = 0.2  # the width of the bars
+    x = np.arange(len(labels))  # the label locations
+    width = 0.2  # the width of the bars
 
-fig, ax = plt.subplots()
-rects1 = ax.bar(x - width*(3/2), PT51_sync, width, label='PT5_1')
-rects2 = ax.bar(x - width/(2), PT52_sync, width, label='PT5_2')
-rects3 = ax.bar(x + width/(2), PT53_sync, width, label='PT5_3')
-rects4 = ax.bar(x + width*(3/2), PT54_sync, width, label='PT5_4')
+    fig, ax = plt.subplots()
+    rects1 = ax.bar(x - width*(3/2), PT51_sync, width, label='PT5_1 (+P+I)')
+    rects2 = ax.bar(x - width/(2), PT52_sync, width, label='PT5_2 (+P-I)')
+    rects3 = ax.bar(x + width/(2), PT53_sync, width, label='PT5_3 (-P+I)')
+    rects4 = ax.bar(x + width*(3/2), PT54_sync, width, label='PT5_4 (-P-I)')
 
-# Add some text for labels, title and custom x-axis tick labels, etc.
-ax.set_ylabel('Synchrony')
-ax.set_title('Synchrony by population and condition')
-ax.set_xticks(x)
-ax.set_xticklabels(labels)
-ax.legend()
+    # Add some text for labels, title and custom x-axis tick labels, etc.
+    ax.set_ylabel('Synchrony')
+    ax.set_title('Synchrony by population and condition')
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels)
+    ax.legend()
 
-fig.tight_layout()
+    fig.tight_layout()
+
+    outputData = [PT51_sync, PT52_sync, PT53_sync, PT54_sync]
+    return outputData
+
+#plotSimSync(simLabel='eee_net_23')
+
+
+def plotBatchSync(batchPath='batch_data', batchLabel='v01_batch23'):
+
+    batchPath = os.path.join(batchPath, batchLabel)
+
+    batchPathFiles = os.listdir(batchPath)
+
+    simFiles = [file for file in batchPathFiles if file.endswith('.json')]
+    simFiles = [file for file in simFiles if not file.endswith('cfg.json')]
+    simFiles = [file for file in simFiles if not file.endswith('batch.json')]
+    simFiles.sort()
+    print(simFiles)
+
+    syncData = []
+
+    for simFile in simFiles:
+
+        simFile = simFile.split('.')[0]
+        output = plotSimSync(simPath='batch_data', simLabel=simFile, showFigs=False, batchLabel=batchLabel)
+        # output = [PT51_sync, PT52_sync, PT53_sync, PT54_sync]
+
+        syncData.append(output)
+
+    syncData = np.array(syncData)
+
+    labels = ['Control', 'Plats', 'Inputs', 'Plats+Inputs']
+    
+    sdmean = np.mean(syncData, axis=0)
+    sdstdv = np.std(syncData, axis=0)
+
+    PT51_sync = sdmean[0,:]
+    PT52_sync = sdmean[1,:]
+    PT53_sync = sdmean[2,:]
+    PT54_sync = sdmean[3,:]
+
+    PT51_stdv = sdstdv[0,:]
+    PT52_stdv = sdstdv[1,:]
+    PT53_stdv = sdstdv[2,:]
+    PT54_stdv = sdstdv[3,:]
+
+    x = np.arange(len(labels))  # the label locations
+    width = 0.2  # the width of the bars
+
+    fig, ax = plt.subplots()
+    rects1 = ax.bar(x - width*(3/2), PT51_sync, yerr=PT51_stdv, width=width, label='PT5_1 (+P+I)')
+    rects2 = ax.bar(x - width/(2), PT52_sync, yerr=PT52_stdv, width=width, label='PT5_2 (+P-I)')
+    rects3 = ax.bar(x + width/(2), PT53_sync, yerr=PT53_stdv, width=width, label='PT5_3 (-P+I)')
+    rects4 = ax.bar(x + width*(3/2), PT54_sync, yerr=PT54_stdv, width=width, label='PT5_4 (-P-I)')
+
+    # Add some text for labels, title and custom x-axis tick labels, etc.
+    ax.set_ylabel('Synchrony')
+    ax.set_title('Synchrony by population and condition')
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels)
+    ax.legend()
+
+    fig.tight_layout()
+
+    return syncData
+
+
+syncData = plotBatchSync()
+
+
+
+
 
 
 

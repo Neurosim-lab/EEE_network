@@ -11601,17 +11601,34 @@ Looks great!
 
 Committing.
 
+** Add to list 
 
-
-
-** Noise exploration
-
+Running a batch of sims varying noise seed
+Analyze batch to get sync means with stdev
 Running a batch of sims to explore noise amplitude
+Reducing plateau amplitude below spike threshold
+Getting dev.py to automatically analyze latest sim
 
-** Getting dev.py to automatically analyze latest sim
+	list.sort()
+	list[-1]
 
-list.sort()
-list[-1]
+** Plotting batch synchrony
 
+Need to look into Gfluctp to see how seeds work for noise
+
+batchLabel = 'v01_batch23'
+
+The batch ran successfully.  Let's see if we have different noise now...
+
+Committing.
+
+Now to analyze...
+
+Got a batch plotting routine done in dev.py.
+
+Running dev.py right now produces the mean +- stdv sync measures for the four 
+pops and four conditions.
+
+Committing.
 
 

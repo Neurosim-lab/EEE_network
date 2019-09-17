@@ -4,7 +4,7 @@ import os
 
 #runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
 runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
-batchLabel = 'v01_batch23'
+batchLabel = 'v01_batch33'
 
 def batchRun():
 	# Create variable of type ordered dictionary (NetPyNE's customized version) 
@@ -12,16 +12,11 @@ def batchRun():
 
 	# fill in with parameters to explore and range of values (key has to coincide with a variable in simConfig) 
 	
-	params['cfg.seeds'] = [{'conn': 4123,
-			                'stim': 1234, 
-			                'loc' : 3214},
-			                {'conn': 4123,
-			                'stim': 2345, 
-			                'loc' : 3214},
-			                {'conn': 4123,
-			                'stim': 3456, 
-			                'loc' : 3214}
-			                ]
+	params['dummy'] = [0, 1, 2, 3, 4]
+
+	#params['synLocRadius'] = [0.0, 0.1, 0.149, 0.249]
+	#params['synLocMiddle'] = [0.3, 0.5, 0.7]
+
 
 	#params['EEconv'] = [1.5, 3.0, 6.0] # Default 3.0
 	#params['IEconv'] = [6.0, 12.0, 24.0] # Default 12.0

@@ -7,7 +7,7 @@ import numpy as np
 import os
 plt.ion()
 
-batchdatadir = "data"
+batchdatadir = "batch_data"
 
 
 def analyze_batch(batchLabel, batchdatadir=batchdatadir):
@@ -29,7 +29,7 @@ def analyze_batch(batchLabel, batchdatadir=batchdatadir):
 
 # Individual plots
 
-def plot_batch_ind_conn(batchLabel, batchdatadir='data', includePre = ['all'], includePost = ['all'], feature = 'strength', orderBy = 'gid', figSize = (10,10), groupBy = 'pop', groupByIntervalPre = None, groupByIntervalPost = None, graphType = 'matrix', synOrConn = 'syn', synMech = None, connsFile = None, tagsFile = None, clim = None, fontSize = 12, saveData = None, showFig = False, save=True, outputdir='batch_figs'):
+def plot_batch_ind_conn(batchLabel, batchdatadir=batchdatadir, includePre = ['all'], includePost = ['all'], feature = 'strength', orderBy = 'gid', figSize = (10,10), groupBy = 'pop', groupByIntervalPre = None, groupByIntervalPost = None, graphType = 'matrix', synOrConn = 'syn', synMech = None, connsFile = None, tagsFile = None, clim = None, fontSize = 12, saveData = None, showFig = False, save=True, outputdir='batch_figs'):
     """Plots individual connectivity plots for each parameter combination."""
 
     from netpyne import specs
@@ -79,7 +79,7 @@ def plot_batch_ind_conn(batchLabel, batchdatadir='data', includePre = ['all'], i
 
 
 
-def plot_batch_ind_raster(batchLabel, batchdatadir='data', include=['allCells'], timeRange=None, maxSpikes=1e8, orderBy='gid', orderInverse=False, labels='legend', popRates=False, spikeHist=None, spikeHistBin=5, syncLines=False, figSize=(10,8), saveData=None, showFig=False, save=True, outputdir='batch_figs'):
+def plot_batch_ind_raster(batchLabel, batchdatadir=batchdatadir, include=['allCells'], timeRange=None, maxSpikes=1e8, orderBy='gid', orderInverse=False, labels='legend', popRates=False, spikeHist=None, spikeHistBin=5, syncLines=False, figSize=(10,8), saveData=None, showFig=False, save=True, outputdir='batch_figs'):
     """Plots individual raster plots for each parameter combination."""
 
     from netpyne import specs
@@ -126,7 +126,7 @@ def plot_batch_ind_raster(batchLabel, batchdatadir='data', include=['allCells'],
 
 
 
-def plot_batch_ind_stats(batchLabel, batchdatadir='data', include=['allCells', 'eachPop'], statDataIn={}, timeRange=None, graphType='boxplot', stats=['rate', 'isicv'], bins=50, popColors=[], histlogy=False, histlogx=False, histmin=0.0, density=False, includeRate0=False, legendLabels=None, normfit=False, histShading=True, xlim=None, dpi=100, figSize=(6,8), fontSize=12, saveData=None, showFig=True, save=True, outputdir='batch_figs'):
+def plot_batch_ind_stats(batchLabel, batchdatadir=batchdatadir, include=['allCells', 'eachPop'], statDataIn={}, timeRange=None, graphType='boxplot', stats=['rate', 'isicv'], bins=50, popColors=[], histlogy=False, histlogx=False, histmin=0.0, density=False, includeRate0=False, legendLabels=None, normfit=False, histShading=True, xlim=None, dpi=100, figSize=(6,8), fontSize=12, saveData=None, showFig=True, save=True, outputdir='batch_figs'):
     """Plots individual connectivity plots for each parameter combination."""
 
     from netpyne import specs
@@ -246,7 +246,7 @@ def plotSimSync(simPath='data', simLabel='eee_net_25', showFigs=False, batchLabe
 #plotSimSync(simLabel='eee_net_23')
 
 
-def plotBatchSync(batchPath='batch_data', batchLabel='v01_batch23'):
+def plotBatchSync(batchPath='batch_data', batchLabel='v01_batch25'):
 
     batchPath = os.path.join(batchPath, batchLabel)
 
@@ -256,7 +256,6 @@ def plotBatchSync(batchPath='batch_data', batchLabel='v01_batch23'):
     simFiles = [file for file in simFiles if not file.endswith('cfg.json')]
     simFiles = [file for file in simFiles if not file.endswith('batch.json')]
     simFiles.sort()
-    print(simFiles)
 
     syncData = []
 
@@ -290,9 +289,9 @@ def plotBatchSync(batchPath='batch_data', batchLabel='v01_batch23'):
 
     fig, ax = plt.subplots()
     rects1 = ax.bar(x - width*(3/2), PT51_sync, yerr=PT51_stdv, width=width, label='PT5_1 (+P+I)')
-    rects2 = ax.bar(x - width/(2), PT52_sync, yerr=PT52_stdv, width=width, label='PT5_2 (+P-I)')
-    rects3 = ax.bar(x + width/(2), PT53_sync, yerr=PT53_stdv, width=width, label='PT5_3 (-P+I)')
-    rects4 = ax.bar(x + width*(3/2), PT54_sync, yerr=PT54_stdv, width=width, label='PT5_4 (-P-I)')
+    rects2 = ax.bar(x - width/(2), PT52_sync, yerr=PT52_stdv, width=width, label='PT5_2 (+P–I)')
+    rects3 = ax.bar(x + width/(2), PT53_sync, yerr=PT53_stdv, width=width, label='PT5_3 (–P+I)')
+    rects4 = ax.bar(x + width*(3/2), PT54_sync, yerr=PT54_stdv, width=width, label='PT5_4 (–P–I)')
 
     # Add some text for labels, title and custom x-axis tick labels, etc.
     ax.set_ylabel('Synchrony')
@@ -306,10 +305,18 @@ def plotBatchSync(batchPath='batch_data', batchLabel='v01_batch23'):
     return syncData
 
 
-syncData = plotBatchSync()
+#syncData = plotBatchSync(batchLabel='v01_batch26')
+
+#batch_analysis.plot_vtraces('v01_batch26')
 
 
 
+### Detecting plateaus
+
+def moving_average(a, n=3) :
+    ret = np.cumsum(a, dtype=float)
+    ret[n:] = ret[n:] - ret[:-n]
+    return ret[n - 1:] / n
 
 
 

@@ -7,13 +7,14 @@ showFig = False
 saveFig = False
 
 # Simulation options
-cfg = specs.SimConfig()       
+cfg = specs.SimConfig()
+cfg.dummy    = 0       
 cfg.duration = 2400
 cfg.numCells = 100 
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_25'
+cfg.simLabel = 'eee_net_29'
 cfg.saveFolder = os.path.join('data', cfg.simLabel)
 cfg.savePickle = False
 cfg.saveJson = True
@@ -49,10 +50,11 @@ cfg.GABAAslow_e     = -90
 cfg.noisePT5 = True
 cfg.noisePV5 = True
 
-cfg.PT5_exc_noise_amp = 0.01 #1.0
+cfg.PT5_noise_scaling = 1.0
+cfg.PT5_exc_noise_amp = 0.01 * cfg.PT5_noise_scaling
 cfg.PT5_exc_noise_e   = 0.0
 cfg.PT5_exc_noise_tau = 1.0
-cfg.PT5_inh_noise_amp = 0.01 #1.0
+cfg.PT5_inh_noise_amp = 0.01 * cfg.PT5_noise_scaling
 cfg.PT5_inh_noise_e   = -75.0
 cfg.PT5_inh_noise_tau = 1.0
 
@@ -105,7 +107,9 @@ cfg.analysis['plotSpikeHist'] = {'saveFig': saveFig,'showFig': showFig}
 
 #cfg.analysis['plotTraces'] = {'include': [('PT5_1',0), ('PT5_2', 0), ('PT5_3', 0), ('PT5_4', 0), ('PV5', 0)], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}   
 
-cfg.analysis['plotTraces'] = {'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4'], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}   
+#cfg.analysis['plotTraces'] = {'include': [('PT5_1', [0,1,2,3,4]), ('PT5_2', [0,1,2,3,4]), ('PT5_3', [0,1,2,3,4]), ('PT5_4', [0,1,2,3,4])], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]} 
+
+cfg.analysis['plotTraces'] = {'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4'], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}  
 
 
 #cfg.analysis['plot2Dnet'] = {'saveFig': saveFig, 'showFig': showFig}            

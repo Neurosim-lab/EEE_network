@@ -15,7 +15,7 @@ from itertools import product
 from pprint import pprint
 from netpyne import specs
 
-batchdatadir = "data"
+batchdatadir = "batch_data"
 
 # The following ensures py2 and py3 compatibility
 try:

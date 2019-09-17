@@ -20,7 +20,7 @@ platthresh   = 10.0 #10.0 #5.0    # threshold for a plateau
 stable       = 50     # ms required for trace to stabilize
 syntime      = 200    # time in ms when glutamate is released (synapse time)
 spikewidth   = 3.0
-batchdatadir = "data"
+batchdatadir = "batch_data"
 
 
 ###############################################################################
@@ -897,13 +897,13 @@ def plot_relation(yarray, xvector, params, swapaxes=False, param_labels=None, ti
                 param_labels[ind] = param_autolabels[ind]     
         
     if fig is None:
-
         if title is None and "autotitle" in kwargs:
             title = kwargs["autotitle"]
         if xlabel is None and "autoxlabel" in kwargs:
             xlabel = kwargs['autoxlabel']
         if ylabel is None and "autoylabel" in kwargs:
             ylabel = kwargs['autoylabel']
+
 
     if swapaxes:
         param_vals[0], param_vals[1] = param_vals[1], param_vals[0]
@@ -913,9 +913,10 @@ def plot_relation(yarray, xvector, params, swapaxes=False, param_labels=None, ti
     if fig is None:
         figure = plt.figure(figsize=(12, 8))
         axes = []
-    
+
     rows = len(param_vals[0])
     cols = len(param_vals[1])
+
     
     toprow = np.arange(1, cols+1, 1)
     bottomrow = np.arange(rows*cols, rows*cols-cols, -1)
@@ -1949,7 +1950,7 @@ def plot_all(redoall=False):
 
 
 
-def plot_batch_raster(batchname, batchdatadir='data', swapaxes=False, param_labels=None, title=None, xlabel=None, ylabel=None, include =['allCells'], timeRange=None, maxSpikes=1e8, orderBy='gid', orderInverse=True, syncLines=False, figSize=(10,8), fig=None, lw=2, marker='|', markerSize=2, save=True, outputdir="batch_figs", filename=None, **kwargs):
+def plot_batch_raster(batchname, batchdatadir=batchdatadir, swapaxes=False, param_labels=None, title=None, xlabel=None, ylabel=None, include =['allCells'], timeRange=None, maxSpikes=1e8, orderBy='gid', orderInverse=True, syncLines=False, figSize=(10,8), fig=None, lw=2, marker='|', markerSize=2, save=True, outputdir="batch_figs", filename=None, **kwargs):
     """Plots raster plots for each parameter combination."""
 
     if type(batchname) == str:
@@ -2110,7 +2111,7 @@ def plot_batch_raster(batchname, batchdatadir='data', swapaxes=False, param_labe
         return fig
 
 
-def plot_batch_conn(batchname, batchdatadir='data', swapaxes=False, param_labels=None, title=None, xlabel=None, ylabel=None, includePre = ['all'], includePost = ['all'], feature = 'strength', orderBy = 'gid', figSize = (10,10), groupBy = 'pop', groupByIntervalPre = None, groupByIntervalPost = None, graphType = 'matrix', synOrConn = 'syn', synMech = None, connsFile = None, tagsFile = None, clim = None, fontSize = 12, saveData = None, saveFig = None, showFig = True, save=True, outputdir="batch_figs", filename=None, **kwargs):
+def plot_batch_conn(batchname, batchdatadir=batchdatadir, swapaxes=False, param_labels=None, title=None, xlabel=None, ylabel=None, includePre = ['all'], includePost = ['all'], feature = 'strength', orderBy = 'gid', figSize = (10,10), groupBy = 'pop', groupByIntervalPre = None, groupByIntervalPost = None, graphType = 'matrix', synOrConn = 'syn', synMech = None, connsFile = None, tagsFile = None, clim = None, fontSize = 12, saveData = None, saveFig = None, showFig = True, save=True, outputdir="batch_figs", filename=None, **kwargs):
     """Plots raster plots for each parameter combination."""
 
     if type(batchname) == str:

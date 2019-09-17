@@ -176,6 +176,7 @@ for prePop in ['PV5']:
 if cfg.glutamate:
 
     branch_length = netParams.cellParams['PT5_1']['secs']['basal_8']['geom']['L']
+
     glutLocs = np.linspace(cfg.synLocMiddle-cfg.synLocRadius, cfg.synLocMiddle+cfg.synLocRadius, cfg.numSyns)
     dists = branch_length * np.abs(glutLocs - cfg.synLocMiddle)
     glutLocs = list(glutLocs)

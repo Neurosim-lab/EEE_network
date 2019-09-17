@@ -12001,11 +12001,21 @@ batchLabel = 'v01_batch35'
 
 Committing before running batch33
 
+Running dev.py, then:
 
+syncData03 = plotBatchSync(batchLabel='v01_batch33')
+syncData05 = plotBatchSync(batchLabel='v01_batch34')
+syncData07 = plotBatchSync(batchLabel='v01_batch35')
 
+plt.gca().set_ylim([0,0.8])
 
+Comparing:
+file:gif/20190917_051618.png
 
+Left (0.3), Middle (0.5), Right (0.7)
 
+Raster plots: 
+file:gif/20190917_051939.png
 
 
 
@@ -12015,16 +12025,194 @@ In everything I've run today, inhibitory cells are spiking. But with the noise o
 cells, there is no sign of IPSPs.  Need to look into this!
 
 
+** Looking into connectivity
+
+Want to plot a morphology...
+
+From Netpyne.org:
+# syn locations (using matplotlib) of cell with gid=0
+sim.analysis.plotShape(includePost=[0], showSyns=1, synStyle='.', synSiz=3)
 
 
+*** Attempt one
+
+import os
+from netpyne import sim
+simLabel = 'eee_net_28'
+simPath = os.path.join('data', simLabel, simLabel + '.json')
+sim.load(simPath, createNEURONObj=False)
+sim.analysis.plotShape(includePost=[0], showSyns=1, synStyle='.', synSiz=3)
+
+Loading file data/eee_net_28/eee_net_28.json ... 
+  Done; file loading time = 0.11 s
+Loading simConfig...
+Loading netParams...
+Loading net...
+  Created 100 cells
+  Created 0 connections
+  Created 8640 stims
+  Done; re-instantiate net time = 0.10 s
+Loading simData...
+Recording 0 traces of 0 types on node 0
+Plotting 3D cell shape ...
+There was an exception in plotShape(): 
+ sec is not a Section 
+(<class 'TypeError'>, TypeError('sec is not a Section'), <traceback object at 0x11c409288>)
+Out[5]: -1
+
+Will run a new sim saving sections and connections.
+
+*** Attempt two
+
+cfg.simLabel = 'eee_net_29'
+cfg.saveCellSecs = True #False
+cfg.saveCellConns = True #False
+
+import os
+from netpyne import sim
+simLabel = 'eee_net_29'
+simPath = os.path.join('data', simLabel, simLabel + '.json')
+sim.load(simPath, createNEURONObj=True)
+sim.analysis.plotShape(includePost=[0], showSyns=1, synStyle='.', synSiz=3)
+
+Loading file data/eee_net_29/eee_net_29.json ... 
+  Done; file loading time = 0.20 s
+Loading simConfig...
+Loading netParams...
+Loading net...
+  Created 100 cells
+  Created 10240 connections
+  Created 5920 stims
+---------------------------------------------------------------------------
+LookupError                               Traceback (most recent call last)
+<ipython-input-1-09d4839fe776> in <module>()
+      3 simLabel = 'eee_net_29'
+      4 simPath = os.path.join('data', simLabel, simLabel + '.json')
+----> 5 sim.load(simPath, createNEURONObj=True)
+      6 sim.analysis.plotShape(includePost=[0], showSyns=1, synStyle='.', synSiz=3)
+
+~/Applications/netpyne/netpyne/sim/wrappers.py in load(filename, simConfig, output, instantiate, createNEURONObj)
+    119     sim.initialize()  # create network object and set cfg and net params
+    120     sim.cfg.createNEURONObj = createNEURONObj
+--> 121     sim.loadAll(filename, instantiate=instantiate, createNEURONObj=createNEURONObj)
+    122     if simConfig: sim.setSimCfg(simConfig)  # set after to replace potentially loaded cfg
+    123     if len(sim.net.cells) == 0 and instantiate:
+
+~/Applications/netpyne/netpyne/sim/load.py in loadAll(filename, data, instantiate, createNEURONObj)
+    284         print('Error: no connFormat provided in simConfig')
+    285         sys.exit()
+--> 286     loadNet(filename, data=data, instantiate=instantiate, compactConnFormat=connFormat)
+    287     loadSimData(filename, data=data)
+    288 
+
+~/Applications/netpyne/netpyne/sim/load.py in loadNet(filename, data, instantiate, compactConnFormat)
+    233                     for cell in sim.net.cells:
+    234                         prop = {'secs': cell.secs}
+--> 235                         cell.createNEURONObj(prop)  # use same syntax as when creating based on high-level specs
+    236                         cell.associateGid()  # can only associate once the hSection obj has been created
+    237                     # create all NEURON Netcons, NetStims, etc
+
+~/Applications/netpyne/netpyne/cell/compartCell.py in createNEURONObj(self, prop)
+    420                             pointpParamValue = self.gid
+    421                         if pointpParamName not in ['mod', 'loc', 'vref', 'synList'] and not pointpParamName.startswith('_'):
+--> 422                             setattr(sec['pointps'][pointpName]['hObj'], pointpParamName, pointpParamValue)
+    423                     if 'params' in self.tags.keys(): # modify cell specific params
+    424                       for pointpParamName,pointpParamValue in self.tags['params'].items():
+
+LookupError: 'hObj' is not a defined hoc variable name.
+
+*** Attempt three
+
+import os
+from netpyne import sim
+simLabel = 'eee_net_29'
+simPath = os.path.join('data', simLabel, simLabel + '.json')
+sim.loadAll(simPath, createNEURONObj=True)
+sim.analysis.plotShape(includePost=[0], showSyns=1, synStyle='.', synSiz=3)
+
+Loading file data/eee_net_29/eee_net_29.json ... 
+Loading simConfig...
+Loading netParams...
+---------------------------------------------------------------------------
+AttributeError                            Traceback (most recent call last)
+<ipython-input-1-ad07a6557895> in <module>()
+      3 simLabel = 'eee_net_29'
+      4 simPath = os.path.join('data', simLabel, simLabel + '.json')
+----> 5 sim.loadAll(simPath, createNEURONObj=True)
+      6 sim.analysis.plotShape(includePost=[0], showSyns=1, synStyle='.', synSiz=3)
+
+~/Applications/netpyne/netpyne/sim/load.py in loadAll(filename, data, instantiate, createNEURONObj)
+    278     loadSimCfg(filename, data=data)
+    279     sim.cfg.createNEURONObj = createNEURONObj  # set based on argument
+--> 280     loadNetParams(filename, data=data)
+    281     if hasattr(sim.cfg, 'compactConnFormat'):
+    282         connFormat = sim.cfg.compactConnFormat
+
+~/Applications/netpyne/netpyne/sim/load.py in loadNetParams(filename, data, setLoaded)
+    162     if 'net' in data and 'params' in data['net']:
+    163         if setLoaded:
+--> 164             setup.setNetParams(data['net']['params'])
+    165         else:
+    166             return specs.NetParams(data['net']['params'])
+
+~/Applications/netpyne/netpyne/sim/setup.py in setNetParams(params)
+     94     elif params and isinstance(params, dict):
+     95         params = utils.replaceKeys(params, 'popLabel', 'pop')  # for backward compatibility
+---> 96         sim.net.params = specs.NetParams(params)
+     97     else:
+     98         sim.net.params = specs.NetParams()
+
+AttributeError: module 'netpyne.sim' has no attribute 'net'
+
+*** Attempt four
+
+cfg.saveDataInclude = ['simData', 'simConfig', 'netParams', 'netCells', 'netPops', 'net'] #['simData', 'simConfig', 'netParams', 'net'] 
+
+cfg.simLabel = 'eee_net_30'
+./runsim
+
+import os
+from netpyne import sim
+simLabel = 'eee_net_30'
+simPath = os.path.join('data', simLabel, simLabel + '.json')
+sim.loadAll(simPath, createNEURONObj=True)
+sim.analysis.plotShape(includePost=[0], showSyns=1, synStyle='.', synSiz=3)
+
+AttributeError: module 'netpyne.sim' has no attribute 'net'
+
+*** Attempt five
+
+import os
+from netpyne import sim
+simLabel = 'eee_net_30'
+simPath = os.path.join('data', simLabel, simLabel + '.json')
+sim.load(simPath, createNEURONObj=True, instantiate=True)
+sim.analysis.plotShape(includePost=[0], showSyns=1, synStyle='.', synSiz=3)
+
+Still not working.
+
+But, if I comment out the following line in Netpyne it works:
+
+setattr(sec['pointps'][pointpName]['hObj'], pointpParamName, pointpParamValue)
+
+Around line 422 in /Users/graham/Applications/netpyne/netpyne/cell/compartCell.py
+
+Here's the shape plot
+file:gif/20190917_065822.png
 
 
+** Working with gfluctp
 
+Working in eee_single.  Made some changes so Bill can play. Now committing and pushing.
 
+Commands to set up:
 
+git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network/mod ; nrnivmodl ; cd ../eee_net ; ln -s "../mod/x86_64" x86_64 ; cd ../eee_single ; ln -s "../mod/x86_64" x86_64 ; ./runsim
 
+Output will appear in eee_single/output
 
+Then go into netParams.py and change the seed values.  Go into cfg.py and change
+cfg.simLabel (so output trace plots don't get overwritten).
 
-
-
+Even with different seeds, the noise always looks the same...
 

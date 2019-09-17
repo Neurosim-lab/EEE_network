@@ -8,6 +8,9 @@ try:
 except:
     from cfg import cfg
 
+## Hash function
+def id32(obj):
+    return hash(obj) & 0xffffffff
 
 ## Network parameters
 netParams = specs.NetParams()  # object of class NetParams to store the network parameters
@@ -21,7 +24,7 @@ netParams.probLengthConst = 150.0 # length constant for conn probability (um)
 
 
 ## Population parameters
-netParams.popParams['eeeD'] = {'cellType': 'eeeD', 'numCells': 1, 'ynormRange': cfg.ynormRange, 'cellModel': 'HH'}
+#netParams.popParams['eeeD'] = {'cellType': 'eeeD', 'numCells': 1, 'ynormRange': cfg.ynormRange, 'cellModel': 'HH'}
 netParams.popParams['eeeS'] = {'cellType': 'eeeS', 'numCells': 1, 'ynormRange': cfg.ynormRange, 'cellModel': 'HH'}
 # netParams.popParams['PT5_1'] = {'cellType': 'PT5', 'numCells': int(cfg.numPT5cells/4), 'ynormRange': cfg.ynormRange, 'cellModel': 'HH'}
 # netParams.popParams['PT5_2'] = {'cellType': 'PT5', 'numCells': int(cfg.numPT5cells/4), 'ynormRange': cfg.ynormRange, 'cellModel': 'HH'}
@@ -46,8 +49,8 @@ cellRule = netParams.importCellParams(label='eeeS', conds={'pop':'eeeS'}, fileNa
 netParams.cellParams['eeeS'] = cellRule
 
 ## Import eeeD cell 
-cellRule = netParams.importCellParams(label='eeeD', conds={'pop':'eeeD'}, fileName=eeeD_path, cellName='MakeCell', cellInstance=True)
-netParams.cellParams['eeeD'] = cellRule
+#cellRule = netParams.importCellParams(label='eeeD', conds={'pop':'eeeD'}, fileName=eeeD_path, cellName='MakeCell', cellInstance=True)
+#netParams.cellParams['eeeD'] = cellRule
 
 
 ## Synaptic mechanism parameters
@@ -67,7 +70,22 @@ netParams.synMechParams['NMDA'] = {'mod': 'NMDA', 'Cdur': 10.0, 'Beta': 0.02, 'g
 
 # PT5_1 noise
 if cfg.noisePT5:
-    netParams.cellParams['PT5_1']['secs']['soma']['pointps'] = {
+    # netParams.cellParams['eeeD']['secs']['soma']['pointps'] = {
+    #                     'noise': {'mod': 'Gfluctp', 
+    #                     'loc': 0.5,
+    #                     'std_e': 0.012,
+    #                     'g_e0' : 0.0121 * cfg.PT5_exc_noise_amp, 
+    #                     'tau_i': 10.49 * cfg.PT5_inh_noise_tau, 
+    #                     'tau_e': 2.728 * cfg.PT5_exc_noise_tau, 
+    #                     'std_i': 0.0264, 
+    #                     'g_i0' : 0.0573 * cfg.PT5_inh_noise_amp, 
+    #                     'E_e'  : cfg.PT5_exc_noise_e, 
+    #                     'E_i'  : cfg.PT5_inh_noise_e, 
+    #                     'seed1': 'gid', 
+    #                     'seed2': id32('gfluctp'), 
+    #                     'seed3': cfg.seeds['stim']}}
+
+    netParams.cellParams['eeeS']['secs']['soma']['pointps'] = {
                         'noise': {'mod': 'Gfluctp', 
                         'loc': 0.5,
                         'std_e': 0.012,
@@ -79,7 +97,7 @@ if cfg.noisePT5:
                         'E_e'  : cfg.PT5_exc_noise_e, 
                         'E_i'  : cfg.PT5_inh_noise_e, 
                         'seed1': 'gid', 
-                        'seed2': hashStr('gfluctp'), 
+                        'seed2': id32('gfluctp'), 
                         'seed3': cfg.seeds['stim']}}
 
 # PV5 noise
@@ -96,7 +114,7 @@ if cfg.noisePV5:
                         'E_e'  : cfg.PV5_exc_noise_e, 
                         'E_i'  : cfg.PV5_inh_noise_e, 
                         'seed1': 'gid', 
-                        'seed2': hashStr('gfluctp'), 
+                        'seed2': id32('gfluctp'), 
                         'seed3': cfg.seeds['stim']}}
 
 
@@ -229,9 +247,9 @@ if cfg.addIClamp:
                 {'source': iclabel, 'conds': {'popLabel': ic['pop']}, 'sec': ic['sec'], 'loc': ic['loc']}
 
 
-for secName, sec in netParams.cellParams['eeeD']['secs'].items(): 
-    if cfg.ttx:
-        sec['mechs']['nax']['gbar'] = 0.0
+# for secName, sec in netParams.cellParams['eeeD']['secs'].items(): 
+#     if cfg.ttx:
+#         sec['mechs']['nax']['gbar'] = 0.0
 
 for secName, sec in netParams.cellParams['eeeS']['secs'].items(): 
     if cfg.ttx:

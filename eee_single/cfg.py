@@ -43,7 +43,7 @@ cfg.GABAAfast_e     = -80
 cfg.GABAAslow_e     = -90
 
 # Noise variables
-cfg.noisePT5 = False
+cfg.noisePT5 = True
 cfg.noisePV5 = False
 
 cfg.PT5_exc_noise_amp = 0.0121
@@ -87,7 +87,7 @@ cfg.glutPuffExSyn = {'loc': list(np.linspace(cfg.synLocMiddle-cfg.synLocRadius, 
 
 # Recording options
 cfg.recordTraces = {'V_soma': {'sec':'soma', 'loc':0.5, 'var':'v'}} 
-cfg.recordTraces['V_soma_0'] = {'sec':'soma_0', 'loc':0.5, 'var':'v'}
+#cfg.recordTraces['V_soma_0'] = {'sec':'soma_0', 'loc':0.5, 'var':'v'}
 #cfg.recordTraces['V_dend_1'] = {'sec':'basal_1', 'loc':0.5, 'var':'v'}
 #cfg.recordTraces['V_dend_2'] = {'sec':'basal_2', 'loc':0.5, 'var':'v'}
 #cfg.recordTraces['V_dend_3'] = {'sec':'basal_3', 'loc':0.5, 'var':'v'}
@@ -105,7 +105,8 @@ cfg.printPopAvgRates = True
 #cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True,'saveFig': saveFig, 'labels':'overlay','showFig': showFig} #'timeRange':[0,500], 'popColors': {'PT5':'red','PV5': 'blue'}}
 
 #cfg.analysis['plotTraces'] = {'include': [('PT5_1',0), ('PT5_2', 0), ('PT5_3', 0), ('PT5_4', 0), ('PV5', 0)], 'saveFig': saveFig, 'showFig': showFig}  
-cfg.analysis['plotTraces'] = {'include': ['eeeD', 'eeeS'], 'saveFig': saveFig, 'showFig': showFig}      
+#cfg.analysis['plotTraces'] = {'include': ['eeeD', 'eeeS'], 'saveFig': saveFig, 'showFig': showFig}  
+cfg.analysis['plotTraces'] = {'include': ['eeeS'], 'saveFig': saveFig, 'showFig': showFig}    
 #cfg.analysis['plot2Dnet'] = {'saveFig': saveFig, 'showFig': showFig}            
 #cfg.analysis['plotConn'] = {'saveFig': saveFig, 'showFig': showFig}           
 

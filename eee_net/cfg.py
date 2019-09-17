@@ -14,14 +14,14 @@ cfg.numCells = 100
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_29'
+cfg.simLabel = 'eee_net_30'
 cfg.saveFolder = os.path.join('data', cfg.simLabel)
 cfg.savePickle = False
 cfg.saveJson = True
 cfg.saveDataInclude = ['simData', 'simConfig', 'netParams', 'net']         
 cfg.saveMat = False
-cfg.saveCellSecs = False
-cfg.saveCellConns = False #True
+cfg.saveCellSecs = True #False
+cfg.saveCellConns = True #False
 cfg.seeds = {'conn': 4123,
 			 'stim': 1234, 
 			 'loc' : 3214}  
@@ -81,7 +81,7 @@ cfg.numExSyns         = cfg.numSyns
 cfg.glutAmp           = 2.0
 cfg.glutAmpExSynScale = 1.0
 cfg.glutAmpDecay      = 0.0 # percent/um
-cfg.synLocMiddle      = 0.3 #0.45 
+cfg.synLocMiddle      = 0.7
 cfg.synLocRadius      = 0.15 
 cfg.initDelay         = 10.0
 cfg.synDelay          = 2.0 # ms/um

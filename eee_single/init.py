@@ -18,6 +18,8 @@ sim.gatherData()              # gather spiking data and cell info from each node
 sim.saveData()                # save params, cell info and sim output to file
 sim.analysis.plotData()       # plot spike raster etc
 
+from neuron import h
+print("================ SEEDS ================: ",h.Gfluctp[0].seed1, h.Gfluctp[0].seed2, h.Gfluctp[0].seed3)
 print("Final voltage in soma: ",sim.net.cells[0].secs.soma.hObj(0.5).v)
 
 # How to plot more than one figure of same type?  

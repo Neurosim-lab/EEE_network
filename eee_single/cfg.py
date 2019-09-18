@@ -7,7 +7,7 @@ saveFig = True
 
 # Simulation options
 cfg = specs.SimConfig()       
-cfg.duration = 1000           
+cfg.duration = 10
 cfg.dt = 0.025                
 cfg.verbose = True           
 cfg.recordStep = 1             
@@ -106,7 +106,7 @@ cfg.printPopAvgRates = True
 
 #cfg.analysis['plotTraces'] = {'include': [('PT5_1',0), ('PT5_2', 0), ('PT5_3', 0), ('PT5_4', 0), ('PV5', 0)], 'saveFig': saveFig, 'showFig': showFig}  
 #cfg.analysis['plotTraces'] = {'include': ['eeeD', 'eeeS'], 'saveFig': saveFig, 'showFig': showFig}  
-cfg.analysis['plotTraces'] = {'include': ['eeeS'], 'saveFig': saveFig, 'showFig': showFig}    
+#cfg.analysis['plotTraces'] = {'include': ['eeeS'], 'saveFig': saveFig, 'showFig': showFig}    
 #cfg.analysis['plot2Dnet'] = {'saveFig': saveFig, 'showFig': showFig}            
 #cfg.analysis['plotConn'] = {'saveFig': saveFig, 'showFig': showFig}           
 

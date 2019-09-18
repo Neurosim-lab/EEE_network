@@ -1,21 +1,9 @@
-"""
-init.py
-
-Usage:
-    python init.py # Run simulation, optionally plot a raster
-
-MPI usage:
-    mpiexec -n 4 nrniv -python -mpi init.py
-
-Contributors: salvadordura@gmail.com
-"""
+# nrniv -python init.py
 
 #import matplotlib; matplotlib.use('Agg')  # to avoid graphics error in servers
 from netpyne import sim
 
 cfg, netParams = sim.readCmdLineArgs()
-
-#sim.createSimulateAnalyze()
 
 sim.initialize(
     simConfig = cfg,    
@@ -29,6 +17,8 @@ sim.runSim()                  # run parallel Neuron simulation
 sim.gatherData()              # gather spiking data and cell info from each node
 sim.saveData()                # save params, cell info and sim output to file
 sim.analysis.plotData()       # plot spike raster etc
+
+print("Final voltage in soma: ",sim.net.cells[0].secs.soma.hObj(0.5).v)
 
 # How to plot more than one figure of same type?  
 # (e.g. raster arranged by y-position and also by 

@@ -75,11 +75,11 @@ CONSTRUCTOR {
 }
 
 INITIAL {
-  seeds123(seed1, seed2, seed3)
   VERBATIM
   // only this style initializes the stream on finitialize
   if (_p_internalpointer) { nrnran123_setseq((nrnran123_State*)_p_internalpointer, 0, 0); }
   ENDVERBATIM
+  seeds123(seed1, seed2, seed3)
   g_e1 = 0
   g_i1 = 0
   if(tau_e != 0) {

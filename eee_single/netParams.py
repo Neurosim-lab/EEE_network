@@ -113,9 +113,9 @@ if cfg.noisePV5:
                         'g_i0' : 0.0573 * cfg.PV5_inh_noise_amp, 
                         'E_e'  : cfg.PV5_exc_noise_e, 
                         'E_i'  : cfg.PV5_inh_noise_e, 
-                        'seed1': 'gid', 
-                        'seed2': id32('gfluctp'), 
-                        'seed3': cfg.seeds['stim']}}
+                        'seed1':   5,
+                        'seed2': 123,
+                        'seed3': 246}}
 
 
 # All PT5_1 parameters have been set (including noise), so now copy the 

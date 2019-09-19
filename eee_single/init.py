@@ -14,8 +14,8 @@ sim.net.createCells()         # instantiate network cells based on defined popul
 sim.net.connectCells()        # create connections between cells based on params
 sim.net.addStims()            # add network stimulation
 sim.setupRecording()          # setup variables to record (spikes, V traces, etc)
-h.Gfluctp[0].seed1, h.Gfluctp[0].seed2, h.Gfluctp[0].seed3 = 5, 123, 246
-h.Gfluctp[0].noiseFromRandom123(5,123,246)
+# h.Gfluctp[0].seed1, h.Gfluctp[0].seed2, h.Gfluctp[0].seed3 = 5, 123, 246
+# h.Gfluctp[0].noiseFromRandom123(5,123,246)
 sim.runSim()                  # run parallel Neuron simulation  
 sim.gatherData()              # gather spiking data and cell info from each node
 sim.saveData()                # save params, cell info and sim output to file

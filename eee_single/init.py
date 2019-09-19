@@ -6,9 +6,7 @@ from netpyne import sim
 
 cfg, netParams = sim.readCmdLineArgs()
 
-sim.initialize(
-    simConfig = cfg,    
-    netParams = netParams)    # create network object and set cfg and net params
+sim.initialize(simConfig = cfg,netParams = netParams)
 sim.net.createPops()          # instantiate network populations
 sim.net.createCells()         # instantiate network cells based on defined populations
 print("================ SEEDScr ================: ",h.Gfluctp[0].seed1, h.Gfluctp[0].seed2, h.Gfluctp[0].seed3)

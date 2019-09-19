@@ -572,6 +572,21 @@ class eeeS():
         h.pt3dadd(-52.78,8.71,-5.96,9.59, sec = self.soma)
         h.pt3dadd(-52.78,11.62,-5.96,7.36, sec = self.soma)
         h.pt3dadd(-53.1,14.22,-5.96,5.76, sec = self.soma)
+        
+        # Set up the 3d morphology and connection of basal dendrite cylinder
+        h.pt3dclear(sec = self.basal[9])
+        h.pt3dadd(-53.1,14.22,-5.96,6.0, sec = self.basal[9])
+        h.pt3dadd(157.2+-53.1,14.22,-5.96,6.0, sec = self.basal[9])
+
+        # Set up the 3d morphology and connection of the axon
+        h.pt3dclear(sec = self.axon[0])
+        h.pt3dadd(-53.1,14.22,-5.96,1.03, sec = self.axon[0])
+        h.pt3dadd(-53.1,-200.0+14.22,-5.96,1.03, sec = self.axon[0])
+
+        # Set up the 3d morphology and connection of the apical cylinder
+        h.pt3dclear(sec = self.apical[0])
+        h.pt3dadd(-53.1,14.22,-5.96,6.0, sec = self.apical[0])
+        h.pt3dadd(-53.1,454.5+14.22,-5.96,6.0, sec = self.apical[0])
 
         # Set up the 3d morphology and connection of basal dendrites
         self.basal[0].connect(self.soma)

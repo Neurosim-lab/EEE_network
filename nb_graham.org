@@ -12212,7 +12212,99 @@ git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network/mod ;
 Output will appear in eee_single/output
 
 Then go into netParams.py and change the seed values.  Go into cfg.py and change
-cfg.simLabel (so output trace plots don't get overwritten).
+cfg.simLabel (so output trace plots don't get overwritten).  Re-run the sim.
 
 Even with different seeds, the noise always looks the same...
+
+
+** Fixing 3D layout of morphology
+
+Before:
+file:gif/20190918_175112.png
+
+
+        # Set up the 3d morphology and connection of basal dendrite cylinder
+        h.pt3dclear(sec = self.basal[9])
+        h.pt3dadd(-53.1,14.22,-5.96,6.0, sec = self.basal[9])
+        h.pt3dadd(157.2+-53.1,14.22,-5.96,6.0, sec = self.basal[9])
+
+        # Set up the 3d morphology and connection of the axon
+        h.pt3dclear(sec = self.axon[0])
+        h.pt3dadd(-53.1,14.22,-5.96,1.03, sec = self.axon[0])
+        h.pt3dadd(-53.1,200.0+14.22,-5.96,1.03, sec = self.axon[0])
+
+        # Set up the 3d morphology and connection of the apical cylinder
+        h.pt3dclear(sec = self.apical[0])
+        h.pt3dadd(-53.1,14.22,-5.96,6.0, sec = self.apical[0])
+        h.pt3dadd(-53.1,14.22,454.5-5.96,6.0, sec = self.apical[0])
+
+cfg.simLabel = 'eee_net_31'
+
+import os
+from netpyne import sim
+simLabel = 'eee_net_31'
+simPath = os.path.join('data', simLabel, simLabel + '.json')
+sim.load(simPath, createNEURONObj=True, instantiate=True)
+sim.analysis.plotShape(includePost=[0], showSyns=1, synStyle='.', synSiz=3)
+
+After:
+file:gif/20190918_192814.png
+
+Need to invert the axon and start it from the other end of the soma.
+
+Need to put the apical where the axon is.
+
+Basal is fine, but could be angled downwards (direction of axon). Leave it alone 
+for now.
+
+        # Set up the 3d morphology and connection of the axon
+        h.pt3dclear(sec = self.axon[0])
+        h.pt3dadd(-53.1,14.22,-5.96,1.03, sec = self.axon[0])
+        h.pt3dadd(-53.1,-200.0+14.22,-5.96,1.03, sec = self.axon[0])
+
+        # Set up the 3d morphology and connection of the apical cylinder
+        h.pt3dclear(sec = self.apical[0])
+        h.pt3dadd(-53.1,14.22,-5.96,6.0, sec = self.apical[0])
+        h.pt3dadd(-53.1,454.5+14.22,-5.96,6.0, sec = self.apical[0])
+
+Now it looks good!
+file:gif/20190918_193700.png
+
+Committing.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

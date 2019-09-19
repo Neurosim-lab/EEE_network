@@ -96,7 +96,7 @@ if cfg.noisePT5:
                         'g_i0' : 0.0573 * cfg.PT5_inh_noise_amp, 
                         'E_e'  : cfg.PT5_exc_noise_e, 
                         'E_i'  : cfg.PT5_inh_noise_e, 
-                        'seed1': 'gid', 
+                        'seed1': 5,
                         'seed2': id32('gfluctp'), 
                         'seed3': cfg.seeds['stim']}}
 
@@ -254,8 +254,3 @@ if cfg.addIClamp:
 for secName, sec in netParams.cellParams['eeeS']['secs'].items(): 
     if cfg.ttx:
         sec['mechs']['nax']['gbar'] = 0.0
-
-
-
-
-

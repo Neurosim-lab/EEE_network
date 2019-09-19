@@ -70,21 +70,6 @@ netParams.synMechParams['NMDA'] = {'mod': 'NMDA', 'Cdur': 10.0, 'Beta': 0.02, 'g
 
 # PT5_1 noise
 if cfg.noisePT5:
-    # netParams.cellParams['eeeD']['secs']['soma']['pointps'] = {
-    #                     'noise': {'mod': 'Gfluctp', 
-    #                     'loc': 0.5,
-    #                     'std_e': 0.012,
-    #                     'g_e0' : 0.0121 * cfg.PT5_exc_noise_amp, 
-    #                     'tau_i': 10.49 * cfg.PT5_inh_noise_tau, 
-    #                     'tau_e': 2.728 * cfg.PT5_exc_noise_tau, 
-    #                     'std_i': 0.0264, 
-    #                     'g_i0' : 0.0573 * cfg.PT5_inh_noise_amp, 
-    #                     'E_e'  : cfg.PT5_exc_noise_e, 
-    #                     'E_i'  : cfg.PT5_inh_noise_e, 
-    #                     'seed1': 'gid', 
-    #                     'seed2': id32('gfluctp'), 
-    #                     'seed3': cfg.seeds['stim']}}
-
     netParams.cellParams['eeeS']['secs']['soma']['pointps'] = {
                         'noise': {'mod': 'Gfluctp', 
                         'loc': 0.5,
@@ -96,9 +81,9 @@ if cfg.noisePT5:
                         'g_i0' : 0.0573 * cfg.PT5_inh_noise_amp, 
                         'E_e'  : cfg.PT5_exc_noise_e, 
                         'E_i'  : cfg.PT5_inh_noise_e, 
-                        'seed1': 5,
-                        'seed2': id32('gfluctp'), 
-                        'seed3': cfg.seeds['stim']}}
+                        'seed1':   5,
+                        'seed2': 123,
+                        'seed3': 246}}
 
 # PV5 noise
 if cfg.noisePV5:

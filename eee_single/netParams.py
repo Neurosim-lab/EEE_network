@@ -81,7 +81,7 @@ if cfg.noisePT5:
                         'g_i0' : 0.0573 * cfg.PT5_inh_noise_amp, 
                         'E_e'  : cfg.PT5_exc_noise_e, 
                         'E_i'  : cfg.PT5_inh_noise_e, 
-                        'seed1': 5, # should be gid
+                        'seed1': id32('gid'),
                         'seed2': id32('gfluctp'), 
                         'seed3': cfg.seeds['stim']}}
 
@@ -98,7 +98,7 @@ if cfg.noisePV5:
                         'g_i0' : 0.0573 * cfg.PV5_inh_noise_amp, 
                         'E_e'  : cfg.PV5_exc_noise_e, 
                         'E_i'  : cfg.PV5_inh_noise_e, 
-                        'seed1': 5, # should be gid
+                        'seed1': id32('gid'),
                         'seed2': id32('gfluctp'), 
                         'seed3': cfg.seeds['stim']}}
 

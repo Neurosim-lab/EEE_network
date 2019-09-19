@@ -138,7 +138,7 @@ VERBATIM
     nrnran123_deletestream(*pv);
     *pv = (nrnran123_State*)0;
   }
-  *pv = nrnran123_newstream3(_la, _lb, _lc);
+  *pv = nrnran123_newstream3((uint32_t)_la, (uint32_t)_lb, (uint32_t)_lc);
 ENDVERBATIM
 }
 

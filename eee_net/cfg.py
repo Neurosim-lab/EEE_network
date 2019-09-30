@@ -4,17 +4,17 @@ import os
 
 # Show figures? Save figures?
 showFig = False
-saveFig = False
+saveFig = True #False
 
 # Simulation options
 cfg = specs.SimConfig()
 cfg.dummy    = 0       
 cfg.duration = 2400
-cfg.numCells = 100 
+cfg.numCells = 100
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_31'
+cfg.simLabel = 'eee_net_40'
 cfg.saveFolder = os.path.join('data', cfg.simLabel)
 cfg.savePickle = False
 cfg.saveJson = True
@@ -42,7 +42,7 @@ cfg.AMPAgmax        = cfg.AMPANMDAratio * cfg.NMDAgmax
 cfg.NMDAweight      = 0.2 #0.4 #0.8
 cfg.AMPAweight      = cfg.NMDAweight
 cfg.GABAAfastWeight = 0.0001
-cfg.GABAAslowWeight = 0.0001
+cfg.GABAAslowWeight = cfg.GABAAfastWeight #0.0001
 cfg.GABAAfast_e     = -80
 cfg.GABAAslow_e     = -90
 

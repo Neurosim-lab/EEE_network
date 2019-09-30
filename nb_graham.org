@@ -12274,23 +12274,228 @@ Committing.
 
 
 
+* 2019-09-19 -- gfluctp and morphology
+
+** gfluctp
+
+billl:
+pushed with branch ran123Testing
+note that just run with nrniv -python init.py since can't do mpi without multisplit (only 1 cell)
+joe can you see if you still getting same each time on yours since i'm getting diff without changing
+
+mkdir temp ; cd temp ; git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network ; git checkout ran123Testing ; cd mod ; nrnivmodl ; cd ../eee_net ; ln -s "../mod/x86_64" x86_64 ; cd ../eee_single ; ln -s "../mod/x86_64" x86_64 
+
+
+def myinit2(): #different seed per cell
+	for i,v in enumerate(PT5):
+		for c in sim.net.cells:
+ 				if c.tags['pop'] in v:			  		
+			  		for isec,sec in c.secs.iteritems():
+			  			if isec == 'soma_2':
+			  				for ip, pointp in enumerate(sec.pointps.values()):
+			  					if pointp['mod'] == 'Gfluctp':
+			  						pointp.hPointp.noiseFromRandom123(c.gid, len(c.conns), ip)
+
+
+** Changes to compartcell in order to plotShape
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	modified:   netpyne/.DS_Store
+	modified:   netpyne/cell/compartCell.py
+
+no changes added to commit (use "git add" and/or "git commit -a")
+graham-mac:netpyne graham$ git diff
+diff --git a/netpyne/.DS_Store b/netpyne/.DS_Store
+index a98998be..52bf99d2 100644
+Binary files a/netpyne/.DS_Store and b/netpyne/.DS_Store differ
+diff --git a/netpyne/cell/compartCell.py b/netpyne/cell/compartCell.py
+index 29616c2d..884bee6f 100644
+--- a/netpyne/cell/compartCell.py
++++ b/netpyne/cell/compartCell.py
+@@ -419,7 +419,13 @@ class CompartCell (Cell):
+                         if pointpParamValue == 'gid': 
+                             pointpParamValue = self.gid
+                         if pointpParamName not in ['mod', 'loc', 'vref', 'synList'] and not pointpParamName.startswith('_'):
+-                            setattr(sec['pointps'][pointpName]['hObj'], pointpParamName, pointpParamValue)
++                            print()
++                            print("pointpName = " + pointpName)
++                            print("pointpParams = " + str(pointpParams))
++                            print("pointpParamName = " + pointpParamName)
++                            print()
++
++                            #setattr(sec['pointps'][pointpName]['hObj'], pointpParamName, pointpParamValue)
+                     if 'params' in self.tags.keys(): # modify cell specific params
+                       for pointpParamName,pointpParamValue in self.tags['params'].items():
+                         setattr(sec['pointps'][pointpName]['hObj'], pointpParamName, pointpParamValue)
+graham-mac:netpyne graham$ 
+
+
+* 2019-09-20 -- 
+
+** To do now
+
+Recompile mod files
+Plug in Sergio's initRand code
+Ensure seeds work
+Switch id32 to new Netpyne implementation
+
+** Recompile mod files
+
+cd /u/graham/EEE_network/eee_net ; rm -rf x86_64 ; cd ../eee_single ; rm -rf x86_64 ; cd ../mod ; rm -rf x86_64
+
+cd /u/graham/EEE_network/mod ; nrnivmodl ; cd ../eee_net ; ln -s "../mod/x86_64" x86_64 ; cd ../eee_single ; ln -s "../mod/x86_64" x86_64
+
+
+** Plug in Sergio's rand init code
+
+cfg.simLabel = 'eee_net_32'
+
+Trying without initRand
+
+cfg.simLabel = 'eee_net_33'
+
+Changing seed2 to a constant and trying without initRand
+
+cfg.simLabel = 'eee_net_34'
+
+Still different, but looking into the Python hash function.
+
+It turns out we were getting a different seed each time from id32('glfuctp'), 
+because it uses the Python hash function which is randomised at each start up 
+in order to prevent some sort of attack:
+
+https://stackoverflow.com/questions/27522626/hash-function-in-python-3-3-returns-different-results-between-sessions
+
+** No need for initRand code
+
+Gfluctp seems to be working now even without a separate init.
+Netpyne handles using 'gid' as a seed appropriately.  
+
+The same seeds produce the same output, and different seeds produce different 
+outputs.
+
+
+* 2019-09-23 -- 
+
+** Updating to use Netpyne hash function
+
+ sim.utils.hashStr('gfluctp') returns the same output even between sessions
+
+ Updating EEE repo to use this instead of Python's builtin hash
+
+## Hash function
+def id32(obj):
+    return sim.utils.hashStr(obj) #hash(obj) & 0xffffffff
+
+# PT5_1 noise
+if cfg.noisePT5:
+    netParams.cellParams['PT5_1']['secs']['soma']['pointps'] = {
+                        'noise': {'mod': 'Gfluctp', 
+                        'loc': 0.5,
+                        'std_e': 0.012,
+                        'g_e0' : 0.0121 * cfg.PT5_exc_noise_amp, 
+                        'tau_i': 10.49 * cfg.PT5_inh_noise_tau, 
+                        'tau_e': 2.728 * cfg.PT5_exc_noise_tau, 
+                        'std_i': 0.0264, 
+                        'g_i0' : 0.0573 * cfg.PT5_inh_noise_amp, 
+                        'E_e'  : cfg.PT5_exc_noise_e, 
+                        'E_i'  : cfg.PT5_inh_noise_e, 
+                        'seed1': 'gid', 
+                        'seed2': id32('gluctp'), 
+                        'seed3': cfg.seeds['stim']}}
+
+# PV5 noise
+if cfg.noisePV5:
+    netParams.cellParams['PV5']['secs']['soma']['pointps'] = {
+                        'noise': {'mod': 'Gfluctp', 
+                        'loc': 0.5,
+                        'std_e': 0.012,
+                        'g_e0' : 0.0121 * cfg.PV5_exc_noise_amp, 
+                        'tau_i': 10.49 * cfg.PV5_inh_noise_tau, 
+                        'tau_e': 2.728 * cfg.PV5_exc_noise_tau, 
+                        'std_i': 0.0264, 
+                        'g_i0' : 0.0573 * cfg.PV5_inh_noise_amp, 
+                        'E_e'  : cfg.PV5_exc_noise_e, 
+                        'E_i'  : cfg.PV5_inh_noise_e, 
+                        'seed1': 'gid', 
+                        'seed2': id32('gluctp'), 
+                        'seed3': cfg.seeds['stim']}}
+
+
+Now to save everything and run twice to ensure we get the same noise.
+
+cfg.simLabel = 'eee_net_37'
+cfg.simLabel = 'eee_net_38'
+
+Okay, those are the same. Now to change the seeds and see what happens
+
+'seed2': id32('gluctp_exc'),
+'seed2': id32('gluctp_inh'),
+
+cfg.simLabel = 'eee_net_39'
+
+Okay, now it's different.  Looking good, moving on.
+
+
+** To work on now
+
+Run big sim
+IPSPs
+Connectivity numbers
+Plateau detection
 
 
 
+* 2019-09-24 -- 
+
+** Running a batch to explore IPSPs
+
+batchLabel = 'v01_batch36'
+
+Changing slow GABA weight to match fast GABA weight
+cfg.GABAAfastWeight = 0.0001
+cfg.GABAAslowWeight = cfg.GABAAfastWeight #0.0001
+
+params['GABAAfastWeight'] = [0.0001, 0.001, 0.01, 0.1]
+
+Increase GABA weight and the IPSPs start to show up.
+
+Need to determine how big IPSPs should be.
+
+** Running a batch of full sims with noise to explore IPSPs
+
+batchLabel = 'v01_batch37'
 
 
+** Measuring connectivity
+
+Created init_norun.py to just set up sim without running it, then can look 
+at inidividual cells and measure conns
+
+Looking into Netpyne connectivity measurements
 
 
+* 2019-09-30 -- 
+
+Running a batch on Comet using NSG allocation
+
+Saving conns for analysis
+
+Looking into how long it takes for a number of cells and how much 
+data is produced
+
+batchLabel = 'v01_batch38'
+runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
+params['numCells'] = [10, 100, 1000, 10000, 20000]
+cfg.saveCellSecs = True #False
+cfg.saveCellConns = True #False
+'allocation': 'csd403', 
 
 
-
-
-
-
-
-
-
-
+Will commit, pull to Comet, recompile mods, and execute batch.
 
 
 

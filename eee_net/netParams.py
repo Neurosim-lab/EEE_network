@@ -1,4 +1,4 @@
-from netpyne import specs
+from netpyne import specs, sim
 import os
 import copy
 import numpy as np
@@ -11,7 +11,8 @@ except:
 
 ## Hash function
 def id32(obj):
-    return hash(obj) & 0xffffffff
+    return sim.utils.hashStr(obj) #hash(obj) & 0xffffffff
+
 
 ## Network parameters
 netParams = specs.NetParams()  # object of class NetParams to store the network parameters
@@ -79,7 +80,7 @@ if cfg.noisePT5:
                         'E_e'  : cfg.PT5_exc_noise_e, 
                         'E_i'  : cfg.PT5_inh_noise_e, 
                         'seed1': 'gid', 
-                        'seed2': id32('gfluctp'), 
+                        'seed2': id32('gluctp_exc'), 
                         'seed3': cfg.seeds['stim']}}
 
 # PV5 noise
@@ -96,7 +97,7 @@ if cfg.noisePV5:
                         'E_e'  : cfg.PV5_exc_noise_e, 
                         'E_i'  : cfg.PV5_inh_noise_e, 
                         'seed1': 'gid', 
-                        'seed2': id32('gfluctp'), 
+                        'seed2': id32('gluctp_inh'), 
                         'seed3': cfg.seeds['stim']}}
 
 

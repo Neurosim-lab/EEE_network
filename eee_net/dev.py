@@ -319,6 +319,22 @@ def moving_average(a, n=3) :
     return ret[n - 1:] / n
 
 
+### Measuring connectivity
+
+## Measure number of exc and inh connections by population
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -364,6 +380,8 @@ def moving_average(a, n=3) :
 # batch_analysis.plot_num_spikes(batchLabel)
 
 # plt.show()
+
+
 
 
 

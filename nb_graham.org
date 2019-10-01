@@ -12480,7 +12480,7 @@ Looking into Netpyne connectivity measurements
 
 * 2019-09-30 -- 
 
-Running a batch on Comet using NSG allocation
+** Running a batch on Comet using NSG allocation
 
 Saving conns for analysis
 
@@ -12496,6 +12496,187 @@ cfg.saveCellConns = True #False
 
 
 Will commit, pull to Comet, recompile mods, and execute batch.
+
+cd /home/jwgraham/EEE_network/eee_net ; rm -rf x86_64 ; cd ../eee_single ; rm -rf x86_64 ; cd ../mod ; rm -rf x86_64
+
+cd /home/jwgraham/EEE_network/mod ; nrnivmodl ; cd ../eee_net ; ln -s "../mod/x86_64" x86_64 ; cd ../eee_single ; ln -s "../mod/x86_64" x86_64
+
+Got errors:
+sbatch: error: bank_limit plugin: expired user, can't submit job
+sbatch: error: Batch job submission failed: Invalid account or account/partition combination specified
+
+Subha says to run on Stampede
+
+
+** Attempting to run on Stampede...
+
+ssh tg856217@stampede2.tacc.xsede.org
+
+
+** Chats
+
+joe 6:47 AM
+I’d like to start running some big sims today, but I’ve never used NSG.  Apparently I just have to change the allocation number?  Does somebody know the allocation number for NSG?
+@billl @subha?
+billl 7:52 AM
+dk offhand.  @don?
+subha 8:35 AM
+csd403
+salvadord 8:35 AM
+‘csd403’
+ah :slightly_smiling_face:
+don 8:39 AM
+thank you subha
+joe 9:25 AM
+Thanks all!
+subha 11:07 AM
+Please use it on Stampede2 first
+joe 11:09 AM
+I just tried using it on Comet and got an error
+Untitled 
+sbatch: error: bank_limit plugin: expired user, can't submit job
+sbatch: error: Batch job submission failed: Invalid account or account/partition combination specified
+
+
+
+I’ll try it on Stampede…
+subha 11:12 AM
+I will check on your access.
+Joe, Don, Salva, Bill? needs access through NSG?
+joe 11:12 AM
+Yes please.
+subha 11:13 AM
+For stampede2, please use account TG-IBN140002
+Joe I dont see you on stampede2 under NSG allocation. I will add you so you can submit jobs
+joe 11:19 AM
+Thanks Subha!
+Bill, did you ever get EEE running on Stampede? Could I see your setup?
+subha 11:19 AM
+Actually I dont see you on Comet as well which explains the error
+billl 11:24 AM
+subha was working on getting stuff running on stampede
+subha 11:25 AM
+Yes I can send you the instructions for using Stampede2 by eot
+joe 11:26 AM
+Awesome, thanks Subha.
+
+
+
+** Looking into connectivity -- distance
+
+I notice synaptic delays are partly based on distance, which we should change
+to be distance-independent unless we want to properly scale the 3D space of the
+model with the number of neurons.  But will come back to this later...
+
+
+
+
+** Prelim code to count connections
+
+for pop in sim.net.pops.keys():
+
+    print("Population: ", pop)
+
+    popGids = sim.net.pops[pop].cellGids
+
+    for cellGid in popGids:
+
+        print("  Cell: ", cellGid)
+
+        cell = sim.net.cells[cellGid]
+
+        conns = cell.conns
+
+        for conn in conns:
+
+            if isinstance(conn['preGid'], int):
+
+                print("    synMech: ", conn['synMech'])
+
+
+** Looking into Netpyne connectivity measures
+
+Would be better to use Netpyne's analysis to measure connectivity
+
+But I get this error:
+
+In [19]: sim.analysis.plotConn()
+Plotting connectivity matrix...
+There was an exception in plotConn(): 
+ 'Network' object has no attribute 'allCells' 
+(<class 'AttributeError'>, AttributeError("'Network' object has no attribute 'allCells'"), <traceback object at 0x11ec66408>)
+Out[19]: -1
+
+
+It looks like I needed to uncomment saveData in my init_norun.py file
+
+sim.initialize(
+    simConfig = cfg,    
+    netParams = netParams)    # create network object and set cfg and net params
+sim.net.createPops()          # instantiate network populations
+sim.net.createCells()         # instantiate network cells based on defined populations
+sim.net.connectCells()        # create connections between cells based on params
+sim.net.addStims()            # add network stimulation
+sim.setupRecording()          # setup variables to record (spikes, V traces, etc)
+# sim.runSim()                  # run parallel Neuron simulation  
+# sim.gatherData()              # gather spiking data and cell info from each node
+sim.saveData()                # save params, cell info and sim output to file
+# sim.analysis.plotData()       # plot spike raster etc
+
+That creates the allCells in Network object
+
+Now Netpyne plotConn outputs a figure and some data.  :)
+
+In [1]: sim.analysis.plotConn()
+Plotting connectivity matrix...
+Out[1]: 
+(<Figure size 1000x1000 with 2 Axes>,
+ {'connMatrix': array([[ 7.2000e+00,  7.2000e+00,  7.2000e+00,  7.2000e+00,  1.8000e+00,
+          -0.0000e+00, -0.0000e+00, -0.0000e+00, -0.0000e+00],
+         [ 7.2000e+00,  7.2000e+00,  7.2000e+00,  7.2000e+00,  1.8000e+00,
+          -0.0000e+00, -0.0000e+00, -0.0000e+00, -0.0000e+00],
+         [ 7.2000e+00,  7.2000e+00,  7.2000e+00,  7.2000e+00,  1.8000e+00,
+          -0.0000e+00, -0.0000e+00, -0.0000e+00, -0.0000e+00],
+         [ 7.2000e+00,  7.2000e+00,  7.2000e+00,  7.2000e+00,  1.8000e+00,
+          -0.0000e+00, -0.0000e+00, -0.0000e+00, -0.0000e+00],
+         [ 5.7600e-02,  5.7600e-02,  5.7600e-02,  5.7600e-02,  1.4400e-02,
+          -0.0000e+00, -0.0000e+00, -0.0000e+00, -0.0000e+00],
+         [ 1.0368e+04,  1.0368e+04,  0.0000e+00,  0.0000e+00,  0.0000e+00,
+           0.0000e+00, -0.0000e+00, -0.0000e+00, -0.0000e+00],
+         [ 1.0368e+04,  1.0368e+04,  0.0000e+00,  0.0000e+00,  0.0000e+00,
+           0.0000e+00,  0.0000e+00, -0.0000e+00, -0.0000e+00],
+         [ 1.6000e+01,  0.0000e+00,  1.6000e+01,  0.0000e+00,  0.0000e+00,
+           0.0000e+00,  0.0000e+00,  0.0000e+00, -0.0000e+00],
+         [ 1.6000e+01,  0.0000e+00,  1.6000e+01,  0.0000e+00,  0.0000e+00,
+           0.0000e+00,  0.0000e+00,  0.0000e+00,  0.0000e+00]]),
+  'feature': 'strength',
+  'groupBy': 'pop',
+  'includePre': ['all'],
+  'includePost': ['all']})
+
+
+
+** Convergence doesn't scale with number of cells
+
+Convergence is number of pre-synaptic cells connected to each post-synaptic cell
+
+Divergence is number of post-synaptic cells connected to each pre-synaptic cell
+
+Probability is probability of connection between each pre- and postsynaptic cell (0 to 1).
+
+Will run a batch varying number of cells and measuring convergence, divergence, 
+probability, numConns and strength
+
+with 1) constant convergence
+	 2) constant divergence
+	 3) constant probability
+
+Modifying cfg and netParams to allow changing type of connectivity.
+
+But committing first.
+
+
+
 
 
 

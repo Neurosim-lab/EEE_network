@@ -10,7 +10,7 @@ saveFig = True #False
 cfg = specs.SimConfig()
 cfg.dummy    = 0       
 cfg.duration = 2400
-cfg.numCells = 100
+cfg.numCells = 5000
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
@@ -29,8 +29,6 @@ cfg.hParams.celsius = 32.0
 cfg.hParams.v_init  = -73.7
 
 # Network variables
-cfg.numPT5cells = int(0.8 * cfg.numCells)
-cfg.numPV5cells = cfg.numCells - cfg.numPT5cells
 cfg.sizeY       = 1600
 cfg.sizeX       = 400
 cfg.sizeZ       = 300
@@ -101,19 +99,26 @@ cfg.recordTraces = {'V_soma': {'sec':'soma', 'loc':0.5, 'var':'v'}}
 # Analysis options
 #cfg.analysis['plotRaster'] = {'orderBy': 'y', 'orderInverse': True, 'saveFig': saveFig, 'showFig': showFig}
 
-cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True,'saveFig': saveFig, 'labels':'overlay','showFig': showFig} #'timeRange':[0,500], 'popColors': {'PT5':'red','PV5': 'blue'}}
+#cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True,'saveFig': saveFig, 'labels':'overlay','showFig': showFig} #'timeRange':[0,500], 'popColors': {'PT5':'red','PV5': 'blue'}}
 
-cfg.analysis['plotSpikeHist'] = {'saveFig': saveFig,'showFig': showFig}
+#cfg.analysis['plotSpikeHist'] = {'saveFig': saveFig,'showFig': showFig}
 
 #cfg.analysis['plotTraces'] = {'include': [('PT5_1',0), ('PT5_2', 0), ('PT5_3', 0), ('PT5_4', 0), ('PV5', 0)], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}   
 
 #cfg.analysis['plotTraces'] = {'include': [('PT5_1', [0,1,2,3,4]), ('PT5_2', [0,1,2,3,4]), ('PT5_3', [0,1,2,3,4]), ('PT5_4', [0,1,2,3,4])], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]} 
 
-cfg.analysis['plotTraces'] = {'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4'], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}  
+#cfg.analysis['plotTraces'] = {'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4'], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}  
 
 
-#cfg.analysis['plot2Dnet'] = {'saveFig': saveFig, 'showFig': showFig}            
-#cfg.analysis['plotConn'] = {'saveFig': saveFig, 'showFig': showFig}           
+#cfg.analysis['plot2Dnet'] = {'saveFig': saveFig, 'showFig': showFig}   
+
+includePre  = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4','PV5']
+includePost = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4','PV5']
+feature     = 'numConns' #'divergence' #'convergence' #'strength' # 
+groupBy     = 'cell'
+orderBy     = 'gid'
+
+cfg.analysis['plotConn'] = {'saveFig': saveFig, 'showFig': showFig, 'includePre':includePre, 'includePost':includePost, 'feature':feature, 'groupBy':groupBy, 'orderBy':orderBy}
 
 
 # Current clamps

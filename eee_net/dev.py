@@ -323,6 +323,33 @@ def moving_average(a, n=3) :
 
 ## Measure number of exc and inh connections by population
 
+for pop in sim.net.pops.keys():
+
+    print("Population: ", pop)
+
+    popGids = sim.net.pops[pop].cellGids
+
+    for cellGid in popGids:
+
+        print("  Cell: ", cellGid)
+
+        cell = sim.net.cells[cellGid]
+
+        conns = cell.conns
+
+        for conn in conns:
+
+            if isinstance(conn['preGid'], int):
+
+                print("    synMech: ", conn['synMech'])
+
+
+
+
+
+
+
+
 
 
 

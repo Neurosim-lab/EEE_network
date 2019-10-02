@@ -9,12 +9,12 @@ saveFig = True #False
 # Simulation options
 cfg = specs.SimConfig()
 cfg.dummy    = 0       
-cfg.duration = 2400
-cfg.numCells = 5000
+cfg.duration = 100 #2400
+cfg.numCells = 100
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_40'
+cfg.simLabel = 'eee_net_41'
 cfg.saveFolder = os.path.join('data', cfg.simLabel)
 cfg.savePickle = False
 cfg.saveJson = True
@@ -39,7 +39,7 @@ cfg.AMPANMDAratio   = 10.0
 cfg.AMPAgmax        = cfg.AMPANMDAratio * cfg.NMDAgmax 
 cfg.NMDAweight      = 0.2 #0.4 #0.8
 cfg.AMPAweight      = cfg.NMDAweight
-cfg.GABAAfastWeight = 0.0001
+cfg.GABAAfastWeight = 0.01 #0.0001
 cfg.GABAAslowWeight = cfg.GABAAfastWeight #0.0001
 cfg.GABAAfast_e     = -80
 cfg.GABAAslow_e     = -90
@@ -64,10 +64,11 @@ cfg.PV5_inh_noise_e   = -75.0
 cfg.PV5_inh_noise_tau = 1.0
 
 # Connectivity variables
-cfg.EEconv = 3.0
-cfg.EIconv = 3.0
-cfg.IEconv = 12.0
-cfg.IIconv = 12.0
+cfg.connType = 'probability'  # 'convergence', 'divergence', or 'probability'
+cfg.EEconn = 0.05 #3.0
+cfg.EIconn = 0.05 #3.0
+cfg.IEconn = 0.05 #12.0
+cfg.IIconn = 0.05 #12.0
 
 # Glutamate stim parameters
 cfg.glutamate         = True 
@@ -118,7 +119,7 @@ feature     = 'numConns' #'divergence' #'convergence' #'strength' #
 groupBy     = 'cell'
 orderBy     = 'gid'
 
-cfg.analysis['plotConn'] = {'saveFig': saveFig, 'showFig': showFig, 'includePre':includePre, 'includePost':includePost, 'feature':feature, 'groupBy':groupBy, 'orderBy':orderBy}
+#cfg.analysis['plotConn'] = {'saveFig': saveFig, 'showFig': showFig, 'includePre':includePre, 'includePost':includePost, 'feature':feature, 'groupBy':groupBy, 'orderBy':orderBy}
 
 
 # Current clamps

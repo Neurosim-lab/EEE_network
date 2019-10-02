@@ -12675,6 +12675,238 @@ Modifying cfg and netParams to allow changing type of connectivity.
 
 But committing first.
 
+batchLabel = 'v01_batch41'
+    params['numCells'] = [10, 100, 1000, 5000, 10000]
+
+cfg.EEconv = 3.0
+cfg.EIconv = 3.0
+cfg.IEconv = 12.0
+cfg.IIconv = 12.0
+
+
+Using convergence for connectivity:
+batchLabel = 'v01_batch42'
+file:gif/20191001_000901.png
+
+Inhibitory weights are very low, increasing from 0.0001 to 0.01
+
+Using convergence for connectivity:
+batchLabel = 'v01_batch43'
+file:gif/20191001_004339.png
+
+** Modified cfg and netParams to allow choice of connectivity type
+
+# Connectivity variables
+cfg.connType = 'convergence'  # 'convergence', 'divergence', or 'probability'
+cfg.EEconn = 3.0
+cfg.EIconn = 3.0
+cfg.IEconn = 12.0
+cfg.IIconn = 12.0
+
+Running a batch to ensure everything looks the same for convergence...
+
+batchLabel = 'v01_batch44'
+Everything looks good.
+
+** Using divergence to set connectivity
+
+# Connectivity variables
+cfg.connType = 'divergence'  # 'convergence', 'divergence', or 'probability'
+cfg.EEconn = 3.0
+cfg.EIconn = 3.0
+cfg.IEconn = 12.0
+cfg.IIconn = 12.0
+
+batchLabel = 'v01_batch45'
+file:gif/20191001_013204.png
+
+Looks identical to the 'convergence' setting
+
+
+** Trying probability to set connectivity
+
+batchLabel = 'v01_batch46'
+
+# Connectivity variables
+cfg.connType = 'probability'  # 'convergence', 'divergence', or 'probability'
+cfg.EEconn = 0.1 #3.0
+cfg.EIconn = 0.1 #3.0
+cfg.IEconn = 0.2 #12.0
+cfg.IIconn = 0.2 #12.0
+
+
+
+
+
+
+
+** Netpyne connectivity is giving a probability of connection greater than 1.0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+** Attempting to use Stampede
+
+subha 4:01 PM
+Stampede2 NEURON/netpyne installation instructions. Once we have this set up through NSG ,you can directly use through NSG portal.
+Untitled 
+module purge
+module load gnu
+module load intel
+module load mvapich2
+module load python3
+tar xvzf nrn-7.6.7.tar.gz
+cd nrn-7.6
+./configure —prefix=`pwd` --with-paranrn --with-nrnpython=python3 --without-iv
+make
+make install
+pip3 install netpyne —-user
+*create nrnenv with the following contents *
+export N=$HOME/nrn-7.6
+export CPU=x86_64
+export PATH="$N/$CPU/bin:$PATH”
+*To .bashrc, add*
+export PYTHONPATH=$PYTHONPATH:/yourhomedir_path/nrn-7.6/lib/python:/yourhomedir_path/.local/lib/python3.7/site-packages
+source /path/to/your/nrnenv
+
+
+
+
+ssh tg856217@stampede2.tacc.xsede.org
+login2(10)$ pwd
+/home1/06322/tg856217
+module purge
+module load gnu
+
+	Lmod has detected the following error:  The following module(s) are unknown: "gnu"
+
+	Please check the spelling or version number. Also try "module spider ..."
+	It is also possible your cache file is out-of-date; it may help to try:
+	  $ module --ignore-cache load "gnu"
+
+	Also make sure that all modulefiles written in TCL start with the string #%Module
+
+module load intel
+module load mvapich2
+module load python3
+tar xvzf nrn-7.6.7.tar.gz
+
+	tar (child): nrn-7.6.7.tar.gz: Cannot open: No such file or directory
+	tar (child): Error is not recoverable: exiting now
+	tar: Child returned status 2
+	tar: Error is not recoverable: exiting now
+
+curl -O https://neuron.yale.edu/ftp/neuron/versions/v7.6/7.6.7/nrn-7.6.7.tar.gz
+
+tar xvzf nrn-7.6.7.tar.gz
+
+cd nrn-7.6
+
+./configure —prefix=`pwd` --with-paranrn --with-nrnpython=python3 --without-iv
+	
+	configure: error: invalid variable name: `—prefix'
+
+./configure --prefix=`pwd` --with-paranrn --with-nrnpython=python3 --without-iv
+
+make
+
+make install
+
+pip3 install netpyne —-user
+
+	Invalid requirement: '—-user'
+
+pip3 install netpyne --user
+
+export N=$HOME/nrn-7.6
+login2(28)$ export CPU=x86_64
+login2(29)$ export PATH="$N/$CPU/bin:$PATH"
+
+cd
+nano .bashrc
+
+	Paste:
+	export PYTHONPATH=$PYTHONPATH:/home1/06322/tg856217/nrn-7.6/lib/python:/home1/06322/tg856217/.local/lib/python3.7/site-packages
+	source /home1/06322/tg856217/nrnenv
+
+touch nrnenv
+nano nrnenv
+
+	Paste:
+	export N=$HOME/nrn-7.6
+	export CPU=x86_64
+	export PATH="$N/$CPU/bin:$PATH"
+
+ipython
+In [1]: import neuron
+
+	---------------------------------------------------------------------------
+	ImportError                               Traceback (most recent call last)
+	<ipython-input-1-5a1e2e1935ff> in <module>()
+	----> 1 import neuron
+
+	/home1/06322/tg856217/nrn-7.6/lib/python/neuron/__init__.py in <module>()
+	    110     import neuron.hoc
+	    111   except: # mingw name strategy
+	--> 112     exec("import neuron.hoc%d%d as hoc" % (sys.version_info[0], sys.version_info[1]))
+	    113 
+	    114 import nrn
+
+	<string> in <module>()
+
+	ImportError: No module named hoc27
+
+
+* 2019-10-01 -- 
+
+** Applying connectivity using probability
+
+batchLabel = 'v01_batch47'
+    params['numCells'] = [10, 100, 500, 1000] #[10, 100, 500, 1000, 5000]
+
+# Connectivity variables
+cfg.connType = 'probability'  # 'convergence', 'divergence', or 'probability'
+cfg.EEconn = 0.1 #3.0
+cfg.EIconn = 0.1 #3.0
+cfg.IEconn = 0.2 #12.0
+cfg.IIconn = 0.2 #12.0
+
+file:gif/20191001_071156.png
+
+
+
+batchLabel = 'v01_batch48'
+    params['numCells'] = [10, 100, 500, 1000, 5000]
+
+# Connectivity variables
+cfg.connType = 'probability'  # 'convergence', 'divergence', or 'probability'
+cfg.EEconn = 0.05 #3.0
+cfg.EIconn = 0.05 #3.0
+cfg.IEconn = 0.05 #12.0
+cfg.IIconn = 0.05 #12.0
+
+
+
+
+
+* 2019-10-02 -- 
+
+** Setting up sims on Stampede
+
+git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network/mod ; nrnivmodl ; cd ../eee_net ; ln -s "../mod/x86_64" x86_64
 
 
 

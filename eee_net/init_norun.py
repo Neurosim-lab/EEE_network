@@ -30,28 +30,28 @@ sim.saveData()                # save params, cell info and sim output to file
 
 
 
-connDict = {}
+# connDict = {}
 
-for pop in sim.net.pops.keys():
+# for pop in sim.net.pops.keys():
 
-    print("Population: ", pop)
-    connDict[pop] = {}
+#     print("Population: ", pop)
+#     connDict[pop] = {}
 
-    popGids = sim.net.pops[pop].cellGids
+#     popGids = sim.net.pops[pop].cellGids
 
-    for cellGid in popGids:
+#     for cellGid in popGids:
 
-        cell = sim.net.cells[cellGid]
-        allConns = cell.conns
-        synConns = [conn for conn in allConns if isinstance(conn['preGid'], int)]
-        excConns = [conn for conn in synConns if conn['synMech'] in ['NMDA', 'AMPA']]
-        inhConns = [conn for conn in synConns if conn['synMech'] in ['GABAAfast', 'GABAAslow']]
+#         cell = sim.net.cells[cellGid]
+#         allConns = cell.conns
+#         synConns = [conn for conn in allConns if isinstance(conn['preGid'], int)]
+#         excConns = [conn for conn in synConns if conn['synMech'] in ['NMDA', 'AMPA']]
+#         inhConns = [conn for conn in synConns if conn['synMech'] in ['GABAAfast', 'GABAAslow']]
 
-        print("  Cell: ", cellGid, "excConns", len(excConns), "inhConns", len(inhConns))
+#         print("  Cell: ", cellGid, "excConns", len(excConns), "inhConns", len(inhConns))
 
-        # for conn in allConns:
-        #     if isinstance(conn['preGid'], int):
-        #         print("    preGid: ", conn['preGid'], "   synMech: ", conn['synMech'])
+#         # for conn in allConns:
+#         #     if isinstance(conn['preGid'], int):
+#         #         print("    preGid: ", conn['preGid'], "   synMech: ", conn['synMech'])
 
 
 
@@ -67,11 +67,11 @@ feature     = 'numConns' #'divergence' #'convergence' #'strength' #
 groupBy     = 'cell'
 orderBy     = 'gid'
 
-sim.analysis.plotConn(includePre=includePre, includePost=includePost, feature=feature, groupBy=groupBy, orderBy=orderBy)
+#sim.analysis.plotConn(includePre=includePre, includePost=includePost, feature=feature, groupBy=groupBy, orderBy=orderBy)
 
 groupBy     = 'pop'
 
-sim.analysis.plotConn(includePre=includePre, includePost=includePost, feature=feature, groupBy=groupBy, orderBy=orderBy)
+#sim.analysis.plotConn(includePre=includePre, includePost=includePost, feature=feature, groupBy=groupBy, orderBy=orderBy)
 
 
 

@@ -129,7 +129,8 @@ for prePop in EPops:
             'synMech': ESynMech, 
             'weight': [cfg.AMPAweight, cfg.NMDAweight],
             'delay': 'defaultDelay+dist_3D/propVelocity',
-            'convergence': cfg.EEconv,
+            #'convergence': cfg.EEconv,
+            cfg.connType: cfg.EEconn,
             'loc': 0.3,
             'sec': 'basal_8'}
 
@@ -143,7 +144,8 @@ for prePop in EPops:
             'synMech': 'AMPA',
             'weight': cfg.AMPAweight, 
             'delay': 'defaultDelay+dist_3D/propVelocity',
-            'convergence': cfg.EIconv,
+            #'convergence': cfg.EIconv,
+            cfg.connType: cfg.EIconn,
             'loc': 0.5,
             'sec': 'soma'}
 
@@ -157,7 +159,8 @@ for prePop in ['PV5']:
             'synMech': ISynMech, 
             'weight': [cfg.GABAAfastWeight, cfg.GABAAslowWeight],
             'delay': 'defaultDelay+dist_3D/propVelocity',
-            'convergence': cfg.IEconv,
+            #'convergence': cfg.IEconv,
+            cfg.connType: cfg.IEconn,
             'loc': 0.5,
             'sec': 'soma'}
 
@@ -171,7 +174,8 @@ for prePop in ['PV5']:
             'synMech': 'GABAAfast',
             'weight': cfg.GABAAfastWeight, 
             'delay': 'defaultDelay+dist_3D/propVelocity',
-            'convergence': cfg.IIconv,
+            #'convergence': cfg.IIconv,
+            cfg.connType: cfg.IIconn,
             'loc': 0.5,
             'sec': 'soma'}
 

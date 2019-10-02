@@ -319,51 +319,6 @@ def moving_average(a, n=3) :
     return ret[n - 1:] / n
 
 
-### Measuring connectivity
-
-## Measure number of exc and inh connections by population
-
-for pop in sim.net.pops.keys():
-
-    print("Population: ", pop)
-
-    popGids = sim.net.pops[pop].cellGids
-
-    for cellGid in popGids:
-
-        print("  Cell: ", cellGid)
-
-        cell = sim.net.cells[cellGid]
-
-        conns = cell.conns
-
-        for conn in conns:
-
-            if isinstance(conn['preGid'], int):
-
-                print("    synMech: ", conn['synMech'])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #batchLabel = 'v01_batch20'
 #params, data = batch_utils.load_batch(batchLabel, batchdatadir=batchdatadir)
@@ -411,5 +366,89 @@ for pop in sim.net.pops.keys():
 
 
 
+def plotBatchConn(batchPath='batch_data', batchLabel='v01_batch48', feature='all'):
 
+    batchPath = os.path.join(batchPath, batchLabel)
+    batchPathFiles = os.listdir(batchPath)
+
+    simFiles = [file for file in batchPathFiles if file.endswith('.json')]
+    simFiles = [file for file in simFiles if not file.endswith('cfg.json')]
+    simFiles = [file for file in simFiles if not file.endswith('batch.json')]
+    simFiles.sort()
+
+    includePre  = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4','PV5']
+    includePost = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4','PV5']
+    features    = ['numConns', 'divergence', 'convergence', 'weight', 'probability', 'strength'] 
+    groupBy     = 'pop'
+    orderBy     = 'gid'
+
+    EEmean = {}
+    EImean = {}
+    IEmean = {}
+    IImean = {}
+    EEstd = {}
+    EIstd = {}
+    IEstd = {}
+    IIstd = {}
+
+    if feature == 'all':
+
+        for feature in features:
+
+            EEmean[feature] = []
+            EImean[feature] = []
+            IEmean[feature] = []
+            IImean[feature] = []
+            EEstd[feature] = []
+            EIstd[feature] = []
+            IEstd[feature] = []
+            IIstd[feature] = []
+
+    for simFile in simFiles:
+
+        simPath = os.path.join('batch_data', batchLabel, simFile)
+        sim.load(simPath, createNEURONObj=False)
+
+        for feature in features:   
+
+            (fig, output) = sim.analysis.plotConn(includePre=includePre, includePost=includePost, feature=feature, groupBy=groupBy, orderBy=orderBy, showFig=False)
+    
+            connMatrix = output['connMatrix']
+
+            EEmean[feature].append(np.mean(connMatrix[0:4, 0:4]))
+            EImean[feature].append(np.mean(connMatrix[0:4, 4:5]))
+            IEmean[feature].append(np.mean(connMatrix[4:5, 0:4]))
+            IImean[feature].append(np.mean(connMatrix[4:5, 4:5]))
+
+            EEstd[feature].append(np.std(connMatrix[0:4, 0:4]))
+            EIstd[feature].append(np.std(connMatrix[0:4, 4:5]))
+            IEstd[feature].append(np.std(connMatrix[4:5, 0:4]))
+            IIstd[feature].append(np.std(connMatrix[4:5, 4:5]))
+
+    for feature in features:
+
+        labels = ['10', '100', '500', '1000', '5000']  
+
+        x = np.arange(len(labels))  # the label locations
+        width = 0.2  # the width of the bars
+
+        fig, ax = plt.subplots()
+        rects1 = ax.bar(x - width*(3/2), EEmean[feature], yerr=EEstd[feature], width=width, label='E->E')
+        rects2 = ax.bar(x - width/(2), EImean[feature], yerr=EIstd[feature], width=width, label='E->I')
+        rects3 = ax.bar(x + width/(2), IEmean[feature], yerr=IEstd[feature], width=width, label='I->E')
+        rects4 = ax.bar(x + width*(3/2), IImean[feature], yerr=IIstd[feature], width=width, label='I->I')
+
+        # Add some text for labels, title and custom x-axis tick labels, etc.
+        ax.set_ylabel('Connectivity ' + feature)
+        ax.set_title('Connectivity ' + feature)
+        ax.set_xticks(x)
+        ax.set_xticklabels(labels)
+        ax.set_xlabel('Number of Cells')
+        ax.legend()
+
+        fig.tight_layout()
+
+    return
+
+output = plotBatchConn()
 

@@ -4,7 +4,7 @@ import os
 
 #runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
 runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
-batchLabel = 'v01_batch40'
+batchLabel = 'v01_batch48'
 
 def batchRun():
     # Create variable of type ordered dictionary (NetPyNE's customized version) 
@@ -12,7 +12,7 @@ def batchRun():
 
     # fill in with parameters to explore and range of values (key has to coincide with a variable in simConfig) 
     
-    params['numCells'] = [10, 100, 1000, 10000, 20000]
+    params['numCells'] = [10, 100, 500, 1000, 5000]
 
     #params['EEconv'] = [1.5, 3.0, 6.0] # Default 3.0
     #params['IEconv'] = [6.0, 12.0, 24.0] # Default 12.0

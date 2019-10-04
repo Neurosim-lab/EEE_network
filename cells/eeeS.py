@@ -18,7 +18,6 @@ March 2018
 """
 import sys
 from neuron import h
-from matplotlib import pyplot
 from math import sqrt, pi, log, exp
 
 h.load_file('stdrun.hoc')

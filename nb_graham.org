@@ -12911,6 +12911,150 @@ git clone https://github.com/Neurosim-lab/EEE_network.git ; cd EEE_network/mod ;
 
 
 
+* 2019-10-03 -- 
+
+** Looking into seg fault on Stampede
+
+Going to run init.py line by line to see when/if seg fault happens.
+
+joe 2:26 PM
+I get segmentation faults when I attempt to run EEE on Stampede.
+Attempting to run a job outputs an enormous error file full of seg faults.
+When I just try to run cfg.py, I get a seg fault when using Python 3.  When I try it in Python 2, I get an error “ImportError: No module named reprlib”, which seems to be because the code is for py3.
+joe 7:38 AM
+On Stampede I can import netpyne and from netpyne import specs just fine, but when I from netpyne import sim that’s when the seg fault happens.
+Any suggestions?
+billl 9:10 AM
+turn off graphics in netpyne __init.py__
+salvadord 9:48 AM
+I merged bill’s PR ysterday which I think might fix this
+can pull latest and try
+billl 11:03 AM
+with new version use nrniv -nogui
+
+
+
+
+* 2019-10-04 -- 
+
+** Updating netpyne
+
+Salva thinks this may solve the seg fault problem
+
+pip3 install --upgrade netpyne
+
+That doesn't change anything.  Looks like the fix Salva pushed is in the development
+branch of Netpyne.  Need to switch to development branch...
+
+Netpyne lives here: ~/.local/lib/python3.7/site-packages/netpyne
+
+cd ~/.local/lib/python3.7/site-packages/
+mv netpyne netpyne_pip
+git clone https://github.com/Neurosim-lab/netpyne.git
+Cloning into 'netpyne'...
+remote: Enumerating objects: 133, done.
+remote: Counting objects: 100% (133/133), done.
+remote: Compressing objects: 100% (96/96), done.
+fatal: write error: Disk quota exceeded
+
+Figured it out.  The problem was the error file was enormous and ended up in my home dir.
+
+login3(201)$ ipython cfg.py
+---------------------------------------------------------------------------
+ImportError                               Traceback (most recent call last)
+~/EEE_network/eee_net/cfg.py in <module>
+----> 1 from netpyne import specs, sim
+      2 import numpy as np
+      3 import os
+      4 
+      5 # Show figures? Save figures?
+
+ImportError: cannot import name 'specs' from 'netpyne' (unknown location)
+
+It looks like netpyne_pip doesn't have another netpyne dir inside it like netpyne 
+from git.
+
+Trying to symlink into the netpyne dir in netpyne_git:
+
+mv netpyne netpyne_git
+ln -s /home1/06322/tg856217/.local/lib/python3.7/site-packages/netpyne_git/netpyne /home1/06322/tg856217/.local/lib/python3.7/site-packages/netpyne
+
+Now cfg.py works, but I get a seg fault in netParams.py...
+login3(220)$ ipython cfg.py
+login3(221)$ ipython netParams.py
+Segmentation fault
+
+** Looking into netParams seg fault
+
+So I get the seg fault at the second cellrule definition (line 53):
+cellRule = netParams.importCellParams(label='PT5_1', conds={'pop':'PT5_1'}, fileName=eeeS_path, cellName='MakeCell', cellInstance=True)
+
+The seg fault occurs when running eeeS.py
+
+It occurs at this line:
+from matplotlib import pyplot
+
+Commenting out that line and trying.
+
+Now it works.  And netParams.py works.
+
+** Running init.py
+
+File not found error:
+
+	Saving output as data/eee_net_41/eee_net_41.json  ... 
+	---------------------------------------------------------------------------
+	FileNotFoundError                         Traceback (most recent call last)
+	~/EEE_network/eee_net/init.py in <module>
+	     38 sim.runSim()                  # run parallel Neuron simulation
+	     39 sim.gatherData()              # gather spiking data and cell info from each node
+	---> 40 sim.saveData()                # save params, cell info and sim output to file
+	     41 sim.analysis.plotData()       # plot spike raster etc
+	     42 
+
+	~/.local/lib/python3.7/site-packages/netpyne/sim/save.py in saveData(include, filename)
+	    138                 print(('Saving output as %s ... ' % (filePath+'.json ')))
+	    139                 #dataSave = utils.replaceDictODict(dataSave)  # not required since json saves as dict
+	--> 140                 sim.saveJSON(filePath+'.json', dataSave)
+	    141                 print('Finished saving!')
+	    142 
+
+	~/.local/lib/python3.7/site-packages/netpyne/sim/save.py in saveJSON(fileName, data)
+	     34 def saveJSON(fileName, data):
+	     35     import json, io
+	---> 36     with io.open(fileName, 'w', encoding='utf8') as fileObj:
+	     37         str_ = json.dumps(data,
+	     38                           indent=4, sort_keys=True,
+
+	FileNotFoundError: [Errno 2] No such file or directory: 'data/eee_net_41/eee_net_41.json'
+
+Will try making a data dir and seeing if it works.
+
+Now it works.  Should include data dir in git repo (add .dummy file to data dir).
+
+
+** Include data dir in git repo
+
+Made a .dummy file in data and batch_data and added it to repo.  Now the data 
+dirs should come with the Git repo.
+
+Committing now.
+
+
+
+
+
+** To do in Stampede
+
+Clone Netpyne git repo and switch to dev branch
+Change save location of error and output files
+Get sims running
+Get batches running
+
+
+
+
+
 
 
 

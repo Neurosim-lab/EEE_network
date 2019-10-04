@@ -13090,6 +13090,23 @@ Changing runsim_stampede
 
 Trying again.
 
+sbatch runsim_stampede
+squeue -u tg856217
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4448803     skx-dev  eee_net tg856217 PD       0:00      4 (Resources)
+
+
+Slurm Job_id=4448803 Name=eee_net Ended, Run time 00:00:20, COMPLETED, ExitCode 0
+
+Yay!
+
+Now to try plotting a raster and some traces.
+
+cfg.analysis['plotRaster'] = {'orderBy': 'y', 'orderInverse': True, 'saveFig': saveFig, 'showFig': showFig}
+
+cfg.analysis['plotTraces'] = {'include': [('PT5_1', [0, 1, 2, 3]), ('PT5_2', [0, 1, 2, 3]), ('PT5_3', [0, 1, 2, 3]), ('PT5_4', [0, 1, 2, 3]), ('PV5', [0, 1, 2, 3])], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}  
+
+
 
 
 

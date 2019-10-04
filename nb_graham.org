@@ -13066,8 +13066,29 @@ Changing to:
 
 Will commit, push, pull, run.
 
+login3(267)$ ./runsim_stampede
+-bash: ./runsim_stampede: Permission denied
 
+chmod +x runsim_stampede
 
+sbatch runsim_stampede
+
+squeue -u tg856217
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4448759     skx-dev  eee_net tg856217 PD       0:00      4 (Resources)
+
+Waiting on that.
+
+Slurm Job_id=4448759 Name=eee_net Failed, Run time 00:00:05, FAILED, ExitCode 1
+
+Can't find output or error file.
+
+Changing runsim_stampede
+
+#SBATCH -o /scratch/06322/tg856217/eee_net_%j.out     # Name of stdout output file
+#SBATCH -e /scratch/06322/tg856217/eee_net_%j.err     # Name of stderr error file
+
+Trying again.
 
 
 

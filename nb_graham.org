@@ -12937,6 +12937,14 @@ with new version use nrniv -nogui
 
 * 2019-10-04 -- 
 
+** To do in Stampede
+
+Clone Netpyne git repo and switch to dev branch
+Change save location of error and output files
+Get sims running
+Get batches running
+
+
 ** Updating netpyne
 
 Salva thinks this may solve the seg fault problem
@@ -13041,15 +13049,23 @@ dirs should come with the Git repo.
 Committing now.
 
 
+** Change save location of error and output files
+
+From runsim_stampede:
+
+#SBATCH -o eee_net.o%j                          # Name of stdout output file
+#SBATCH -e eee_net.e%j                          # Name of stderr error file
+
+Changing to:
+
+#SBATCH -o $SCRATCH/eee_net_%j.out              # Name of stdout output file
+#SBATCH -e $SCRATCH/eee_net_%j.err              # Name of stderr error file
 
 
+** Attempting to run sim on Stampede
 
-** To do in Stampede
+Will commit, push, pull, run.
 
-Clone Netpyne git repo and switch to dev branch
-Change save location of error and output files
-Get sims running
-Get batches running
 
 
 

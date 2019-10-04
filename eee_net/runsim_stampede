@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -J eee_net                              # Job name
-#SBATCH -o eee_net.o%j                          # Name of stdout output file
-#SBATCH -e eee_net.e%j                          # Name of stderr error file
+#SBATCH -o $SCRATCH/eee_net_%j.out              # Name of stdout output file
+#SBATCH -e $SCRATCH/eee_net_%j.err              # Name of stderr error file
 #SBATCH -p skx-dev                              # Queue (partition) name
 #SBATCH -N 4                                    # Total # of nodes 
 #SBATCH --ntasks-per-node=48                    # Total # of mpi tasks

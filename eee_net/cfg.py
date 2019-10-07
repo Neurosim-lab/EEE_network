@@ -9,18 +9,18 @@ saveFig = True #False
 # Simulation options
 cfg = specs.SimConfig()
 cfg.dummy    = 0       
-cfg.duration = 100 #2400
-cfg.numCells = 100
+cfg.duration = 2400
+cfg.numCells = 10000
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_41'
+cfg.simLabel = 'eee_net_42'
 cfg.saveFolder = os.path.join('data', cfg.simLabel)
 cfg.savePickle = False
 cfg.saveJson = True
 cfg.saveDataInclude = ['simData', 'simConfig', 'netParams', 'net']         
 cfg.saveMat = False
-cfg.saveCellSecs = True #False
+cfg.saveCellSecs = False
 cfg.saveCellConns = True #False
 cfg.seeds = {'conn': 4123,
 			 'stim': 1234, 
@@ -67,8 +67,8 @@ cfg.PV5_inh_noise_tau = 1.0
 cfg.connType = 'probability'  # 'convergence', 'divergence', or 'probability'
 cfg.EEconn = 0.05 #3.0
 cfg.EIconn = 0.05 #3.0
-cfg.IEconn = 0.05 #12.0
-cfg.IIconn = 0.05 #12.0
+cfg.IEconn = 0.2 #12.0
+cfg.IIconn = 0.2 #12.0
 
 # Glutamate stim parameters
 cfg.glutamate         = True 
@@ -92,13 +92,12 @@ cfg.recordTraces = {'V_soma': {'sec':'soma', 'loc':0.5, 'var':'v'}}
 #cfg.recordTraces['V_dend_8'] = {'sec':'basal_8', 'loc':0.5, 'var':'v'}
 
 
-cfg.recordCells = {'include': [('PT5_1', [0, 1, 2, 3]), ('PT5_2', [0, 1, 2, 3]), ('PT5_3', [0, 1, 2, 3]), ('PT5_4', [0, 1, 2, 3]), ('PV5', [0, 1, 2, 3])]}
-#cfg.recordCells = [0, 200, 400, 600, 800]
+cfg.recordCells = [('PT5_1', [0, 1, 2, 3]), ('PT5_2', [0, 1, 2, 3]), ('PT5_3', [0, 1, 2, 3]), ('PT5_4', [0, 1, 2, 3]), ('PV5', [0, 1, 2, 3])]
 
 #cfg.printPopAvgRates = True
 
 # Analysis options
-cfg.analysis['plotRaster'] = {'orderBy': 'y', 'orderInverse': True, 'saveFig': saveFig, 'showFig': showFig}
+cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True, 'saveFig': saveFig, 'showFig': showFig}
 
 #cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True,'saveFig': saveFig, 'labels':'overlay','showFig': showFig} #'timeRange':[0,500], 'popColors': {'PT5':'red','PV5': 'blue'}}
 

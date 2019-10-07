@@ -13122,9 +13122,45 @@ eee_net/data/*
 eee_net/batch_data/*
 eee_net/batch_figs/*
 
+That worked.
+
+** Looking at last sim
+
+4449086
+
+There was an error 
+
+>>> Traceback (most recent call last):
+  File "init.py", line 37, in <module>
+    sim.setupRecording()          # setup variables to record (spikes, V traces, etc)
+  File "/home1/06322/tg856217/.local/lib/python3.7/site-packages/netpyne/sim/setup.py", line 285, in setupRecording
+    cellsRecord = utils.getCellsList(sim.cfg.recordCells)+cellsPlot
+  File "/home1/06322/tg856217/.local/lib/python3.7/site-packages/netpyne/sim/utils.py", line 70, in getCellsList
+    cellGids.extend(list(sim.net.pops[condition].cellGids))
+  File "/home1/06322/tg856217/.local/lib/python3.7/site-packages/netpyne/specs/dicts.py", line 184, in __getitem__
+    return super(ODict, self).__getitem__(k)
+KeyError: 'include'
+
+
+Also getting the same error locally.
+
+I had cfg.recordCells as a dict instead of a list.  Works locally now.
 
 
 
+** Running big long sim on Stampede
+
+
+cfg.connType = 'probability'  # 'convergence', 'divergence', or 'probability'
+cfg.EEconn = 0.05 #3.0
+cfg.EIconn = 0.05 #3.0
+cfg.IEconn = 0.2 #12.0
+cfg.IIconn = 0.2 #12.0
+
+cfg.simLabel = 'eee_net_42'
+
+cfg.duration = 2400
+cfg.numCells = 10000
 
 
 

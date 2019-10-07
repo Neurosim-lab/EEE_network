@@ -5,7 +5,7 @@
 #SBATCH -p skx-dev                                    # Queue (partition) name
 #SBATCH -N 4                                          # Total # of nodes 
 #SBATCH --ntasks-per-node=48                          # Total # of mpi tasks
-#SBATCH -t 00:10:00                                   # Run time (hh:mm:ss)
+#SBATCH -t 01:00:00                                   # Run time (hh:mm:ss)
 #SBATCH --mail-user=joe.w.graham@gmail.com
 #SBATCH --mail-type=all                               # Send email at begin and end of job
 #SBATCH -A TG-IBN140002                               # Allocation name (req'd if you have more than 1)

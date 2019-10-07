@@ -13118,6 +13118,10 @@ squeue -u tg856217
 
 ** Adding a .gitignore file to exclude data and fig dirs
 
+eee_net/data/*
+eee_net/batch_data/*
+eee_net/batch_figs/*
+
 
 
 

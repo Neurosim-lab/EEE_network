@@ -2,7 +2,7 @@ from netpyne import specs
 from netpyne.batch import Batch 
 import os
 
-batchLabel = 'v01_batch49'
+batchLabel = 'v01_batch50'
 
 runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
 #runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
@@ -48,7 +48,8 @@ def batchRun():
                     'folder': runFolder,
                     'script': 'init.py', 
                     'mpiCommand': 'ibrun',
-                    'skip': True}
+                    'skip': True
+                    'custom': '#SBATCH -p skx-normal'}
     elif runType == 'mpi_bulletin':
         if not os.path.isdir('batch_data'):
             os.mkdir('batch_data')

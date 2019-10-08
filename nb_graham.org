@@ -13253,10 +13253,69 @@ queue (skx-normal)...
 
 I'm going to try running it once before adding a queue option to Netpyne.
 
+login3(433)$ pwd
+/home1/06322/tg856217/EEE_network/eee_net
+login3(434)$ 
+login3(434)$ python batch.py
+Traceback (most recent call last):
+  File "batch.py", line 1, in <module>
+    from netpyne import specs
+  File "/home1/06322/tg856217/.local/lib/python3.7/site-packages/netpyne/specs/__init__.py", line 14, in <module>
+    standard_library.install_aliases()
+  File "/home1/06322/tg856217/.local/lib/python3.7/site-packages/future/standard_library/__init__.py", line 453, in install_aliases
+    __import__(newmodname)
+ImportError: No module named reprlib
 
 
+Had this problem earlier and Bill said
+billl 11:03 AM
+with new version use nrniv -nogui
+
+I'll try adding that to Netpyne batch code.  
 
 
+/home1/06322/tg856217/.local/lib/python3.7/site-packages/netpyne/batch.py
+
+command = '%s -np %d nrniv -nogui -python -mpi %s simConfig=%s netParams=%s' % (mpiCommand, numproc, script, cfgSavePath, netParamsSavePath)
+
+I get the same error.
+
+Now to try setting __gui__ = False in netpyne's __init__.py
+
+It was alreasy fixed by Bill.
+
+The problem was I was running the batch as `python batch.py -nogui` when it should be
+`python3 batch.py -nogui`
+
+Now all the generated code gets spit out and the input files appear, but nothing
+shows up in the queue.
+
+I'm going to modify Netpyne to include the queue
+#SBATCH -p skx-dev                        # Queue (partition) name
+
+Actually, it looks like I can use the 'custom' option:
+custom = self.runCfg.get('custom', '')
+
+Custom gets added to the bottom of the sbatch file as is.
+
+Added the queue selection in the runCfg:
+
+        b.runCfg = {'type': 'hpc_slurm',
+                    'allocation': allocation, 
+                    'walltime': '00:20:00',
+                    'nodes': 4,
+                    'coresPerNode': 48,
+                    'email': 'joe.w.graham@gmail.com',
+                    'folder': runFolder,
+                    'script': 'init.py', 
+                    'mpiCommand': 'ibrun',
+                    'skip': True
+                    'custom': '#SBATCH -p skx-normal'}
+
+Trying to run again:
+batchLabel = 'v01_batch50'
+
+python3 batch.py -nogui
 
 
 ** Analyze individual sims

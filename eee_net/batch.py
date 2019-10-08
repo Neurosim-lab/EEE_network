@@ -2,7 +2,7 @@ from netpyne import specs
 from netpyne.batch import Batch 
 import os
 
-batchLabel = 'v01_batch51'
+batchLabel = 'v01_batch52'
 
 runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
 #runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
@@ -23,10 +23,10 @@ def batchRun():
 
     # fill in with parameters to explore and range of values (key has to coincide with a variable in simConfig) 
     
-    params['EEconn'] = [0.05, 0.1, 0.2]
-    params['IEconn'] = [0.1, 0.2, 0.3]
+    #params['EEconn'] = [0.05, 0.1, 0.2]
+    #params['IEconn'] = [0.1, 0.2, 0.3]
 
-    #params['numCells'] = [10, 100, 1000, 10000, 20000]
+    params['numCells'] = [10, 100, 500, 1000, 5000, 10000]
 
  
     
@@ -41,7 +41,7 @@ def batchRun():
         b.saveFolder = saveFolder + b.batchLabel
         b.runCfg = {'type': 'hpc_slurm',
                     'allocation': allocation, 
-                    'walltime': '00:20:00',
+                    'walltime': '01:00:00',
                     'nodes': 4,
                     'coresPerNode': 48,
                     'email': 'joe.w.graham@gmail.com',

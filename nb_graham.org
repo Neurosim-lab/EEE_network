@@ -13345,10 +13345,30 @@ batchLabel = 'v01_batch51'
    params['EEconn'] = [0.05, 0.1, 0.2]
    params['IEconn'] = [0.1, 0.2, 0.3]
 
+Now it looks like all 9 sims are being run:
+
+login1(382)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4465646  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4465647  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4465648  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4465649  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4465650  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4465651  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4465652  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4465653  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4465654  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+
+** Running batch varying number of cells
+
+batchLabel = 'v01_batch52'
+params['numCells'] = [10, 100, 500, 1000, 5000, 10000]
 
 
 
 ** Analyze individual sims
+
+
 
 
 ** Analyze batch sims

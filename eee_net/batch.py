@@ -2,9 +2,20 @@ from netpyne import specs
 from netpyne.batch import Batch 
 import os
 
+batchLabel = 'v01_batch49'
+
 runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
 #runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
-batchLabel = 'v01_batch38'
+
+#runFolder = '/home/jwgraham/EEE_network/eee_net/'
+runFolder = '/home1/06322/tg856217/EEE_network/eee_net'
+
+#saveFolder = '/oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/'
+saveFolder = '/scratch/06322/tg856217/'
+
+#allocation = 'csd403'         # NSG on Comet
+allocation = 'TG-IBN140002'   # NSG on Stampede
+
 
 def batchRun():
     # Create variable of type ordered dictionary (NetPyNE's customized version) 
@@ -12,20 +23,13 @@ def batchRun():
 
     # fill in with parameters to explore and range of values (key has to coincide with a variable in simConfig) 
     
-    params['numCells'] = [10, 100, 1000, 10000, 20000]
+    params['EEconn'] = [0.05, 0.1]
+    params['IEconn'] = [0.1, 0.2]
 
-    #params['synLocRadius'] = [0.0, 0.1, 0.149, 0.249]
-    #params['synLocMiddle'] = [0.3, 0.5, 0.7]
+    #params['numCells'] = [10, 100, 1000, 10000, 20000]
 
-
-    #params['EEconv'] = [1.5, 3.0, 6.0] # Default 3.0
-    #params['IEconv'] = [6.0, 12.0, 24.0] # Default 12.0
-    #params['numCells'] = [10000, 20000, 30000]
-
-    #params['ampIClamp1'] = [0.1, 0.5, 1.0]
-    #params['GABAAfastWeight'] = [0.0001, 0.01, 1.0]   
-    #params['GABAAslowWeight'] = [0.0001, 0.001, 0.01]
-
+ 
+    
     # create Batch object with paramaters to modify, and specifying files to use
     b = Batch(params=params, cfgFile='cfg.py', netParamsFile='netParams.py')
     
@@ -34,14 +38,14 @@ def batchRun():
     b.method = 'grid'
     
     if runType == 'hpc_slurm':
-        b.saveFolder = '/oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/' + b.batchLabel
+        b.saveFolder = saveFolder + b.batchLabel
         b.runCfg = {'type': 'hpc_slurm',
-                    'allocation': 'csd403', 
-                    'walltime': '01:00:00',
+                    'allocation': allocation, 
+                    'walltime': '00:20:00',
                     'nodes': 4,
-                    'coresPerNode': 24,
+                    'coresPerNode': 48,
                     'email': 'joe.w.graham@gmail.com',
-                    'folder': '/home/jwgraham/EEE_network/eee_net/',
+                    'folder': runFolder,
                     'script': 'init.py', 
                     'mpiCommand': 'ibrun',
                     'skip': True}

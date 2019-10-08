@@ -9,8 +9,8 @@ saveFig = True #False
 # Simulation options
 cfg = specs.SimConfig()
 cfg.dummy    = 0       
-cfg.duration = 10000 #2400
-cfg.numCells = 10000
+cfg.duration = 2400 #10000
+cfg.numCells = 1000 #10000
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
@@ -70,9 +70,9 @@ cfg.PV5_inh_noise_tau = 1.0
 # Connectivity variables
 cfg.connType = 'probability'  # 'convergence', 'divergence', or 'probability'
 cfg.EEconn = 0.05 #3.0
-cfg.EIconn = 0.05 #3.0
+cfg.EIconn = cfg.EEconn #0.05 #3.0
 cfg.IEconn = 0.2 #12.0
-cfg.IIconn = 0.2 #12.0
+cfg.IIconn = cfg.IEconn #0.2 #12.0
 
 # Glutamate stim parameters
 cfg.glutamate         = True 

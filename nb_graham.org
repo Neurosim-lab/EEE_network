@@ -13199,7 +13199,70 @@ It took 11 minutes to run 2400 ms.
 
 I'll try running for 10 s (10000 ms), which should complete in less than an hour
 
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4464655     skx-dev  eee_net tg856217  R       0:05      4 c506-[014,053-054,064]
 
+Seems like it completed successfully, and it only took about 15 minutes.
+
+
+** Get batch sims working on Stampede
+
+v01_batch49
+
+batchLabel = 'v01_batch49'
+
+params['EEconn'] = [0.05, 0.1]
+params['IEconn'] = [0.1, 0.2]
+
+Shortening duration and number of cells for first attempt
+
+cfg.duration = 2400 #10000
+cfg.numCells = 1000 #10000
+
+Looking at Netpyne batch code:
+
+#SBATCH --job-name=%s 				simLabel
+#SBATCH -A %s 						allocation
+#SBATCH -t %s 						walltime
+#SBATCH --nodes=%d 					nodes
+#SBATCH --ntasks-per-node=%d 		coresPerNode
+#SBATCH -o %s.run 					jobName
+#SBATCH -e %s.err 					jobName
+#SBATCH --mail-user=%s 				email
+#SBATCH --mail-type=end 			
+%s 									res
+%s 									custom
+source ~/.bashrc
+cd %s 								folder
+%s 									command
+
+
+It looks like it takes care of everything in the example sbatch file from 
+Subha except it doesn't allow setting of the development queue...
+
+#SBATCH -p skx-dev                               # Queue (partition) name
+
+It also seems like the .out and .err files will end up in my home dir, but we'll
+see about that.
+
+Looking into queues on Stampede:
+https://portal.tacc.utexas.edu/user-guides/stampede2
+
+I have been using the skx development queue, but should probably switch to skx normal
+queue (skx-normal)...
+
+I'm going to try running it once before adding a queue option to Netpyne.
+
+
+
+
+
+
+
+** Analyze individual sims
+
+
+** Analyze batch sims
 
 
 

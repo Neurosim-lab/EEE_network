@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH -J eee_net                                    # Job name
-#SBATCH -o /scratch/06322/tg856217/eee_net_%j.out     # Name of stdout output file
-#SBATCH -e /scratch/06322/tg856217/eee_net_%j.err     # Name of stderr error file
-#SBATCH -p skx-dev                                    # Queue (partition) name
-#SBATCH -N 4                                          # Total # of nodes 
-#SBATCH --ntasks-per-node=48                          # Total # of mpi tasks
-#SBATCH -t 01:00:00                                   # Run time (hh:mm:ss)
+#SBATCH -J eee_net                                              # Job name
+#SBATCH -o /scratch/06322/tg856217/run_files/eee_net_%j.out     # Name of stdout output file
+#SBATCH -e /scratch/06322/tg856217/run_files/eee_net_%j.err     # Name of stderr error file
+#SBATCH -p skx-dev                                              # Queue (partition) name
+#SBATCH -N 4                                                    # Total # of nodes 
+#SBATCH --ntasks-per-node=48                                    # Total # of mpi tasks
+#SBATCH -t 01:00:00                                             # Run time (hh:mm:ss)
 #SBATCH --mail-user=joe.w.graham@gmail.com
-#SBATCH --mail-type=all                               # Send email at begin and end of job
-#SBATCH -A TG-IBN140002                               # Allocation name (req'd if you have more than 1)
+#SBATCH --mail-type=all                                         # Send email at begin & end of job
+#SBATCH -A TG-IBN140002                                         # Allocation name (req'd if you have more than 1)
 
 # Other commands must follow all #SBATCH directives...
 source ~/.bashrc

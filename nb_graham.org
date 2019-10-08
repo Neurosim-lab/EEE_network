@@ -13162,6 +13162,59 @@ cfg.simLabel = 'eee_net_42'
 cfg.duration = 2400
 cfg.numCells = 10000
 
+cfg.saveCellSecs = False
+cfg.saveCellConns = True #False
+
+#SBATCH -t 01:00:00
+
+login3(366)$ squeue -u tg856217
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4464598     skx-dev  eee_net tg856217 PD       0:00      4 (Resources)
+
+Submitted at 5pm.  We'll see how long it takes to run.
+
+It only took a couple minutes to start running.
+
+Slurm Job_id=4464598 Name=eee_net Ended, Run time 00:10:59, COMPLETED, ExitCode 0
+
+Adding an alias to .bashrc on Stampede to make squeue easier:
+
+alias sq='squeue -u tg856217'
+
+Nothing in the .err file.  The .out file looks fine.
+
+The output file is over 5 gigs, so I should set the output from sims to go to 
+the scratch dir instead of my home dir.
+
+Added this to cfg.py:
+
+baseFolder = '/scratch/06322/tg856217'
+#baseFolder = 'data'
+cfg.saveFolder = os.path.join(baseFolder, cfg.simLabel)
+
+
+** Running a longer sim
+
+It took 11 minutes to run 2400 ms.
+
+I'll try running for 10 s (10000 ms), which should complete in less than an hour
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

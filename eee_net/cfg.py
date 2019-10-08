@@ -9,13 +9,17 @@ saveFig = True #False
 # Simulation options
 cfg = specs.SimConfig()
 cfg.dummy    = 0       
-cfg.duration = 2400
+cfg.duration = 10000 #2400
 cfg.numCells = 10000
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_42'
-cfg.saveFolder = os.path.join('data', cfg.simLabel)
+cfg.simLabel = 'eee_net_43'
+
+baseFolder = '/scratch/06322/tg856217'
+#baseFolder = 'data'
+cfg.saveFolder = os.path.join(baseFolder, cfg.simLabel)
+
 cfg.savePickle = False
 cfg.saveJson = True
 cfg.saveDataInclude = ['simData', 'simConfig', 'netParams', 'net']         

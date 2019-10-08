@@ -13317,6 +13317,11 @@ batchLabel = 'v01_batch50'
 
 python3 batch.py -nogui
 
+Minor bug fix in batch.py
+
+Trying again.
+
+
 
 ** Analyze individual sims
 

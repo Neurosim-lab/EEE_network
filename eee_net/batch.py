@@ -48,7 +48,7 @@ def batchRun():
                     'folder': runFolder,
                     'script': 'init.py', 
                     'mpiCommand': 'ibrun',
-                    'skip': True
+                    'skip': True,
                     'custom': '#SBATCH -p skx-normal'}
     elif runType == 'mpi_bulletin':
         if not os.path.isdir('batch_data'):

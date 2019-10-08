@@ -13321,6 +13321,31 @@ Minor bug fix in batch.py
 
 Trying again.
 
+login3(507)$ python3 batch.py -nogui
+login3(507)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4465582  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4465584  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4465585  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+
+Now there are jobs in the queue, but only three instead of the four I expected.
+
+Waiting to see what happens with the output.
+
+The output made it, but the final sim in the batch wasn't run...  Not even the 
+.err or .run files appear for it...
+
+
+** Run another batch 
+
+Running a larger batch, checking to see if final sim gets run
+
+batchLabel = 'v01_batch51'
+
+   params['EEconn'] = [0.05, 0.1, 0.2]
+   params['IEconn'] = [0.1, 0.2, 0.3]
+
+
 
 
 ** Analyze individual sims

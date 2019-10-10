@@ -13843,7 +13843,7 @@ Submitted batch job 4475878
 
 * 2019-10-10 -- 
 
-** Getting plots out of NetPyNE
+** Getting plots out of NetPyNE on Stampede
 
 Currently, runnning a sim doesn't automatically generate the plots requested 
 in cfg.py.
@@ -13861,6 +13861,58 @@ cfg.EEconn = 0.005 #0.05 #3.0
 cfg.EIconn = cfg.EEconn #0.05 #3.0
 cfg.IEconn = 0.02 #0.2 #12.0
 cfg.IIconn = cfg.IEconn #0.2 #12.0
+
+Submitted batch job 4477588
+
+Got a timeout on this sim, but looking at the output file, it looks like it 
+completed successfully (although there is a problem with plotting, need to 
+look into what to do with __gui__).
+
+	Analyzing...
+	  Cells: 10000
+	  Connections: 807000 (80.70 per cell)
+	  Synaptic contacts: 2033657 (203.37 per cell)
+	  Spikes: 16317 (0.68 Hz)
+	  Simulated time: 2.4 s; 192 workers
+	  Run time: 76.94 s
+	Saving output as /scratch/06322/tg856217/eee_net_47/eee_net_47.json  ... 
+	Finished saving!
+	  Done; saving time = 40.19 s.
+	Plotting raster...
+	There was an exception in plotRaster(): 
+	 couldn't connect to display "localhost:64.0" 
+	(<class '_tkinter.TclError'>, TclError('couldn\'t connect to display "localhost:64.0"'), <traceback object at 0x2adf1e18ec88>)
+	Plotting recorded cell traces ... cell
+	There was an exception in plotTraces(): 
+	 couldn't connect to display "localhost:64.0" 
+	(<class '_tkinter.TclError'>, TclError('couldn\'t connect to display "localhost:64.0"'), <traceback object at 0x2adf7d6bee48>)
+	  Done; plotting time = 2.02 s
+
+	Total time = 215.89 s
+
+Will try hard-coding the matplotlib backend as 'Agg'
+
+Editing netpyne/__init__.py
+
+	__version__ = '0.9.3.1'
+	import os, sys
+	display = os.getenv('DISPLAY')
+	nogui = (sys.argv.count('-nogui')>0)
+	import matplotlib
+
+	#if not nogui and display and len(display)>0:
+	#    matplotlib.use('TkAgg')
+	#    __gui__ = True
+	#else:
+	#    matplotlib.use('Agg')
+	#    __gui__ = False
+
+	# Hard-coding __gui__ =	True and setting matplotlib to use Agg backend
+	__gui__	= True
+	matplotlib.use('Agg')
+
+
+
 
 
 

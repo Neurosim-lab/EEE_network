@@ -10,11 +10,11 @@ saveFig = True #False
 cfg = specs.SimConfig()
 cfg.dummy    = 0       
 cfg.duration = 2400 #10000
-cfg.numCells = 1000 #10000
+cfg.numCells = 10000 
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_44'
+cfg.simLabel = 'eee_net_45'
 
 baseFolder = '/scratch/06322/tg856217'
 #baseFolder = 'data'

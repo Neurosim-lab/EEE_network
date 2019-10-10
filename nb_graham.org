@@ -13430,24 +13430,396 @@ Segmentation fault
 
 ** Analyze individual sims
 
-idev -m 120
-
 Submitting a smaller individual sim to get analyses working
 
 cfg.simLabel = 'eee_net_44'
 
 #SBATCH -t 00:20:00                                             # Run time (hh:mm:ss)
 
+login4(567)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4466400 development idv92016 tg856217  R       6:46      1 c455-082
+           4466405     skx-dev  eee_net tg856217  R       0:05      4 c506-[051-054]
+
+idev -m 120 # get interactive sessions for two hours
+
+cd /scratch/06322/tg856217/eee_net_44
+sim.load('eee_net_44.json', createNEURONObj=False)
+sim.analysis.plotRaster()   
+
+There was an exception in plotRaster(): 
+ name 'plt' is not defined
+
+import matplotlib.pyplot as plt
+
+Segmentation fault
+
+
+** Looking into seg fault with matplotlib
+
+https://blog.richard.do/2018/03/18/how-to-debug-segmentation-fault-in-python/
+
+In [3]: import faulthandler 
+In [4]: faulthandler.enable() 
+In [5]: import matplotlib.pyplot                                                                                                                                                               
+Fatal Python error: Segmentation fault
+
+Thread 0x00002b9b821c2700 (most recent call first):
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/threading.py", line 296 in wait
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/threading.py", line 552 in wait
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/IPython/core/history.py", line 829 in run
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/IPython/core/history.py", line 58 in needs_sqlite
+  File "</opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/decorator.py:decorator-gen-24>", line 2 in run
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/threading.py", line 917 in _bootstrap_inner
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/threading.py", line 885 in _bootstrap
+
+Current thread 0x00002b9b70152800 (most recent call first):
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/gi/module.py", line 120 in __getattr__
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/gi/overrides/Gtk.py", line 416 in MessageDialog
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/gi/overrides/Gtk.py", line 412 in <module>
+  File "<frozen importlib._bootstrap>", line 219 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap_external>", line 728 in exec_module
+  File "<frozen importlib._bootstrap>", line 677 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 967 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 983 in _find_and_load
+  File "<frozen importlib._bootstrap>", line 219 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1035 in _handle_fromlist
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/gi/module.py", line 255 in _load
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/gi/importer.py", line 76 in load_module
+  File "<frozen importlib._bootstrap>", line 638 in _load_backward_compatible
+  File "<frozen importlib._bootstrap>", line 668 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 967 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 983 in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006 in _gcd_import
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/importlib/__init__.py", line 127 in import_module
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/matplotlib/backends/_gtk3_compat.py", line 47 in <dictcomp>
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/matplotlib/backends/_gtk3_compat.py", line 47 in <module>
+  File "<frozen importlib._bootstrap>", line 219 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap_external>", line 728 in exec_module
+  File "<frozen importlib._bootstrap>", line 677 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 967 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 983 in _find_and_load
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/matplotlib/backends/backend_gtk3.py", line 14 in <module>
+  File "<frozen importlib._bootstrap>", line 219 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap_external>", line 728 in exec_module
+  File "<frozen importlib._bootstrap>", line 677 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 967 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 983 in _find_and_load
+  File "<frozen importlib._bootstrap>", line 219 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1035 in _handle_fromlist
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/matplotlib/backends/backend_gtk3agg.py", line 6 in <module>
+  File "<frozen importlib._bootstrap>", line 219 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap_external>", line 728 in exec_module
+  File "<frozen importlib._bootstrap>", line 677 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 967 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 983 in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006 in _gcd_import
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/importlib/__init__.py", line 127 in import_module
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/matplotlib/pyplot.py", line 207 in switch_backend
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/matplotlib/pyplot.py", line 196 in switch_backend
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/matplotlib/__init__.py", line 892 in __getitem__
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/matplotlib/pyplot.py", line 2374 in <module>
+  File "<frozen importlib._bootstrap>", line 219 in _call_with_frames_removed
+  File "<frozen importlib._bootstrap_external>", line 728 in exec_module
+  File "<frozen importlib._bootstrap>", line 677 in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 967 in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 983 in _find_and_load
+  File "<ipython-input-5-864e826dab68>", line 1 in <module>
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/IPython/core/interactiveshell.py", line 3267 in run_code
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/IPython/core/interactiveshell.py", line 3185 in run_ast_nodes
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/IPython/core/interactiveshell.py", line 3020 in run_cell_async
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/IPython/core/async_helpers.py", line 67 in _pseudo_sync_runner
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/IPython/core/interactiveshell.py", line 2845 in _run_cell
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/IPython/core/interactiveshell.py", line 2819 in run_cell
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/IPython/terminal/interactiveshell.py", line 485 in interact
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/IPython/terminal/interactiveshell.py", line 494 in mainloop
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/IPython/terminal/ipapp.py", line 356 in start
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/traitlets/config/application.py", line 658 in launch_instance
+  File "/opt/apps/intel18/python3/3.7.0/lib/python3.7/site-packages/IPython/__init__.py", line 125 in start_ipython
+  File "/opt/apps/intel18/python3/3.7.0/bin/ipython", line 10 in <module>
+Segmentation fault
+
+** Searching Slack for problems with matplotlib
+
+And found this:
+
+billl 11:32 AM
+import matplotlib.pyplot as plt
+crashes it
+import matplotlib by istelf does not
+import pylab # crashes since same as other
+
+salvadord 11:41 AM
+soemthing that usually do to run sims on hpc is add at beginning : import matplotlib; matplotlib.use('Agg')
+
+Trying it out:
+
+In [1]: import matplotlib
+In [2]: matplotlib.use('Agg') 
+In [3]: import matplotlib.pyplot as plt 
+In [4]: 
+
+Success!
+
+** Analyze individual sims
+
+from netpyne import sim
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt 
+sim.load('eee_net_44.json', createNEURONObj=False)
+sim.analysis.plotRaster()  
+
+Plotting raster...
+There was an exception in plotRaster(): 
+ name 'plt' is not defined 
+(<class 'NameError'>, NameError("name 'plt' is not defined"), <traceback object at 0x2b8aa1108d48>)
+Out[7]: -1
+
+import faulthandler
+faulthandler.enable()
+import netpyne
+netpyne.__gui__ = True
+from netpyne import sim  
+
+
+** Seeing if Netpyne is up to date
+
+/home1/06322/tg856217/.local/lib/python3.7/site-packages/
+
+
+
+** Use Bill's .bashrc file
+
+Paths from Subha's bashrc:
+
+ echo $PATH
+/home1/06322/tg856217/nrn-7.6/x86_64/bin:
+/opt/apps/intel18/python3/3.7.0/bin:
+/opt/apps/intel18/mvapich2/2.3.1/bin:
+/opt/intel/compilers_and_libraries_2018.2.199/linux/bin/intel64:
+/opt/apps/gcc/6.3.0/bin:
+/usr/lib64/qt-3.3/bin:
+/usr/local/bin:
+/bin:
+/usr/bin:
+/opt/dell/srvadmin/bin
+
+echo $PYTHONPATH
+:/home1/06322/tg856217/.local/lib/python3.7/site-packages:
+/home1/06322/tg856217/nrn-7.6/lib/python
+
+Bill's paths:
+
+echo $PATH
+/home1/03337/wwlytton/site/scripts:
+/home1/03337/wwlytton/site/nrniv/nrn/x86_64/bin:
+/opt/apps/xalt/xalt/bin:
+/opt/apps/intel18/python3/3.7.0/bin:
+/opt/apps/git/2.9.0/bin:
+/opt/apps/cmake/3.10.2/bin:
+/opt/apps/autotools/1.1/bin:
+/opt/apps/libfabric/1.7.0/bin:
+/opt/apps/intel18/impi/18.0.2/bin:
+/opt/intel/compilers_and_libraries_2018.2.199/linux/mpi/intel64/bin:
+/opt/intel/compilers_and_libraries_2018.2.199/linux/bin/intel64:
+/opt/apps/gcc/6.3.0/bin:
+/usr/lib64/qt-3.3/bin:
+/usr/local/bin:
+/bin:
+/usr/bin:
+/opt/dell/srvadmin/bin:.
+
+echo $PYTHONPATH
+/home1/03337/wwlytton/site/python:
+/home1/03337/wwlytton/site/nrniv/nrn/lib/python:
+/opt/apps/intel18/impi18_0/python3/3.7.0/lib/python3.7/site-packages
+
+
+** Analyze individual sims
+
+cd /scratch/06322/tg856217/eee_net_44
+ipython
+from netpyne import sim
+sim.load('eee_net_44.json', createNEURONObj=False)
+sim.analysis.plotRaster() 
+
+There was an exception in plotRaster(): 
+ name 'plt' is not defined 
+(<class 'NameError'>, NameError("name 'plt' is not defined"), <traceback object at 0x2addc539c548>)
+Out[3]: -1
+
+I can't play around with Netpyne, because it's Bill's version I'm using.
+
+Trying to get my own setup working.
+
+
+* 2019-10-09 -- 
+
+** Setting up Stampede
+
+Looking into Bill's setup
+
+Bill has netpyne in /home1/03337/wwlytton/site/python
+
+I'll set mine up the same way: 
+
+login2(647)$ cd ~
+login2(648)$ mkdir site
+login2(649)$ cd site
+login2(650)$ mkdir python
+login2(651)$ cd python
+
+
+My Python path:
+:/home1/06322/tg856217/.local/lib/python3.7/site-packages:
+/home1/06322/tg856217/nrn-7.6/lib/python
+
+
+Bill's Python path:
+/home1/03337/wwlytton/site/python:
+/home1/03337/wwlytton/site/nrniv/nrn/lib/python:
+/opt/apps/intel18/impi18_0/python3/3.7.0/lib/python3.7/site-packages
+
+From Bill's bashrc:
+# SECTION 2: Please set or modify any environment variables inside the if block
+# below.  For example, modifying PATH or other path like variables
+# (e.g LD_LIBRARY_PATH), the guard variable (__PERSONAL_PATH___) 
+# prevents your PATH from having duplicate directories on sub-shells.
+if [ -z "$__PERSONAL_PATH__" ]; then
+  export __PERSONAL_PATH__=1
+  export SITE=/home1/03337/wwlytton/site
+  export PATH=$SITE/scripts:$SITE/nrniv/nrn/x86_64/bin:$PATH
+  export PYTHONPATH=$SITE/python:$SITE/nrniv/nrn/lib/python:$PYTHONPATH
+fi
+
+From my old .bashrc:
+export PYTHONPATH=$PYTHONPATH:/home1/06322/tg856217/.local/lib/python3.7/site-packages:/home1/06322/tg856217/nrn-7.6/lib/python
+
+From my new .bashrc:
+# SECTION 2: Please set or modify any environment variables inside the if block
+# below.  For example, modifying PATH or other path like variables
+# (e.g LD_LIBRARY_PATH), the guard variable (__PERSONAL_PATH___)
+# prevents your PATH from having duplicate directories on sub-shells.
+if [ -z "$__PERSONAL_PATH__" ]; then
+  export __PERSONAL_PATH__=1
+  export SITE=/home1/03337/wwlytton/site
+  export PATH=$SITE/scripts:$SITE/nrniv/nrn/x86_64/bin:$PATH
+  #export PYTHONPATH=$SITE/python:$SITE/nrniv/nrn/lib/python:$PYTHONPATH
+  export PYTHONPATH=/home1/06322/tg856217/.local/lib/python3.7/site-packages:$SITE/nrniv/nrn/lib/python:$PYTHONPATH
+fi
+
+Trying it out:
+
+In [3]: from netpyne import sim 
+Segmentation fault
+
+Grrr.  Doesn't work anymore.
+
+Trying from scratch:
+
+cd ~
+rm -rf .local/lib/*
+rm -rf .local/bin/*
+mkdir -p .local/lib/python3.7/site-packages
+cd .local/lib/python3.7/site-packages
+git clone https://github.com/Neurosim-lab/netpyne.git
+cd netpyne
+git checkout development
+pip3 install -e . --user -I
+
+That seems to have worked, but got a warning:
+
+  The scripts f2py, f2py3 and f2py3.7 are installed in '/home1/06322/tg856217/.local/bin' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+
+Adding this to my .bashrc file:
+
+
+# SECTION 2: Please set or modify any environment variables inside the if block
+# below.  For example, modifying PATH or other path like variables
+# (e.g LD_LIBRARY_PATH), the guard variable (__PERSONAL_PATH___)
+# prevents your PATH from having duplicate directories on sub-shells.
+if [ -z "$__PERSONAL_PATH__" ]; then
+  export __PERSONAL_PATH__=1
+  export SITE=/home1/03337/wwlytton/site
+  export PATH=$SITE/scripts:$SITE/nrniv/nrn/x86_64/bin:$PATH
+  export PATH=/home1/06322/tg856217/.local/bin:$PATH
+  #export PYTHONPATH=$SITE/python:$SITE/nrniv/nrn/lib/python:$PYTHONPATH
+  export PYTHONPATH=/home1/06322/tg856217/.local/lib/python3.7/site-packages:$SITE/nrniv/nrn/lib/python:$PYTHONPATH
+fi
 
 
 
 
 
+__version__ = '0.9.3.1'
+import os, sys
+display = os.getenv('DISPLAY')
+nogui = (sys.argv.count('-nogui')>0)
+import matplotlib
+
+if not nogui and display and len(display)>0:
+    matplotlib.use('TkAgg')
+    __gui__ = True                                        
+else:
+    matplotlib.use('Agg')
+    __gui__ = False
 
 
-** Analyze batch sims
+** To run Netpyne on Stampede
+
+module purge
+module load intel
+module load mvapich2
+module load python3
+
+mkdir ~/neuron 
+cd ~/neuron
+curl -O https://neuron.yale.edu/ftp/neuron/versions/v7.6/7.6.7/nrn-7.6.7.tar.gz
+tar xvzf nrn-7.6.7.tar.gz
+mv nrn-7.6 nrn
+cd nrn
+./configure --prefix=`pwd` --with-paranrn --with-nrnpython=python3 --without-iv
+make
+make install
+
+mkdir -p ~/.local/lib/python3.7/site-packages/
+cd ~/.local/lib/python3.7/site-packages/
+git clone https://github.com/Neurosim-lab/netpyne.git
+cd netpyne
+git checkout development
+pip3 install -e . --user -I
+
+cd ~
+cp .bashrc .bashrc_original
+nano .bashrc
+
+  Paste the following into the appropriate sections:
+
+	module load git
+	module load python3
+
+	export PATH=$HOME/.local/bin:$PATH
+	export PATH=$HOME/neuron/nrn/x86_64/bin:$PATH
+	export PYTHONPATH=$HOME/neuron/nrn/lib/python:$PYTHONPATH
+	export PYTHONPATH=$HOME/.local/lib/python3.7/site-packages:$PYTHONPATH
+	
+	alias sq="squeue -u $USER"
+	alias sst="scontrol show jobid -d"
+	alias cdn="cd /home1/06322/tg856217/.local/lib/python3.7/site-packages/netpyne/netpyne"
+	alias cde="cd /home1/06322/tg856217/EEE_network/eee_net"
+
+  Uncomment the umask
+	# umask 022
 
 
+cd ~
+git clone https://github.com/Neurosim-lab/EEE_network.git
+cd EEE_network/mod
+nrnivmodl
+cd ~/EEE_network/eee_net/
+ln -s "../mod/x86_64" x86_64
 
 
 

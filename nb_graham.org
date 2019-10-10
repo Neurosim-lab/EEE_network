@@ -13833,9 +13833,34 @@ cfg.simLabel = 'eee_net_45'
 sbatch runsim_stampede 
 Submitted batch job 4475764
 
+Ran out of time
+Upping time request
+46
+
+Submitted batch job 4475878
 
 
 
+* 2019-10-10 -- 
+
+** Getting plots out of NetPyNE
+
+Currently, runnning a sim doesn't automatically generate the plots requested 
+in cfg.py.
+
+Removing `-nogui` from the sbatch file (runsim_stampede) and seeing if that
+solves the problem.
+
+Also reducing connectivity.
+
+eee_net_47
+
+# Connectivity variables
+cfg.connType = 'probability'  # 'convergence', 'divergence', or 'probability'
+cfg.EEconn = 0.005 #0.05 #3.0
+cfg.EIconn = cfg.EEconn #0.05 #3.0
+cfg.IEconn = 0.02 #0.2 #12.0
+cfg.IIconn = cfg.IEconn #0.2 #12.0
 
 
 

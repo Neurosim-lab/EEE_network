@@ -12,5 +12,6 @@
 
 # Other commands must follow all #SBATCH directives...
 source ~/.bashrc
-cd /home1/06322/tg856217/EEE_network/eee_net
-ibrun nrniv -nogui -python -mpi init.py
+cd ~/EEE_network/eee_net
+#ibrun nrniv -nogui -python -mpi init.py
+ibrun nrniv -python -mpi init.py

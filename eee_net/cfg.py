@@ -14,7 +14,7 @@ cfg.numCells = 10000
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_46'
+cfg.simLabel = 'eee_net_47'
 
 baseFolder = '/scratch/06322/tg856217'
 #baseFolder = 'data'
@@ -69,9 +69,9 @@ cfg.PV5_inh_noise_tau = 1.0
 
 # Connectivity variables
 cfg.connType = 'probability'  # 'convergence', 'divergence', or 'probability'
-cfg.EEconn = 0.05 #3.0
+cfg.EEconn = 0.005 #0.05 #3.0
 cfg.EIconn = cfg.EEconn #0.05 #3.0
-cfg.IEconn = 0.2 #12.0
+cfg.IEconn = 0.02 #0.2 #12.0
 cfg.IIconn = cfg.IEconn #0.2 #12.0
 
 # Glutamate stim parameters

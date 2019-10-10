@@ -13807,6 +13807,7 @@ nano .bashrc
 	
 	alias sq="squeue -u $USER"
 	alias sst="scontrol show jobid -d"
+	alias ip="ipython -i"
 	alias cdn="cd /home1/06322/tg856217/.local/lib/python3.7/site-packages/netpyne/netpyne"
 	alias cde="cd /home1/06322/tg856217/EEE_network/eee_net"
 
@@ -13821,6 +13822,16 @@ nrnivmodl
 cd ~/EEE_network/eee_net/
 ln -s "../mod/x86_64" x86_64
 
+
+
+
+
+** Running a sim
+
+cfg.simLabel = 'eee_net_45'
+
+sbatch runsim_stampede 
+Submitted batch job 4475764
 
 
 

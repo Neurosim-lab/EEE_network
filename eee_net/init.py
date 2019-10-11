@@ -40,7 +40,17 @@ sim.gatherData()              # gather spiking data and cell info from each node
 sim.saveData()                # save params, cell info and sim output to file
 sim.analysis.plotData()       # plot spike raster etc
 
-# How to plot more than one figure of same type?  
-# (e.g. raster arranged by y-position and also by 
-# cell gid)  -- Salva: add function call at end 
-# of init.py , eg. sim.analysis.plotRaster(...)
+# Additional analyses
+
+includePre  = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4','PV5']
+includePost = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4','PV5']
+feature     = 'numConns' #'divergence' #'convergence' #'strength' # 
+groupBy     = 'pop' #'cell'
+orderBy     = 'gid' #'y'
+synOrConn   = 'conn' #'syn'
+
+sim.analysis.plotConn(saveFig=True, showFig=False, saveData=True, includePre=includePre, includePost=includePost, feature=feature, groupBy=groupBy, orderBy=orderBy, synOrConn=synOrConn)
+
+
+
+

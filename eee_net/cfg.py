@@ -4,7 +4,8 @@ import os
 
 # Show figures? Save figures?
 showFig = False
-saveFig = True #False
+saveFig = True
+saveData = True
 
 # Simulation options
 cfg = specs.SimConfig()
@@ -14,7 +15,7 @@ cfg.numCells = 10000
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_48'
+cfg.simLabel = 'eee_net_49'
 
 baseFolder = '/scratch/06322/tg856217'
 #baseFolder = 'data'
@@ -69,9 +70,9 @@ cfg.PV5_inh_noise_tau = 1.0
 
 # Connectivity variables
 cfg.connType = 'probability'  # 'convergence', 'divergence', or 'probability'
-cfg.EEconn = 0.005 #0.05 #3.0
+cfg.EEconn = 0.0005 #0.005 #0.05 #3.0
 cfg.EIconn = cfg.EEconn #0.05 #3.0
-cfg.IEconn = 0.02 #0.2 #12.0
+cfg.IEconn = 0.002 #0.02 #0.2 #12.0
 cfg.IIconn = cfg.IEconn #0.2 #12.0
 
 # Glutamate stim parameters
@@ -98,31 +99,25 @@ cfg.recordTraces = {'V_soma': {'sec':'soma', 'loc':0.5, 'var':'v'}}
 
 cfg.recordCells = [('PT5_1', [0, 1, 2, 3]), ('PT5_2', [0, 1, 2, 3]), ('PT5_3', [0, 1, 2, 3]), ('PT5_4', [0, 1, 2, 3]), ('PV5', [0, 1, 2, 3])]
 
-#cfg.printPopAvgRates = True
+cfg.printPopAvgRates = True
 
 # Analysis options
-cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True, 'saveFig': saveFig, 'showFig': showFig}
+cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True, 'saveFig': saveFig, 'showFig': showFig, 'saveData': saveData}
 
-#cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True,'saveFig': saveFig, 'labels':'overlay','showFig': showFig} #'timeRange':[0,500], 'popColors': {'PT5':'red','PV5': 'blue'}}
-
-#cfg.analysis['plotSpikeHist'] = {'saveFig': saveFig,'showFig': showFig}
-
-#cfg.analysis['plotTraces'] = {'include': [('PT5_1',0), ('PT5_2', 0), ('PT5_3', 0), ('PT5_4', 0), ('PV5', 0)], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}   
-
-#cfg.analysis['plotTraces'] = {'include': [('PT5_1', [0,1,2,3,4]), ('PT5_2', [0,1,2,3,4]), ('PT5_3', [0,1,2,3,4]), ('PT5_4', [0,1,2,3,4])], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]} 
+cfg.analysis['plotSpikeHist'] = {'saveFig': saveFig,'showFig': showFig, 'saveData': saveData}
 
 cfg.analysis['plotTraces'] = {'include': [('PT5_1', [0, 1, 2, 3]), ('PT5_2', [0, 1, 2, 3]), ('PT5_3', [0, 1, 2, 3]), ('PT5_4', [0, 1, 2, 3]), ('PV5', [0, 1, 2, 3])], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}  
-
 
 #cfg.analysis['plot2Dnet'] = {'saveFig': saveFig, 'showFig': showFig}   
 
 includePre  = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4','PV5']
 includePost = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4','PV5']
 feature     = 'numConns' #'divergence' #'convergence' #'strength' # 
-groupBy     = 'cell'
-orderBy     = 'gid'
+groupBy     = 'pop' #'cell'
+orderBy     = 'gid' #'y'
+synOrConn   = 'syn' #'conn'
 
-#cfg.analysis['plotConn'] = {'saveFig': saveFig, 'showFig': showFig, 'includePre':includePre, 'includePost':includePost, 'feature':feature, 'groupBy':groupBy, 'orderBy':orderBy}
+cfg.analysis['plotConn'] = {'saveFig': saveFig, 'showFig': showFig, 'includePre':includePre, 'includePost':includePost, 'feature':feature, 'groupBy':groupBy, 'orderBy':orderBy, 'saveData': saveData}
 
 
 # Current clamps
@@ -161,4 +156,3 @@ cfg.numCommonInput2 = 10    # number
 cfg.intCommonInput2 = 20   # interval
 
 
-#import pylab; pylab.show()  # this line is only necessary in certain systems where figures appear empty

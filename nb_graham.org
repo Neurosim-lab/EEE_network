@@ -13911,17 +13911,70 @@ Editing netpyne/__init__.py
 	__gui__	= True
 	matplotlib.use('Agg')
 
+eee_net_48
+
+Submitted batch job 4478229
+
+That worked
 
 
+* 2019-10-11 -- 
+
+** Setting ineteractive backend for matplotlib when running interactively
+
+You can request a development node on Stampede (-m is for minutes, 120 max):
+idev -m 120
+
+I want to see the plots when doing this.
+
+Editing netpyne/__init__.py
+
+	__version__ = '0.9.3.1'
+	import os, sys
+	display = os.getenv('DISPLAY')
+	nogui = (sys.argv.count('-nogui')>0)
+	import matplotlib
+
+	if not nogui and display and len(display)>0:
+	    matplotlib.use('TkAgg')
+	    __gui__ = True
+	else:
+	    matplotlib.use('Agg')
+	    __gui__ = True 
+
+Now I get TkAgg on dev node.
 
 
+** Looking into connectivity
 
+I notice it may be better to use 'conn' for synOrConn:
 
+	synOrConn ('syn'|'conn'): Use synapses or connections; note 1 connection can have multiple synapses (default: 'syn')
 
+There's also an option to select a specific synMech:
 
+	synMech (['AMPA', 'GABAA',...]): Show results only for these syn mechs (default: None)
 
+Can also save data:
+	saveData (None|True|'fileName'): File name where to save the final data used to generate the figure; 
+	            if set to True uses filename from simConfig (default: None)
 
+Set to save data.
 
+Added to bottom on init.py:
+
+# Additional analyses
+
+	includePre  = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4','PV5']
+	includePost = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4','PV5']
+	feature     = 'numConns' #'divergence' #'convergence' #'strength' # 
+	groupBy     = 'pop' #'cell'
+	orderBy     = 'gid' #'y'
+	synOrConn   = 'conn' #'syn'
+
+	sim.analysis.plotConn(saveFig=True, showFig=False, saveData=True, includePre=includePre, includePost=includePost, feature=feature, groupBy=groupBy, orderBy=orderBy, synOrConn=synOrConn)
+
+Will run eee_net_49
 
 
 

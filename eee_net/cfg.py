@@ -15,7 +15,7 @@ cfg.numCells = 10000
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_52'
+cfg.simLabel = 'eee_net_53'
 
 baseFolder = '/scratch/06322/tg856217'
 #baseFolder = 'data'
@@ -50,8 +50,8 @@ cfg.GABAAfast_e     = -80
 cfg.GABAAslow_e     = -90
 
 # Noise variables
-cfg.noisePT5 = True
-cfg.noisePV5 = True
+cfg.noisePT5 = False
+cfg.noisePV5 = False
 
 cfg.PT5_noise_scaling = 1.0
 cfg.PT5_exc_noise_amp = 0.01 * cfg.PT5_noise_scaling

@@ -14119,6 +14119,74 @@ if '-nogui' in sys.argv:
 
 And then running.
 
+Submitted batch job 4484113
+
+Now it completes and generates figures!  :)
+
+But it still leaves Stampede running...
+
+scancel 4484113
+
+
+
+** Alias for downloading analysis
+
+I need an alias to quickly download png files from Stampede.
+
+mkdir /u/graham/EEE_network/eee_net/data/eee_net_52
+
+scp tg856217@stampede2.tacc.xsede.org:/scratch/06322/tg856217/eee_net_52/*.png /u/graham/EEE_network/eee_net/data/eee_net_52/
+
+alias scpe='echo $1; mkdir /u/graham/EEE_network/eee_net/data/$1; scp tg856217@stampede2.tacc.xsede.org:/scratch/06322/tg856217/$1/*.png /u/graham/EEE_network/eee_net/data/$1/'
+
+alias doens't accept input, need a function
+
+scpe () {
+    mkdir /u/graham/EEE_network/eee_net/data/$1 && scp tg856217@stampede2.tacc.xsede.org:/scratch/06322/tg856217/$1/*.png /u/graham/EEE_network/eee_net/data/$1/
+}
+
+Added that to .bash_profile and it works.
+
+
+** Netpyne only generates the first trace plot
+
+Creates blank figs for the rest.
+
+Posting a question about this to Slack.
+
+joe 3:20 PM
+When I try to plot traces on Stampede, there is a .png file generated for each trace, but only the first trace has a plot, the rest are all blank.  Has anybody ever run into this before?
+Untitled 
+cfg.analysis['plotTraces'] = {'include': [('PT5_1', [0, 1, 2, 3]), ('PT5_2', [0, 1, 2, 3]), ('PT5_3', [0, 1, 2, 3]), ('PT5_4', [0, 1, 2, 3]), ('PV5', [0, 1, 2, 3])], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}
+
+
+** Turning noise off to see what underlying activity looks like
+
+eee_net_53
+
+# Noise variables
+cfg.noisePT5 = False
+cfg.noisePV5 = False
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

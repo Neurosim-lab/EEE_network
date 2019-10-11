@@ -14105,6 +14105,20 @@ print('===============================')
 cfg.py:
 synOrConn   = 'conn' # 'syn' 
 
+Submitted batch job 4484062
+
+Same errors.
+
+** eee_net_52
+
+Commenting out the following in netpyne/sim/__init__.py
+
+if '-nogui' in sys.argv:
+    import netpyne
+    netpyne.__gui__ = False
+
+And then running.
+
 
 
 

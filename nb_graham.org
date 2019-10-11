@@ -13974,9 +13974,18 @@ Added to bottom on init.py:
 
 	sim.analysis.plotConn(saveFig=True, showFig=False, saveData=True, includePre=includePre, includePost=includePost, feature=feature, groupBy=groupBy, orderBy=orderBy, synOrConn=synOrConn)
 
+Reduced connectivity even further.
+
+	# Connectivity variables
+	cfg.connType = 'probability'  # 'convergence', 'divergence', or 'probability'
+	cfg.EEconn = 0.0005 #0.005 #0.05 #3.0
+	cfg.EIconn = cfg.EEconn #0.05 #3.0
+	cfg.IEconn = 0.002 #0.02 #0.2 #12.0
+	cfg.IIconn = cfg.IEconn #0.2 #12.0
+
 Will run eee_net_49
 
-
+Forgot to add -nogui back into init.py
 
 
 

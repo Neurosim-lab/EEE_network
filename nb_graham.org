@@ -13987,5 +13987,111 @@ Will run eee_net_49
 
 Forgot to add -nogui back into init.py
 
+Submitted batch job 4483534
+
+
+** Connectivity plotting is taking forever in interactive mode
+
+How I'm running it:
+
+	In [1]: from netpyne import sim
+	In [4]: sim.load('eee_net_48.json', createNEURONObj=False)
+
+	Loading file eee_net_48.json ... 
+	  Done; file loading time = 43.75 s
+	Loading simConfig...
+	Loading netParams...
+	Loading net...
+	  Created 10000 cells
+	  Created 2033657 connections
+	  Created 592000 stims
+	  Done; re-instantiate net time = 222.48 s
+	Loading simData...
+	Recording 0 traces of 0 types on node 0
+
+	In [9]: sa = sim.analysis   
+	In [11]: sa.plotConn()            
+	Plotting connectivity matrix...
+
+Hopefully plotting during the submitted job will be quicker.
+
+
+
+** eee_net_49
+
+Still running on Stampede, but it seems to have finished:
+
+	Analyzing...
+	  Cells: 10000
+	  Connections: 86021 (8.60 per cell)
+	  Synaptic contacts: 736253 (73.63 per cell)
+	  Spikes: 105937 (4.41 Hz)
+	   PT5_1 : 5.859 Hz
+	   PT5_2 : 4.987 Hz
+	   PT5_3 : 4.626 Hz
+	   PT5_4 : 3.961 Hz
+	   PV5 : 2.638 Hz
+	  Simulated time: 2.4 s; 192 workers
+	  Run time: 70.78 s
+	Saving output as /scratch/06322/tg856217/eee_net_49/eee_net_49.json  ... 
+	Finished saving!
+	  Done; saving time = 20.75 s.
+	Plotting connectivity matrix...
+	There was an exception in plotConn(): 
+	 name 'plt' is not defined 
+	(<class 'NameError'>, NameError("name 'plt' is not defined"), <traceback object at 0x2b718ec05ac8>)
+
+Also another problem shows up:
+
+	There was an exception in plotConn(): 
+	 'Network' object has no attribute 'allCells' 
+	(<class 'AttributeError'>, AttributeError("'Network' object has no attribute 'allCells'"), <traceback object at 0x2af3be1a3408>)
+
+Part of this is likely the __gui__ problem...
+
+Adding a line to the bottom of __init__:
+
+	__version__ = '0.9.3.1'
+	import os, sys
+	display = os.getenv('DISPLAY')
+	nogui = (sys.argv.count('-nogui')>0)
+	import matplotlib
+
+	if not nogui and display and len(display)>0:
+	    matplotlib.use('TkAgg')
+	    __gui__ = True
+	else:
+	    matplotlib.use('Agg')
+	    __gui__ = True
+
+	import matplotlib.pyplot as plt
+
+
+
+** Preparing eee_net_50
+
+Need to end the previous sim:
+
+	stampede22(41)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4483297 development idv08224 tg856217  R    1:08:54      1 c455-112
+           4483534     skx-dev  eee_net tg856217  R      20:11      4 c506-[054,092-094]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

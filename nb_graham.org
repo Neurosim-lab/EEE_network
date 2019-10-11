@@ -14077,12 +14077,33 @@ Need to end the previous sim:
            4483297 development idv08224 tg856217  R    1:08:54      1 c455-112
            4483534     skx-dev  eee_net tg856217  R      20:11      4 c506-[054,092-094]
 
+scancel 4483534
+
+Submitted batch job 4483713
+
+Getting the same errors:
+
+There was an exception in plotConn(): 
+ 'Network' object has no attribute 'allCells' 
+(<class 'AttributeError'>, AttributeError("'Network' object has no attribute 'allCells'"), <traceback object at 0x2ba4ac9520c8>)
+
+There was an exception in plotConn(): 
+ name 'plt' is not defined 
+(<class 'NameError'>, NameError("name 'plt' is not defined"), <traceback object at 0x2af9ced24f48>)
 
 
+** eee_net_51
 
+Commenting out extra plotConn in init.py
 
+Added the following to Netpyne init
 
+print('===============================')
+print('   Using backend:' , matplotlib.get_backend())
+print('===============================')
 
+cfg.py:
+synOrConn   = 'conn' # 'syn' 
 
 
 

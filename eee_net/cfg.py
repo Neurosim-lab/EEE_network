@@ -15,7 +15,7 @@ cfg.numCells = 10000
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_50'
+cfg.simLabel = 'eee_net_51'
 
 baseFolder = '/scratch/06322/tg856217'
 #baseFolder = 'data'
@@ -115,7 +115,7 @@ includePost = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4','PV5']
 feature     = 'numConns' #'divergence' #'convergence' #'strength' # 
 groupBy     = 'pop' #'cell'
 orderBy     = 'gid' #'y'
-synOrConn   = 'syn' #'conn'
+synOrConn   = 'conn' # 'syn' 
 
 cfg.analysis['plotConn'] = {'saveFig': saveFig, 'showFig': showFig, 'includePre':includePre, 'includePost':includePost, 'feature':feature, 'groupBy':groupBy, 'orderBy':orderBy, 'saveData': saveData}
 

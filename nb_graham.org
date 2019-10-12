@@ -14327,12 +14327,19 @@ Turning noise on and running the same thing.
 
 eee_net_60
 
+Submitted batch job 4487941
 
+Looks like too much noise.
+
+Running a batch to explore noise.
 
 
 ** Submit a batch sim
 
+batchLabel = 'v01_batch53'
 
+    params['PT5_noise_scaling'] = [0, 0.01, 0.1, 1.0]    
+    params['PT5_noise_scaling'] = [0, 0.01, 0.1, 1.0]
 
 
 

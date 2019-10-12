@@ -2,7 +2,7 @@ from netpyne import specs
 from netpyne.batch import Batch 
 import os
 
-batchLabel = 'v01_batch52'
+batchLabel = 'v01_batch53'
 
 runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
 #runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
@@ -26,8 +26,10 @@ def batchRun():
     #params['EEconn'] = [0.05, 0.1, 0.2]
     #params['IEconn'] = [0.1, 0.2, 0.3]
 
-    params['numCells'] = [10, 100, 500, 1000, 5000, 10000]
+    #params['numCells'] = [10, 100, 500, 1000, 5000, 10000]
 
+    params['PT5_noise_scaling'] = [0, 0.01, 0.1, 1.0]    
+    params['PT5_noise_scaling'] = [0, 0.01, 0.1, 1.0]
  
     
     # create Batch object with paramaters to modify, and specifying files to use
@@ -41,7 +43,7 @@ def batchRun():
         b.saveFolder = saveFolder + b.batchLabel
         b.runCfg = {'type': 'hpc_slurm',
                     'allocation': allocation, 
-                    'walltime': '01:00:00',
+                    'walltime': '00:30:00',
                     'nodes': 4,
                     'coresPerNode': 48,
                     'email': 'joe.w.graham@gmail.com',

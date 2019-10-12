@@ -61,10 +61,11 @@ cfg.PT5_inh_noise_amp = 0.01 * cfg.PT5_noise_scaling
 cfg.PT5_inh_noise_e   = -75.0
 cfg.PT5_inh_noise_tau = 1.0
 
-cfg.PV5_exc_noise_amp = 1.0
+cfg.PV5_noise_scaling = 1.0
+cfg.PV5_exc_noise_amp = 1.0 * cfg.PV5_noise_scaling
 cfg.PV5_exc_noise_e   = 0.0
 cfg.PV5_exc_noise_tau = 1.0
-cfg.PV5_inh_noise_amp = 1.0
+cfg.PV5_inh_noise_amp = 1.0 * cfg.PV5_noise_scaling
 cfg.PV5_inh_noise_e   = -75.0
 cfg.PV5_inh_noise_tau = 1.0
 

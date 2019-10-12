@@ -14315,7 +14315,19 @@ No spiking in PV cells, increasing iclamp to PV5
 
 eee_net_59
 
-cfg.ampIClamp2 = 0.3 #1.0
+cfg.ampIClamp2 = 0.3 #0.2 #1.0
+
+Submitted batch job 4487842
+
+Worked, no Stampede cancelling
+
+scancel 4487842
+
+Turning noise on and running the same thing.
+
+eee_net_60
+
+
 
 
 ** Submit a batch sim

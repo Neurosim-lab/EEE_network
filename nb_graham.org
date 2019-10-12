@@ -14211,7 +14211,9 @@ Made small fix to netParams.py
 
 eee_net_56
 
+Submitted batch job 4486074
 
+Bumped down to 100 cells for debugging.
 
 
 

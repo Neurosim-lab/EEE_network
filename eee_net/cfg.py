@@ -11,7 +11,7 @@ saveData = True
 cfg = specs.SimConfig()
 cfg.dummy    = 0       
 cfg.duration = 2400 #10000
-cfg.numCells = 10000 
+cfg.numCells = 100 
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
@@ -113,6 +113,8 @@ include = include + list(range(4000, 4021))
 include = include + list(range(6000, 6021))
 include = include + list(range(8000, 8021))
 include = include + list(range(9000, 9021))
+
+include = 'allCells'
 
 
 cfg.analysis['plotTraces'] = {'include': include, 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}  

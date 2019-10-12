@@ -148,7 +148,7 @@ cfg.popIClamp2 = ['PV5_1']
 cfg.secIClamp2 = 'soma'
 cfg.locIClamp2 = 0.5
 
-cfg.IClamp1 = {'pop': cfg.popIClamp1, 'sec': cfg.secIClamp1, 'loc': cfg.locIClamp1, 'del': cfg.delIClamp1, 'dur': cfg.durIClamp1, 'amp': cfg.ampIClamp1}
+cfg.IClamp2 = {'pop': cfg.popIClamp2, 'sec': cfg.secIClamp2, 'loc': cfg.locIClamp2, 'del': cfg.delIClamp2, 'dur': cfg.durIClamp2, 'amp': cfg.ampIClamp2}
 
 
 # Common synaptic input

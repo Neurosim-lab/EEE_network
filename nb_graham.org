@@ -14159,6 +14159,12 @@ When I try to plot traces on Stampede, there is a .png file generated for each t
 Untitled 
 cfg.analysis['plotTraces'] = {'include': [('PT5_1', [0, 1, 2, 3]), ('PT5_2', [0, 1, 2, 3]), ('PT5_3', [0, 1, 2, 3]), ('PT5_4', [0, 1, 2, 3]), ('PV5', [0, 1, 2, 3])], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}
 
+salvadord 3:25 PM
+hey joe, just now I noticed traces not being recorded correctly when using the format (‘pop’, indices) on multiple cores — might be a bug introduced in a recent version (was working ok before)
+I added github issue, will check asap — I believe using list of gids should work ok
+joe 3:29 PM
+Ahh, thanks Salva.  I’ll use gids for now.
+
 
 ** Turning noise off to see what underlying activity looks like
 
@@ -14167,6 +14173,21 @@ eee_net_53
 # Noise variables
 cfg.noisePT5 = False
 cfg.noisePV5 = False
+
+Submitted batch job 4484584
+
+Finished, but didn't end Stampede run.
+
+
+** eee_net_54
+
+Will input current pulse to PT5_1 to drive activity
+
+Will plot traces for PT5_2 looking for EPSPs
+
+Will plot traces for PV5
+
+Turning off plateaus and common inputs
 
 
 

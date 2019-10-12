@@ -15,7 +15,7 @@ cfg.numCells = 10000
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_53'
+cfg.simLabel = 'eee_net_54'
 
 baseFolder = '/scratch/06322/tg856217'
 #baseFolder = 'data'
@@ -76,7 +76,7 @@ cfg.IEconn = 0.002 #0.02 #0.2 #12.0
 cfg.IIconn = cfg.IEconn #0.2 #12.0
 
 # Glutamate stim parameters
-cfg.glutamate         = True 
+cfg.glutamate         = False 
 cfg.glutPops          = ['PT5_1', 'PT5_2']
 
 cfg.glutTimes         = [800.0, 2000.0]
@@ -96,8 +96,7 @@ cfg.exSynDelay        = 4.0 # ms/um
 cfg.recordTraces = {'V_soma': {'sec':'soma', 'loc':0.5, 'var':'v'}} 
 #cfg.recordTraces['V_dend_8'] = {'sec':'basal_8', 'loc':0.5, 'var':'v'}
 
-
-cfg.recordCells = [('PT5_1', [0, 1, 2, 3]), ('PT5_2', [0, 1, 2, 3]), ('PT5_3', [0, 1, 2, 3]), ('PT5_4', [0, 1, 2, 3]), ('PV5', [0, 1, 2, 3])]
+#cfg.recordCells = [('PT5_1', [0, 1, 2, 3]), ('PT5_2', [0, 1, 2, 3]), ('PT5_3', [0, 1, 2, 3]), ('PT5_4', [0, 1, 2, 3]), ('PV5', [0, 1, 2, 3])]
 
 cfg.printPopAvgRates = True
 
@@ -106,7 +105,8 @@ cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True, 'saveFig':
 
 cfg.analysis['plotSpikeHist'] = {'saveFig': saveFig,'showFig': showFig, 'saveData': saveData}
 
-cfg.analysis['plotTraces'] = {'include': [('PT5_1', [0, 1, 2, 3]), ('PT5_2', [0, 1, 2, 3]), ('PT5_3', [0, 1, 2, 3]), ('PT5_4', [0, 1, 2, 3]), ('PV5', [0, 1, 2, 3])], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}  
+#cfg.analysis['plotTraces'] = {'include': [('PT5_1', [0, 1, 2, 3]), ('PT5_2', [0, 1, 2, 3]), ('PT5_3', [0, 1, 2, 3]), ('PT5_4', [0, 1, 2, 3]), ('PV5', [0, 1, 2, 3])], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}  
+cfg.analysis['plotTraces'] = {'include': ['PT5_2', 'PV5'], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}  
 
 #cfg.analysis['plot2Dnet'] = {'saveFig': saveFig, 'showFig': showFig}   
 
@@ -121,12 +121,12 @@ cfg.analysis['plotConn'] = {'saveFig': saveFig, 'showFig': showFig, 'includePre'
 
 
 # Current clamps
-cfg.addIClamp = False
+cfg.addIClamp = True
 
 cfg.delIClamp1 = 200
-cfg.durIClamp1 = 10
+cfg.durIClamp1 = 100
 cfg.ampIClamp1 = 1.0
-cfg.popIClamp1 = ['PT5_2']
+cfg.popIClamp1 = ['PT5_1']
 cfg.secIClamp1 = 'soma'
 cfg.locIClamp1 = 0.5
 
@@ -134,7 +134,7 @@ cfg.IClamp1 = {'pop': cfg.popIClamp1, 'sec': cfg.secIClamp1, 'loc': cfg.locIClam
 
 
 # Common synaptic input
-cfg.addCommonInput1 = True
+cfg.addCommonInput1 = False
 cfg.popCommonInput1 = ['PT5_1', 'PT5_3']
 
 cfg.secCommonInput1 = 'soma'
@@ -145,7 +145,7 @@ cfg.numCommonInput1 = 10    # number
 cfg.intCommonInput1 = 20   # interval
 
 
-cfg.addCommonInput2 = True
+cfg.addCommonInput2 = False
 cfg.popCommonInput2 = ['PT5_1', 'PT5_3']
 
 cfg.secCommonInput2 = 'soma'

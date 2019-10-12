@@ -57,8 +57,6 @@ PV_path   = os.path.join(cellpath, 'FS3.py')
 ####
 cellRule = netParams.importCellParams(label='PV5_1', conds={'cellType':'PV5'}, fileName=PV_path, cellName='MakeCell', cellInstance=True)
 netParams.cellParams['PV5_1'] = cellRule
-cellRule = netParams.importCellParams(label='PV5_2', conds={'cellType':'PV5'}, fileName=PV_path, cellName='MakeCell', cellInstance=True)
-netParams.cellParams['PV5_2'] = cellRule
 ####
 
 

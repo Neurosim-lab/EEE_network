@@ -14203,6 +14203,14 @@ Adding PV5_2, so can give stim to one half of PV cells
 
 Recording from 20 of each cell type
 
+Submitted batch job 4485990
+
+Didn't work.
+
+Made small fix to netParams.py
+
+eee_net_56
+
 
 
 

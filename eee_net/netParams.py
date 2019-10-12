@@ -38,8 +38,8 @@ netParams.popParams['PT5_4'] = {'cellType': 'PT5', 'numCells': int(numPT5cells/4
 #netParams.popParams['PV5'] = {'cellType': 'PV5', 'numCells': numPV5cells, 'ynormRange': cfg.ynormRange, 'cellModel': 'HH'}
 
 ####
-netParams.popParams['PV5_1'] = {'cellType': 'PV5', 'numCells': numPV5cells/2, 'ynormRange': cfg.ynormRange, 'cellModel': 'HH'}
-netParams.popParams['PV5_2'] = {'cellType': 'PV5', 'numCells': numPV5cells/2, 'ynormRange': cfg.ynormRange, 'cellModel': 'HH'}
+netParams.popParams['PV5_1'] = {'cellType': 'PV5', 'numCells': int(numPV5cells/2), 'ynormRange': cfg.ynormRange, 'cellModel': 'HH'}
+netParams.popParams['PV5_2'] = {'cellType': 'PV5', 'numCells': int(numPV5cells/2), 'ynormRange': cfg.ynormRange, 'cellModel': 'HH'}
 ####
 
 

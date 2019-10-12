@@ -15,7 +15,7 @@ cfg.numCells = 10000
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_57'
+cfg.simLabel = 'eee_net_58'
 
 baseFolder = '/scratch/06322/tg856217'
 #baseFolder = 'data'
@@ -117,7 +117,7 @@ include = include + list(range(9000, 9021))
 #include = ['allCells']
 
 
-cfg.analysis['plotTraces'] = {'include': include, 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}  
+cfg.analysis['plotTraces'] = {'include': include, 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-100, 30]}  # 'ylim': [-80, 30] 
 
 #cfg.analysis['plot2Dnet'] = {'saveFig': saveFig, 'showFig': showFig}   
 
@@ -136,7 +136,7 @@ cfg.addIClamp = True
 
 cfg.delIClamp1 = 200
 cfg.durIClamp1 = 500
-cfg.ampIClamp1 = 1.0
+cfg.ampIClamp1 = 0.1 #1.0
 cfg.popIClamp1 = ['PT5_1']
 cfg.secIClamp1 = 'soma'
 cfg.locIClamp1 = 0.5
@@ -145,7 +145,7 @@ cfg.IClamp1 = {'pop': cfg.popIClamp1, 'sec': cfg.secIClamp1, 'loc': cfg.locIClam
 
 cfg.delIClamp2 = 1500
 cfg.durIClamp2 = 500
-cfg.ampIClamp2 = 1.0
+cfg.ampIClamp2 = 0.1 #1.0
 cfg.popIClamp2 = ['PV5_1']
 cfg.secIClamp2 = 'soma'
 cfg.locIClamp2 = 0.5

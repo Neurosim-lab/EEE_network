@@ -14219,9 +14219,81 @@ Minor fix to netParams.py
 
 Minor fix to cfg.py
 
-Seems to work now. Bumping back up to 1000 cells.
+Seems to work now. Bumping back up to 10000 cells.
 
-eee_net_57
+** eee_net_57
+
+Submitted batch job 4486116
+
+Seems to have worked fine, according to output file:
+
+	Creating network of 6 cell populations on 192 hosts...
+	  Number of cells on node 0: 53 
+	  Done; cell creation time = 0.18 s.
+	Making connections...
+	  Number of connections on node 0: 422 
+	  Number of synaptic contacts on node 0: 751 
+	  Done; cell connection time = 67.34 s.
+	Adding stims...
+	  Number of stims on node 0: 16 
+	  Done; cell stims creation time = 0.25 s.
+	Recording 1 traces of 1 types on node 0
+
+	Running simulation for 2400.0 ms...
+	  Done; run time = 59.98 s; real-time ratio: 0.04.
+
+	Gathering data...
+	  Done; gather time = 2.12 s.
+
+	Analyzing...
+	  Cells: 10000
+	  Connections: 80361 (8.04 per cell)
+	  Synaptic contacts: 144796 (14.48 per cell)
+	  Spikes: 48981 (2.04 Hz)
+	   PT5_1 : 1.940 Hz
+	   PT5_2 : 0.000 Hz
+	   PT5_3 : 0.000 Hz
+	   PT5_4 : 0.000 Hz
+	   PV5_1 : 16.529 Hz
+	   PV5_2 : 0.000 Hz
+	  Simulated time: 2.4 s; 192 workers
+	  Run time: 59.98 s
+	Saving output as /scratch/06322/tg856217/eee_net_57/eee_net_57.json  ... 
+	Finished saving!
+	  Done; saving time = 3.71 s.
+	Plotting raster...
+	Saving figure data as /scratch/06322/tg856217/eee_net_57/eee_net_57_raster.pkl ... 
+	Plotting spike histogram...
+	Saving figure data as /scratch/06322/tg856217/eee_net_57/eee_net_57_spikeHist.pkl ... 
+	Plotting recorded cell traces ... cell
+	Plotting connectivity matrix...
+	Saving figure data as /scratch/06322/tg856217/eee_net_57/eee_net_57_conn.pkl ... 
+	  Done; plotting time = 243.00 s
+
+	Total time = 376.84 s
+
+It still ran through all the time on Stampede though...
+
+	Slurm Job_id=4486116 Name=eee_net Failed, Run time 01:00:18, TIMEOUT, ExitCode 0
+
+Looking at figures... Looks like they all appeared.  Copying them over to local
+machine.
+
+There's a lot of depolarization block.  Need to reduce the iClamp amplitude.
+
+
+* 2019-10-12 -- 
+
+** Reducing iClamp amplitude
+
+eee_net_58
+
+cfg.ampIClamp1 = 0.1 #1.0
+cfg.ampIClamp2 = 0.1 #1.0
+
+Increasing ylim (prev figs gut cut off below):
+
+cfg.analysis['plotTraces'] = {'include': include, 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-100, 30]}  # 'ylim': [-80, 30] 
 
 
 

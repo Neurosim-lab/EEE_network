@@ -35,7 +35,12 @@ netParams.popParams['PT5_1'] = {'cellType': 'PT5', 'numCells': int(numPT5cells/4
 netParams.popParams['PT5_2'] = {'cellType': 'PT5', 'numCells': int(numPT5cells/4), 'ynormRange': cfg.ynormRange, 'cellModel': 'HH'}
 netParams.popParams['PT5_3'] = {'cellType': 'PT5', 'numCells': int(numPT5cells/4), 'ynormRange': cfg.ynormRange, 'cellModel': 'HH'}
 netParams.popParams['PT5_4'] = {'cellType': 'PT5', 'numCells': int(numPT5cells/4), 'ynormRange': cfg.ynormRange, 'cellModel': 'HH'}
-netParams.popParams['PV5'] = {'cellType': 'PV5', 'numCells': numPV5cells, 'ynormRange': cfg.ynormRange, 'cellModel': 'HH'}
+#netParams.popParams['PV5'] = {'cellType': 'PV5', 'numCells': numPV5cells, 'ynormRange': cfg.ynormRange, 'cellModel': 'HH'}
+
+####
+netParams.popParams['PV5_1'] = {'cellType': 'PV5', 'numCells': numPV5cells/2, 'ynormRange': cfg.ynormRange, 'cellModel': 'HH'}
+netParams.popParams['PV5_2'] = {'cellType': 'PV5', 'numCells': numPV5cells/2, 'ynormRange': cfg.ynormRange, 'cellModel': 'HH'}
+####
 
 
 ## Set path to cells directory
@@ -44,15 +49,22 @@ eeeS_path = os.path.join(cellpath, 'eeeS.py')
 PV_path   = os.path.join(cellpath, 'FS3.py')
 
 
-
 ## Import PV5 cell
-cellRule = netParams.importCellParams(label='PV5', conds={'cellType':'PV5'}, fileName=PV_path, cellName='MakeCell', cellInstance=True)
-netParams.cellParams['PV5'] = cellRule
+#cellRule = netParams.importCellParams(label='PV5', conds={'cellType':'PV5'}, fileName=PV_path, cellName='MakeCell', cellInstance=True)
+#netParams.cellParams['PV5'] = cellRule
+
+
+####
+cellRule = netParams.importCellParams(label='PV5_1', conds={'cellType':'PV5'}, fileName=PV_path, cellName='MakeCell', cellInstance=True)
+netParams.cellParams['PV5_1'] = cellRule
+cellRule = netParams.importCellParams(label='PV5_2', conds={'cellType':'PV5'}, fileName=PV_path, cellName='MakeCell', cellInstance=True)
+netParams.cellParams['PV5_2'] = cellRule
+####
+
 
 ## Import eeeS cell (PT5)
 cellRule = netParams.importCellParams(label='PT5_1', conds={'pop':'PT5_1'}, fileName=eeeS_path, cellName='MakeCell', cellInstance=True)
 netParams.cellParams['PT5_1'] = cellRule
-
 
 ## Synaptic mechanism parameters
 ESynMech = ['AMPA','NMDA']
@@ -88,7 +100,7 @@ if cfg.noisePT5:
 
 # PV5 noise
 if cfg.noisePV5:
-    netParams.cellParams['PV5']['secs']['soma']['pointps'] = {
+    netParams.cellParams['PV5_1']['secs']['soma']['pointps'] = {
                         'noise': {'mod': 'Gfluctp', 
                         'loc': 0.5,
                         'std_e': 0.012,
@@ -114,10 +126,18 @@ for label in ['PT5_2', 'PT5_3', 'PT5_4']:
     cellRule['conds']['pop'] = [label]
     netParams.cellParams[label] = cellRule
 
+####
+for label in ['PV5_2']:    
+    cellRule = copy.deepcopy(netParams.cellParams['PV5_1'].todict())
+    cellRule['conds']['pop'] = [label]
+    netParams.cellParams[label] = cellRule
+####
+
 
 
 ## Cell connectivity rules
 EPops = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4']
+IPops = ['PV5_1', 'PV5_2']
 
 # Excitatory --> Excitatory
 for prePop in EPops:
@@ -136,7 +156,7 @@ for prePop in EPops:
 
 # Excitatory --> Inhibitory
 for prePop in EPops:
-    for postPop in ['PV5']:
+    for postPop in IPops:
         ruleLabel = prePop+'->'+postPop
         netParams.connParams[ruleLabel] = {
             'preConds': {'pop': prePop},
@@ -150,7 +170,7 @@ for prePop in EPops:
             'sec': 'soma'}
 
 # Inhibitory --> Excitatory
-for prePop in ['PV5']:
+for prePop in IPops:
     for postPop in EPops:
         ruleLabel = prePop+'->'+postPop
         netParams.connParams[ruleLabel] = {
@@ -165,8 +185,8 @@ for prePop in ['PV5']:
             'sec': 'soma'}
 
 # Inhibitory --> Inhibitory
-for prePop in ['PV5']:
-    for postPop in ['PV5']:
+for prePop in IPops:
+    for postPop in IPops:
         ruleLabel = prePop+'->'+postPop
         netParams.connParams[ruleLabel] = {
             'preConds': {'pop': prePop},
@@ -220,7 +240,7 @@ if cfg.addIClamp:
 
         # add stim source
         #netParams.stimSourceParams[iclabel] = {'type': 'IClamp', 'del': ic['del'], 'dur': ic['dur'], 'amp': ic['amp']}
-        netParams.stimSourceParams[iclabel] = {'type': 'IClamp', 'del': ic['del'], 'dur': ic['dur'], 'amp': cfg.ampIClamp1}
+        netParams.stimSourceParams[iclabel] = {'type': 'IClamp', 'del': ic['del'], 'dur': ic['dur'], 'amp': ic['amp']}
         
         # add stim target
         for curpop in ic['pop']:

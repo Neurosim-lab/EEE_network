@@ -14189,6 +14189,20 @@ Will plot traces for PV5
 
 Turning off plateaus and common inputs
 
+Submitted batch job 4485450
+
+4000 traces is a bit much.
+
+
+
+** cfg.simLabel = 'eee_net_55'
+
+Adding a current injection to PV5_1
+
+Adding PV5_2, so can give stim to one half of PV cells
+
+Recording from 20 of each cell type
+
 
 
 

@@ -15,7 +15,7 @@ cfg.numCells = 10000
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_54'
+cfg.simLabel = 'eee_net_55'
 
 baseFolder = '/scratch/06322/tg856217'
 #baseFolder = 'data'
@@ -106,12 +106,21 @@ cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True, 'saveFig':
 cfg.analysis['plotSpikeHist'] = {'saveFig': saveFig,'showFig': showFig, 'saveData': saveData}
 
 #cfg.analysis['plotTraces'] = {'include': [('PT5_1', [0, 1, 2, 3]), ('PT5_2', [0, 1, 2, 3]), ('PT5_3', [0, 1, 2, 3]), ('PT5_4', [0, 1, 2, 3]), ('PV5', [0, 1, 2, 3])], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}  
-cfg.analysis['plotTraces'] = {'include': ['PT5_2', 'PV5'], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}  
+
+include = list(range(0, 21))
+include = include + list(range(2000, 2021))
+include = include + list(range(4000, 4021))
+include = include + list(range(6000, 6021))
+include = include + list(range(8000, 8021))
+include = include + list(range(9000, 9021))
+
+
+cfg.analysis['plotTraces'] = {'include': include, 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}  
 
 #cfg.analysis['plot2Dnet'] = {'saveFig': saveFig, 'showFig': showFig}   
 
-includePre  = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4','PV5']
-includePost = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4','PV5']
+includePre  = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5_1', 'PV5_2']
+includePost = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5_1', 'PV5_2']
 feature     = 'numConns' #'divergence' #'convergence' #'strength' # 
 groupBy     = 'pop' #'cell'
 orderBy     = 'gid' #'y'
@@ -124,11 +133,20 @@ cfg.analysis['plotConn'] = {'saveFig': saveFig, 'showFig': showFig, 'includePre'
 cfg.addIClamp = True
 
 cfg.delIClamp1 = 200
-cfg.durIClamp1 = 100
+cfg.durIClamp1 = 500
 cfg.ampIClamp1 = 1.0
 cfg.popIClamp1 = ['PT5_1']
 cfg.secIClamp1 = 'soma'
 cfg.locIClamp1 = 0.5
+
+cfg.IClamp1 = {'pop': cfg.popIClamp1, 'sec': cfg.secIClamp1, 'loc': cfg.locIClamp1, 'del': cfg.delIClamp1, 'dur': cfg.durIClamp1, 'amp': cfg.ampIClamp1}
+
+cfg.delIClamp2 = 1500
+cfg.durIClamp2 = 500
+cfg.ampIClamp2 = 1.0
+cfg.popIClamp2 = ['PV5_1']
+cfg.secIClamp2 = 'soma'
+cfg.locIClamp2 = 0.5
 
 cfg.IClamp1 = {'pop': cfg.popIClamp1, 'sec': cfg.secIClamp1, 'loc': cfg.locIClamp1, 'del': cfg.delIClamp1, 'dur': cfg.durIClamp1, 'amp': cfg.ampIClamp1}
 

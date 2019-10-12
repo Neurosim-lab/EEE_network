@@ -14219,6 +14219,11 @@ Minor fix to netParams.py
 
 Minor fix to cfg.py
 
+Seems to work now. Bumping back up to 1000 cells.
+
+eee_net_57
+
+
 
 
 

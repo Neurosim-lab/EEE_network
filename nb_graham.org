@@ -14339,10 +14339,73 @@ Running a batch to explore noise.
 batchLabel = 'v01_batch53'
 
     params['PT5_noise_scaling'] = [0, 0.01, 0.1, 1.0]    
-    params['PT5_noise_scaling'] = [0, 0.01, 0.1, 1.0]
+
+Error:
+
+	stampede22(262)$ python3 batch.py
+	===============================
+	   Using backend: TkAgg
+	===============================
+	Saving batch to /scratch/06322/tg856217/v01_batch52/v01_batch52_batch.json ... 
+	(0,) (10,)
+	numCells = 10
+	Skipping job /scratch/06322/tg856217/v01_batch52/v01_batch52_0 since output file already exists...
+	Traceback (most recent call last):
+	  File "batch.py", line 68, in <module>
+	    batchRun() 
+	  File "batch.py", line 64, in batchRun
+	    b.run()
+	  File "/home1/06322/tg856217/.local/lib/python3.7/site-packages/netpyne/netpyne/batch/batch.py", line 460, in run
+	    sleep(sleepInterval) # avoid saturating scheduler
+	UnboundLocalError: local variable 'sleepInterval' referenced before assignment
+
+Also, needs -nogui to use agg instead of TkAgg
+
+	stampede22(263)$ python3 batch.py -nogui
+	===============================
+	   Using backend: agg
+	===============================
+	Saving batch to /scratch/06322/tg856217/v01_batch52/v01_batch52_batch.json ... 
+	(0,) (10,)
+	numCells = 10
+	Skipping job /scratch/06322/tg856217/v01_batch52/v01_batch52_0 since output file already exists...
+	Traceback (most recent call last):
+	  File "batch.py", line 68, in <module>
+	    batchRun() 
+	  File "batch.py", line 64, in batchRun
+	    b.run()
+	  File "/home1/06322/tg856217/.local/lib/python3.7/site-packages/netpyne/netpyne/batch/batch.py", line 460, in run
+	    sleep(sleepInterval) # avoid saturating scheduler
+	UnboundLocalError: local variable 'sleepInterval' referenced before assignment
+
+Forgot to do git pull on Stampede
+
+git pull
+python3 batch.py -nogui
+
+	stampede22(271)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4488051  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4488052  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4488053  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4488054  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
 
 
+Some batch sims use agg and some TkAgg...
 
+Getting errors with the TkAgg ones.
+
+Added -nogui to the netpyne's batch.py HPC-slurm command:
+
+- command = '%s -np %d nrniv -python -mpi %s simConfig=%s netParams=%s' % (mpiCommand, numproc, script, cfgSavePath, netParamsSavePath) 
++ command = '%s -np %d nrniv -python -mpi -nogui %s simConfig=%s netParams=%s' % (mpiCommand, numproc, script, cfgSavePath, netParamsSavePath) 
+
+Trying again.
+
+batchLabel = 'v01_batch54'
+
+    params['PT5_noise_scaling'] = [0, 0.01, 0.1, 1.0]    
+    params['PV5_noise_scaling'] = [0, 0.01, 0.1, 1.0]
 
 
 

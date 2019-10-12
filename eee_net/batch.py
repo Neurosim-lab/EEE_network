@@ -2,7 +2,7 @@ from netpyne import specs
 from netpyne.batch import Batch 
 import os
 
-batchLabel = 'v01_batch53'
+batchLabel = 'v01_batch54'
 
 runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
 #runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
@@ -29,7 +29,7 @@ def batchRun():
     #params['numCells'] = [10, 100, 500, 1000, 5000, 10000]
 
     params['PT5_noise_scaling'] = [0, 0.01, 0.1, 1.0]    
-    params['PT5_noise_scaling'] = [0, 0.01, 0.1, 1.0]
+    params['PV5_noise_scaling'] = [0, 0.01, 0.1, 1.0]
  
     
     # create Batch object with paramaters to modify, and specifying files to use

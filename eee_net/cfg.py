@@ -136,7 +136,7 @@ cfg.addIClamp = True
 
 cfg.delIClamp1 = 200
 cfg.durIClamp1 = 500
-cfg.ampIClamp1 = 0.1 #1.0
+cfg.ampIClamp1 = 0.2 #1.0
 cfg.popIClamp1 = ['PT5_1']
 cfg.secIClamp1 = 'soma'
 cfg.locIClamp1 = 0.5
@@ -145,7 +145,7 @@ cfg.IClamp1 = {'pop': cfg.popIClamp1, 'sec': cfg.secIClamp1, 'loc': cfg.locIClam
 
 cfg.delIClamp2 = 1500
 cfg.durIClamp2 = 500
-cfg.ampIClamp2 = 0.1 #1.0
+cfg.ampIClamp2 = 0.2 #1.0
 cfg.popIClamp2 = ['PV5_1']
 cfg.secIClamp2 = 'soma'
 cfg.locIClamp2 = 0.5

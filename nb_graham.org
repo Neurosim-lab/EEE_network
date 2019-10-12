@@ -14295,6 +14295,8 @@ Increasing ylim (prev figs gut cut off below):
 
 cfg.analysis['plotTraces'] = {'include': include, 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-100, 30]}  # 'ylim': [-80, 30] 
 
+Submitted batch job 4487639
+
 
 
 

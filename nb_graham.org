@@ -14297,10 +14297,28 @@ cfg.analysis['plotTraces'] = {'include': include, 'saveFig': saveFig, 'showFig':
 
 Submitted batch job 4487639
 
+Sim finished, Stampede is still running.
+
+scancel 4487639
+
+Response to small.  Douvling iclamp amp
+
+eee_net_58 (forgot to update to 59)
+
+Submitted batch job 4487717
+
+mv eee_net_58 eee_net_58_1
+
+scpe eee_net_58
+
+No spiking in PV cells, increasing iclamp to PV5
+
+eee_net_59
+
+cfg.ampIClamp2 = 0.3 #1.0
 
 
-
-
+** Submit a batch sim
 
 
 

@@ -15,7 +15,7 @@ cfg.numCells = 10000
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_58'
+cfg.simLabel = 'eee_net_59'
 
 baseFolder = '/scratch/06322/tg856217'
 #baseFolder = 'data'
@@ -145,7 +145,7 @@ cfg.IClamp1 = {'pop': cfg.popIClamp1, 'sec': cfg.secIClamp1, 'loc': cfg.locIClam
 
 cfg.delIClamp2 = 1500
 cfg.durIClamp2 = 500
-cfg.ampIClamp2 = 0.2 #1.0
+cfg.ampIClamp2 = 0.3 #1.0
 cfg.popIClamp2 = ['PV5_1']
 cfg.secIClamp2 = 'soma'
 cfg.locIClamp2 = 0.5

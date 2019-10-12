@@ -114,7 +114,7 @@ include = include + list(range(6000, 6021))
 include = include + list(range(8000, 8021))
 include = include + list(range(9000, 9021))
 
-include = 'allCells'
+include = ['allCells']
 
 
 cfg.analysis['plotTraces'] = {'include': include, 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}  

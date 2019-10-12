@@ -14217,6 +14217,8 @@ Bumped down to 100 cells for debugging.
 
 Minor fix to netParams.py
 
+Minor fix to cfg.py
+
 
 
 

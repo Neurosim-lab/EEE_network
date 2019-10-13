@@ -14407,10 +14407,34 @@ batchLabel = 'v01_batch54'
     params['PT5_noise_scaling'] = [0, 0.01, 0.1, 1.0]    
     params['PV5_noise_scaling'] = [0, 0.01, 0.1, 1.0]
 
+stampede23(102)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4488262  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4488263  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4488264  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4488265  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4488266  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4488267  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4488268  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4488269  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4488270  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4488271  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4488272  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4488273  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4488274  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4488275  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
 
 
+Batch sims finished.
 
+Changing the noise amplitude has no effect on the noise in the traces.
 
+** Setting up a new batch to vary std in noise
+
+batchLabel = 'v01_batch55'
+
+    params['PT5_std_scaling'] = [0, 0.01, 0.1, 1.0]
+    params['PV5_std_scaling'] = [0, 0.01, 0.1, 1.0]
 
 
 

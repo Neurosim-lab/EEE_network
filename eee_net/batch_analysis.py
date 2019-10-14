@@ -1009,14 +1009,14 @@ def plot_relation(yarray, xvector, params, swapaxes=False, param_labels=None, ti
         return fig
 
 
-def plot_vtraces(batchname, cellIDs=None, secs=None, timerange=None, param_labels=None, title=None, filename=None, save=True, outputdir="batch_figs"):
+def plot_vtraces(batchname, batchdatadir=batchdatadir, cellIDs=None, secs=None, timerange=None, param_labels=None, title=None, filename=None, save=True, outputdir="batch_figs"):
     """If secs is None, all compartment voltage traces are plotted. secs can also be a list of compartment names, e.g. secs=['soma', 'Bdend1'].
     If cellID is None, all cells will be plotted (individually).  cellID can also be a list of cell IDs or an integer value."""
 
     print("Plotting voltage traces...")
 
     if type(batchname) == str:
-        params, data = batch_utils.load_batch(batchname)
+        params, data = batch_utils.load_batch(batchname, batchdatadir=batchdatadir)
     elif type(batchname) == tuple:
         batchname, params, data = batchname
     else:

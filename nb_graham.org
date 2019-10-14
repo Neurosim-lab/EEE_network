@@ -14479,7 +14479,15 @@ Adding a return to plot_vtraces:
 
 So that I won't have to reload the data for every figure.
 
+ipython
+In [1]: import batch_analysis as ba 
+In [2]: sc = '/scratch/06322/tg856217/' 
+In [3]: batchName = 'v01_batch55'
+In [4]: batch55 = ba.plot_vtraces(sc + batchName)   
 
+FileNotFoundError: [Errno 2] No such file or directory: 'batch_data//scratch/06322/tg856217/v01_batch55//scratch/06322/tg856217/v01_batch55_batch.json'
+
+Fixed batch_analysis to allow batchdatadir specification.
 
 
 

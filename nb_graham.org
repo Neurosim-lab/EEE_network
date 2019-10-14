@@ -14301,7 +14301,7 @@ Sim finished, Stampede is still running.
 
 scancel 4487639
 
-Response to small.  Douvling iclamp amp
+Response too small.  Doubling iclamp amp
 
 eee_net_58 (forgot to update to 59)
 
@@ -14436,8 +14436,48 @@ batchLabel = 'v01_batch55'
     params['PT5_std_scaling'] = [0, 0.01, 0.1, 1.0]
     params['PV5_std_scaling'] = [0, 0.01, 0.1, 1.0]
 
+python3 batch.py -nogui
+
+	stampede23(9)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4490410  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4490411  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4490412  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4490413  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4490414  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4490415  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4490416  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4490417  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4490418  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4490419  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4490420  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4490421  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4490422  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4490423  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
 
 
+* 2019-10-12 -- 
+
+** Looking at batch varying noise std
+
+scpe v01_batch55
+
+Varying the std of the noise DOES affect the amplitude of the noise.
+
+Tough to compare by looking at so many plots.
+
+Time to get plot_batch_vtraces working again...
+
+
+* 2019-10-13 -- 
+
+** Plot batch voltage traces
+
+Adding a return to plot_vtraces:
+
+    return (batchname, params, data)
+
+So that I won't have to reload the data for every figure.
 
 
 

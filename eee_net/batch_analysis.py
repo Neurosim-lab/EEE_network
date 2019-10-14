@@ -1068,6 +1068,8 @@ def plot_vtraces(batchname, cellIDs=None, secs=None, timerange=None, param_label
                 fig1.savefig(os.path.join(outputdir, batchname + "_" + cellLabel + "_vtrace_1_" + filename + ".png"))
                 fig2.savefig(os.path.join(outputdir, batchname + "_" + cellLabel + "_vtrace_2_" + filename + ".png"))
 
+    return (batchname, params, data)
+
 
 
 def plot_traces(batchname, traces, cellIDs=None, param_labels=None, title=None, filename=None, save=True, outputdir="batch_figs"):

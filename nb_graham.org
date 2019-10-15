@@ -14644,15 +14644,38 @@ Re-running batch:
 
 batchLabel = 'v01_batch58'
 
-
-
-
-
+	stampede21(97)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4503458  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4503459  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4503460  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4503461  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4503462  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4503463  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4503495  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4503496  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4503497  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4503498  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4503499  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4503500  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
 
 
 ** Back to inducing plateaus and common inputs
 
+batchLabel = 'v01_batch59'
 
+# Connectivity variables
+cfg.connType = 'probability'  # 'convergence', 'divergence', or 'probability'
+cfg.EScale = 1.0
+cfg.IScale = 1.0
+
+cfg.EEconn = 0.0005 * cfg.EScale
+cfg.EIconn = cfg.EEconn
+cfg.IEconn = 0.002 * cfg.IScale
+cfg.IIconn = cfg.IEconn
+
+    params['EScale'] = [0.5, 1.0, 2.0]
+    params['IScale'] = [0.5, 1.0, 2.0]
 
 
 

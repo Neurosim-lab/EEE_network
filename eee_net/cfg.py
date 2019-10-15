@@ -75,13 +75,17 @@ cfg.PV5_inh_noise_tau = 1.0
 
 # Connectivity variables
 cfg.connType = 'probability'  # 'convergence', 'divergence', or 'probability'
-cfg.EEconn = 0.0005 #0.005 #0.05 #3.0
-cfg.EIconn = cfg.EEconn #0.05 #3.0
-cfg.IEconn = 0.002 #0.02 #0.2 #12.0
-cfg.IIconn = cfg.IEconn #0.2 #12.0
+cfg.EScale = 1.0
+cfg.IScale = 1.0
+
+
+cfg.EEconn = 0.0005 * cfg.EScale
+cfg.EIconn = cfg.EEconn
+cfg.IEconn = 0.002 * cfg.IScale
+cfg.IIconn = cfg.IEconn
 
 # Glutamate stim parameters
-cfg.glutamate         = False
+cfg.glutamate         = True
 cfg.glutPops          = ['PT5_1', 'PT5_2']
 
 cfg.glutTimes         = [800.0, 2000.0]
@@ -122,7 +126,7 @@ include = include + list(range(9000, 9006))
 #include = ['allCells']
 
 
-#cfg.analysis['plotTraces'] = {'include': include, 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-100, 30]}  # 'ylim': [-80, 30] 
+cfg.analysis['plotTraces'] = {'include': include, 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-100, 30]}  # 'ylim': [-80, 30] 
 
 #cfg.analysis['plot2Dnet'] = {'saveFig': saveFig, 'showFig': showFig}   
 
@@ -137,7 +141,7 @@ cfg.analysis['plotConn'] = {'saveFig': saveFig, 'showFig': showFig, 'includePre'
 
 
 # Current clamps
-cfg.addIClamp = True
+cfg.addIClamp = False
 
 cfg.delIClamp1 = 200
 cfg.durIClamp1 = 500
@@ -159,7 +163,7 @@ cfg.IClamp2 = {'pop': cfg.popIClamp2, 'sec': cfg.secIClamp2, 'loc': cfg.locIClam
 
 
 # Common synaptic input
-cfg.addCommonInput1 = False
+cfg.addCommonInput1 = True
 cfg.popCommonInput1 = ['PT5_1', 'PT5_3']
 
 cfg.secCommonInput1 = 'soma'
@@ -170,7 +174,7 @@ cfg.numCommonInput1 = 10    # number
 cfg.intCommonInput1 = 20   # interval
 
 
-cfg.addCommonInput2 = False
+cfg.addCommonInput2 = True
 cfg.popCommonInput2 = ['PT5_1', 'PT5_3']
 
 cfg.secCommonInput2 = 'soma'

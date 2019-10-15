@@ -14627,6 +14627,30 @@ batchLabel = 'v01_batch57'
     params['PT5_std_scaling'] = [0.0, 0.1]
     params['ampIClamp2'] = [0.3, 0.5, 0.7]
 
+./runbatch_stampede
+
+	stampede21(90)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4503458  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4503459  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4503460  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4503461  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4503462  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4503463  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+
+Forgot to turn off glutamate puff.
+
+Re-running batch:
+
+batchLabel = 'v01_batch58'
+
+
+
+
+
+
+
+** Back to inducing plateaus and common inputs
 
 
 

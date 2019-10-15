@@ -81,7 +81,7 @@ cfg.IEconn = 0.002 #0.02 #0.2 #12.0
 cfg.IIconn = cfg.IEconn #0.2 #12.0
 
 # Glutamate stim parameters
-cfg.glutamate         = True
+cfg.glutamate         = False
 cfg.glutPops          = ['PT5_1', 'PT5_2']
 
 cfg.glutTimes         = [800.0, 2000.0]

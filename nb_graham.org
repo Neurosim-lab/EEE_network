@@ -14551,7 +14551,24 @@ batchLabel = 'v01_batch56'
     params['PT5_std_scaling'] = [0.1, 0.3, 0.5, 0.7, 0.9]
     params['PV5_std_scaling'] = [0.1, 0.3, 0.5, 0.7, 0.9]
 
+Error:
 
+	stampede21(4)$ python batch.py -nogui
+	Traceback (most recent call last):
+	  File "batch.py", line 1, in <module>
+	    from netpyne import specs
+	  File "/home1/06322/tg856217/.local/lib/python3.7/site-packages/netpyne/netpyne/__init__.py", line 5, in <module>
+	    import matplotlib
+	  File "/home1/06322/tg856217/.local/lib/python3.7/site-packages/matplotlib/__init__.py", line 272
+	    nonlocal called, ret
+	                  ^
+	SyntaxError: invalid syntax
+
+Ahh, it needs to be Python3.  I keep forgetting that.
+
+I'm going to make a runbatch_stampede file with:
+
+	python3 batch.py -nogui
 
 
 

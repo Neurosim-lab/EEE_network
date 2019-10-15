@@ -14489,7 +14489,67 @@ FileNotFoundError: [Errno 2] No such file or directory: 'batch_data//scratch/063
 
 Fixed batch_analysis to allow batchdatadir specification.
 
+import batch_analysis as ba
+batchdatadir = '/scratch/06322/tg856217/'
+batchname = 'v01_batch55'
+batch55 = ba.plot_vtraces(batchname, batchdatadir=batchdatadir, outputdir=batchdatadir+batchname)
 
+That worked!
+
+import batch_analysis as ba
+batchdatadir = '/scratch/06322/tg856217/'
+batchname = 'v01_batch54'
+batch54 = ba.plot_vtraces(batchname, batchdatadir=batchdatadir, outputdir=batchdatadir+batchname)
+
+
+** End of sims doesn't end Stampede run
+
+Chat:
+
+	joe 2:37 PM
+	Hey Subha, recently, running Netpyne sims on Stampede, the sims complete successfully and generate output, but the Stampede sbatch runs until it hits the time limit before ending…  Have you seen this before?
+	subha 4:04 PM
+	Yes that happened when I used intelmpi instead of mvapich while installing NEURON
+	joe 4:09 PM
+	I did this before installing NEURON:
+	Untitled 
+	module purge
+	module load intel
+	module load mvapich2
+	module load python3
+
+	Shouldn’t that use mvapich?
+	new messages
+	subha 4:53 PM
+	Yes
+	Make sure you are also loading the same modules while running
+	joe 4:54 PM
+	Ahh, when running I just module load python3
+	I’ll try adding the other modules and running.
+	Thanks, Subha.
+	When running, should I do module purge at the beginning?
+	subha 4:57 PM
+	Yes you can and then load all required modules
+
+Adding the modules to .bashrc on Stampede
+
+
+** Exploring noise
+
+Different noise levels in PT5 cell:
+file:gif/20191014_174900.png
+
+Different noise levels in PV5 cell:
+file:gif/20191014_175024.png
+
+It looks like we want the STD scaling to be between 0.1 and 1.0
+
+Running a new batch.
+
+batchLabel = 'v01_batch56'
+
+    params['PT5_std_scaling'] = [0.1, 0.3, 0.5, 0.7, 0.9]
+    params['PV5_std_scaling'] = [0.1, 0.3, 0.5, 0.7, 0.9]
 
 
 

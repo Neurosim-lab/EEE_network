@@ -14570,6 +14570,11 @@ I'm going to make a runbatch_stampede file with:
 
 	python3 batch.py -nogui
 
+stampede21(16)$ ./runbatch_stampede
+-bash: ./runbatch_stampede: Permission denied
+
+graham$ chmod +x runsim_stampede
+
 
 
 

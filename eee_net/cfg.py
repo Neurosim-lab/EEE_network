@@ -54,7 +54,7 @@ cfg.noisePT5 = True
 cfg.noisePV5 = True
 
 cfg.PT5_noise_scaling = 1.0
-cfg.PT5_std_scaling = 1.0
+cfg.PT5_std_scaling = 0.1
 
 cfg.PT5_exc_noise_amp = 0.01 * cfg.PT5_noise_scaling
 cfg.PT5_exc_noise_e   = 0.0
@@ -64,7 +64,7 @@ cfg.PT5_inh_noise_e   = -75.0
 cfg.PT5_inh_noise_tau = 1.0
 
 cfg.PV5_noise_scaling = 1.0
-cfg.PV5_std_scaling = 1.0
+cfg.PV5_std_scaling = cfg.PT5_std_scaling
 
 cfg.PV5_exc_noise_amp = 1.0 * cfg.PV5_noise_scaling
 cfg.PV5_exc_noise_e   = 0.0
@@ -81,7 +81,7 @@ cfg.IEconn = 0.002 #0.02 #0.2 #12.0
 cfg.IIconn = cfg.IEconn #0.2 #12.0
 
 # Glutamate stim parameters
-cfg.glutamate         = False 
+cfg.glutamate         = True
 cfg.glutPops          = ['PT5_1', 'PT5_2']
 
 cfg.glutTimes         = [800.0, 2000.0]
@@ -112,17 +112,17 @@ cfg.analysis['plotSpikeHist'] = {'saveFig': saveFig,'showFig': showFig, 'saveDat
 
 #cfg.analysis['plotTraces'] = {'include': [('PT5_1', [0, 1, 2, 3]), ('PT5_2', [0, 1, 2, 3]), ('PT5_3', [0, 1, 2, 3]), ('PT5_4', [0, 1, 2, 3]), ('PV5', [0, 1, 2, 3])], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}  
 
-include = list(range(0, 21))
-include = include + list(range(2000, 2021))
-include = include + list(range(4000, 4021))
-include = include + list(range(6000, 6021))
-include = include + list(range(8000, 8021))
-include = include + list(range(9000, 9021))
+include = list(range(0, 6))
+include = include + list(range(2000, 2006))
+include = include + list(range(4000, 4006))
+include = include + list(range(6000, 6006))
+include = include + list(range(8000, 8006))
+include = include + list(range(9000, 9006))
 
 #include = ['allCells']
 
 
-cfg.analysis['plotTraces'] = {'include': include, 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-100, 30]}  # 'ylim': [-80, 30] 
+#cfg.analysis['plotTraces'] = {'include': include, 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-100, 30]}  # 'ylim': [-80, 30] 
 
 #cfg.analysis['plot2Dnet'] = {'saveFig': saveFig, 'showFig': showFig}   
 

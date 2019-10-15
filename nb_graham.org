@@ -14575,6 +14575,74 @@ stampede21(16)$ ./runbatch_stampede
 
 graham$ chmod +x runsim_stampede
 
+./runsim_stampede
+
+	stampede21(22)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4502416  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4502417  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4502418  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4502419  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4502420  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4502421  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4502422  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4502423  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4502424  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4502425  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4502426  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4502427  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4502428  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4502430  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4502431  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4502432  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4502433  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4502434  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4502435  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4502436  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4502437  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4502438  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4502439  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4502441  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+
+
+import batch_analysis as ba
+batchdatadir = '/scratch/06322/tg856217/'
+batchname = 'v01_batch56'
+batch56 = ba.plot_vtraces(batchname, batchdatadir=batchdatadir, outputdir=batchdatadir+batchname, cellIDs=[0, 1, 2000, 2001, 4000, 4001, 6000, 6001, 8000, 8001, 9000, 9001])
+
+
+PT5 cell
+file:gif/20191014_224227.png
+
+PV5 cell:
+file:gif/20191014_224305.png
+
+Setting noise std to 0.1 for both cell types.
+
+
+** Exploring connectivity: EPSPs and IPSPs
+
+batchLabel = 'v01_batch57'
+
+    params['PT5_std_scaling'] = [0.0, 0.1]
+    params['ampIClamp2'] = [0.3, 0.5, 0.7]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

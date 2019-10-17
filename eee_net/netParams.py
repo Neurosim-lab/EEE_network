@@ -131,7 +131,10 @@ for label in ['PV5_2']:
     netParams.cellParams[label] = cellRule
 ####
 
-
+EEconn = 0.0005 * cfg.EScale
+EIconn = 0.0005 * cfg.EScale
+IEconn = 0.002 * cfg.IScale
+IIconn = 0.002 * cfg.IScale
 
 ## Cell connectivity rules
 EPops = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4']
@@ -148,7 +151,7 @@ for prePop in EPops:
             'weight': [cfg.AMPAweight, cfg.NMDAweight],
             'delay': 'defaultDelay+dist_3D/propVelocity',
             #'convergence': cfg.EEconv,
-            cfg.connType: cfg.EEconn,
+            cfg.connType: EEconn,
             'loc': 0.3,
             'sec': 'basal_8'}
 
@@ -163,7 +166,7 @@ for prePop in EPops:
             'weight': cfg.AMPAweight, 
             'delay': 'defaultDelay+dist_3D/propVelocity',
             #'convergence': cfg.EIconv,
-            cfg.connType: cfg.EIconn,
+            cfg.connType: EIconn,
             'loc': 0.5,
             'sec': 'soma'}
 
@@ -178,7 +181,7 @@ for prePop in IPops:
             'weight': [cfg.GABAAfastWeight, cfg.GABAAslowWeight],
             'delay': 'defaultDelay+dist_3D/propVelocity',
             #'convergence': cfg.IEconv,
-            cfg.connType: cfg.IEconn,
+            cfg.connType: IEconn,
             'loc': 0.5,
             'sec': 'soma'}
 
@@ -193,7 +196,7 @@ for prePop in IPops:
             'weight': cfg.GABAAfastWeight, 
             'delay': 'defaultDelay+dist_3D/propVelocity',
             #'convergence': cfg.IIconv,
-            cfg.connType: cfg.IIconn,
+            cfg.connType: IIconn,
             'loc': 0.5,
             'sec': 'soma'}
 

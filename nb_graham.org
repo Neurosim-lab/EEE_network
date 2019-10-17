@@ -15000,8 +15000,30 @@ Decreasing I conn
    params['EScale'] = [2.0, 10.0, 50.0]
    params['IScale'] = [0.5, 0.1, 0.02]
 
+stampede23(8)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4516063  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4516064  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4516065  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4516066  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4516067  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4516068  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4516069  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4516070  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4516071  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+
+That didn't seem to vary the connectivity...
+
+Added this to netParams:
+
+EEconn = 0.0005 * cfg.EScale
+EIconn = 0.0005 * cfg.EScale
+IEconn = 0.002 * cfg.IScale
+IIconn = 0.002 * cfg.IScale
 
 
+
+** batchLabel = 'v01_batch65'
 
 
 

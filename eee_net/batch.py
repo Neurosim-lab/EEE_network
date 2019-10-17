@@ -2,7 +2,7 @@ from netpyne import specs
 from netpyne.batch import Batch 
 import os
 
-batchLabel = 'v01_batch63'
+batchLabel = 'v01_batch64'
 
 runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
 #runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
@@ -28,11 +28,11 @@ def batchRun():
 
     #params['numCells'] = [10, 100, 500, 1000, 5000, 10000]
 
-    params['ampIClamp1'] = [0.1, 0.2, 0.4, 0.6]
-    params['ampIClamp2'] = [0.1, 0.2, 0.4, 0.6]
+    #params['ampIClamp1'] = [0.1, 0.2, 0.4, 0.6]
+    #params['ampIClamp2'] = [0.1, 0.2, 0.4, 0.6]
 
-    #params['EScale'] = [0.1, 1.0, 10.0]
-    #params['IScale'] = [0.1, 1.0, 10.0]
+    params['EScale'] = [2.0, 10.0, 50.0]
+    params['IScale'] = [0.5, 0.1, 0.02]
      
     
     # create Batch object with paramaters to modify, and specifying files to use

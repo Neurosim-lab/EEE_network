@@ -14905,7 +14905,7 @@ Modified netParams:
         #netParams.stimSourceParams[iclabel] = {'type': 'IClamp', 'del': ic['del'], 'dur': ic['dur'], 'amp': ic['amp']}
         netParams.stimSourceParams[iclabel] = {'type': 'IClamp', 'del': ic['del'], 'dur': ic['dur'], 'amp': amp}
 
-batchLabel = 'v01_batch62'
+** batchLabel = 'v01_batch62'
 
 stampede23(21)$ sq
              JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
@@ -14934,12 +14934,89 @@ Doing some hardcoding.
     netParams.stimSourceParams['IClamp1']['amp'] = cfg.ampIClamp1
     netParams.stimSourceParams['IClamp2']['amp'] = cfg.ampIClamp2
 
-batchLabel = 'v01_batch63'
+** batchLabel = 'v01_batch63'
 
     params['ampIClamp1'] = [0.1, 0.2, 0.4, 0.6]
     params['ampIClamp2'] = [0.1, 0.2, 0.4, 0.6]
 
+stampede23(30)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4515742  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515743  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515744  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515745  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515746  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515747  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515748  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515749  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515750  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515751  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515752  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515753  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515754  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515755  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515756  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515757  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+** Modifying connectivity
+
+Need to reduce I to E connectivity
+file:gif/20191016_223227.png
+
+Need to increase E to E connectivity
+file:gif/20191016_223405.png
+
+Need to increase E to I connectivity
+file:gif/20191016_223550.png
+
+Need to decrease I to I connectivity
+file:gif/20191016_223550.png
+
+So, need to increase E--> connectivity
+and need to decrease I--> connectivity
+
+
+** batchLabel = 'v01_batch64'
+
+Increasing E conn
+Decreasing I conn
+
+   params['EScale'] = [2.0, 10.0, 50.0]
+   params['IScale'] = [0.5, 0.1, 0.02]
+
+
+
+
+
+
+
+
+
+
+
+** PV cells not sitting at -65 mV
+
+I set e_pas to -65, but PV cells are sitting at about -70
+
+Need to look into this.  Maybe the h current?
+
+Maybe try varying e_pas to see the effect?
 
 
 

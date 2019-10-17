@@ -14962,18 +14962,6 @@ stampede23(30)$ sq
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 ** Modifying connectivity
 
 Need to reduce I to E connectivity
@@ -15025,9 +15013,23 @@ IIconn = 0.002 * cfg.IScale
 
 ** batchLabel = 'v01_batch65'
 
+stampede23(105)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4516135  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4516136  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4516137  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4516138  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4516139  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4516140  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4516141  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4516142  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4516143  skx-normal v01_batc tg856217 PD       0:00      4 (Resource
 
 
-
+import batch_analysis as ba
+batchdatadir = '/scratch/06322/tg856217/'
+batchname = 'v01_batch65'
+batch = ba.plot_vtraces(batchname, batchdatadir=batchdatadir, outputdir=batchdatadir + batchname)
 
 
 
@@ -15039,6 +15041,42 @@ I set e_pas to -65, but PV cells are sitting at about -70
 Need to look into this.  Maybe the h current?
 
 Maybe try varying e_pas to see the effect?
+
+
+
+* 2019-10-17 -- 
+
+** Looking at conn varyong batch65
+
+Need to increase iClamp amp to PV5 cells
+cfg.ampIClamp2 = 0.3 #0.2
+
+Want to set EScale between 10 and 50
+file:gif/20191017_083708.png
+
+Can't see IScale (no PV5 spiking), but will decrease to between 0.1 and 0.02
+
+batchLabel = 'v01_batch66'
+
+    params['EScale'] = [10.0, 20.0, 30.0]
+    params['IScale'] = [0.1, 0.05, 0.033]
+
+Also throwing in a plateau induction to the sims
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

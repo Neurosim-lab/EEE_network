@@ -84,10 +84,10 @@ cfg.IEconn = 0.002 * cfg.IScale
 cfg.IIconn = 0.002 * cfg.IScale
 
 # Glutamate stim parameters
-cfg.glutamate         = False
+cfg.glutamate         = True
 cfg.glutPops          = ['PT5_1', 'PT5_2']
 
-cfg.glutTimes         = [800.0, 2000.0]
+cfg.glutTimes         = [3000.0] #[800.0, 2000.0]
 cfg.numSyns           = 24
 cfg.numExSyns         = cfg.numSyns
 cfg.glutAmp           = 2.0
@@ -143,7 +143,7 @@ cfg.analysis['plotConn'] = {'saveFig': saveFig, 'showFig': showFig, 'includePre'
 # Current clamps
 cfg.addIClamp = True
 
-cfg.delIClamp1 = 1000
+cfg.delIClamp1 = 500
 cfg.durIClamp1 = 500
 cfg.ampIClamp1 = 0.2 #1.0
 cfg.popIClamp1 = ['PT5_1']
@@ -152,9 +152,9 @@ cfg.locIClamp1 = 0.5
 
 cfg.IClamp1 = {'pop': cfg.popIClamp1, 'sec': cfg.secIClamp1, 'loc': cfg.locIClamp1, 'del': cfg.delIClamp1, 'dur': cfg.durIClamp1, 'amp': cfg.ampIClamp1}
 
-cfg.delIClamp2 = 2000
+cfg.delIClamp2 = 1500
 cfg.durIClamp2 = 500
-cfg.ampIClamp2 = 0.2 #1.0
+cfg.ampIClamp2 = 0.3 #0.2
 cfg.popIClamp2 = ['PV5_1']
 cfg.secIClamp2 = 'soma'
 cfg.locIClamp2 = 0.5

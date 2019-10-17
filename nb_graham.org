@@ -14907,13 +14907,37 @@ Modified netParams:
 
 batchLabel = 'v01_batch62'
 
+stampede23(21)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4515606  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515607  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515608  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515609  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515610  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515611  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515612  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515613  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515614  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515615  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515616  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515617  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
 
+import batch_analysis as ba
+batchdatadir = '/scratch/06322/tg856217/'
+batchname = 'v01_batch62'
+batch = ba.plot_vtraces(batchname, batchdatadir=batchdatadir, outputdir=batchdatadir + batchname)
 
+That doesn't seem to have quite worked.
 
+Doing some hardcoding.
 
+    netParams.stimSourceParams['IClamp1']['amp'] = cfg.ampIClamp1
+    netParams.stimSourceParams['IClamp2']['amp'] = cfg.ampIClamp2
 
+batchLabel = 'v01_batch63'
 
-
+    params['ampIClamp1'] = [0.1, 0.2, 0.4, 0.6]
+    params['ampIClamp2'] = [0.1, 0.2, 0.4, 0.6]
 
 
 

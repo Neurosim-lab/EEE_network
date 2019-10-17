@@ -38,7 +38,7 @@ dend_gkabar_kapin  = soma_kapin * 10 # kapin
 cm    = 1.2    # microF/cm2
 Ra    = 150.0
 g_pas = 0.0001 # mho/cm
-e_pas = -73.0  # (Kawaguchi k Kubota, 1993 --> -73+-3.9)
+e_pas = -65.0  #-73.0  # (Kawaguchi k Kubota, 1993 --> -73+-3.9)
 
 h.ko0_k_ion = 3.82   # mM
 h.ki0_k_ion = 140.0  # mM

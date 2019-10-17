@@ -14456,7 +14456,7 @@ python3 batch.py -nogui
            4490423  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
 
 
-* 2019-10-12 -- 
+* 2019-10-13 -- 
 
 ** Looking at batch varying noise std
 
@@ -14469,7 +14469,7 @@ Tough to compare by looking at so many plots.
 Time to get plot_batch_vtraces working again...
 
 
-* 2019-10-13 -- 
+* 2019-10-14 -- 
 
 ** Plot batch voltage traces
 
@@ -14677,18 +14677,150 @@ cfg.IIconn = cfg.IEconn
     params['EScale'] = [0.5, 1.0, 2.0]
     params['IScale'] = [0.5, 1.0, 2.0]
 
+stampede21(103)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4503458  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4503459  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4503460  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4503461  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4503462  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4503463  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4503495  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4503496  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4503497  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4503498  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4503499  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4503500  skx-normal v01_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4503510  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4503511  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4503512  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4503513  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4503514  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4503515  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4503516  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+           4503517  skx-normal v01_batc tg856217 PD       0:00      4 (Resources)
+
+
+* 2019-10-15 -- 
+
+** Analyzing last night's batches
+
+** v01_batch57
+
+import batch_analysis as ba
+batchdatadir = '/scratch/06322/tg856217/'
+batchname = 'v01_batch57'
+batch57 = ba.plot_vtraces(batchname, batchdatadir=batchdatadir, outputdir=batchdatadir+batchname, cellIDs=[0, 1, 2000, 2001, 4000, 4001, 6000, 6001, 8000, 8001, 9000, 9001])
+
+Error:
+
+	~/EEE_network/eee_net/batch_analysis.py in plot_vtraces(batchname, batchdatadir, cellIDs, secs, timerange, param_labels, title, filename, save, outputdir)
+	   1063             if filename is None:
+	   1064                 print(str(os.path.join(outputdir, batchname + "_" + cellLabel + "_vtrace_1.png")))
+	-> 1065                 fig1.savefig(os.path.join(outputdir, batchname + "_" + cellLabel + "_vtrace_1.png"))
+	   1066                 fig2.savefig(os.path.join(outputdir, batchname + "_" + cellLabel + "_vtrace_2.png"))
+	   1067             else:
+
+	UnboundLocalError: local variable 'fig1' referenced before assignment
+
+Weird, this worked fine last night.
+
+I get the output expected except there are no traces...  Maybe they didn't get
+recorded for some reason?
+
+
+** v01_batch58
+
+import batch_analysis as ba
+batchdatadir = '/scratch/06322/tg856217/'
+batchname = 'v01_batch58'
+batch58 = ba.plot_vtraces(batchname, batchdatadir=batchdatadir, outputdir=batchdatadir+batchname, cellIDs=[0, 1, 2000, 2001, 4000, 4001, 6000, 6001, 8000, 8001, 9000, 9001])
+
+Same error with v01_batch58
+
+It looks like it didn't even try to plot the traces:
+
+	Analyzing...
+	  Cells: 10000
+	  Connections: 80361 (8.04 per cell)
+	  Synaptic contacts: 144796 (14.48 per cell)
+	  Spikes: 10185 (0.42 Hz)
+	   PT5_1 : 2.122 Hz
+	   PT5_2 : 0.000 Hz
+	   PT5_3 : 0.000 Hz
+	   PT5_4 : 0.000 Hz
+	   PV5_1 : 0.000 Hz
+	   PV5_2 : 0.000 Hz
+	  Simulated time: 2.4 s; 192 workers
+	  Run time: 59.78 s
+	Saving output as /scratch/06322/tg856217/v01_batch58/v01_batch58_0_0.json  ... 
+	Finished saving!
+	  Done; saving time = 3.66 s.
+	Plotting connectivity matrix...
+	Saving figure data as /scratch/06322/tg856217/v01_batch58/v01_batch58_0_0_conn.pkl ... 
+	Plotting raster...
+	Saving figure data as /scratch/06322/tg856217/v01_batch58/v01_batch58_0_0_raster.pkl ... 
+	Plotting spike histogram...
+	Saving figure data as /scratch/06322/tg856217/v01_batch58/v01_batch58_0_0_spikeHist.pkl ... 
+	  Done; plotting time = 238.48 s
+
+	Total time = 371.88 s
+	TACC:  Shutdown complete. Exiting. 
+
+I'm guessing the traces didn't get recorded for some reason.
+
+Yeah, there's no trace data in the data file.
+
+Looking at batch59
+
+
+** v01_batch59
+
+import batch_analysis as ba
+batchdatadir = '/scratch/06322/tg856217/'
+batchname = 'v01_batch59'
+batch59 = ba.plot_vtraces(batchname, batchdatadir=batchdatadir, outputdir=batchdatadir+batchname, cellIDs=[0, 1, 2000, 2001, 4000, 4001, 6000, 6001, 8000, 8001, 9000, 9001])
+
+It works on batch59 for some reason...  Don't know why it didn't for 57 or 58...
 
 
 
+** Making plots for EEE meeting
+
+Showing current injections in raster:
+file:gif/20191015_073426.png
+
+Showing EPSPs and IPSPs in PT cells
+file:gif/20191015_073253.png
+
+Showing EPSPs and IPSPs in PV cells
+file:gif/20191015_073845.png
+
+Noise is too high
+file:gif/20191015_074649.png
 
 
 
+* 2019-10-16 -- 
 
+** v01_batch60
 
+Changing e_pas in FS3.py cell to have RMP nearer threshold:
 
+e_pas = -65.0  #-73.0  # (Kawaguchi k Kubota, 1993 --> -73+-3.9)
 
+cfg.connType = 'probability'  # 'convergence', 'divergence', or 'probability'
+cfg.EScale = 1.0
+cfg.IScale = 1.0
 
+cfg.EEconn = 0.0005 * cfg.EScale
+cfg.EIconn = 0.0005 * cfg.EScale
+cfg.IEconn = 0.002 * cfg.IScale
+cfg.IIconn = 0.002 * cfg.IScale
 
+batchLabel = 'v01_batch60'
+params['EScale'] = [0.1, 1.0, 10.0]
+params['IScale'] = [0.1, 1.0, 10.0]
 
 
 

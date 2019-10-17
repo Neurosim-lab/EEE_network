@@ -10,7 +10,7 @@ saveData = True
 # Simulation options
 cfg = specs.SimConfig()
 cfg.dummy    = 0       
-cfg.duration = 2400 #10000
+cfg.duration = 4000 #10000
 cfg.numCells = 10000 
 cfg.dt = 0.025                
 cfg.verbose = False           
@@ -78,14 +78,13 @@ cfg.connType = 'probability'  # 'convergence', 'divergence', or 'probability'
 cfg.EScale = 1.0
 cfg.IScale = 1.0
 
-
 cfg.EEconn = 0.0005 * cfg.EScale
-cfg.EIconn = cfg.EEconn
+cfg.EIconn = 0.0005 * cfg.EScale
 cfg.IEconn = 0.002 * cfg.IScale
-cfg.IIconn = cfg.IEconn
+cfg.IIconn = 0.002 * cfg.IScale
 
 # Glutamate stim parameters
-cfg.glutamate         = True
+cfg.glutamate         = False
 cfg.glutPops          = ['PT5_1', 'PT5_2']
 
 cfg.glutTimes         = [800.0, 2000.0]
@@ -116,17 +115,18 @@ cfg.analysis['plotSpikeHist'] = {'saveFig': saveFig,'showFig': showFig, 'saveDat
 
 #cfg.analysis['plotTraces'] = {'include': [('PT5_1', [0, 1, 2, 3]), ('PT5_2', [0, 1, 2, 3]), ('PT5_3', [0, 1, 2, 3]), ('PT5_4', [0, 1, 2, 3]), ('PV5', [0, 1, 2, 3])], 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]}  
 
-include = list(range(0, 6))
-include = include + list(range(2000, 2006))
-include = include + list(range(4000, 4006))
-include = include + list(range(6000, 6006))
-include = include + list(range(8000, 8006))
-include = include + list(range(9000, 9006))
+include = list(range(0, 5))
+include = include + list(range(2000, 2005))
+include = include + list(range(4000, 4005))
+include = include + list(range(6000, 6005))
+include = include + list(range(8000, 8005))
+include = include + list(range(9000, 9005))
 
 #include = ['allCells']
 
+cfg.recordCells = include
 
-cfg.analysis['plotTraces'] = {'include': include, 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-100, 30]}  # 'ylim': [-80, 30] 
+cfg.analysis['plotTraces'] = {'include': include, 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-80, 30]} 
 
 #cfg.analysis['plot2Dnet'] = {'saveFig': saveFig, 'showFig': showFig}   
 
@@ -141,9 +141,9 @@ cfg.analysis['plotConn'] = {'saveFig': saveFig, 'showFig': showFig, 'includePre'
 
 
 # Current clamps
-cfg.addIClamp = False
+cfg.addIClamp = True
 
-cfg.delIClamp1 = 200
+cfg.delIClamp1 = 1000
 cfg.durIClamp1 = 500
 cfg.ampIClamp1 = 0.2 #1.0
 cfg.popIClamp1 = ['PT5_1']
@@ -152,9 +152,9 @@ cfg.locIClamp1 = 0.5
 
 cfg.IClamp1 = {'pop': cfg.popIClamp1, 'sec': cfg.secIClamp1, 'loc': cfg.locIClamp1, 'del': cfg.delIClamp1, 'dur': cfg.durIClamp1, 'amp': cfg.ampIClamp1}
 
-cfg.delIClamp2 = 1500
+cfg.delIClamp2 = 2000
 cfg.durIClamp2 = 500
-cfg.ampIClamp2 = 0.3 #1.0
+cfg.ampIClamp2 = 0.2 #1.0
 cfg.popIClamp2 = ['PV5_1']
 cfg.secIClamp2 = 'soma'
 cfg.locIClamp2 = 0.5
@@ -163,7 +163,7 @@ cfg.IClamp2 = {'pop': cfg.popIClamp2, 'sec': cfg.secIClamp2, 'loc': cfg.locIClam
 
 
 # Common synaptic input
-cfg.addCommonInput1 = True
+cfg.addCommonInput1 = False
 cfg.popCommonInput1 = ['PT5_1', 'PT5_3']
 
 cfg.secCommonInput1 = 'soma'
@@ -174,7 +174,7 @@ cfg.numCommonInput1 = 10    # number
 cfg.intCommonInput1 = 20   # interval
 
 
-cfg.addCommonInput2 = True
+cfg.addCommonInput2 = False
 cfg.popCommonInput2 = ['PT5_1', 'PT5_3']
 
 cfg.secCommonInput2 = 'soma'

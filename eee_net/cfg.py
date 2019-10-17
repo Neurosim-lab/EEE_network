@@ -109,7 +109,7 @@ cfg.recordTraces = {'V_soma': {'sec':'soma', 'loc':0.5, 'var':'v'}}
 cfg.printPopAvgRates = True
 
 # Analysis options
-cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True, 'saveFig': saveFig, 'showFig': showFig, 'saveData': saveData}
+cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True, 'lw': 1, 'saveFig': saveFig, 'showFig': showFig, 'saveData': saveData}
 
 cfg.analysis['plotSpikeHist'] = {'saveFig': saveFig,'showFig': showFig, 'saveData': saveData}
 

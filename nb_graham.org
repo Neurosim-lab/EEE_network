@@ -14803,6 +14803,17 @@ file:gif/20191015_074649.png
 
 * 2019-10-16 -- 
 
+** Updated scpe for Control Master
+
+#scpe () {
+#    mkdir /u/graham/EEE_network/eee_net/data/$1 && scp tg856217@stampede2.tacc.xsede.org:/scratch/06322/tg856217/$1/*.png /u/graham/EEE_network/eee_net/data/$1/
+#}
+
+scpe () {
+    mkdir /u/graham/EEE_network/eee_net/data/$1 ; scp stampede:/scratch/06322/tg856217/$1/*.png /u/graham/EEE_network/eee_net/data/$1/
+}
+
+
 ** v01_batch60
 
 Changing e_pas in FS3.py cell to have RMP nearer threshold:
@@ -14821,6 +14832,56 @@ cfg.IIconn = 0.002 * cfg.IScale
 batchLabel = 'v01_batch60'
 params['EScale'] = [0.1, 1.0, 10.0]
 params['IScale'] = [0.1, 1.0, 10.0]
+
+stampede24(4)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4514867  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4514868  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4514869  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4514870  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4514871  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4514872  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4514873  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4514874  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+
+idev -m 120
+import batch_analysis as ba
+batchdatadir = '/scratch/06322/tg856217/'
+batchname = 'v01_batch60'
+batch = ba.plot_vtraces(batchname, batchdatadir=batchdatadir, outputdir=batchdatadir + batchname)
+
+Need to increase current amplitude to PV cells, not seeing any spiking.
+
+Need to reduce marker size in raster plot.  Default: lw=2
+
+Setting to 1
+
+cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True, 'lw': 1, 'saveFig': saveFig, 'showFig': showFig, 'saveData': saveData}
+
+
+** batchLabel = 'v01_batch61'
+
+
+batchLabel = 'v01_batch61'
+params['ampIClamp2'] = [0.2, 0.4, 0.6, 0.8, 1.0]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -14869,8 +14869,43 @@ batchLabel = 'v01_batch61'
 
 Turning noise off to see PSPs.
 
+stampede23(4)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4515370  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515371  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515372  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515373  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515374  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515375  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515376  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515377  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515378  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515379  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515380  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4515381  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
 
 
+import batch_analysis as ba
+batchdatadir = '/scratch/06322/tg856217/'
+batchname = 'v01_batch61'
+batch = ba.plot_vtraces(batchname, batchdatadir=batchdatadir, outputdir=batchdatadir + batchname)
+
+It didn't vary the current amplitude...  It seems I must use cfg.ampIClamp1 in netParams
+instead of pulling it from the cfg file...
+
+Modified netParams:
+
+        if iclabel == 'IClamp1':
+            amp = cfg.ampIClamp1
+        elif iclabel == 'IClamp2':
+            amp = cfg.ampIClamp2
+
+
+        # add stim source
+        #netParams.stimSourceParams[iclabel] = {'type': 'IClamp', 'del': ic['del'], 'dur': ic['dur'], 'amp': ic['amp']}
+        netParams.stimSourceParams[iclabel] = {'type': 'IClamp', 'del': ic['del'], 'dur': ic['dur'], 'amp': amp}
+
+batchLabel = 'v01_batch62'
 
 
 

@@ -236,14 +236,22 @@ if cfg.addIClamp:
     for iclabel in [k for k in dir(cfg) if k.startswith('IClamp')]:
         ic = getattr(cfg, iclabel, None)  # get dict with params
 
+        if iclabel == 'IClamp1':
+            amp = cfg.ampIClamp1
+        elif iclabel == 'IClamp2':
+            amp = cfg.ampIClamp2
+
+
         # add stim source
         #netParams.stimSourceParams[iclabel] = {'type': 'IClamp', 'del': ic['del'], 'dur': ic['dur'], 'amp': ic['amp']}
-        netParams.stimSourceParams[iclabel] = {'type': 'IClamp', 'del': ic['del'], 'dur': ic['dur'], 'amp': ic['amp']}
+        netParams.stimSourceParams[iclabel] = {'type': 'IClamp', 'del': ic['del'], 'dur': ic['dur'], 'amp': amp}
         
         # add stim target
         for curpop in ic['pop']:
             netParams.stimTargetParams[iclabel+'_'+curpop] = \
                 {'source': iclabel, 'conds': {'popLabel': ic['pop']}, 'sec': ic['sec'], 'loc': ic['loc']}
+
+
 
 if cfg.addCommonInput1:
 

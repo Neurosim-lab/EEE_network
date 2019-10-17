@@ -28,7 +28,8 @@ def batchRun():
 
     #params['numCells'] = [10, 100, 500, 1000, 5000, 10000]
 
-    params['ampIClamp2'] = [0.2, 0.4, 0.6, 0.8, 1.0]
+    params['ampIClamp1'] = [0.4, 0.6, 0.8]
+    params['ampIClamp2'] = [0.4, 0.6, 0.8, 1.0]
 
     #params['EScale'] = [0.1, 1.0, 10.0]
     #params['IScale'] = [0.1, 1.0, 10.0]

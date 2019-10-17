@@ -14863,7 +14863,13 @@ cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True, 'lw': 1, '
 
 
 batchLabel = 'v01_batch61'
-params['ampIClamp2'] = [0.2, 0.4, 0.6, 0.8, 1.0]
+    params['ampIClamp1'] = [0.4, 0.6, 0.8]
+    params['ampIClamp2'] = [0.4, 0.6, 0.8, 1.0]
+
+
+Turning noise off to see PSPs.
+
+
 
 
 

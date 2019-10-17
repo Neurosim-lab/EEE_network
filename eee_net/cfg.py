@@ -50,8 +50,8 @@ cfg.GABAAfast_e     = -80
 cfg.GABAAslow_e     = -90
 
 # Noise variables
-cfg.noisePT5 = True
-cfg.noisePV5 = True
+cfg.noisePT5 = False
+cfg.noisePV5 = False
 
 cfg.PT5_noise_scaling = 1.0
 cfg.PT5_std_scaling = 0.1

@@ -15063,10 +15063,60 @@ batchLabel = 'v01_batch66'
 
 Also throwing in a plateau induction to the sims
 
+stampede23(109)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4517222  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4517223  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4517224  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4517226  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4517227  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4517229  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4517230  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4517231  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+
+
+
+Gao PP, Graham JW, Zhou W, Jang J, Angulo S, Dura-Bernal S, Hines M, Lytton WW, & Antic SD
+
+
+
+** v01_batch67
+
+cfg.ampIClamp2 = 0.25 #0.3
+
+cfg.EEconn = 0.0005 * cfg.EScale
+cfg.EIconn = 0.0005 * cfg.EScale
+cfg.IEconn = 0.0005 * cfg.IScale
+cfg.IIconn = 0.0005 * cfg.IScale
+
+    params['EScale'] = [0.0, 5.0, 10.0, 15.0]
+    params['IScale'] = [0.0, 5.0, 10.0, 15.0]
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+** Adding plot_vtraces to the end of init.py
+
+That way Stampede will automatically generate the figures and I won't have
+to do it manually any more.
 
 
 

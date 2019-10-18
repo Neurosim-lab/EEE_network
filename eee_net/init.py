@@ -51,6 +51,10 @@ synOrConn   = 'conn' #'syn'
 
 #sim.analysis.plotConn(saveFig=True, showFig=False, saveData=True, includePre=includePre, includePost=includePost, feature=feature, groupBy=groupBy, orderBy=orderBy, synOrConn=synOrConn)
 
+# import batch_analysis as ba
+# batchdatadir = '/scratch/06322/tg856217/'
+# batchname = 'v01_batch65'
+# batch = ba.plot_vtraces(batchname, batchdatadir=batchdatadir, outputdir=batchdatadir + batchname)
 
 
 

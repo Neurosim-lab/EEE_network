@@ -80,8 +80,8 @@ cfg.IScale = 1.0
 
 cfg.EEconn = 0.0005 * cfg.EScale
 cfg.EIconn = 0.0005 * cfg.EScale
-cfg.IEconn = 0.002 * cfg.IScale
-cfg.IIconn = 0.002 * cfg.IScale
+cfg.IEconn = 0.0005 * cfg.IScale
+cfg.IIconn = 0.0005 * cfg.IScale
 
 # Glutamate stim parameters
 cfg.glutamate         = True

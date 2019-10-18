@@ -133,8 +133,8 @@ for label in ['PV5_2']:
 
 EEconn = 0.0005 * cfg.EScale
 EIconn = 0.0005 * cfg.EScale
-IEconn = 0.002 * cfg.IScale
-IIconn = 0.002 * cfg.IScale
+IEconn = 0.0005 * cfg.IScale
+IIconn = 0.0005 * cfg.IScale
 
 ## Cell connectivity rules
 EPops = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4']

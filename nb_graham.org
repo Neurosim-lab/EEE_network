@@ -15092,7 +15092,26 @@ cfg.IIconn = 0.0005 * cfg.IScale
     params['EScale'] = [0.0, 5.0, 10.0, 15.0]
     params['IScale'] = [0.0, 5.0, 10.0, 15.0]
 
+stampede23(172)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4520177  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520178  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520179  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520180  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520181  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520182  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520184  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520185  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520186  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520187  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520188  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520189  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520190  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520191  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520192  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520194  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
 
+Forgot to edit conns in netParams.  Cancelling queue.
 
 
 

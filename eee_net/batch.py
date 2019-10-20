@@ -2,18 +2,18 @@ from netpyne import specs
 from netpyne.batch import Batch 
 import os
 
-batchLabel = 'test_batch20'
+batchLabel = 'v01_batch68'
 
-#runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
-runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
+runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
+#runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
 
-runFolder = '/u/graham/EEE_network/eee_net_test/'
+#runFolder = '/u/graham/EEE_network/eee_net/'
 #runFolder = '/home/jwgraham/EEE_network/eee_net/'
-#runFolder = '/home1/06322/tg856217/EEE_network/eee_net/'
+runFolder = '/home1/06322/tg856217/EEE_network/eee_net/'
 
-saveFolder = '/u/graham/EEE_network/eee_net_test/data/'
+#saveFolder = '/u/graham/EEE_network/eee_net/data/'
 #saveFolder = '/oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/'
-#saveFolder = '/scratch/06322/tg856217/'
+saveFolder = '/scratch/06322/tg856217/'
 
 #allocation = 'csd403'         # NSG on Comet
 allocation = 'TG-IBN140002'   # NSG on Stampede
@@ -42,8 +42,8 @@ def batchRun():
     #params['ampIClamp1'] = [0.3, 0.4, 0.5, 0.6]
     #params['ampIClamp2'] = [0.3, 0.3125, 0.325, 0.375]
 
-    params['GABAAfastWeight'] = [0.01, 0.001, 0.0001, 0.00001]
-    params['noise'] = [False, True]
+    params['GABAAfastWeight'] = [0.001, 0.0001, 0.00001]
+    params['NMDAweight'] = [0.02, 0.2, 2.0]
 
     
     # create Batch object with paramaters to modify, and specifying files to use

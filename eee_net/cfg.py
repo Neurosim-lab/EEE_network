@@ -11,14 +11,14 @@ saveData = True
 cfg = specs.SimConfig()
 cfg.dummy    = 0       
 cfg.duration = 4000 #10000
-cfg.numCells = 10 
+cfg.numCells = 10000 
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_test_07'
+cfg.simLabel = 'eee_net_61'
 
-#baseFolder = '/scratch/06322/tg856217'
-baseFolder = 'data'
+baseFolder = '/scratch/06322/tg856217'
+#baseFolder = 'data'
 cfg.saveFolder = os.path.join(baseFolder, cfg.simLabel)
 
 cfg.savePickle = False
@@ -45,9 +45,9 @@ cfg.AMPAgmax        = cfg.AMPANMDAratio * cfg.NMDAgmax
 cfg.NMDAweight      = 0.2
 cfg.AMPAweight      = cfg.NMDAweight
 cfg.GABAAfastWeight = 0.0001
-cfg.GABAAslowWeight = cfg.GABAAfastWeight #0.0001
-cfg.GABAAfast_e     = -80
-cfg.GABAAslow_e     = -90
+cfg.GABAAslowWeight = cfg.GABAAfastWeight
+cfg.GABAAfast_e     = -80.0
+cfg.GABAAslow_e     = -90.0
 
 # Noise variables
 cfg.noise = True
@@ -83,10 +83,10 @@ cfg.connType = 'probability'  # 'convergence', 'divergence', or 'probability'
 cfg.EScale = 1.0
 cfg.IScale = 1.0
 
-cfg.EEconn = 1.0 #0.0005 # Will be multiplied by cfg.EScale
-cfg.EIconn = 1.0 #0.0005 # Will be multiplied by cfg.EScale
-cfg.IEconn = 1.0 #0.0005 # Will be multiplied by cfg.IScale
-cfg.IIconn = 1.0 #0.0005 # Will be multiplied by cfg.IScale
+cfg.EEconn = 0.0005 # Will be multiplied by cfg.EScale
+cfg.EIconn = 0.0005 # Will be multiplied by cfg.EScale
+cfg.IEconn = 0.0005 # Will be multiplied by cfg.IScale
+cfg.IIconn = 0.0005 # Will be multiplied by cfg.IScale
 
 # Glutamate stim parameters
 cfg.glutamate         = True
@@ -127,7 +127,7 @@ include = include + list(range(6000, 6005))
 include = include + list(range(8000, 8005))
 include = include + list(range(9000, 9005))
 
-include = ['allCells']
+#include = ['allCells']
 
 cfg.recordCells = include
 

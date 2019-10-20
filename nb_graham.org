@@ -15448,6 +15448,14 @@ Same with netParams.py and batch.py
 Committing, then setting back up for Stampede.
 
 
+** Running a batch on Stampede
+
+batchLabel = 'v01_batch68'
+
+    params['GABAAfastWeight'] = [0.001, 0.0001, 0.00001]
+    params['NMDAweight'] = [0.02, 0.2, 2.0]
+
+
 
 
 

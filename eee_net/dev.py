@@ -450,5 +450,5 @@ def plotBatchConn(batchPath='batch_data', batchLabel='v01_batch48', feature='all
 
     return
 
-output = plotBatchConn()
+#output = plotBatchConn()
 

@@ -15544,6 +15544,62 @@ batchLabel = 'v02_batch02'
     params['GABAAfastWeight'] = [0.01, 0.001, 0.0001, 0.00001]
     params['NMDAweight'] = [0.02, 0.2, 2.0, 10.0]
 
+stampede21(9)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4529226  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4529227  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4529228  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4529229  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4529230  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4529231  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4529232  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4529233  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4529234  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4529235  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4529236  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4529237  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4529239  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4529240  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4529241  skx-normal v02_batc tg856217 PD       0:00      4 (Resources)
+
+This one is taking awhile:
+4529236  skx-normal v02_batc tg856217  R      27:57      4 c502-[083,114],c503-[133-134]
+
+Barely made it!
+4529236  skx-normal v02_batc tg856217 CG      29:56      1 c503-134
+
+
+** Setting up batch sim to create sync bar plots
+
+batchLabel = 'v02_batch03'
+
+    params['glutAmp'] = [1.5, 2.0, 2.5]
+    params['noise_scale'] = [0.25, 1.0, 4.0]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

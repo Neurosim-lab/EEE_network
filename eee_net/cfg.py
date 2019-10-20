@@ -10,7 +10,7 @@ saveData = True
 # Simulation options
 cfg = specs.SimConfig()
 cfg.dummy    = 0       
-cfg.duration = 4000 #10000
+cfg.duration = 2500
 cfg.numCells = 10000 
 cfg.dt = 0.025                
 cfg.verbose = False           
@@ -54,6 +54,8 @@ cfg.noise = True
 cfg.noisePT5 = True
 cfg.noisePV5 = True
 
+cfg.noise_scale = 1.0
+
 cfg.PT5_noise_amp = 0.25 #1.0
 cfg.PT5_noise_std = 0.25 #1.0
 
@@ -92,7 +94,7 @@ cfg.IIconn = 0.0005 # Will be multiplied by cfg.IScale
 cfg.glutamate         = True
 cfg.glutPops          = ['PT5_1', 'PT5_2']
 
-cfg.glutTimes         = [3000.0] #[800.0, 2000.0]
+cfg.glutTimes         = [800.0, 2000.0]
 cfg.numSyns           = 24
 cfg.numExSyns         = cfg.numSyns
 cfg.glutAmp           = 2.0
@@ -107,7 +109,7 @@ cfg.exSynDelay        = 4.0 # ms/um
 
 # Recording options
 cfg.recordTraces = {'V_soma': {'sec':'soma', 'loc':0.5, 'var':'v'}} 
-#cfg.recordTraces['V_dend_8'] = {'sec':'basal_8', 'loc':0.5, 'var':'v'}
+cfg.recordTraces['V_dend'] = {'sec':'basal_8', 'loc':0.5, 'var':'v'}
 
 #cfg.recordCells = [('PT5_1', [0, 1, 2, 3]), ('PT5_2', [0, 1, 2, 3]), ('PT5_3', [0, 1, 2, 3]), ('PT5_4', [0, 1, 2, 3]), ('PV5', [0, 1, 2, 3])]
 
@@ -146,7 +148,7 @@ cfg.analysis['plotConn'] = {'saveFig': saveFig, 'showFig': showFig, 'includePre'
 
 
 # Current clamps
-cfg.addIClamp = True
+cfg.addIClamp = False
 
 cfg.delIClamp1 = 500
 cfg.durIClamp1 = 500
@@ -168,7 +170,7 @@ cfg.IClamp2 = {'pop': cfg.popIClamp2, 'sec': cfg.secIClamp2, 'loc': cfg.locIClam
 
 
 # Common synaptic input
-cfg.addCommonInput1 = False
+cfg.addCommonInput1 = True
 cfg.popCommonInput1 = ['PT5_1', 'PT5_3']
 
 cfg.secCommonInput1 = 'soma'
@@ -179,7 +181,7 @@ cfg.numCommonInput1 = 10    # number
 cfg.intCommonInput1 = 20   # interval
 
 
-cfg.addCommonInput2 = False
+cfg.addCommonInput2 = True
 cfg.popCommonInput2 = ['PT5_1', 'PT5_3']
 
 cfg.secCommonInput2 = 'soma'

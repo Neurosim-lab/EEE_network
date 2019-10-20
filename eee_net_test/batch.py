@@ -2,18 +2,18 @@ from netpyne import specs
 from netpyne.batch import Batch 
 import os
 
-batchLabel = 'v01_batch67'
+batchLabel = 'test_batch20'
 
-runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
-#runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
+#runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
+runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
 
-#runFolder = '/u/graham/EEE_network/eee_net/'
+runFolder = '/u/graham/EEE_network/eee_net_test/'
 #runFolder = '/home/jwgraham/EEE_network/eee_net/'
-runFolder = '/home1/06322/tg856217/EEE_network/eee_net/'
+#runFolder = '/home1/06322/tg856217/EEE_network/eee_net/'
 
-#saveFolder = '/u/graham/EEE_network/eee_net/data/'
+saveFolder = '/u/graham/EEE_network/eee_net_test/data/'
 #saveFolder = '/oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/'
-saveFolder = '/scratch/06322/tg856217/'
+#saveFolder = '/scratch/06322/tg856217/'
 
 #allocation = 'csd403'         # NSG on Comet
 allocation = 'TG-IBN140002'   # NSG on Stampede
@@ -24,18 +24,27 @@ def batchRun():
     params = specs.ODict()   
 
     # fill in with parameters to explore and range of values (key has to coincide with a variable in simConfig) 
+
+    #params[''] = []
+    #params[''] = []
     
     #params['EEconn'] = [0.05, 0.1, 0.2]
     #params['IEconn'] = [0.1, 0.2, 0.3]
 
     #params['numCells'] = [10, 100, 500, 1000, 5000, 10000]
 
-    #params['ampIClamp1'] = [0.1, 0.2, 0.4, 0.6]
-    #params['ampIClamp2'] = [0.1, 0.2, 0.4, 0.6]
+    #params['ampIClamp2'] = [0.24, 0.25, 0.26] 
+    #params['noisePV5'] = [True, False]
 
-    params['EScale'] = [0.0, 5.0, 10.0, 15.0]
-    params['IScale'] = [0.0, 5.0, 10.0, 15.0]
-     
+    #params['PT5_noise_amp'] = [0.1, 0.25, 0.5, 0.75, 1.0]
+    #params['PT5_noise_std'] = [0.1, 0.25, 0.5, 0.75, 1.0]
+
+    #params['ampIClamp1'] = [0.3, 0.4, 0.5, 0.6]
+    #params['ampIClamp2'] = [0.3, 0.3125, 0.325, 0.375]
+
+    params['GABAAfastWeight'] = [0.01, 0.001, 0.0001, 0.00001]
+    params['noise'] = [False, True]
+
     
     # create Batch object with paramaters to modify, and specifying files to use
     b = Batch(params=params, cfgFile='cfg.py', netParamsFile='netParams.py')
@@ -58,9 +67,9 @@ def batchRun():
                     'skip': True,
                     'custom': '#SBATCH -p skx-normal'}
     elif runType == 'mpi_bulletin':
-        if not os.path.isdir('batch_data'):
-            os.mkdir('batch_data')
-        b.saveFolder = 'batch_data/' + b.batchLabel
+        if not os.path.isdir('data'):
+            os.mkdir('data')
+        b.saveFolder = 'data/' + b.batchLabel
         b.runCfg = {'type': 'mpi_bulletin', 
                     'script': 'init.py', 
                     'skip': True}
@@ -70,9 +79,13 @@ def batchRun():
     # Run batch simulations
     b.run()
 
+
 # Main code
 if __name__ == '__main__':
+    
     batchRun() 
 
+    import batch_analysis as ba
+    batch = ba.plot_vtraces(batchLabel, batchdatadir=saveFolder, outputdir=saveFolder + batchLabel)
 
 

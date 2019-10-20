@@ -15113,35 +15113,332 @@ stampede23(172)$ sq
 
 Forgot to edit conns in netParams.  Cancelling queue.
 
+stampede23(194)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4520222  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520223  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520224  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520225  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520226  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520227  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520228  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520230  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520231  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520232  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520233  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520234  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520235  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520236  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4520237  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
 
 
 
+* 2019-10-18 -- 
+
+** Setting up a batch to explore PV cells
+
+Want to find an injected current amplitude that results in decent spiking 
+in order to look at connectivity
+
+Start by getting a frequency-current relationship for injected currents
+
+Copying eee_net to eee_net_test and working there.
+
+batchLabel = 'test_batch01'
+
+    params['ampIClamp1'] = [0.2]
+    params['ampIClamp2'] = [0.1, 0.2, 0.3, 0.4, 0.5]
+
+ipython
+import batch_analysis as ba
+batchdatadir = 'data/'
+batchname = 'test_batch01'
+batch = ba.plot_vtraces(batchname, batchdatadir=batchdatadir, outputdir=batchdatadir + batchname)
+
+file:gif/20191018_155625.png
+
+The PV cells start spiking like crazy somehwere between 0.2 and 0.3 iclamp amp
+
+batchLabel = 'test_batch02'
+
+    params['ampIClamp1'] = [0.2]
+    params['ampIClamp2'] = [0.2, 0.125, 0.25, 0.275, 0.3]
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-** Adding plot_vtraces to the end of init.py
+** Adding plot_vtraces to the end of batch.py
 
 That way Stampede will automatically generate the figures and I won't have
 to do it manually any more.
 
+Adding to the end of batch.py:
+
+# Main code
+if __name__ == '__main__':
+    b = batchRun() 
+
+    import batch_analysis as ba
+    batch = ba.plot_vtraces(batchLabel, batchdatadir=saveFolder, outputdir=saveFolder + batchLabel)
+
+That works!  Now batch v_traces will be created right after running the batch.
+
+
+** Lookint at PV current injection
+
+batchLabel = 'test_batch04'
+
+Good range for PV5 iclamp amplitude:
+file:gif/20191018_175753.png
+
+Running again with noise turned on:
+
+batchLabel = 'test_batch05'
+
+No spiking with noise on:
+file:gif/20191018_180510.png
+
+Batch with noise:
+
+batchLabel = 'test_batch06'
+
+    params['ampIClamp2'] = [0.2, 0.125, 0.25, 0.275, 0.3]
+    params['PT5_std_scaling'] = [0.0, 0.05, 0.1]
+
+Noise in PV cells doesn't drop to nothing at 0.0... (PT cell noise does)
+
+
+Setting PV noise settings to same as PT and running again
+
+batchLabel = 'test_batch07'
+
+Still seeing noise in PV cells but not in PT cells at 0.0
+
+
+batchLabel = 'test_batch08'
+    params['ampIClamp2'] = [0.2, 0.125, 0.25, 0.275, 0.3]
+    params['noisePV5'] = [True, False]
+
+
+Now the noise and non-noise look about the same (i.e. good).
+file:gif/20191019_102909.png
 
 
 
+* 2019-10-19 -- 
+
+** Looking into connectivity
+
+Now that the noise is good, time to look at connectivity.
+
+cfg.EEconn = 1.0 #0.0005 # Will be multiplied by cfg.EScale
+cfg.EIconn = 1.0 #0.0005 # Will be multiplied by cfg.EScale
+cfg.IEconn = 1.0 #0.0005 # Will be multiplied by cfg.IScale
+cfg.IIconn = 1.0 #0.0005 # Will be multiplied by cfg.IScale
+
+cfg.ampIClamp2 = 0.25
+
+cfg.simLabel = 'eee_net_test_01'
+
+Too noisy to see much.  
+
+** Looking into noise
+
+Running a batch:
+
+batchLabel = 'test_batch09'
+
+    params['ampIClamp2'] = [0.24, 0.25, 0.26] 
+    params['noisePV5'] = [True, False]
+
+Reducing noise in PV cells.
+
+First I will reset noise settings to Gfluctp.mod defaults.
+
+std_e: 0.0120 --> 0.0030
+std_i: 0.0264 --> 0.0066
+
+cfg.PT5_exc_noise_amp = 1.0     # g_e0        : 0.0121 * cfg.PT5_exc_noise_amp
+cfg.PT5_exc_noise_std = 1.0     # std_e       : 0.0030 * cfg.PT5_exc_noise_std
+cfg.PT5_exc_noise_e   = 0.0     # Default E_e : 0.0
+cfg.PT5_exc_noise_tau = 1.0     # tau_e       : 2.728 * cfg.PT5_exc_noise_tau
+cfg.PT5_inh_noise_amp = 1.0     # g_i0        : 0.0573 * cfg.PT5_inh_noise_amp
+cfg.PT5_inh_noise_std = 1.0     # std_i       : 0.0066 * cfg.PT5_inh_noise_std
+cfg.PT5_inh_noise_e   = -75.0   # Default E_i : -75.0
+cfg.PT5_inh_noise_tau = 1.0     # tau_i       : 10.49 * cfg.PT5_inh_noise_tau
+
+cfg.PV5_exc_noise_amp = 1.0     # g_e0        : 0.0121 * cfg.PV5_exc_noise_amp
+cfg.PV5_exc_noise_std = 1.0     # std_e       : 0.0030 * cfg.PV5_exc_noise_std
+cfg.PV5_exc_noise_e   = 0.0     # Default E_e : 0.0
+cfg.PV5_exc_noise_tau = 1.0     # tau_e       : 2.728 * cfg.PV5_exc_noise_tau
+cfg.PV5_inh_noise_amp = 1.0     # g_i0        : 0.0573 * cfg.PV5_inh_noise_amp
+cfg.PV5_inh_noise_std = 1.0     # std_i       : 0.0066 * cfg.PV5_inh_noise_std
+cfg.PV5_inh_noise_e   = -75.0   # Default E_i : -75.0
+cfg.PV5_inh_noise_tau = 1.0     # tau_i       : 10.49 * cfg.PV5_inh_noise_tau
+
+Running a sim.
+
+cfg.simLabel = 'eee_net_test_02'
+
+Noise looks good, but PV5 noise is larger (because PV5 cells are smaller?)
+file:gif/20191019_121324.png
+
+Running a batch to explore reducing PV5 noise.
+
+batchLabel = 'test_batch10'
+
+    params['PV5_exc_noise_amp'] = [0.0, 0.5, 1.0, 2.0, 10.0]
+    params['PV5_exc_noise_std'] = [0.0, 0.5, 1.0, 2.0, 10.0]
+
+Added a scaling factor for both exc and inh noise amp and std:
+
+batchLabel = 'test_batch11'
+
+    params['PV5_noise_amp'] = [0.25, 0.5, 0.75, 1.0, 10.0]
+    params['PV5_noise_std'] = [0.25, 0.5, 0.75, 1.0, 10.0]
+
+file:gif/20191019_124434.png
+
+Zooming in on lower values for another batch
+
+batchLabel = 'test_batch12'
+
+    params['PV5_noise_amp'] = [0.1, 0.2, 0.3, 10.0]
+    params['PV5_noise_std'] = [0.1, 0.2, 0.3, 10.0]
+
+file:gif/20191019_125218.png
+
+Will scale PV5 amp and std by 0.1:
+
+cfg.PV5_noise_amp = 0.1 #1.0
+cfg.PV5_noise_std = 0.1 #1.0
+
+** Looking into connectivity
+
+First to find good values for iClamp amplitude to get some PV5 spiking
+
+batchLabel = 'test_batch13'
+
+    params['ampIClamp2'] = [0.25, 0.275, 0.30, 0.3125, 0.325]
+    params['noisePV5'] = [False, True]
+
+file:gif/20191019_130208.png
+
+iClamp amps between 0.3125 and 0.325 should be good.
+
+Not seeing iClamp response in PT5 cells...
+
+Looking into it.
+
+batchLabel = 'test_batch14'
+
+    params['ampIClamp1'] = [0.2, 0.4, 0.6, 0.8]
+    params['ampIClamp2'] = [0.3125, 0.325]
+
+Comparing PT and PV cell:
+file:gif/20191019_130850.png
+
+** I think I want to reduce PT noise a bit.
+
+Running a batch to explore.
+
+batchLabel = 'test_batch15'
+
+    params['PT5_noise_amp'] = [0.1, 0.25, 0.5, 0.75, 1.0]
+    params['PT5_noise_std'] = [0.1, 0.25, 0.5, 0.75, 1.0]
+
+file:gif/20191019_135359.png
+
+Will scale PT5 amp and std by 0.25:
+
+cfg.PT5_noise_amp = 0.25 #1.0
+cfg.PT5_noise_std = 0.25 #1.0
 
 
+** Running a batch varying iClamp amps
+
+batchLabel = 'test_batch16'
+
+    params['ampIClamp1'] = [0.3, 0.4, 0.5, 0.6]
+    params['ampIClamp2'] = [0.3, 0.3125, 0.325, 0.375]
+
+Noise is looking good!
+file:gif/20191019_140525.png
+
+Will set PT5 iclamp at 0.3
+Will set PV5 iclamp at 0.3125
+
+Running a single sim:
+cfg.simLabel = 'eee_net_test_03'
+file:gif/20191019_141148.png
+
+Running the same thing with noise off:
+cfg.simLabel = 'eee_net_test_04'
+file:gif/20191019_141659.png
+
+Need to reduce I-->I
+Need to increase E-->E
+
+But these are all single connections, so need to reduce weight of synapses...
+
+But that may affect the plateau.
+
+Turning on plateaus for a sim.
+
+With noise:
+cfg.simLabel = 'eee_net_test_05'
+file:gif/20191019_143319.png
+
+Without noise:
+cfg.simLabel = 'eee_net_test_06'
+file:gif/20191019_143431.png
+
+
+** Exc Connectivity
+
+Running a batch to explore NMDA weight
+
+batchLabel = 'test_batch17'
+
+    params['NMDAweight'] = [0.2, 0.3, 0.4, 0.5]
+    params['noise'] = [False, True]
+
+Need to crank the weight way higher
+
+batchLabel = 'test_batch18'
+
+    params['NMDAweight'] = [0.2, 1.0, 2.0, 10.0, 20.0]
+    params['noise'] = [False, True]
+
+Looks like we need an NMDA weight between 1.0 and 2.0 for no noise
+Looks like we need an NMDA weight between 2.0 and 10.0 for no noise
+
+file:gif/20191019_145628.png
+
+batchLabel = 'test_batch19'
+
+    params['NMDAweight'] = [1.0, 1.25, 1.5, 2.0, 4.0, 6.0, 8.0]
+    params['noise'] = [False, True]
+
+file:gif/20191019_153059.png
+
+Setting NMDAweight = 1.5 and exploring inhibitory weight
+
+** Inh Connectivity
+
+batchLabel = 'test_batch20'
+
+    params['GABAAfastWeight'] = [0.01, 0.001, 0.0001 0.00001]
+    params['noise'] = [False, True]
+
+file:gif/20191019_161100.png
+
+Setting GABAAfastWeight to 0.0001 and then getting this back into the main
+directory for running large sims on Stampede.
+
+Running one sim to make sure it works, then committing to save this stuff.
+
+cfg.simLabel = 'eee_net_test_07'
+
+It works, committing now.
 
 
 

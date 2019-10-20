@@ -56,7 +56,7 @@ cfg.noisePV5 = True
 
 cfg.noise_scale = 1.0
 
-cfg.noise_std_scale = 1.0
+cfg.noise_std_scale = 10.0
 
 cfg.PT5_noise_amp = 0.25 #1.0
 cfg.PT5_noise_std = 0.25 #1.0

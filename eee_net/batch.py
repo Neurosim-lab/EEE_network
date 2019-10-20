@@ -2,7 +2,7 @@ from netpyne import specs
 from netpyne.batch import Batch 
 import os
 
-batchLabel = 'v02_batch09'
+batchLabel = 'v02_batch10'
 
 runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
 #runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
@@ -28,8 +28,8 @@ def batchRun():
     #params[''] = []
     #params[''] = []
     
-    params['EIspc'] = [1, 3, 5]
-    params['EEspc'] = [1, 3, 5]
+    params['EIspc'] = [1, 10, 20]
+    params['EEspc'] = [1, 10, 20]
 
     #params['EEconn'] = [0.05, 0.1, 0.2]
     #params['IEconn'] = [0.1, 0.2, 0.3]

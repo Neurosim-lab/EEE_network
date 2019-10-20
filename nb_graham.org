@@ -15596,9 +15596,23 @@ batch = ba.plot_vtraces(batchname, batchdatadir=batchdatadir, outputdir=batchdat
 import dev
 dev.plotBatchSync(batchPath='/scratch/06322/tg856217/', batchLabel='v02_batch03')
 
+** Install PySpike
 
+Error: plotSpikeStats() requires the PySpike python package                             to calculate synchrony (try: pip install pyspike)
 
+Installing PySpike:
+cd /home1/06322/tg856217/.local/lib/python3.7/site-packages/
+git clone https://github.com/mariomulansky/PySpike.git
+cd PySpike
+python3 setup.py build_ext --inplace
 
+export PYTHONPATH=$HOME/.local/lib/python3.7/site-packages/PySpike:$PYTHONPATH
+
+** Plot sync
+
+batchLabel = 'v02_batch04'
+
+    seeds['stim'] = [1234, 2345, 3456, 4567, 5678]
 
 
 

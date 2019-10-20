@@ -15455,6 +15455,22 @@ batchLabel = 'v01_batch68'
     params['GABAAfastWeight'] = [0.001, 0.0001, 0.00001]
     params['NMDAweight'] = [0.02, 0.2, 2.0]
 
+When trying to run the batch on Stampede, I immediately got this error:
+
+Plotting voltage traces...
+Reading data...
+9 files missing
+Traceback (most recent call last):
+  File "batch.py", line 89, in <module>
+    batch = ba.plot_vtraces(batchLabel, batchdatadir=saveFolder, outputdir=saveFolder + batchLabel)
+  File "/home1/06322/tg856217/EEE_network/eee_net/batch_analysis.py", line 1026, in plot_vtraces
+    sim_data = data[list(data.keys())[0]]['simData']
+IndexError: list index out of range
+
+I guess auto-analyzing after the batch won't work on Stampede.
+
+Commenting that out.
+
 
 
 

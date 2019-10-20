@@ -85,7 +85,7 @@ if __name__ == '__main__':
     
     batchRun() 
 
-    import batch_analysis as ba
-    batch = ba.plot_vtraces(batchLabel, batchdatadir=saveFolder, outputdir=saveFolder + batchLabel)
+    #import batch_analysis as ba
+    #batch = ba.plot_vtraces(batchLabel, batchdatadir=saveFolder, outputdir=saveFolder + batchLabel)
 
 

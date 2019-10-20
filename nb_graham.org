@@ -15176,8 +15176,8 @@ Adding to the end of batch.py:
 if __name__ == '__main__':
     b = batchRun() 
 
-    import batch_analysis as ba
-    batch = ba.plot_vtraces(batchLabel, batchdatadir=saveFolder, outputdir=saveFolder + batchLabel)
+	import batch_analysis as ba
+	batch = ba.plot_vtraces(batchLabel, batchdatadir=saveFolder, outputdir=saveFolder + batchLabel)
 
 That works!  Now batch v_traces will be created right after running the batch.
 
@@ -15471,12 +15471,35 @@ I guess auto-analyzing after the batch won't work on Stampede.
 
 Commenting that out.
 
+stampede21(17)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4528560  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4528561  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4528562  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4528563  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4528564  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4528565  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4528566  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
+           4528567  skx-normal v01_batc tg856217 PD       0:00      4 (Priority)
 
 
+import batch_analysis as ba
+batchdatadir = '/scratch/06322/tg856217/'
+batchname = 'v01_batch68'
+batch = ba.plot_vtraces(batchname, batchdatadir=batchdatadir, outputdir=batchdatadir + batchname)
 
+Output looks okay.  Now to explore synaptic connectivity
 
+** Scaling synaptic connectivity
 
+Made so many changes to netParams I am bumping it up to v 2
 
+batchLabel = 'v02_batch01'
+
+    params['EScale'] = [0.1, 0.5, 1.0, 5.0, 10.0]
+    params['IScale'] = [0.1, 0.5, 1.0, 5.0, 10.0]
+
+Committing and running on Stampede.
 
 
 

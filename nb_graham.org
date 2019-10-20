@@ -15632,11 +15632,30 @@ SyntaxError: invalid syntax
     params["seeds['stim']"] = [1234, 2345, 3456, 4567, 5678]
 
 
+stampede21(85)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4529962  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4529963  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4529964  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4529965  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4529967  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
 
 
+import dev
+dev.plotBatchSync(batchPath='/scratch/06322/tg856217/', batchLabel='v02_batch04')
 
 
+Didn't vary the noise.
 
+cfg.seeds = {'conn': 4123, 'stim': 1234, 'loc' : 3214}
+
+batchLabel = 'v02_batch05'
+
+    params['seeds'] = [{'conn': 4123, 'stim': 1234, 'loc' : 3214}, 
+                        {'conn': 4123, 'stim': 2345, 'loc' : 3214}, 
+                        {'conn': 4123, 'stim': 3456, 'loc' : 3214}, 
+                        {'conn': 4123, 'stim': 4567, 'loc' : 3214}, 
+                        {'conn': 4123, 'stim': 5678, 'loc' : 3214}]
 
 
 

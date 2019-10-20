@@ -2,7 +2,7 @@ from netpyne import specs
 from netpyne.batch import Batch 
 import os
 
-batchLabel = 'v02_batch04'
+batchLabel = 'v02_batch05'
 
 runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
 #runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
@@ -51,7 +51,13 @@ def batchRun():
     #params['glutAmp'] = [1.5, 2.0, 2.5]
     #params['noise_scale'] = [0.25, 1.0, 4.0]
 
-    params["seeds['stim']"] = [1234, 2345, 3456, 4567, 5678]
+    #params["seeds['stim']"] = [1234, 2345, 3456, 4567, 5678] # Didn't work
+
+    params['seeds'] = [{'conn': 4123, 'stim': 1234, 'loc' : 3214}, 
+                        {'conn': 4123, 'stim': 2345, 'loc' : 3214}, 
+                        {'conn': 4123, 'stim': 3456, 'loc' : 3214}, 
+                        {'conn': 4123, 'stim': 4567, 'loc' : 3214}, 
+                        {'conn': 4123, 'stim': 5678, 'loc' : 3214}]
 
 
 

@@ -248,9 +248,7 @@ def plotSimSync(simPath='data', simLabel='eee_net_25', showFigs=False, batchLabe
 
 def plotBatchSync(batchPath='batch_data', batchLabel='v01_batch25'):
 
-    batchPath = os.path.join(batchPath, batchLabel)
-
-    batchPathFiles = os.listdir(batchPath)
+    batchPathFiles = os.listdir(os.path.join(batchPath, batchLabel))
 
     simFiles = [file for file in batchPathFiles if file.endswith('.json')]
     simFiles = [file for file in simFiles if not file.endswith('cfg.json')]
@@ -262,7 +260,7 @@ def plotBatchSync(batchPath='batch_data', batchLabel='v01_batch25'):
     for simFile in simFiles:
 
         simFile = simFile.split('.')[0]
-        output = plotSimSync(simPath='batch_data', simLabel=simFile, showFigs=False, batchLabel=batchLabel)
+        output = plotSimSync(simPath=batchPath, simLabel=simFile, showFigs=False, batchLabel=batchLabel)
         # output = [PT51_sync, PT52_sync, PT53_sync, PT54_sync]
 
         syncData.append(output)

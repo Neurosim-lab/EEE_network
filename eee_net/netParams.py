@@ -156,7 +156,7 @@ for prePop in EPops:
             cfg.connType: EEconn,
             'loc': 0.3,
             'sec': 'basal_8',
-            'synsPerConn': 'uniform(1,' + str(cfg.EEspc) + ')'}
+            'synsPerConn': 'int(uniform(1,' + str(cfg.EEspc) + '))'}
 
 # Excitatory --> Inhibitory
 for prePop in EPops:
@@ -172,7 +172,7 @@ for prePop in EPops:
             cfg.connType: EIconn,
             'loc': 0.5,
             'sec': 'soma',
-            'synsPerConn': 'uniform(1,' + str(cfg.EIspc) + ')'}
+            'synsPerConn': 'int(uniform(1,' + str(cfg.EIspc) + '))'}
 
 # Inhibitory --> Excitatory
 for prePop in IPops:
@@ -188,7 +188,7 @@ for prePop in IPops:
             cfg.connType: IEconn,
             'loc': 0.5,
             'sec': 'soma',
-            'synsPerConn': 'uniform(1,' + str(cfg.IEspc) + ')'}
+            'synsPerConn': 'int(uniform(1,' + str(cfg.IEspc) + '))'}
 
 # Inhibitory --> Inhibitory
 for prePop in IPops:
@@ -204,7 +204,7 @@ for prePop in IPops:
             cfg.connType: IIconn,
             'loc': 0.5,
             'sec': 'soma',
-            'synsPerConn': 'uniform(1,' + str(cfg.IIspc) + ')'}
+            'synsPerConn': 'int(uniform(1,' + str(cfg.IIspc) + '))'}
 
 
 ## Glutamate puff

@@ -15732,6 +15732,50 @@ batchLabel = 'v02_batch08'
     params['EIspc'] = [1, 3, 5]
     params['EEspc'] = [1, 3, 5]
 
+stampede21(167)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4530691  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530692  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530695  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530696  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530697  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530700  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530705  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530709  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530714  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+
+Error:
+
+	Traceback (most recent call last):
+	  File "init.py", line 32, in <module>
+	    sim.net.connectCells()        # create connections between cells based on params
+	  File "/home1/06322/tg856217/.local/lib/python3.7/site-packages/netpyne/netpyne/network/conn.py", line 78, in connectCells
+	    connFunc(preCellsTags, postCellsTags, connParam)  # call specific conn function
+	  File "/home1/06322/tg856217/.local/lib/python3.7/site-packages/netpyne/netpyne/network/conn.py", line 404, in probConn
+	    self._addCellConn(connParam, preCellGid, postCellGid) # add connection
+	  File "/home1/06322/tg856217/.local/lib/python3.7/site-packages/netpyne/netpyne/network/conn.py", line 613, in _addCellConn
+	    postCell.addConn(params=params)
+	  File "/home1/06322/tg856217/.local/lib/python3.7/site-packages/netpyne/netpyne/cell/compartCell.py", line 677, in addConn
+	    weights = self._setConnWeights(params, netStimParams, secLabels)
+	  File "/home1/06322/tg856217/.local/lib/python3.7/site-packages/netpyne/netpyne/cell/compartCell.py", line 1105, in _setConnWeights
+	    weights = [scaleFactor * params['weight']] * params['synsPerConn']
+	TypeError: can't multiply sequence by non-int of type 'float'
+
+
+
+
+
+
+'synsPerConn': 'uniform(1,' + str(cfg.EEspc) + ')'}
+-->
+'synsPerConn': 'int(uniform(1,' + str(cfg.EEspc) + '))'}
+
+Trying again 
+
+batchLabel = 'v02_batch09'
+
+
+
 
 
 

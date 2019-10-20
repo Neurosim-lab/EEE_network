@@ -15796,6 +15796,26 @@ cfg.noise_std_scale = 10.0
     params['EIspc'] = [1, 10, 20]
     params['EEspc'] = [1, 10, 20]
 
+stampede21(187)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4530893  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530894  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530895  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530896  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530897  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530898  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530899  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530900  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530901  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+
+
+
+
+** batchLabel = 'v02_batch11'
+
+    params['IIspc'] = [1, 10, 20]
+    params['IEspc'] = [1, 10, 20]
+
 
 
 

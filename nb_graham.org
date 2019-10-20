@@ -15818,6 +15818,16 @@ stampede21(187)$ sq
 
 
 
+** cfg.simLabel = 'eee_net_62'
+
+cfg.noise_std_scale = 5.0
+
+
+cfg.EEspc = 10
+cfg.EIspc = 10
+cfg.IEspc = 1
+cfg.IIspc = 1
+
 
 
 

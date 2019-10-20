@@ -15,7 +15,7 @@ cfg.numCells = 10000
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_61'
+cfg.simLabel = 'eee_net_62'
 
 baseFolder = '/scratch/06322/tg856217'
 #baseFolder = 'data'
@@ -26,7 +26,7 @@ cfg.saveJson = True
 cfg.saveDataInclude = ['simData', 'simConfig', 'netParams', 'net']         
 cfg.saveMat = False
 cfg.saveCellSecs = False
-cfg.saveCellConns = False
+cfg.saveCellConns = True
 cfg.seeds = {'conn': 4123,
 			 'stim': 1234, 
 			 'loc' : 3214}  
@@ -56,7 +56,7 @@ cfg.noisePV5 = True
 
 cfg.noise_scale = 1.0
 
-cfg.noise_std_scale = 10.0
+cfg.noise_std_scale = 5.0
 
 cfg.PT5_noise_amp = 0.25 #1.0
 cfg.PT5_noise_std = 0.25 #1.0
@@ -92,8 +92,8 @@ cfg.EIconn = 0.0005 # Will be multiplied by cfg.EScale
 cfg.IEconn = 0.0005 # Will be multiplied by cfg.IScale
 cfg.IIconn = 0.0005 # Will be multiplied by cfg.IScale
 
-cfg.EEspc = 1
-cfg.EIspc = 1
+cfg.EEspc = 10
+cfg.EIspc = 10
 cfg.IEspc = 1
 cfg.IIspc = 1
 
@@ -124,7 +124,7 @@ cfg.recordTraces['V_dend'] = {'sec':'basal_8', 'loc':0.5, 'var':'v'}
 cfg.printPopAvgRates = True
 
 # Analysis options
-cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True, 'lw': 1, 'saveFig': saveFig, 'showFig': showFig, 'saveData': saveData}
+cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True, 'lw': 0.5, 'saveFig': saveFig, 'showFig': showFig, 'saveData': saveData}
 
 cfg.analysis['plotSpikeHist'] = {'saveFig': saveFig,'showFig': showFig, 'saveData': saveData}
 

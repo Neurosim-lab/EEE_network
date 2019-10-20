@@ -51,7 +51,7 @@ def batchRun():
     #params['glutAmp'] = [1.5, 2.0, 2.5]
     #params['noise_scale'] = [0.25, 1.0, 4.0]
 
-    params['seeds['stim']'] = [1234, 2345, 3456, 4567, 5678]
+    params["seeds['stim']"] = [1234, 2345, 3456, 4567, 5678]
 
 
 

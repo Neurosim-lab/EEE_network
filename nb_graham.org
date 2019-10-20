@@ -15623,7 +15623,13 @@ NameError: name 'seeds' is not defined
 
     params['seeds['stim']'] = [1234, 2345, 3456, 4567, 5678]
 
+File "batch.py", line 54
+    params['seeds['stim']'] = [1234, 2345, 3456, 4567, 5678]
+                      ^
+SyntaxError: invalid syntax
 
+
+    params["seeds['stim']"] = [1234, 2345, 3456, 4567, 5678]
 
 
 

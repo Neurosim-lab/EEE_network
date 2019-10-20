@@ -15686,6 +15686,52 @@ batchLabel = 'v02_batch07'
     params['glutAmp'] = [2.0, 3.0, 5.0, 10.0]
     params['noise_std_scale'] = [1.0, 2.0, 4.0, 10.0]
 
+stampede21(151)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4530167  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530168  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530169  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530170  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530171  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530172  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530173  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530174  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530175  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530176  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530177  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530178  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530179  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530180  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4530181  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+
+
+import batch_analysis as ba
+batchdatadir = '/scratch/06322/tg856217/'
+batchname = 'v02_batch07'
+batch = ba.plot_vtraces(batchname, batchdatadir=batchdatadir, outputdir=batchdatadir + batchname)
+
+Need more spiking: higher noise is good for PT cells, but no spiking even at high
+noise in PV cells...
+
+
+
+
+
+
+** synsPerConn
+
+The default value is one.  If cells are connected, there is only one synapse between
+them...
+
+I guess this is why Sergio used convergence...
+
+Adding synsPerConn option to cfg and netParams
+
+batchLabel = 'v02_batch08'
+
+    params['EIspc'] = [1, 3, 5]
+    params['EEspc'] = [1, 3, 5]
+
 
 
 

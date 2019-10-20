@@ -92,6 +92,12 @@ cfg.EIconn = 0.0005 # Will be multiplied by cfg.EScale
 cfg.IEconn = 0.0005 # Will be multiplied by cfg.IScale
 cfg.IIconn = 0.0005 # Will be multiplied by cfg.IScale
 
+cfg.EEspc = 1
+cfg.EIspc = 1
+cfg.IEspc = 1
+cfg.IIspc = 1
+
+
 # Glutamate stim parameters
 cfg.glutamate         = True
 cfg.glutPops          = ['PT5_1', 'PT5_2']

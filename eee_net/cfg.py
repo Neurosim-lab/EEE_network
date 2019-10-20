@@ -11,14 +11,14 @@ saveData = True
 cfg = specs.SimConfig()
 cfg.dummy    = 0       
 cfg.duration = 4000 #10000
-cfg.numCells = 10000 
+cfg.numCells = 10 
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_60'
+cfg.simLabel = 'eee_net_test_07'
 
-baseFolder = '/scratch/06322/tg856217'
-#baseFolder = 'data'
+#baseFolder = '/scratch/06322/tg856217'
+baseFolder = 'data'
 cfg.saveFolder = os.path.join(baseFolder, cfg.simLabel)
 
 cfg.savePickle = False
@@ -42,46 +42,51 @@ cfg.ynormRange  = [0.2, 0.623]
 cfg.NMDAgmax        = 0.005
 cfg.AMPANMDAratio   = 10.0
 cfg.AMPAgmax        = cfg.AMPANMDAratio * cfg.NMDAgmax 
-cfg.NMDAweight      = 0.2 #0.4 #0.8
+cfg.NMDAweight      = 0.2
 cfg.AMPAweight      = cfg.NMDAweight
-cfg.GABAAfastWeight = 0.01 #0.0001
+cfg.GABAAfastWeight = 0.0001
 cfg.GABAAslowWeight = cfg.GABAAfastWeight #0.0001
 cfg.GABAAfast_e     = -80
 cfg.GABAAslow_e     = -90
 
 # Noise variables
-cfg.noisePT5 = False
-cfg.noisePV5 = False
+cfg.noise = True
+cfg.noisePT5 = True
+cfg.noisePV5 = True
 
-cfg.PT5_noise_scaling = 1.0
-cfg.PT5_std_scaling = 0.1
+cfg.PT5_noise_amp = 0.25 #1.0
+cfg.PT5_noise_std = 0.25 #1.0
 
-cfg.PT5_exc_noise_amp = 0.01 * cfg.PT5_noise_scaling
-cfg.PT5_exc_noise_e   = 0.0
-cfg.PT5_exc_noise_tau = 1.0
-cfg.PT5_inh_noise_amp = 0.01 * cfg.PT5_noise_scaling
-cfg.PT5_inh_noise_e   = -75.0
-cfg.PT5_inh_noise_tau = 1.0
+cfg.PT5_exc_noise_amp = 1.0     # g_e0        : 0.0121 * cfg.PT5_exc_noise_amp
+cfg.PT5_exc_noise_std = 1.0     # std_e       : 0.0030 * cfg.PT5_exc_noise_std
+cfg.PT5_exc_noise_e   = 0.0     # Default E_e : 0.0
+cfg.PT5_exc_noise_tau = 1.0     # tau_e       : 2.728 * cfg.PT5_exc_noise_tau
+cfg.PT5_inh_noise_amp = 1.0     # g_i0        : 0.0573 * cfg.PT5_inh_noise_amp
+cfg.PT5_inh_noise_std = 1.0     # std_i       : 0.0066 * cfg.PT5_inh_noise_std
+cfg.PT5_inh_noise_e   = -75.0   # Default E_i : -75.0
+cfg.PT5_inh_noise_tau = 1.0     # tau_i       : 10.49 * cfg.PT5_inh_noise_tau
 
-cfg.PV5_noise_scaling = 1.0
-cfg.PV5_std_scaling = cfg.PT5_std_scaling
+cfg.PV5_noise_amp = 0.1 #1.0
+cfg.PV5_noise_std = 0.1 #1.0
 
-cfg.PV5_exc_noise_amp = 1.0 * cfg.PV5_noise_scaling
-cfg.PV5_exc_noise_e   = 0.0
-cfg.PV5_exc_noise_tau = 1.0
-cfg.PV5_inh_noise_amp = 1.0 * cfg.PV5_noise_scaling
-cfg.PV5_inh_noise_e   = -75.0
-cfg.PV5_inh_noise_tau = 1.0
+cfg.PV5_exc_noise_amp = 1.0     # g_e0        : 0.0121 * cfg.PV5_exc_noise_amp
+cfg.PV5_exc_noise_std = 1.0     # std_e       : 0.0030 * cfg.PV5_exc_noise_std
+cfg.PV5_exc_noise_e   = 0.0     # Default E_e : 0.0
+cfg.PV5_exc_noise_tau = 1.0     # tau_e       : 2.728 * cfg.PV5_exc_noise_tau
+cfg.PV5_inh_noise_amp = 1.0     # g_i0        : 0.0573 * cfg.PV5_inh_noise_amp
+cfg.PV5_inh_noise_std = 1.0     # std_i       : 0.0066 * cfg.PV5_inh_noise_std
+cfg.PV5_inh_noise_e   = -75.0   # Default E_i : -75.0
+cfg.PV5_inh_noise_tau = 1.0     # tau_i       : 10.49 * cfg.PV5_inh_noise_tau
 
 # Connectivity variables
 cfg.connType = 'probability'  # 'convergence', 'divergence', or 'probability'
 cfg.EScale = 1.0
 cfg.IScale = 1.0
 
-cfg.EEconn = 0.0005 * cfg.EScale
-cfg.EIconn = 0.0005 * cfg.EScale
-cfg.IEconn = 0.0005 * cfg.IScale
-cfg.IIconn = 0.0005 * cfg.IScale
+cfg.EEconn = 1.0 #0.0005 # Will be multiplied by cfg.EScale
+cfg.EIconn = 1.0 #0.0005 # Will be multiplied by cfg.EScale
+cfg.IEconn = 1.0 #0.0005 # Will be multiplied by cfg.IScale
+cfg.IIconn = 1.0 #0.0005 # Will be multiplied by cfg.IScale
 
 # Glutamate stim parameters
 cfg.glutamate         = True
@@ -122,7 +127,7 @@ include = include + list(range(6000, 6005))
 include = include + list(range(8000, 8005))
 include = include + list(range(9000, 9005))
 
-#include = ['allCells']
+include = ['allCells']
 
 cfg.recordCells = include
 
@@ -145,7 +150,7 @@ cfg.addIClamp = True
 
 cfg.delIClamp1 = 500
 cfg.durIClamp1 = 500
-cfg.ampIClamp1 = 0.2 #1.0
+cfg.ampIClamp1 = 0.3
 cfg.popIClamp1 = ['PT5_1']
 cfg.secIClamp1 = 'soma'
 cfg.locIClamp1 = 0.5
@@ -154,7 +159,7 @@ cfg.IClamp1 = {'pop': cfg.popIClamp1, 'sec': cfg.secIClamp1, 'loc': cfg.locIClam
 
 cfg.delIClamp2 = 1500
 cfg.durIClamp2 = 500
-cfg.ampIClamp2 = 0.3 #0.2
+cfg.ampIClamp2 = 0.3125
 cfg.popIClamp2 = ['PV5_1']
 cfg.secIClamp2 = 'soma'
 cfg.locIClamp2 = 0.5

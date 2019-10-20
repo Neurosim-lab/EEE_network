@@ -53,9 +53,8 @@ PV_path   = os.path.join(cellpath, 'FS3.py')
 #cellRule = netParams.importCellParams(label='PV5', conds={'cellType':'PV5'}, fileName=PV_path, cellName='MakeCell', cellInstance=True)
 #netParams.cellParams['PV5'] = cellRule
 
-
 ####
-cellRule = netParams.importCellParams(label='PV5_1', conds={'cellType':'PV5'}, fileName=PV_path, cellName='MakeCell', cellInstance=True)
+cellRule = netParams.importCellParams(label='PV5_1', conds={'pop':'PV5_1'}, fileName=PV_path, cellName='MakeCell', cellInstance=True)
 netParams.cellParams['PV5_1'] = cellRule
 ####
 
@@ -80,16 +79,16 @@ netParams.synMechParams['NMDA'] = {'mod': 'NMDA', 'Cdur': 10.0, 'Beta': 0.02, 'g
 ## Noise
 
 # PT5_1 noise
-if cfg.noisePT5:
+if cfg.noise and cfg.noisePT5:
     netParams.cellParams['PT5_1']['secs']['soma']['pointps'] = {
                         'noise': {'mod': 'Gfluctp', 
                         'loc': 0.5,
-                        'std_e': 0.012 * cfg.PT5_std_scaling,
-                        'g_e0' : 0.0121 * cfg.PT5_exc_noise_amp, 
+                        'std_e': 0.0030 * cfg.PT5_exc_noise_std * cfg.PT5_noise_std,
+                        'g_e0' : 0.0121 * cfg.PT5_exc_noise_amp * cfg.PT5_noise_amp, 
                         'tau_i': 10.49 * cfg.PT5_inh_noise_tau, 
                         'tau_e': 2.728 * cfg.PT5_exc_noise_tau, 
-                        'std_i': 0.0264 * cfg.PT5_std_scaling, 
-                        'g_i0' : 0.0573 * cfg.PT5_inh_noise_amp, 
+                        'std_i': 0.0066 * cfg.PT5_inh_noise_std * cfg.PT5_noise_std, 
+                        'g_i0' : 0.0573 * cfg.PT5_inh_noise_amp * cfg.PT5_noise_amp, 
                         'E_e'  : cfg.PT5_exc_noise_e, 
                         'E_i'  : cfg.PT5_inh_noise_e, 
                         'seed1': 'gid', 
@@ -97,16 +96,16 @@ if cfg.noisePT5:
                         'seed3': cfg.seeds['stim']}}
 
 # PV5 noise
-if cfg.noisePV5:
+if cfg.noise and cfg.noisePV5:
     netParams.cellParams['PV5_1']['secs']['soma']['pointps'] = {
                         'noise': {'mod': 'Gfluctp', 
                         'loc': 0.5,
-                        'std_e': 0.012 * cfg.PV5_std_scaling,
-                        'g_e0' : 0.0121 * cfg.PV5_exc_noise_amp, 
+                        'std_e': 0.0030 * cfg.PV5_exc_noise_std * cfg.PV5_noise_std,
+                        'g_e0' : 0.0121 * cfg.PV5_exc_noise_amp * cfg.PV5_noise_amp, 
                         'tau_i': 10.49 * cfg.PV5_inh_noise_tau, 
                         'tau_e': 2.728 * cfg.PV5_exc_noise_tau, 
-                        'std_i': 0.0264 * cfg.PV5_std_scaling, 
-                        'g_i0' : 0.0573 * cfg.PV5_inh_noise_amp, 
+                        'std_i': 0.0066 * cfg.PV5_inh_noise_std * cfg.PV5_noise_std, 
+                        'g_i0' : 0.0573 * cfg.PV5_inh_noise_amp * cfg.PV5_noise_amp, 
                         'E_e'  : cfg.PV5_exc_noise_e, 
                         'E_i'  : cfg.PV5_inh_noise_e, 
                         'seed1': 'gid', 
@@ -131,14 +130,17 @@ for label in ['PV5_2']:
     netParams.cellParams[label] = cellRule
 ####
 
-EEconn = 0.0005 * cfg.EScale
-EIconn = 0.0005 * cfg.EScale
-IEconn = 0.0005 * cfg.IScale
-IIconn = 0.0005 * cfg.IScale
+EEconn = cfg.EEconn * cfg.EScale
+EIconn = cfg.EIconn * cfg.EScale
+IEconn = cfg.IEconn * cfg.IScale
+IIconn = cfg.IIconn * cfg.IScale
 
 ## Cell connectivity rules
 EPops = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4']
 IPops = ['PV5_1', 'PV5_2']
+
+cfg.AMPAweight = cfg.NMDAweight
+cfg.GABAAslowWeight = cfg.GABAAfastWeight
 
 # Excitatory --> Excitatory
 for prePop in EPops:

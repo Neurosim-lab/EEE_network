@@ -15440,6 +15440,13 @@ cfg.simLabel = 'eee_net_test_07'
 
 It works, committing now.
 
+** Getting changes into main repo
+
+Replacing old cfg.py with new one.
+Same with netParams.py and batch.py
+
+Committing, then setting back up for Stampede.
+
 
 
 

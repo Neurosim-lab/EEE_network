@@ -15501,8 +15501,48 @@ batchLabel = 'v02_batch01'
 
 Committing and running on Stampede.
 
+stampede21(33)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4528711  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4528712  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4528713  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4528714  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4528715  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4528716  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4528717  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4528718  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4528719  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4528720  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4528721  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4528722  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4528723  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4528724  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4528725  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4528726  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4528727  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4528728  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4528729  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4528730  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4528732  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4528733  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4528734  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4528735  skx-normal v02_batc tg856217 PD       0:00      4 (Resources)
+           4528736  skx-normal v02_batc tg856217 PD       0:00      4 (Resources)
 
+import batch_analysis as ba
+batchdatadir = '/scratch/06322/tg856217/'
+batchname = 'v02_batch01'
+batch = ba.plot_vtraces(batchname, batchdatadir=batchdatadir, outputdir=batchdatadir + batchname)
 
+Scaling the synaptic connectivity doesn't seem to have much of an effect.
+
+I'm going to set the connectivity scaling at 1.0 and run a batch varying synaptic
+weights.
+
+batchLabel = 'v02_batch02'
+
+    params['GABAAfastWeight'] = [0.01, 0.001, 0.0001, 0.00001]
+    params['NMDAweight'] = [0.02, 0.2, 2.0, 10.0]
 
 
 

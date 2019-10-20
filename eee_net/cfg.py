@@ -15,7 +15,7 @@ cfg.numCells = 10000
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_62'
+cfg.simLabel = 'eee_net_63'
 
 baseFolder = '/scratch/06322/tg856217'
 #baseFolder = 'data'
@@ -88,7 +88,7 @@ cfg.EScale = 1.0
 cfg.IScale = 1.0
 
 cfg.EEconn = 0.0005 # Will be multiplied by cfg.EScale
-cfg.EIconn = 0.0005 # Will be multiplied by cfg.EScale
+cfg.EIconn = 0.005 #0.0005 # Will be multiplied by cfg.EScale
 cfg.IEconn = 0.0005 # Will be multiplied by cfg.IScale
 cfg.IIconn = 0.0005 # Will be multiplied by cfg.IScale
 

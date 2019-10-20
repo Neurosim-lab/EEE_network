@@ -15828,6 +15828,22 @@ cfg.EIspc = 10
 cfg.IEspc = 1
 cfg.IIspc = 1
 
+Needs more inh spiking
+
+
+** cfg.simLabel = 'eee_net_63'
+
+
+cfg.EEconn = 0.0005 # Will be multiplied by cfg.EScale
+cfg.EIconn = 0.005 #0.0005 # Will be multiplied by cfg.EScale
+cfg.IEconn = 0.0005 # Will be multiplied by cfg.IScale
+cfg.IIconn = 0.0005 # Will be multiplied by cfg.IScale
+
+cfg.EEspc = 10
+cfg.EIspc = 10
+cfg.IEspc = 1
+cfg.IIspc = 1
+
 
 
 

@@ -2,7 +2,7 @@ from netpyne import specs
 from netpyne.batch import Batch 
 import os
 
-batchLabel = 'v02_batch11'
+batchLabel = 'v02_batch12'
 
 runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
 #runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
@@ -28,8 +28,8 @@ def batchRun():
     #params[''] = []
     #params[''] = []
     
-    params['IIspc'] = [1, 10, 20]
-    params['IEspc'] = [1, 10, 20]
+    #params['IIspc'] = [1, 10, 20]
+    #params['IEspc'] = [1, 10, 20]
 
     #params['EEconn'] = [0.05, 0.1, 0.2]
     #params['IEconn'] = [0.1, 0.2, 0.3]
@@ -54,11 +54,9 @@ def batchRun():
     #params['glutAmp'] = [2.0, 3.0, 5.0, 10.0]
     #params['noise_std_scale'] = [1.0, 2.0, 4.0, 10.0]
 
-    # params['seeds'] = [{'conn': 4123, 'stim': 1234, 'loc' : 3214}, 
-    #                     {'conn': 4123, 'stim': 2345, 'loc' : 3214}, 
-    #                     {'conn': 4123, 'stim': 3456, 'loc' : 3214}, 
-    #                     {'conn': 4123, 'stim': 4567, 'loc' : 3214}, 
-    #                     {'conn': 4123, 'stim': 5678, 'loc' : 3214}]
+    params['seeds'] = [{'conn': 4123, 'stim': 1234, 'loc' : 3214}, 
+                        {'conn': 4123, 'stim': 2345, 'loc' : 3214}, 
+                        {'conn': 4123, 'stim': 3456, 'loc' : 3214}]
 
 
 

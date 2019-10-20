@@ -15844,6 +15844,17 @@ cfg.EIspc = 10
 cfg.IEspc = 1
 cfg.IIspc = 1
 
+This sim looks pretty good.
+
+Will leave out PV5 cells to focus on PT.
+
+** batchLabel = 'v02_batch12'
+
+    params['seeds'] = [{'conn': 4123, 'stim': 1234, 'loc' : 3214}, 
+                        {'conn': 4123, 'stim': 2345, 'loc' : 3214}, 
+                        {'conn': 4123, 'stim': 3456, 'loc' : 3214}]
+
+
 
 
 

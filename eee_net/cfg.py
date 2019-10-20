@@ -124,7 +124,8 @@ cfg.recordTraces['V_dend'] = {'sec':'basal_8', 'loc':0.5, 'var':'v'}
 cfg.printPopAvgRates = True
 
 # Analysis options
-cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True, 'lw': 0.5, 'saveFig': saveFig, 'showFig': showFig, 'saveData': saveData}
+#cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True, 'lw': 0.5, 'saveFig': saveFig, 'showFig': showFig, 'saveData': saveData}
+cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True, 'lw': 0.5, 'saveFig': saveFig, 'showFig': showFig, 'saveData': saveData, 'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4']}
 
 cfg.analysis['plotSpikeHist'] = {'saveFig': saveFig,'showFig': showFig, 'saveData': saveData}
 

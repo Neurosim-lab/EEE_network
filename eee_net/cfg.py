@@ -15,7 +15,7 @@ cfg.numCells = 10000
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_63'
+cfg.simLabel = 'eee_net_64'
 
 baseFolder = '/scratch/06322/tg856217'
 #baseFolder = 'data'

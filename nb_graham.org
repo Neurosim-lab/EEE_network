@@ -15854,6 +15854,13 @@ Will leave out PV5 cells to focus on PT.
                         {'conn': 4123, 'stim': 2345, 'loc' : 3214}, 
                         {'conn': 4123, 'stim': 3456, 'loc' : 3214}]
 
+stampede21(256)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4531473  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4531474  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+           4531475  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
+
+
 
 
 

@@ -15886,7 +15886,26 @@ I'll use the original settings, and then vary EScale and IScale
     params['EScale'] = [1, 10, 100, 1000]
     params['IScale'] = [1, 10, 100, 1000]
 
-    
+
+	stampede22(4)$ sq
+             JOBID   PARTITION     NAME     USER ST 
+           4593489  skx-normal v02_batc tg856217 PD   
+           4593490  skx-normal v02_batc tg856217 PD   
+           4593491  skx-normal v02_batc tg856217 PD   
+           4593492  skx-normal v02_batc tg856217 PD   
+           4593493  skx-normal v02_batc tg856217 PD   
+           4593494  skx-normal v02_batc tg856217 PD   
+           4593495  skx-normal v02_batc tg856217 PD   
+           4593496  skx-normal v02_batc tg856217 PD   
+           4593497  skx-normal v02_batc tg856217 PD   
+           4593498  skx-normal v02_batc tg856217 PD   
+           4593499  skx-normal v02_batc tg856217 PD   
+           4593500  skx-normal v02_batc tg856217 PD   
+           4593501  skx-normal v02_batc tg856217 PD   
+           4593502  skx-normal v02_batc tg856217 PD   
+           4593503  skx-normal v02_batc tg856217 PD   
+
+Got some time outs.  Bumping up to 1 hour and running again as batch14
 
 
 

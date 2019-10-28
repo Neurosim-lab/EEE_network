@@ -2,7 +2,7 @@ from netpyne import specs
 from netpyne.batch import Batch 
 import os
 
-batchLabel = 'v02_batch13'
+batchLabel = 'v02_batch14'
 
 runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
 #runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
@@ -67,7 +67,7 @@ def batchRun():
         b.saveFolder = saveFolder + b.batchLabel
         b.runCfg = {'type': 'hpc_slurm',
                     'allocation': allocation, 
-                    'walltime': '00:30:00',
+                    'walltime': '01:00:00',
                     'nodes': 4,
                     'coresPerNode': 48,
                     'email': 'joe.w.graham@gmail.com',

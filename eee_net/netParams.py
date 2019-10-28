@@ -152,11 +152,10 @@ for prePop in EPops:
             'synMech': ESynMech, 
             'weight': [cfg.AMPAweight, cfg.NMDAweight],
             'delay': 'defaultDelay+dist_3D/propVelocity',
-            #'convergence': cfg.EEconv,
             cfg.connType: EEconn,
             'loc': 0.3,
-            'sec': 'basal_8',
-            'synsPerConn': 'int(uniform(1,' + str(cfg.EEspc) + '))'}
+            'sec': 'basal_8'} #,
+            #'synsPerConn': 'int(uniform(1,' + str(cfg.EEspc) + '))'}
 
 # Excitatory --> Inhibitory
 for prePop in EPops:
@@ -168,11 +167,10 @@ for prePop in EPops:
             'synMech': 'AMPA',
             'weight': cfg.AMPAweight, 
             'delay': 'defaultDelay+dist_3D/propVelocity',
-            #'convergence': cfg.EIconv,
             cfg.connType: EIconn,
             'loc': 0.5,
-            'sec': 'soma',
-            'synsPerConn': 'int(uniform(1,' + str(cfg.EIspc) + '))'}
+            'sec': 'soma'} #,
+            #'synsPerConn': 'int(uniform(1,' + str(cfg.EIspc) + '))'}
 
 # Inhibitory --> Excitatory
 for prePop in IPops:
@@ -184,11 +182,10 @@ for prePop in IPops:
             'synMech': ISynMech, 
             'weight': [cfg.GABAAfastWeight, cfg.GABAAslowWeight],
             'delay': 'defaultDelay+dist_3D/propVelocity',
-            #'convergence': cfg.IEconv,
             cfg.connType: IEconn,
             'loc': 0.5,
-            'sec': 'soma',
-            'synsPerConn': 'int(uniform(1,' + str(cfg.IEspc) + '))'}
+            'sec': 'soma'} #,
+            #'synsPerConn': 'int(uniform(1,' + str(cfg.IEspc) + '))'}
 
 # Inhibitory --> Inhibitory
 for prePop in IPops:
@@ -200,11 +197,10 @@ for prePop in IPops:
             'synMech': 'GABAAfast',
             'weight': cfg.GABAAfastWeight, 
             'delay': 'defaultDelay+dist_3D/propVelocity',
-            #'convergence': cfg.IIconv,
             cfg.connType: IIconn,
             'loc': 0.5,
-            'sec': 'soma',
-            'synsPerConn': 'int(uniform(1,' + str(cfg.IIspc) + '))'}
+            'sec': 'soma'} #,
+            #'synsPerConn': 'int(uniform(1,' + str(cfg.IIspc) + '))'}
 
 
 ## Glutamate puff

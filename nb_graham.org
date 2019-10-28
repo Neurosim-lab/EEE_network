@@ -15861,9 +15861,32 @@ stampede21(256)$ sq
            4531475  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
 
 
+* 2019-10-28 --
 
 
+** Running a batch exploring convergence
 
+Sergio originally had the connectivity using convergence.  I recently switched to using
+probability, but will now switch back to convergence and explore varying values.
+
+These were the original convergence settings:
+# Connectivity variables
+cfg.EEconv = 3.0
+cfg.EIconv = 3.0
+cfg.IEconv = 12.0
+cfg.IIconv = 12.0
+
+
+batchLabel = 'v02_batch13'
+
+cfg.connType = 'convergence'  # 'convergence', 'divergence', or 'probability'
+
+I'll use the original settings, and then vary EScale and IScale
+
+    params['EScale'] = [1, 10, 100, 1000]
+    params['IScale'] = [1, 10, 100, 1000]
+
+    
 
 
 

@@ -83,17 +83,17 @@ cfg.PV5_inh_noise_e   = -75.0   # Default E_i : -75.0
 cfg.PV5_inh_noise_tau = 1.0     # tau_i       : 10.49 * cfg.PV5_inh_noise_tau
 
 # Connectivity variables
-cfg.connType = 'probability'  # 'convergence', 'divergence', or 'probability'
+cfg.connType = 'convergence'  # 'convergence', 'divergence', or 'probability'
 cfg.EScale = 1.0
 cfg.IScale = 1.0
 
-cfg.EEconn = 0.0005 # Will be multiplied by cfg.EScale
-cfg.EIconn = 0.005 #0.0005 # Will be multiplied by cfg.EScale
-cfg.IEconn = 0.0005 # Will be multiplied by cfg.IScale
-cfg.IIconn = 0.0005 # Will be multiplied by cfg.IScale
+cfg.EEconn = 3 #0.0005 # Will be multiplied by cfg.EScale
+cfg.EIconn = 3 #0.005 #0.0005 # Will be multiplied by cfg.EScale
+cfg.IEconn = 12 #0.0005 # Will be multiplied by cfg.IScale
+cfg.IIconn = 12 #0.0005 # Will be multiplied by cfg.IScale
 
-cfg.EEspc = 10
-cfg.EIspc = 10
+cfg.EEspc = 1 
+cfg.EIspc = 1
 cfg.IEspc = 1
 cfg.IIspc = 1
 

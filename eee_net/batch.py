@@ -2,7 +2,7 @@ from netpyne import specs
 from netpyne.batch import Batch 
 import os
 
-batchLabel = 'v02_batch12'
+batchLabel = 'v02_batch13'
 
 runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
 #runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
@@ -48,18 +48,13 @@ def batchRun():
     #params['GABAAfastWeight'] = [0.01, 0.001, 0.0001, 0.00001]
     #params['NMDAweight'] = [0.02, 0.2, 2.0, 10.0]
 
-    #params['EScale'] = [0.1, 0.5, 1.0, 5.0, 10.0]
-    #params['IScale'] = [0.1, 0.5, 1.0, 5.0, 10.0]
+    params['EScale'] = [1, 10, 100, 1000]
+    params['IScale'] = [1, 10, 100, 1000]
 
     #params['glutAmp'] = [2.0, 3.0, 5.0, 10.0]
     #params['noise_std_scale'] = [1.0, 2.0, 4.0, 10.0]
 
-    params['seeds'] = [{'conn': 4123, 'stim': 1234, 'loc' : 3214}, 
-                        {'conn': 4123, 'stim': 2345, 'loc' : 3214}, 
-                        {'conn': 4123, 'stim': 3456, 'loc' : 3214}]
-
-
-
+    
     
     # create Batch object with paramaters to modify, and specifying files to use
     b = Batch(params=params, cfgFile='cfg.py', netParamsFile='netParams.py')

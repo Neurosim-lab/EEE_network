@@ -16088,6 +16088,15 @@ cfg.EIconn = 6 #4 #0.005 #0.0005 # Will be multiplied by cfg.EScale
 
 cfg.simLabel = 'eee_net_74'
 
+Submitted batch job 4596423
+
+Still want to see more PV spiking. Will increase noise to PV
+
+eee_net_75
+
+cfg.PV5_noise_amp = 0.2 #0.1 #1.0
+cfg.PV5_noise_std = 0.2 #0.1 #1.0
+
 
 
 

@@ -1,3 +1,4 @@
+import netpyne
 from netpyne import specs, sim
 import numpy as np
 import os
@@ -15,7 +16,7 @@ cfg.numCells = 10000
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_67'
+cfg.simLabel = 'eee_net_68'
 
 baseFolder = '/scratch/06322/tg856217'
 #baseFolder = 'data'

@@ -16000,6 +16000,27 @@ cfg.AMPAweight      = 1.0 #0.4 #cfg.NMDAweight
 
 cfg.simLabel = 'eee_net_67'
 
+Submitted batch job 4595273
+
+cfg.py crashes
+
+stampede22(28)$ python cfg.py 
+Traceback (most recent call last):
+  File "cfg.py", line 1, in <module>
+    from netpyne import specs, sim
+  File "/home1/06322/tg856217/.local/lib/python3.7/site-packages/netpyne/netpyne/__init__.py", line 5, in <module>
+    import matplotlib
+  File "/home1/06322/tg856217/.local/lib/python3.7/site-packages/matplotlib/__init__.py", line 272
+    nonlocal called, ret
+                  ^
+SyntaxError: invalid syntax
+
+
+adding to top of cfg.py:
+import netpyne
+
+cfg.simLabel = 'eee_net_68'
+
 
 
 

@@ -16030,12 +16030,22 @@ visible EPSPs.
 
 I don't think I'm seeing any connectivity, despite the thousands in the heatplot...
 
-Cranking up NMDA and thus AMPA gmax
+** Cranking up NMDA and thus AMPA gmax
 
 cfg.NMDAgmax        = 0.5 #0.005
 
 cfg.simLabel = 'eee_net_69'
 
+Submitted batch job 4596094
+
+Definitely seeing conns now!
+
+Need to reduce gmax to more reasonable level.
+
+cfg.NMDAgmax        = 0.05 #0.5 #0.005
+cfg.simLabel = 'eee_net_70'
+
+Reducing EI conn back to 1.0
 
 
 

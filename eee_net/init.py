@@ -42,14 +42,14 @@ sim.analysis.plotData()       # plot spike raster etc
 
 # Additional analyses
 
-includePre  = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4','PV5']
-includePost = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4','PV5']
-feature     = 'numConns' #'divergence' #'convergence' #'strength' # 
+includePre  = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5_1', 'PV5_2']
+includePost = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4', 'PV5_1', 'PV5_2']
+feature     = 'strength' #'divergence' #'convergence' #'strength' #'numConns' 
 groupBy     = 'pop' #'cell'
 orderBy     = 'gid' #'y'
 synOrConn   = 'conn' #'syn'
 
-#sim.analysis.plotConn(saveFig=True, showFig=False, saveData=True, includePre=includePre, includePost=includePost, feature=feature, groupBy=groupBy, orderBy=orderBy, synOrConn=synOrConn)
+sim.analysis.plotConn(saveFig=True, showFig=False, saveData=True, includePre=includePre, includePost=includePost, feature=feature, groupBy=groupBy, orderBy=orderBy, synOrConn=synOrConn)
 
 # import batch_analysis as ba
 # batchdatadir = '/scratch/06322/tg856217/'

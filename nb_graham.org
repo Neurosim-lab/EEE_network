@@ -16067,7 +16067,17 @@ Increasing gmax slightly.
 
 cfg.NMDAgmax        = 0.02 #0.01 
 
+eee_net_72
 
+Submitted batch job 4596329
+
+
+
+cfg.simLabel = 'eee_net_73'
+
+Increasing AMPA gmax via its ratio with NMDA
+
+cfg.AMPANMDAratio   = 15.0 #10.0
 
 
 

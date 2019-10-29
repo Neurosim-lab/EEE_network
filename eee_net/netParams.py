@@ -141,6 +141,7 @@ IPops = ['PV5_1', 'PV5_2']
 
 cfg.AMPAweight = cfg.NMDAweight
 cfg.GABAAslowWeight = cfg.GABAAfastWeight
+cfg.AMPAgmax        = cfg.AMPANMDAratio * cfg.NMDAgmax
 
 # Excitatory --> Excitatory
 for prePop in EPops:

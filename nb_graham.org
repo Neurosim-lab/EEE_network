@@ -16025,6 +16025,29 @@ Submitted batch job 4595537
 
 There was a bug in netParams
 
+Ugh.  Even with the changes in connectivity, the PV traces look identical. No 
+visible EPSPs.
+
+I don't think I'm seeing any connectivity, despite the thousands in the heatplot...
+
+Cranking up NMDA and thus AMPA gmax
+
+cfg.NMDAgmax        = 0.5 #0.005
+
+cfg.simLabel = 'eee_net_69'
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

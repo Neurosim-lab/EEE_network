@@ -16,7 +16,7 @@ cfg.numCells = 10000
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_68'
+cfg.simLabel = 'eee_net_69'
 
 baseFolder = '/scratch/06322/tg856217'
 #baseFolder = 'data'
@@ -40,11 +40,11 @@ cfg.sizeX       = 400
 cfg.sizeZ       = 300
 cfg.ynormRange  = [0.2, 0.623]
 
-cfg.NMDAgmax        = 0.005
+cfg.NMDAgmax        = 0.5 #0.005
 cfg.AMPANMDAratio   = 10.0
 cfg.AMPAgmax        = cfg.AMPANMDAratio * cfg.NMDAgmax 
 cfg.NMDAweight      = 0.2
-cfg.AMPAweight      = 1.0 #0.4 #cfg.NMDAweight
+cfg.AMPAweight      = cfg.NMDAweight
 cfg.GABAAfastWeight = 0.0001
 cfg.GABAAslowWeight = cfg.GABAAfastWeight
 cfg.GABAAfast_e     = -80.0

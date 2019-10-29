@@ -16097,6 +16097,22 @@ eee_net_75
 cfg.PV5_noise_amp = 0.2 #0.1 #1.0
 cfg.PV5_noise_std = 0.2 #0.1 #1.0
 
+Submitted batch job 4596455
+
+Getting more spiking out of I cells:
+file:gif/20191029_000640.png
+
+Would like still a bit more.
+
+Increasing noise slightly.
+
+Setting up a batch to run overnight.
+
+    params['EScale'] = [0.5, 1.0, 1.5, 2.0]
+    params['IScale'] = [0.5, 1.0, 1.5, 2.0]
+
+batchLabel = 'v02_batch16'
+
 
 
 

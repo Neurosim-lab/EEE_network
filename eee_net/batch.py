@@ -2,7 +2,7 @@ from netpyne import specs
 from netpyne.batch import Batch 
 import os
 
-batchLabel = 'v02_batch15'
+batchLabel = 'v02_batch16'
 
 runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
 #runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
@@ -48,8 +48,8 @@ def batchRun():
     #params['GABAAfastWeight'] = [0.01, 0.001, 0.0001, 0.00001]
     #params['NMDAweight'] = [0.02, 0.2, 2.0, 10.0]
 
-    params['EScale'] = [1, 2, 5, 10]
-    params['IScale'] = [1, 2, 5, 10]
+    params['EScale'] = [0.5, 1.0, 1.5, 2.0]
+    params['IScale'] = [0.5, 1.0, 1.5, 2.0]
 
     #params['glutAmp'] = [2.0, 3.0, 5.0, 10.0]
     #params['noise_std_scale'] = [1.0, 2.0, 4.0, 10.0]

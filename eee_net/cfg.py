@@ -56,7 +56,6 @@ cfg.noisePT5 = True
 cfg.noisePV5 = True
 
 cfg.noise_scale = 1.0
-
 cfg.noise_std_scale = 5.0
 
 cfg.PT5_noise_amp = 0.25 #1.0
@@ -71,8 +70,8 @@ cfg.PT5_inh_noise_std = 1.0     # std_i       : 0.0066 * cfg.PT5_inh_noise_std
 cfg.PT5_inh_noise_e   = -75.0   # Default E_i : -75.0
 cfg.PT5_inh_noise_tau = 1.0     # tau_i       : 10.49 * cfg.PT5_inh_noise_tau
 
-cfg.PV5_noise_amp = 0.2 #0.1 #1.0
-cfg.PV5_noise_std = 0.2 #0.1 #1.0
+cfg.PV5_noise_amp = 0.25 #0.1 #1.0
+cfg.PV5_noise_std = 0.25 #0.1 #1.0
 
 cfg.PV5_exc_noise_amp = 1.0     # g_e0        : 0.0121 * cfg.PV5_exc_noise_amp
 cfg.PV5_exc_noise_std = 1.0     # std_e       : 0.0030 * cfg.PV5_exc_noise_std

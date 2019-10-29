@@ -16076,9 +16076,17 @@ Submitted batch job 4596329
 cfg.simLabel = 'eee_net_73'
 
 Increasing AMPA gmax via its ratio with NMDA
+In order to increase PV5 spiking
 
 cfg.AMPANMDAratio   = 15.0 #10.0
 
+Submitted batch job 4596378
+
+AMPA is a bit too strong.  Better to increase E->I conv to increase I spiking
+
+cfg.EIconn = 6 #4 #0.005 #0.0005 # Will be multiplied by cfg.EScale
+
+cfg.simLabel = 'eee_net_74'
 
 
 

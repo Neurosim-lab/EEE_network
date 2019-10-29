@@ -15929,6 +15929,8 @@ stampede22(21)$ sq
 
 It looks like there's a ton of connectivity even at the lowest convergence setting...
 
+file:gif/20191028_174801.png
+
 Cancelling remainging jobs and reducing connectivity.
 
 scancel -u $USER
@@ -15946,5 +15948,30 @@ cfg.IIconn = 1 #12 #0.0005 # Will be multiplied by cfg.IScale
     params['IScale'] = [1, 2, 5, 10]
 
 Reducing time to 30 minutes
+
+stampede22(56)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4594695  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4594696  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4594697  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4594698  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4594699  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4594700  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4594701  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4594702  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4594703  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4594704  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4594705  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4594707  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4594708  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4594709  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4594710  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4594711  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+
+Waiting for it to run.
+
+** Running a single sim on dev queue
+
+cfg.simLabel = 'eee_net_65'
 
 

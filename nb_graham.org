@@ -16021,6 +16021,11 @@ import netpyne
 
 cfg.simLabel = 'eee_net_68'
 
+Submitted batch job 4595537
+
+There was a bug in netParams
+
+
 
 
 

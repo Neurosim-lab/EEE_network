@@ -151,7 +151,7 @@ for prePop in EPops:
             'postConds': {'pop': postPop},
             'synMech': ESynMech, 
             'weight': [cfg.AMPAweight, cfg.NMDAweight],
-            'defaultDelay', #'defaultDelay+dist_3D/propVelocity',
+            'delay': 'defaultDelay', #'defaultDelay+dist_3D/propVelocity',
             cfg.connType: EEconn,
             'loc': 0.3,
             'sec': 'basal_8'} #,

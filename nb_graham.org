@@ -16051,12 +16051,21 @@ Submitted batch job 4596247
 
 file:gif/20191028_223122.png
 
+Starting to look better:
 I want to reduce gmax further, but increase E->I 
 
 cfg.NMDAgmax        = 0.01 #0.05 #0.5 #0.005
 cfg.EIconn = 4 #0.005 #0.0005 # Will be multiplied by cfg.EScale
 
 eee_net_71
+
+Submitted batch job 4596273
+
+Looking good, need more PV spiking, slightly more PT spiking.
+
+Increasing gmax slightly.
+
+cfg.NMDAgmax        = 0.02 #0.01 
 
 
 

@@ -16,7 +16,7 @@ cfg.numCells = 10000
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_71'
+cfg.simLabel = 'eee_net_72'
 
 baseFolder = '/scratch/06322/tg856217'
 #baseFolder = 'data'
@@ -40,7 +40,7 @@ cfg.sizeX       = 400
 cfg.sizeZ       = 300
 cfg.ynormRange  = [0.2, 0.623]
 
-cfg.NMDAgmax        = 0.01 #0.05 #0.5 #0.005
+cfg.NMDAgmax        = 0.02 #0.01 
 cfg.AMPANMDAratio   = 10.0
 cfg.AMPAgmax        = cfg.AMPANMDAratio * cfg.NMDAgmax 
 cfg.NMDAweight      = 0.2

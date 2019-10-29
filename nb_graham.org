@@ -15986,5 +15986,30 @@ cfg.AMPAweight      = 0.4 #cfg.NMDAweight
 
 cfg.simLabel = 'eee_net_66'
 
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4595099     skx-dev  eee_net tg856217 PD       0:00      4 (Resources)
+
+Still no spiking in PV cells.
+
+Removing dist3D distance-based delays from conns -- we're not modeling spatially
+
+Increasing E->I connectivity and increasing AMPA weight again.
+
+cfg.EIconn = 5 #1 #0.005 #0.0005 # Will be multiplied by cfg.EScale
+cfg.AMPAweight      = 1.0 #0.4 #cfg.NMDAweight
+
+cfg.simLabel = 'eee_net_67'
+
+
+
+
+
+
+
+
+
+
+
+
 
 

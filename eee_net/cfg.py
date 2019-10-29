@@ -15,7 +15,7 @@ cfg.numCells = 10000
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_66'
+cfg.simLabel = 'eee_net_67'
 
 baseFolder = '/scratch/06322/tg856217'
 #baseFolder = 'data'
@@ -43,7 +43,7 @@ cfg.NMDAgmax        = 0.005
 cfg.AMPANMDAratio   = 10.0
 cfg.AMPAgmax        = cfg.AMPANMDAratio * cfg.NMDAgmax 
 cfg.NMDAweight      = 0.2
-cfg.AMPAweight      = 0.4 #cfg.NMDAweight
+cfg.AMPAweight      = 1.0 #0.4 #cfg.NMDAweight
 cfg.GABAAfastWeight = 0.0001
 cfg.GABAAslowWeight = cfg.GABAAfastWeight
 cfg.GABAAfast_e     = -80.0
@@ -87,10 +87,10 @@ cfg.connType = 'convergence'  # 'convergence', 'divergence', or 'probability'
 cfg.EScale = 1.0
 cfg.IScale = 1.0
 
-cfg.EEconn = 1 #3 #0.0005 # Will be multiplied by cfg.EScale
-cfg.EIconn = 1 #3 #0.005 #0.0005 # Will be multiplied by cfg.EScale
-cfg.IEconn = 1 #12 #0.0005 # Will be multiplied by cfg.IScale
-cfg.IIconn = 1 #12 #0.0005 # Will be multiplied by cfg.IScale
+cfg.EEconn = 1 #0.0005 # Will be multiplied by cfg.EScale
+cfg.EIconn = 5 #1 #0.005 #0.0005 # Will be multiplied by cfg.EScale
+cfg.IEconn = 1 #0.0005 # Will be multiplied by cfg.IScale
+cfg.IIconn = 1 #0.0005 # Will be multiplied by cfg.IScale
 
 cfg.EEspc = 1 
 cfg.EIspc = 1

@@ -87,10 +87,10 @@ cfg.connType = 'convergence'  # 'convergence', 'divergence', or 'probability'
 cfg.EScale = 1.0
 cfg.IScale = 1.0
 
-cfg.EEconn = 3 #0.0005 # Will be multiplied by cfg.EScale
-cfg.EIconn = 3 #0.005 #0.0005 # Will be multiplied by cfg.EScale
-cfg.IEconn = 12 #0.0005 # Will be multiplied by cfg.IScale
-cfg.IIconn = 12 #0.0005 # Will be multiplied by cfg.IScale
+cfg.EEconn = 1 #3 #0.0005 # Will be multiplied by cfg.EScale
+cfg.EIconn = 1 #3 #0.005 #0.0005 # Will be multiplied by cfg.EScale
+cfg.IEconn = 1 #12 #0.0005 # Will be multiplied by cfg.IScale
+cfg.IIconn = 1 #12 #0.0005 # Will be multiplied by cfg.IScale
 
 cfg.EEspc = 1 
 cfg.EIspc = 1
@@ -124,8 +124,8 @@ cfg.recordTraces['V_dend'] = {'sec':'basal_8', 'loc':0.5, 'var':'v'}
 cfg.printPopAvgRates = True
 
 # Analysis options
-#cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True, 'lw': 0.5, 'saveFig': saveFig, 'showFig': showFig, 'saveData': saveData}
-cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True, 'lw': 0.5, 'saveFig': saveFig, 'showFig': showFig, 'saveData': saveData, 'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4']}
+cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True, 'lw': 0.5, 'saveFig': saveFig, 'showFig': showFig, 'saveData': saveData}
+#cfg.analysis['plotRaster'] = {'orderBy': 'gid', 'orderInverse': True, 'lw': 0.5, 'saveFig': saveFig, 'showFig': showFig, 'saveData': saveData, 'include': ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4']}
 
 cfg.analysis['plotSpikeHist'] = {'saveFig': saveFig,'showFig': showFig, 'saveData': saveData}
 

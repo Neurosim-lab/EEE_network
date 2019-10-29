@@ -15907,5 +15907,44 @@ I'll use the original settings, and then vary EScale and IScale
 
 Got some time outs.  Bumping up to 1 hour and running again as batch14
 
+stampede22(21)$ sq
+             JOBID   PARTITION     NAME     USER ST  
+           4593827  skx-normal v02_batc tg856217 PD  
+           4593828  skx-normal v02_batc tg856217 PD  
+           4593829  skx-normal v02_batc tg856217 PD  
+           4593831  skx-normal v02_batc tg856217 PD  
+           4593832  skx-normal v02_batc tg856217 PD  
+           4593833  skx-normal v02_batc tg856217 PD  
+           4593834  skx-normal v02_batc tg856217 PD  
+           4593835  skx-normal v02_batc tg856217 PD  
+           4593837  skx-normal v02_batc tg856217 PD  
+           4593838  skx-normal v02_batc tg856217 PD  
+           4593839  skx-normal v02_batc tg856217 PD  
+           4593840  skx-normal v02_batc tg856217 PD  
+           4593841  skx-normal v02_batc tg856217 PD  
+           4593843  skx-normal v02_batc tg856217 PD  
+           4593844  skx-normal v02_batc tg856217 PD  
+           4593846  skx-normal v02_batc tg856217 PD  
+
+
+It looks like there's a ton of connectivity even at the lowest convergence setting...
+
+Cancelling remainging jobs and reducing connectivity.
+
+scancel -u $USER
+
+** Reducing connectivity
+
+batchLabel = 'v02_batch15'
+
+cfg.EEconn = 1 #3 #0.0005 # Will be multiplied by cfg.EScale
+cfg.EIconn = 1 #3 #0.005 #0.0005 # Will be multiplied by cfg.EScale
+cfg.IEconn = 1 #12 #0.0005 # Will be multiplied by cfg.IScale
+cfg.IIconn = 1 #12 #0.0005 # Will be multiplied by cfg.IScale
+
+    params['EScale'] = [1, 2, 5, 10]
+    params['IScale'] = [1, 2, 5, 10]
+
+Reducing time to 30 minutes
 
 

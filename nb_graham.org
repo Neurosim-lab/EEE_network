@@ -15861,7 +15861,7 @@ stampede21(256)$ sq
            4531475  skx-normal v02_batc tg856217 PD       0:00      4 (Nodes required for job are DOWN, DRAINED or reserved for jobs in higher priority partitions)
 
 
-* 2019-10-28 --
+* 2019-10-28 -- exploring convergence
 
 
 ** Running a batch exploring convergence
@@ -16040,7 +16040,7 @@ Submitted batch job 4596094
 
 Definitely seeing conns now!
 
-Need to reduce gmax to more reasonable level.
+** Need to reduce gmax to more reasonable level.
 
 cfg.NMDAgmax        = 0.05 #0.5 #0.005
 cfg.simLabel = 'eee_net_70'
@@ -16075,7 +16075,8 @@ Submitted batch job 4596329
 
 cfg.simLabel = 'eee_net_73'
 
-Increasing AMPA gmax via its ratio with NMDA
+** Increasing AMPA gmax via its ratio with NMDA
+
 In order to increase PV5 spiking
 
 cfg.AMPANMDAratio   = 15.0 #10.0
@@ -16090,7 +16091,7 @@ cfg.simLabel = 'eee_net_74'
 
 Submitted batch job 4596423
 
-Still want to see more PV spiking. Will increase noise to PV
+** Still want to see more PV spiking. Will increase noise to PV
 
 eee_net_75
 
@@ -16106,24 +16107,103 @@ Would like still a bit more.
 
 Increasing noise slightly.
 
-Setting up a batch to run overnight.
+** Setting up a batch to run overnight.
 
     params['EScale'] = [0.5, 1.0, 1.5, 2.0]
     params['IScale'] = [0.5, 1.0, 1.5, 2.0]
 
 batchLabel = 'v02_batch16'
 
+stampede22(134)$ sq
+             JOBID   PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4596551  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4596552  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4596553  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4596554  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4596555  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4596556  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4596557  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4596558  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4596560  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4596561  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4596562  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4596563  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4596564  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4596565  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4596566  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+           4596567  skx-normal v02_batc tg856217 PD       0:00      4 (Priority)
+
+
+* 2019-10-29 -- 
+
+** Analyzing batch from last night
+
+sshs
+idev -m 120
+ipython
+import batch_analysis as ba
+batchdatadir = '/scratch/06322/tg856217/'
+batchname = 'v02_batch16'
+batch = ba.plot_vtraces(batchname, batchdatadir=batchdatadir, outputdir=batchdatadir + batchname)
+
+Raster plots:
+file:gif/20191029_065810.png
+
+Connectivity numbers:
+file:gif/20191029_070320.png
+
+Connectivity strength:
+file:gif/20191029_070613.png
+
+Spike histogram:
+file:gif/20191029_070934.png
+
+PT5_4 voltage traces:
+file:gif/20191029_073248.png
+
+PT5_2 voltage traces:
+file:gif/20191029_073438.png
+
+Analyzing batch sync:
+
+import dev
+dev.plotBatchSync(batchPath='/scratch/06322/tg856217/', batchLabel='v02_batch16')
+
+** EEE meeting
+
+Action items 
+
+Find larger somatic plateaus
+Run four cases individually instead of all in one pop
+
+
+* 2019-10-30 -- Exploring plateaus
+
+** Exploring plateaus
+
+Using single cell model, exploring effects of noise, glutamate puff location
 
 
 
 
+* 2019-11-05 -- EEE meeting, exploring plateaus
 
+** Exploring plateaus
 
+*** Plateaus and glut puff location
 
+With and without noise
 
+cfg.numCells = 5 #10000 
 
+Turning off connectivity:
+cfg.EScale = 0.0 #1.0
+cfg.IScale = 0.0 #1.0
 
+batchLabel = 'platExp_01' #'v02_batch16'
 
+    params['synLocMiddle'] = [0.3, 0.5, 0.7]
+    params['noise'] = [False, True]
 
 
 

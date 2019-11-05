@@ -2,18 +2,18 @@ from netpyne import specs
 from netpyne.batch import Batch 
 import os
 
-batchLabel = 'v02_batch16'
+batchLabel = 'platExp_01' #'v02_batch16'
 
-runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
-#runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
+#runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
+runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
 
-#runFolder = '/u/graham/EEE_network/eee_net/'
+runFolder = '/u/graham/EEE_network/eee_net/'
 #runFolder = '/home/jwgraham/EEE_network/eee_net/'
-runFolder = '/home1/06322/tg856217/EEE_network/eee_net/'
+#runFolder = '/home1/06322/tg856217/EEE_network/eee_net/'
 
-#saveFolder = '/u/graham/EEE_network/eee_net/data/'
+saveFolder = '/u/graham/EEE_network/eee_net/data/'
 #saveFolder = '/oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/'
-saveFolder = '/scratch/06322/tg856217/'
+#saveFolder = '/scratch/06322/tg856217/'
 
 #allocation = 'csd403'         # NSG on Comet
 allocation = 'TG-IBN140002'   # NSG on Stampede
@@ -24,6 +24,9 @@ def batchRun():
     params = specs.ODict()   
 
     # fill in with parameters to explore and range of values (key has to coincide with a variable in simConfig) 
+
+    params['synLocMiddle'] = [0.3, 0.5, 0.7]
+    params['noise'] = [False, True]
 
     #params[''] = []
     #params[''] = []
@@ -48,8 +51,8 @@ def batchRun():
     #params['GABAAfastWeight'] = [0.01, 0.001, 0.0001, 0.00001]
     #params['NMDAweight'] = [0.02, 0.2, 2.0, 10.0]
 
-    params['EScale'] = [0.5, 1.0, 1.5, 2.0]
-    params['IScale'] = [0.5, 1.0, 1.5, 2.0]
+    #params['EScale'] = [0.5, 1.0, 1.5, 2.0]
+    #params['IScale'] = [0.5, 1.0, 1.5, 2.0]
 
     #params['glutAmp'] = [2.0, 3.0, 5.0, 10.0]
     #params['noise_std_scale'] = [1.0, 2.0, 4.0, 10.0]

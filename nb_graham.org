@@ -16205,6 +16205,40 @@ batchLabel = 'platExp_01' #'v02_batch16'
     params['synLocMiddle'] = [0.3, 0.5, 0.7]
     params['noise'] = [False, True]
 
+Turning off common inputs
+Injecting just one plateau
+
+batchLabel = 'platExp_02'
+
+    params['synLocMiddle'] = [0.2, 0.5, 0.8]
+    params['glutAmp'] = [1.0, 2.0, 3.0]
+
+./runbatch
+ipython
+import batch_analysis as ba
+out = ba.plot_vtraces('platExp_02', timerange=[400, 900])
+
+file:gif/20191105_070131.png
+
+Increasing glutAmp range
+
+    params['synLocMiddle'] = [0.2, 0.5, 0.8]
+    params['glutAmp'] = [0.2, 2.0, 4.0]
+
+file:gif/20191105_070449.png
+
+batchLabel = 'platExp_04'
+
+Same thing but with noise off.
+
+
+
+
+
+
+
+
+
 
 
 

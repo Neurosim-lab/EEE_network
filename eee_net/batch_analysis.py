@@ -20,7 +20,7 @@ platthresh   = 10.0 #10.0 #5.0    # threshold for a plateau
 stable       = 50     # ms required for trace to stabilize
 syntime      = 200    # time in ms when glutamate is released (synapse time)
 spikewidth   = 3.0
-batchdatadir = "batch_data"
+batchdatadir = "data" #"batch_data"
 
 
 ###############################################################################

@@ -2,18 +2,18 @@ from netpyne import specs
 from netpyne.batch import Batch 
 import os
 
-batchLabel = 'platExp_15' #'v02_batch16'
+batchLabel = 'v03_batch01'
 
-#runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
-runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
+runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
+#runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
 
-runFolder = '/u/graham/EEE_network/eee_net/'
+#runFolder = '/u/graham/EEE_network/eee_net/'
 #runFolder = '/home/jwgraham/EEE_network/eee_net/'
-#runFolder = '/home1/06322/tg856217/EEE_network/eee_net/'
+runFolder = '/home1/06322/tg856217/EEE_network/eee_net/'
 
-saveFolder = '/u/graham/EEE_network/eee_net/data/'
+#saveFolder = '/u/graham/EEE_network/eee_net/data/'
 #saveFolder = '/oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/'
-#saveFolder = '/scratch/06322/tg856217/'
+saveFolder = '/scratch/06322/tg856217/'
 
 #allocation = 'csd403'         # NSG on Comet
 allocation = 'TG-IBN140002'   # NSG on Stampede
@@ -25,8 +25,8 @@ def batchRun():
 
     # fill in with parameters to explore and range of values (key has to coincide with a variable in simConfig) 
 
-    params['PT5_epas'] = [-65.0, -75.0, -85.0]
-    params['dendRa']   = [25.0, 50.0, 75.0, 100.0]
+    params['PT5_exc_noise_amp'] = [1.0, 2.0, 5.0, 10.0]
+    params['PT5_inh_noise_amp'] = [1.0, 2.0, 5.0, 10.0]
 
     #params['NMDAgmax'] = [0.005, 0.01, 0.02, 0.03]
     
@@ -102,7 +102,7 @@ if __name__ == '__main__':
     
     batchRun() 
 
-    #import batch_analysis as ba
-    #batch = ba.plot_vtraces(batchLabel, batchdatadir=saveFolder, outputdir=saveFolder + batchLabel)
+    import batch_analysis as ba
+    batch = ba.plot_vtraces(batchLabel, batchdatadir=saveFolder, outputdir=saveFolder + batchLabel)
 
 

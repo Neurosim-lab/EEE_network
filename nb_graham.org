@@ -16498,6 +16498,24 @@ Trying again.
 
 cfg.simLabel = 'eee_net_79'
 
+Submitted batch job 4688760
+
+Slurm Job_id=4688760 Name=eee_net Ended, Run time 00:09:05, COMPLETED, ExitCode 0
+
+scpe eee_net_79
+
+file:gif/20191111_223910.png
+
+Not much if any spiking in PT cells without stimulus
+
+** Exploring noise in a batch
+
+batchLabel = 'v03_batch01'
+
+    params['PT5_exc_noise_amp'] = [1.0, 2.0, 5.0, 10.0]
+    params['PT5_inh_noise_amp'] = [1.0, 2.0, 5.0, 10.0]
+
+
 
 
 

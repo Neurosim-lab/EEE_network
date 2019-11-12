@@ -16336,6 +16336,134 @@ Commented out the following line in eeeS.py
 
 ** Exploring somatic plateau height
 
+batchLabel = 'platExp_10'
+
+    params['synLocMiddle'] = [0.3, 0.5, 0.7]
+    params['PT5_epas'] = [-75.0, -70.0, -65.0]
+
+
+ipython
+import batch_analysis as ba
+out = ba.plot_vtraces('platExp_10')
+
+file:gif/20191111_182946.png
+
+
+I notice Penny's model has NMDA gmax at 0.005 (mine currently set to 0.02)
+
+batchLabel = 'platExp_11'
+    params['PT5_epas'] = [-75.0, -70.0, -65.0]
+    params['NMDAgmax'] = [0.005, 0.01, 0.02, 0.03]
+
+file:gif/20191111_184331.png
+
+Plateaus look pretty good across the board.
+
+Turning noise on and running same params.
+
+batchLabel = 'platExp_12'
+
+file:gif/20191111_184621.png
+
+The problem is that the noise is dragging RMP up to around -65 mV, regardless of 
+e_pas.
+
+
+** Looking into noise
+
+Found a post on the NEURON forum about gfluct:
+https://www.neuron.yale.edu/phpBB/viewtopic.php?t=1247
+
+It mentions that the noise may affect mean membrane potential:
+
+Regardless of whether the noise source is a current source or uses fluctuating
+conductances, you will want to verify that it has no effect on mean membrane potential.
+Even if mean noise current is 0, when applied to a cell with active membrane properties
+it may still induce a shift of mean membrane potential. To ensure that this does not
+happen, you should set all synaptic weights to 0 and run a test simulation. The test
+simulation should last sufficiently long that membrane potential, gating states, and ionic
+concentrations can settle to stable mean values. For each cell, calculate mean
+membrane potential at the site of noise injection over a "sufficiently long interval" near
+the end of the test simulation. If mean membrane potential has shifted from rest (or
+whatever you think should be the cell's "mean operating potential"), estimate the
+adjustments to the noise that you think will correct this shift, apply the adjustments,
+and run another test simulation. Repeat until you are satisfied with the results.
+
+Here's a link to ModelDB model of gfluct:
+https://senselab.med.yale.edu/modeldb/showModel.cshtml?model=64259&file=%2FNCnote%2FGfluct.mod#tabs-2
+
+It looks like a solution may be to vary the reversal potentials of the noise based 
+on the RMP (e_pas) of the neuron...
+
+Default exc noise e is 0.0
+Default inh noise e is -75.0
+
+Default e_pas is -65.0
+
+So I will try making exc_e = e_pas + 65.0
+                 and inh_e = e_pas - 10.0
+
+
+cfg.py:
+
+cfg.PT5_exc_noise_e   = cfg.PT5_epas + 65.0     # Default E_e : 0.0
+cfg.PT5_inh_noise_e   = cfg.PT5_epas -10.0   # Default E_i : -75.0
+
+Adding the same lines to netParams so I can very e_pas and have that transfer through 
+to the noise e.
+
+batchLabel = 'platExp_13' 
+    params['PT5_epas'] = [-80.0, -70.0, -60.0]
+    params['NMDAgmax'] = [0.005, 0.01, 0.02, 0.03]
+
+file:gif/20191111_191513.png
+
+Yeah, now the cell sits where it should based on e_pas.
+
+But the plateaus in the soma are still too small.
+
+It looks like the dendrite is "maxed out", but reducing axial resistance in the 
+dendrite should transfer more of the plateau to the soma...
+
+Adding the following to netParams.py:
+
+	for cell_label, cell_params in netParams.cellParams.items():
+
+	    for secName, sec in cell_params['secs'].items(): 
+	        print(cell_label, secName)
+	        if hasattr(cfg, 'dendRa'):
+	            if "basal" in secName:
+	                orig_ra = sec['geom']['Ra']
+	                sec['geom']['Ra'] = cfg.dendRa
+	                print(secName, orig_ra, sec['geom']['Ra'])
+
+And the following to cfg.py:
+
+	cfg.dendRa   = 100.0  # Default: 100.0
+
+
+batchLabel = 'platExp_14'
+
+    params['PT5_epas'] = [-65.0, -75.0, -85.0]
+    params['dendRa']   = [50.0, 100.0, 150.0, 200.0]
+
+batchLabel = 'platExp_15'
+
+    params['PT5_epas'] = [-65.0, -75.0, -85.0]
+    params['dendRa']   = [25.0, 50.0, 75.0, 100.0]
+
+file:gif/20191111_210703.png
+
+It looks like a dend Ra of 50.0 and an e_pas of -85.0 makes good plateaus.
+
+Setting these values in cfg.py
+
+
+
+
+
+
+
 
 
 

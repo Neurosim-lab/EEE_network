@@ -78,6 +78,9 @@ netParams.synMechParams['NMDA'] = {'mod': 'NMDA', 'Cdur': 10.0, 'Beta': 0.02, 'g
 
 ## Noise
 
+cfg.PT5_exc_noise_e   = cfg.PT5_epas + 65.0     # Default E_e : 0.0
+cfg.PT5_inh_noise_e   = cfg.PT5_epas -10.0   # Default E_i : -75.0
+
 # PT5_1 noise
 if cfg.noise and cfg.noisePT5:
     netParams.cellParams['PT5_1']['secs']['soma']['pointps'] = {
@@ -143,12 +146,18 @@ if cfg.PT5_epas is not None:
     for label in ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4']:
     
         for secName, sec in netParams.cellParams[label]['secs'].items():
-            
-            print()
-            print("sec['mechs']['pas']['e'] = ", sec['mechs']['pas']['e'])
             sec['mechs']['pas']['e'] = cfg.PT5_epas
-            print("sec['mechs']['pas']['e'] = ", sec['mechs']['pas']['e'])
 
+# apply values to parameters
+for cell_label, cell_params in netParams.cellParams.items():
+
+    for secName, sec in cell_params['secs'].items(): 
+        #print(cell_label, secName)
+        if hasattr(cfg, 'dendRa'):
+            if "basal" in secName:
+                orig_ra = sec['geom']['Ra']
+                sec['geom']['Ra'] = cfg.dendRa
+                #print(secName, orig_ra, sec['geom']['Ra'])
 
 
 

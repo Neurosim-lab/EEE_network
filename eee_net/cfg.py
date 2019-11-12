@@ -35,7 +35,8 @@ cfg.hParams.celsius = 32.0
 cfg.hParams.v_init  = -73.7
 
 # Cellular variables
-cfg.PT5_epas = -65.0  # None or a value (default: -65)
+cfg.PT5_epas = -85.0  # None or a value (default: -65)
+cfg.dendRa   = 50.0  # Default: 100.0
 
 # Network variables
 cfg.sizeY       = 1600
@@ -43,7 +44,7 @@ cfg.sizeX       = 400
 cfg.sizeZ       = 300
 cfg.ynormRange  = [0.2, 0.623]
 
-cfg.NMDAgmax        = 0.02 #0.01 
+cfg.NMDAgmax        = 0.02 #0.01 #Penny has 0.005
 cfg.AMPANMDAratio   = 10.0
 cfg.AMPAgmax        = cfg.AMPANMDAratio * cfg.NMDAgmax 
 cfg.NMDAweight      = 0.2
@@ -54,7 +55,7 @@ cfg.GABAAfast_e     = -80.0
 cfg.GABAAslow_e     = -90.0
 
 # Noise variables
-cfg.noise = False
+cfg.noise = True
 cfg.noisePT5 = True
 cfg.noisePV5 = True
 
@@ -66,11 +67,11 @@ cfg.PT5_noise_std = 0.25 #1.0
 
 cfg.PT5_exc_noise_amp = 1.0     # g_e0        : 0.0121 * cfg.PT5_exc_noise_amp
 cfg.PT5_exc_noise_std = 1.0     # std_e       : 0.0030 * cfg.PT5_exc_noise_std
-cfg.PT5_exc_noise_e   = 0.0     # Default E_e : 0.0
+cfg.PT5_exc_noise_e   = cfg.PT5_epas + 65.0     # Default E_e : 0.0
 cfg.PT5_exc_noise_tau = 1.0     # tau_e       : 2.728 * cfg.PT5_exc_noise_tau
 cfg.PT5_inh_noise_amp = 1.0     # g_i0        : 0.0573 * cfg.PT5_inh_noise_amp
 cfg.PT5_inh_noise_std = 1.0     # std_i       : 0.0066 * cfg.PT5_inh_noise_std
-cfg.PT5_inh_noise_e   = -75.0   # Default E_i : -75.0
+cfg.PT5_inh_noise_e   = cfg.PT5_epas -10.0   # Default E_i : -75.0
 cfg.PT5_inh_noise_tau = 1.0     # tau_i       : 10.49 * cfg.PT5_inh_noise_tau
 
 cfg.PV5_noise_amp = 0.25 #0.1 #1.0

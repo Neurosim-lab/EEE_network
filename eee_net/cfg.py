@@ -11,15 +11,15 @@ saveData = True
 # Simulation options
 cfg = specs.SimConfig()
 cfg.dummy    = 0       
-cfg.duration = 1000 #2500
-cfg.numCells = 5 #10000 
+cfg.duration = 2500
+cfg.numCells = 10000 
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_76'
+cfg.simLabel = 'eee_net_77'
 
-#baseFolder = '/scratch/06322/tg856217'
-baseFolder = 'data'
+baseFolder = '/scratch/06322/tg856217'
+#baseFolder = 'data'
 cfg.saveFolder = os.path.join(baseFolder, cfg.simLabel)
 
 cfg.savePickle = False
@@ -88,8 +88,8 @@ cfg.PV5_inh_noise_tau = 1.0     # tau_i       : 10.49 * cfg.PV5_inh_noise_tau
 
 # Connectivity variables
 cfg.connType = 'convergence'  # 'convergence', 'divergence', or 'probability'
-cfg.EScale = 0.0 #1.0
-cfg.IScale = 0.0 #1.0
+cfg.EScale = 1.0
+cfg.IScale = 1.0
 
 cfg.EEconn = 1 #0.0005 # Will be multiplied by cfg.EScale
 cfg.EIconn = 6 #4 #0.005 #0.0005 # Will be multiplied by cfg.EScale
@@ -106,7 +106,7 @@ cfg.IIspc = 1
 cfg.glutamate         = True
 cfg.glutPops          = ['PT5_1', 'PT5_2']
 
-cfg.glutTimes         = [500.0] #[800.0, 2000.0]
+cfg.glutTimes         = [800.0, 2000.0]
 cfg.numSyns           = 24
 cfg.numExSyns         = cfg.numSyns
 cfg.glutAmp           = 2.0
@@ -183,7 +183,7 @@ cfg.IClamp2 = {'pop': cfg.popIClamp2, 'sec': cfg.secIClamp2, 'loc': cfg.locIClam
 
 
 # Common synaptic input
-cfg.addCommonInput1 = False #True
+cfg.addCommonInput1 = True
 cfg.popCommonInput1 = ['PT5_1', 'PT5_3']
 
 cfg.secCommonInput1 = 'soma'
@@ -194,7 +194,7 @@ cfg.numCommonInput1 = 10    # number
 cfg.intCommonInput1 = 20   # interval
 
 
-cfg.addCommonInput2 = False #True
+cfg.addCommonInput2 = True
 cfg.popCommonInput2 = ['PT5_1', 'PT5_3']
 
 cfg.secCommonInput2 = 'soma'

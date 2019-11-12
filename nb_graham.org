@@ -16458,6 +16458,13 @@ It looks like a dend Ra of 50.0 and an e_pas of -85.0 makes good plateaus.
 
 Setting these values in cfg.py
 
+Scaling sims back up to 10,000 cells and running on Stampede.
+
+cfg.simLabel = 'eee_net_77'
+
+cfg.duration = 2500
+cfg.numCells = 10000 
+
 
 
 

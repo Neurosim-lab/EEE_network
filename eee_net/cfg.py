@@ -16,7 +16,7 @@ cfg.numCells = 10000
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_78'
+cfg.simLabel = 'eee_net_79'
 
 baseFolder = '/scratch/06322/tg856217'
 #baseFolder = 'data'
@@ -142,7 +142,7 @@ include = include + list(range(6000, 6005))
 include = include + list(range(8000, 8005))
 include = include + list(range(9000, 9005))
 
-include = ['allCells']
+#include = ['allCells']
 
 cfg.recordCells = include
 

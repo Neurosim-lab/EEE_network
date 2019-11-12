@@ -16481,6 +16481,23 @@ Running on Stampede again.
 
 cfg.simLabel = 'eee_net_78'
 
+Submitted batch job 4688514
+
+The simulation timed out.  Looking into it.
+
+Nothing in /scratch/06322/tg856217/run_files/eee_net_4688514.err
+
+Ahhh, forgot to comment out
+#include = ['allCells']
+
+In cfg.py
+
+It was trying to record all 10,000 cells.
+
+Trying again.
+
+cfg.simLabel = 'eee_net_79'
+
 
 
 

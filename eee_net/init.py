@@ -49,7 +49,7 @@ groupBy     = 'pop' #'cell'
 orderBy     = 'gid' #'y'
 synOrConn   = 'conn' #'syn'
 
-#sim.analysis.plotConn(saveFig=True, showFig=False, saveData=True, includePre=includePre, includePost=includePost, feature=feature, groupBy=groupBy, orderBy=orderBy, synOrConn=synOrConn)
+sim.analysis.plotConn(saveFig=True, showFig=False, saveData=True, includePre=includePre, includePost=includePost, feature=feature, groupBy=groupBy, orderBy=orderBy, synOrConn=synOrConn)
 
 # import batch_analysis as ba
 # batchdatadir = '/scratch/06322/tg856217/'

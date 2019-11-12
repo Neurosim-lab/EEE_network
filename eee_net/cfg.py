@@ -6,7 +6,7 @@ import os
 # Show figures? Save figures?
 showFig = False
 saveFig = True
-saveData = True
+saveData = False
 
 # Simulation options
 cfg = specs.SimConfig()
@@ -16,7 +16,7 @@ cfg.numCells = 10000
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_77'
+cfg.simLabel = 'eee_net_78'
 
 baseFolder = '/scratch/06322/tg856217'
 #baseFolder = 'data'

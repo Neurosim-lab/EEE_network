@@ -16465,6 +16465,22 @@ cfg.simLabel = 'eee_net_77'
 cfg.duration = 2500
 cfg.numCells = 10000 
 
+sshs
+sbatch runsim_stampede
+
+Submitted batch job 4688399
+
+Plotting connectivity matrix...
+There was an exception in plotConn(): 
+ 'Network' object has no attribute 'allCells' 
+(<class 'AttributeError'>, AttributeError("'Network' object has no attribute 'allCells'"), <traceback object at 0x2b65f97cb1c8>)
+
+Commenting out #sim.analysis.plotConn at the end of init.py
+
+Running on Stampede again.
+
+cfg.simLabel = 'eee_net_78'
+
 
 
 

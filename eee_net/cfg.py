@@ -12,14 +12,14 @@ saveData = False
 cfg = specs.SimConfig()
 cfg.dummy    = 0       
 cfg.duration = 2500
-cfg.numCells = 10000 
+cfg.numCells = 5 #10000 
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
 cfg.simLabel = 'eee_net_79'
 
-baseFolder = '/scratch/06322/tg856217'
-#baseFolder = 'data'
+#baseFolder = '/scratch/06322/tg856217'
+baseFolder = 'data'
 cfg.saveFolder = os.path.join(baseFolder, cfg.simLabel)
 
 cfg.savePickle = False

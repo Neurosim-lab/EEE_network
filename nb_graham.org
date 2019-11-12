@@ -16488,9 +16488,8 @@ The simulation timed out.  Looking into it.
 Nothing in /scratch/06322/tg856217/run_files/eee_net_4688514.err
 
 Ahhh, forgot to comment out
-#include = ['allCells']
-
-In cfg.py
+	#include = ['allCells']
+in cfg.py
 
 It was trying to record all 10,000 cells.
 
@@ -16515,9 +16514,56 @@ batchLabel = 'v03_batch01'
     params['PT5_exc_noise_amp'] = [1.0, 2.0, 5.0, 10.0]
     params['PT5_inh_noise_amp'] = [1.0, 2.0, 5.0, 10.0]
 
+JOBID
+4688866
+4688867
+4688868
+4688869
+4688870
+4688871
+4688872
+4688873
+4688874
+4688875
+4688876
+4688877
+4688878
+4688879
+4688880
+4688881
 
 
+* 2019-11-12 -- 
 
+** Analyzing batch from last night
+
+sshs
+idev -m 120
+ipython
+import batch_analysis as ba
+batchdatadir = '/scratch/06322/tg856217/'
+batchname = 'v03_batch01'
+batch = ba.plot_vtraces(batchname, batchdatadir=batchdatadir, outputdir=batchdatadir + batchname)
+
+Loading data takes a long time.
+
+scpe v03_batch01
+
+Traces from cell 0:
+file:gif/20191112_064718.png
+
+Raster from exc_amp=2.0, inh_amp=2.0:
+file:gif/20191112_064838.png
+
+
+** Running a local batch to show noise decreases plateau amplitude
+
+batchLabel = 'v03_batch02'
+
+    params['noise'] = [False, True]
+    params['PT5_epas'] = [-65.0, -75.0, -85.0]
+
+file:gif/20191112_080605.png
 
 
 

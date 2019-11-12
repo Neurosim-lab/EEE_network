@@ -16231,14 +16231,110 @@ batchLabel = 'platExp_04'
 
 Same thing but with noise off.
 
+file:gif/20191105_070819.png
+
+Glut puff location
+Moving glutamate puff location further out dendrite reduces spiking during plateau, likely because it reduces plateau amplitude (see figures above)
+We wanted less spiking on plateau, but apparently moving glut puff distally is not the way to do it...
+
+** Looking into varying RMP of PT cells
+
+Added to cfg.py:
+
+# Cellular variables
+cfg.PT5_epas = None  # None or a value
+
+Added to netParams.py:
+
+## Cell settings
+
+if cfg.PT5_epas is not None:
+
+    for label in ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4']:
+    
+        for secName, sec in netParams.cellParams[label]['secs'].iteritems():
+    
+            sec['mechs']['pas']['e'] = cfg.PT5_epas
+
+Now to run a batch.
+
+batchLabel = 'platExp_06'
+
+    params['synLocMiddle'] = [0.2, 0.5, 0.8]
+    params['PT5_epas'] = [-75.0, -70.0, -65.0]
+
+Crashed for some reason.  Looking into it.
+
+	---------------------------------------------------------------------------
+	TypeError                                 Traceback (most recent call last)
+	/u/graham/EEE_network/eee_net/netParams.py in <module>()
+	    143     for label in ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4']:
+	    144 
+	--> 145         for secName, sec in netParams.cellParams[label]['secs'].iteritems():
+	    146 
+	    147             sec['mechs']['pas']['e'] = cfg.PT5_epas
+
+	TypeError: 'Dict' object is not callable
+	graham-mac:eee_net graham$ 
+
+Had to change iteritems() to items()
+
+RMP wasn't varied in the batch...  Looking into the problem...
+
+The code does actually change sec['mechs']['pas']['e']...  
+
+Why doesn't it show up in the output?
+
+Looking at individual sims, RMP does change slightly...
+
+** Running a batch with bigger variation in e_pas
+
+batchLabel = 'platExp_07' #'v02_batch16'
+
+    params['synLocMiddle'] = [0.2, 0.5, 0.8]
+    params['PT5_epas'] = [-105.0, -85.0, -65.0]
+
+Okay, so it does change outputs slightly:
+file:gif/20191105_083605.png
+
+Why doesn't the cell sit at the new e_pas?
+
+
+** Running a batch with even bigger variation in e_pas
+
+batchLabel = 'platExp_08' #'v02_batch16'
+
+    params['synLocMiddle'] = [0.2, 0.5, 0.8]
+    params['PT5_epas'] = [-150.0, -100.0, -65.0]
+
+file:gif/20191105_084305.png
+
+Maybe it's Ih
+
+Blocking Ih channels in eeeS.py:
+
+        #self.add_ih()
+
+batchLabel = 'platExp_09'
+
+Yeah, Ih seems to be the problem:
+file:gif/20191105_085039.png
+
+Penny's model does have Ih though, in all sections:
+file:gif/20191111_180841.png
 
 
 
+* 2019-11-11 -- 
+
+** Turning off Ih current
+
+Commented out the following line in eeeS.py
+
+        #self.add_ih()
 
 
-
-
-
+** Exploring somatic plateau height
 
 
 

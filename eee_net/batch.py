@@ -2,7 +2,7 @@ from netpyne import specs
 from netpyne.batch import Batch 
 import os
 
-batchLabel = 'platExp_04' #'v02_batch16'
+batchLabel = 'platExp_09' #'v02_batch16'
 
 #runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
 runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
@@ -26,7 +26,7 @@ def batchRun():
     # fill in with parameters to explore and range of values (key has to coincide with a variable in simConfig) 
 
     params['synLocMiddle'] = [0.2, 0.5, 0.8]
-    params['glutAmp'] = [0.2, 2.0, 4.0]
+    params['PT5_epas'] = [-150.0, -100.0, -65.0]
     #params['noise'] = [False, True]
 
     #params[''] = []

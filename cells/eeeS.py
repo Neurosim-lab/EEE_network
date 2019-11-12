@@ -109,7 +109,7 @@ class eeeS():
         self.distKV()
         self.distKA()
         self.distspines()
-        self.add_ih()
+        #self.add_ih()
         self.add_CaK()
 
     ###################

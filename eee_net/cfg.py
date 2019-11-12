@@ -34,6 +34,9 @@ cfg.seeds = {'conn': 4123,
 cfg.hParams.celsius = 32.0
 cfg.hParams.v_init  = -73.7
 
+# Cellular variables
+cfg.PT5_epas = -65.0  # None or a value (default: -65)
+
 # Network variables
 cfg.sizeY       = 1600
 cfg.sizeX       = 400

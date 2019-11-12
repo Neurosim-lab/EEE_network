@@ -135,6 +135,23 @@ EIconn = cfg.EIconn * cfg.EScale
 IEconn = cfg.IEconn * cfg.IScale
 IIconn = cfg.IIconn * cfg.IScale
 
+
+## Cell settings
+
+if cfg.PT5_epas is not None:
+
+    for label in ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4']:
+    
+        for secName, sec in netParams.cellParams[label]['secs'].items():
+            
+            print()
+            print("sec['mechs']['pas']['e'] = ", sec['mechs']['pas']['e'])
+            sec['mechs']['pas']['e'] = cfg.PT5_epas
+            print("sec['mechs']['pas']['e'] = ", sec['mechs']['pas']['e'])
+
+
+
+
 ## Cell connectivity rules
 EPops = ['PT5_1', 'PT5_2', 'PT5_3', 'PT5_4']
 IPops = ['PV5_1', 'PV5_2']

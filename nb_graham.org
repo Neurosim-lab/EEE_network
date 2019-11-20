@@ -16613,7 +16613,39 @@ batchLabel = 'v03_batch03'
     params['noise'] = [False, True]
     params['recordStep'] = [0.025, 0.25, 0.5, 1.0]
 
+ipython
+import batch_analysis as ba
+out = ba.plot_vtraces('v03_batch03')
 
+	Plotting voltage traces...
+	Reading data...
+	0 files missing
+	  cell_0
+	---------------------------------------------------------------------------
+	ValueError                                Traceback (most recent call last)
+	<ipython-input-2-0a8bbdda17a2> in <module>()
+	----> 1 out = ba.plot_vtraces('v03_batch03')
+
+	/u/graham/EEE_network/eee_net/batch_analysis.py in plot_vtraces(batchname, batchdatadir, cellIDs, secs, timerange, param_labels, title, filename, save, outputdir)
+	   1050 
+	   1051         for ind, sec in enumerate(secs):
+	-> 1052             output = get_vtraces(params, data, cellID=cellID, section=sec, timerange=timerange)
+	   1053             if ind == 0:
+	   1054                 fig1 = plot_relation(param_labels=param_labels, title=title, swapaxes=False, **output)
+
+	/u/graham/EEE_network/eee_net/batch_analysis.py in get_vtraces(params, data, cellID, section, timerange, stable)
+	    643                     tracesindex.append(paramvaluedicts[paramindex][datum['paramValues'][paramindex]])
+	    644 
+	--> 645             traces[tuple(tracesindex)] = vtrace
+	    646 
+	    647     time = recstep * np.arange(0, timesteps, 1)
+
+	ValueError: cannot copy sequence with size 10000 to array axis with dimension 100000
+
+So batch plotting can't handle voltage traces of different sizes.
+
+But the individual plots came out.  Adjusting size of plots and number of recordStep
+values and running again.
 
 
 

@@ -146,7 +146,7 @@ include = ['allCells']
 
 cfg.recordCells = include
 
-cfg.analysis['plotTraces'] = {'include': include, 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-100, 20]} 
+cfg.analysis['plotTraces'] = {'include': include, 'saveFig': saveFig, 'showFig': showFig, 'ylim': [-100, 40]} 
 
 #cfg.analysis['plot2Dnet'] = {'saveFig': saveFig, 'showFig': showFig}   
 

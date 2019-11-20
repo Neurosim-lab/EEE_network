@@ -2,7 +2,7 @@ from netpyne import specs
 from netpyne.batch import Batch 
 import os
 
-batchLabel = 'v03_batch02'
+batchLabel = 'v03_batch03'
 
 #runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
 runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
@@ -26,7 +26,9 @@ def batchRun():
     # fill in with parameters to explore and range of values (key has to coincide with a variable in simConfig) 
 
     params['noise'] = [False, True]
-    params['PT5_epas'] = [-65.0, -75.0, -85.0]
+    params['recordStep'] = [0.025, 0.25, 0.5, 1.0]
+
+    #params['PT5_epas'] = [-65.0, -75.0, -85.0]
 
     #params[''] = []
     #params[''] = []

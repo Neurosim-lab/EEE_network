@@ -16533,7 +16533,7 @@ JOBID
 4688881
 
 
-* 2019-11-12 -- 
+* 2019-11-12 -- Exploring noise and EEE Meeting
 
 ** Analyzing batch from last night
 
@@ -16566,13 +16566,52 @@ batchLabel = 'v03_batch02'
 file:gif/20191112_080605.png
 
 
+** EEE meeting
+
+*** Current problems
+
+Plateau amplitude too low in soma
+Spiking occurs too easily on plateaus
+AP amplitude in soma too low? Or sampling too low?
+
+*** Action items 
+
+Focus more on individual cells (instead of network) -- uncouple cells, zero out noise
+Look into other models using gfluct
+Look into axon conductances (Srdjan)
+Look into AP height in soma (is it low? Or is it under-sampled?)
+
+*** Other things to explore (suggestions from Srdjan)
+
+Synthetic axon: cluster high-density Na channels (5 -10 x higher than soma)
+Reduce Na channels in soma and dendrite
+Increase capacitance of cell (boost and explore)
+Density of A-type potassium current
 
 
 
+* 2019-11-20 -- 
+
+** Things to look into now
+
+AP amplitude in soma too low? (run a batch varying cfg.dt, default = 0.025)
+Frequency-current relationship
 
 
+** AP amplitude in soma
 
+cfg.dt = 0.025
+cfg.recordStep = 1
 
+Actually it looks like I should vary cfg.recordStep (used for plotting), since 
+cfg.dt (used for integration) is already quite small.
+
+Setting up a batch to vary recordStep
+
+batchLabel = 'v03_batch03'
+
+    params['noise'] = [False, True]
+    params['recordStep'] = [0.025, 0.25, 0.5, 1.0]
 
 
 

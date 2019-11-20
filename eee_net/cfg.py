@@ -142,7 +142,7 @@ include = include + list(range(6000, 6005))
 include = include + list(range(8000, 8005))
 include = include + list(range(9000, 9005))
 
-#include = ['allCells']
+include = ['allCells']
 
 cfg.recordCells = include
 

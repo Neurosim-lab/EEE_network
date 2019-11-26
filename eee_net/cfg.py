@@ -16,7 +16,7 @@ cfg.numCells = 5 #10000
 cfg.dt = 0.025                
 cfg.verbose = False           
 cfg.recordStep = 1             
-cfg.simLabel = 'eee_net_79'
+cfg.simLabel = 'eee_net_80'
 
 #baseFolder = '/scratch/06322/tg856217'
 baseFolder = 'data'
@@ -36,7 +36,10 @@ cfg.hParams.v_init  = -73.7
 
 # Cellular variables
 cfg.PT5_epas = -85.0  # None or a value (default: -65)
-cfg.dendRa   = 50.0  # Default: 100.0
+cfg.dendRa   = 100.0  # Default: 100.0
+cfg.somaNaScale = 1.0
+cfg.dendNaScale = 1.0
+cfg.axonNaScale = 1.0
 
 # Network variables
 cfg.sizeY       = 1600
@@ -55,7 +58,7 @@ cfg.GABAAfast_e     = -80.0
 cfg.GABAAslow_e     = -90.0
 
 # Noise variables
-cfg.noise = True
+cfg.noise = False
 cfg.noisePT5 = True
 cfg.noisePV5 = True
 
@@ -183,7 +186,7 @@ cfg.IClamp2 = {'pop': cfg.popIClamp2, 'sec': cfg.secIClamp2, 'loc': cfg.locIClam
 
 
 # Common synaptic input
-cfg.addCommonInput1 = True
+cfg.addCommonInput1 = False
 cfg.popCommonInput1 = ['PT5_1', 'PT5_3']
 
 cfg.secCommonInput1 = 'soma'
@@ -194,7 +197,7 @@ cfg.numCommonInput1 = 10    # number
 cfg.intCommonInput1 = 20   # interval
 
 
-cfg.addCommonInput2 = True
+cfg.addCommonInput2 = False
 cfg.popCommonInput2 = ['PT5_1', 'PT5_3']
 
 cfg.secCommonInput2 = 'soma'

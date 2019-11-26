@@ -16596,6 +16596,10 @@ Density of A-type potassium current
 
 AP amplitude in soma too low? (run a batch varying cfg.dt, default = 0.025)
 Frequency-current relationship
+Axon clustering of Na channels
+Cell capacitance
+Reduce Na channels in soma and dendrite
+Density of A-type potassium current
 
 
 ** AP amplitude in soma
@@ -16646,6 +16650,158 @@ So batch plotting can't handle voltage traces of different sizes.
 
 But the individual plots came out.  Adjusting size of plots and number of recordStep
 values and running again.
+
+batchLabel = 'v03_batch04'
+
+    params['noise'] = [False, True]
+    params['recordStep'] = [0.025, 1.0, 2.0]
+
+Turned off distracting common inputs
+
+Output:
+file:gif/20191120_124453.png
+
+Spike times are identical even with varying recordStep:
+file:gif/20191120_124932.png
+
+So AP height isn't a problem (unless Srdjan would like to see even higher than +20 mV).
+
+** Looking into the axon
+
+
+
+* 2019-11-26 -- 
+
+** Exploring Srdjan's suggestions for affecting plateau spiking
+
+*** Reducing Na conductance in soma and dendrites
+
+Adding the following to cfg.py:
+
+	cfg.somaNaScale = 1.0
+	cfg.dendNaScale = 1.0
+	cfg.axonNaScale = 1.0
+
+Adding the following to netParams.py:
+
+	for cell_label, cell_params in netParams.cellParams.items():
+
+	    if "PT5" in cell_label:
+	    
+	        for secName, sec in cell_params['secs'].items(): 
+	            print(cell_label, secName)
+
+	            if hasattr(cfg, 'somaNaScale'):
+	                if "soma" in secName:
+	                    if 'na' in sec['mechs']:
+	                        orig_na = sec['mechs']['na']['gbar']
+	                        sec['mechs']['na']['gbar'] = list(np.array(orig_na, ndmin=1) * cfg.somaNaScale)
+	                        print("  Orig Na: ", orig_na)
+	                        print("  New Na : ", sec['mechs']['na']['gbar'])
+
+	            if hasattr(cfg, 'dendNaScale'):
+	                if "basal" in secName or "apical" in secName:
+	                    if 'na' in sec['mechs']:
+	                        orig_na = sec['mechs']['na']['gbar']
+	                        sec['mechs']['na']['gbar'] = list(np.array(orig_na, ndmin=1) * cfg.dendNaScale)
+	                        print("  Orig Na: ", orig_na)
+	                        print("  New Na : ", sec['mechs']['na']['gbar'])
+	                        
+	            if hasattr(cfg, 'axonNaScale'):
+	                if "axon" in secName:
+	                    if 'na' in sec['mechs']:
+	                        orig_na = sec['mechs']['na']['gbar']
+	                        sec['mechs']['na']['gbar'] = list(np.array(orig_na, ndmin=1) * cfg.axonNaScale)
+	                        print("  Orig Na: ", orig_na)
+	                        print("  New Na : ", sec['mechs']['na']['gbar'])
+
+
+batchLabel = 'v03_batch05'
+
+    params['somaNaScale'] = [1.0, 0.75, 0.5, 0.25]
+    params['noise'] = [False, True]
+
+ipython
+import batch_analysis as ba
+out = ba.plot_vtraces('v03_batch05')
+
+file:gif/20191126_060434.png
+
+
+batchLabel = 'v03_batch06'
+
+    params['dendNaScale'] = [1.0, 0.75, 0.5, 0.25]
+    params['noise'] = [False, True]
+
+file:gif/20191126_060843.png
+
+
+batchLabel = 'v03_batch07'
+
+    params['axonNaScale'] = [1.0, 2.0, 5.0, 10.0]
+    params['noise'] = [False, True]
+
+file:gif/20191126_061129.png
+
+
+batchLabel = 'v03_batch08'
+
+    params['somaNaScale'] = [2.0, 1.0, 0.5, 0.1]
+    params['noise'] = [False, True]
+
+file:gif/20191126_062144.png
+
+
+batchLabel = 'v03_batch09'
+
+    params['dendNaScale'] = [2.0, 1.0, 0.5, 0.1]
+    params['noise'] = [False, True]
+
+file:gif/20191126_062412.png
+
+
+batchLabel = 'v03_batch10' 
+(Noise on)
+
+    params['somaNaScale'] = [2.0, 1.0, 0.5, 0.1]
+    params['dendNaScale'] = [2.0, 1.0, 0.5, 0.1]
+
+file:gif/20191126_062704.png
+
+
+batchLabel = 'v03_batch11' 
+(Noise off)
+
+    params['somaNaScale'] = [2.0, 1.0, 0.5, 0.1]
+    params['dendNaScale'] = [2.0, 1.0, 0.5, 0.1]
+
+file:gif/20191126_062952.png
+
+
+batchLabel = 'v03_batch12' 
+
+    params['dendNaScale'] = [2.0, 1.0, 0.75, 0.5]
+    params['noise'] = [False, True]
+
+file:gif/20191126_063620.png
+
+
+batchLabel = 'v03_batch13'
+
+    params['somaNaScale'] = [2.0, 1.0, 0.5, 0.1]
+    params['dendNaScale'] = [2.0, 1.0, 0.75, 0.5]
+
+file:gif/20191126_063926.png
+
+
+** Exploring noise
+
+But committing first.
+
+
+
+
+
 
 
 

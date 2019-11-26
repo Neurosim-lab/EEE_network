@@ -151,13 +151,40 @@ if cfg.PT5_epas is not None:
 # apply values to parameters
 for cell_label, cell_params in netParams.cellParams.items():
 
-    for secName, sec in cell_params['secs'].items(): 
-        #print(cell_label, secName)
-        if hasattr(cfg, 'dendRa'):
-            if "basal" in secName:
-                orig_ra = sec['geom']['Ra']
-                sec['geom']['Ra'] = cfg.dendRa
-                #print(secName, orig_ra, sec['geom']['Ra'])
+    if "PT5" in cell_label:
+    
+        for secName, sec in cell_params['secs'].items(): 
+            print(cell_label, secName)
+            
+            if hasattr(cfg, 'dendRa'):
+                if "basal" in secName:
+                    orig_ra = sec['geom']['Ra']
+                    sec['geom']['Ra'] = cfg.dendRa
+                    #print(secName, orig_ra, sec['geom']['Ra'])
+
+            if hasattr(cfg, 'somaNaScale'):
+                if "soma" in secName:
+                    if 'na' in sec['mechs']:
+                        orig_na = sec['mechs']['na']['gbar']
+                        sec['mechs']['na']['gbar'] = list(np.array(orig_na, ndmin=1) * cfg.somaNaScale)
+                        print("  Orig Na: ", orig_na)
+                        print("  New Na : ", sec['mechs']['na']['gbar'])
+
+            if hasattr(cfg, 'dendNaScale'):
+                if "basal" in secName or "apical" in secName:
+                    if 'na' in sec['mechs']:
+                        orig_na = sec['mechs']['na']['gbar']
+                        sec['mechs']['na']['gbar'] = list(np.array(orig_na, ndmin=1) * cfg.dendNaScale)
+                        print("  Orig Na: ", orig_na)
+                        print("  New Na : ", sec['mechs']['na']['gbar'])
+                        
+            if hasattr(cfg, 'axonNaScale'):
+                if "axon" in secName:
+                    if 'na' in sec['mechs']:
+                        orig_na = sec['mechs']['na']['gbar']
+                        sec['mechs']['na']['gbar'] = list(np.array(orig_na, ndmin=1) * cfg.axonNaScale)
+                        print("  Orig Na: ", orig_na)
+                        print("  New Na : ", sec['mechs']['na']['gbar'])
 
 
 

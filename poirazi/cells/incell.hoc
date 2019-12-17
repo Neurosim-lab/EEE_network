@@ -1,0 +1,84 @@
+//Fast spiking interneuron for PFC 
+//Based on Durstewitz and Gabriel 2006
+//"Irregular spiking in NMDA-driven prefrontal cortex neurons"
+
+begintemplate INcell
+
+public soma, axon
+create soma, axon
+
+proc init () {
+
+create soma, axon
+
+soma {
+     nseg=1
+     L=53 
+     diam=42
+
+	insert pas
+	cm=1.2            //microF/cm2
+	g_pas =1/15000   //mho/cm2	
+	e_pas = -70
+	Ra=150
+
+	insert Naf
+     	gnafbar_Naf= 0.045*5 
+
+     	insert kdr
+     	gkdrbar_kdr=0.018
+
+     	insert IKs	
+     	gKsbar_IKs = 0.000725*0.1	
+}
+
+axon {
+	nseg=1
+	L=113.22
+	diam=0.7
+
+	insert pas
+	cm=1.2            //microF/cm2
+	g_pas =1/15000   //mho/cm2
+	e_pas = -70
+	Ra=150
+	
+	insert Naf
+	gnafbar_Naf=0.045*12
+
+	insert kdr
+	gkdrbar_kdr=0.018
+}
+
+	
+connect axon(0), soma(0.5)	
+
+ko0_k_ion = 3.82   //mM
+ki0_k_ion = 140    //mM
+celsius   = 34
+}
+
+init()
+
+endtemplate INcell
+
+//Creating new interneurons
+nINcells = 2//50
+objref INcells[nINcells]
+
+for i = 0, nINcells-1 {
+INcells[i] = new INcell()
+}
+
+//Create list with segments
+objref insoma_list
+
+insoma_list = new SectionList()
+for i=0, nINcells-1 {
+INcells[i].soma insoma_list.append()
+}
+
+//Balance membrane potential 
+xopen("../bash_templates/current-balancein.hoc")
+current_balancein(-70) 
+

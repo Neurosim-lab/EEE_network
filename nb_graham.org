@@ -16798,6 +16798,255 @@ file:gif/20191126_063926.png
 
 But committing first.
 
+Would like to have a parameter linking mean conductances with their standard
+deviations, e.g. 'std_amp_ratio'
+
+'std_e': 0.0030
+'g_e0' : 0.0121
+
+std_amp_ratio = 0.2479
+
+'std_i': 0.0066
+'g_i0' : 0.0573
+
+std_amp_ratio = 0.1152
+
+Changing cfg.py to the following:
+
+	cfg.noise_scale = 1.0
+	cfg.noise_std_scale = 1.0
+
+	cfg.PT5_exc_noise_e   = cfg.PT5_epas + 65.0   # Default E_e : 0.0
+	cfg.PT5_exc_noise_amp = 1.0     # g_e0        : 0.0121 * cfg.PT5_exc_noise_amp
+	cfg.PT5_exc_noise_std = 1.0     # std_e       : (0.0030 / 0.0121) * cfg.PT5_exc_noise_amp * cfg.PT5_exc_noise_std
+	cfg.PT5_exc_noise_tau = 1.0     # tau_e       : 2.728 * cfg.PT5_exc_noise_tau
+	cfg.PT5_inh_noise_e   = cfg.PT5_epas - 10.0   # Default E_i : -75.0
+	cfg.PT5_inh_noise_amp = 1.0     # g_i0        : 0.0573 * cfg.PT5_inh_noise_amp
+	cfg.PT5_inh_noise_std = 1.0     # std_i       : (0.0066 / 0.0573) * cfg.PT5_inh_noise_amp * cfg.PT5_inh_noise_std
+	cfg.PT5_inh_noise_tau = 1.0     # tau_i       : 10.49 * cfg.PT5_inh_noise_tau
+
+Where now PT5_exc_noise_std is the std/amp ratio
+
+And changing netParams.py to the following:
+
+	# PT5_1 noise
+	if cfg.noise and cfg.noisePT5:
+	    netParams.cellParams['PT5_1']['secs']['soma']['pointps'] = {
+	                        'noise': {'mod': 'Gfluctp', 
+	                        'loc': 0.5,
+	                        'std_e': (0.0030/0.0121) * cfg.PT5_exc_noise_amp * cfg.noise_std_scale,
+	                        'g_e0' : 0.0121 * cfg.PT5_exc_noise_amp * cfg.noise_amp_scale, 
+	                        'tau_i': 10.49 * cfg.PT5_inh_noise_tau, 
+	                        'tau_e': 2.728 * cfg.PT5_exc_noise_tau, 
+	                        'std_i': (0.0066/0.0573) * cfg.PT5_inh_noise_amp * cfg.noise_std_scale, 
+	                        'g_i0' : 0.0573 * cfg.PT5_inh_noise_amp * cfg.noise_amp_scale, 
+	                        'E_e'  : cfg.PT5_exc_noise_e, 
+	                        'E_i'  : cfg.PT5_inh_noise_e, 
+	                        'seed1': 'gid', 
+	                        'seed2': id32('gluctp_exc'), 
+	                        'seed3': cfg.seeds['stim']}}
+
+
+batchLabel = 'v04_batch01'
+
+    params['PT5_exc_noise_amp'] = [0.1, 1.0, 10.0]
+    params['PT5_inh_noise_amp'] = [0.1, 1.0, 10.0]
+
+Way too much noise:
+file:gif/20191126_083848.png
+
+
+batchLabel = 'v04_batch02'
+
+    params['PT5_exc_noise_amp'] = [1.0, 0.1, 0.01]
+    params['PT5_inh_noise_amp'] = [1.0, 0.1, 0.01]
+
+Will reduce noise further:
+file:gif/20191126_084132.png
+
+batchLabel = 'v04_batch03'
+
+    params['PT5_exc_noise_amp'] = [0.1, 0.01, 0.001]
+    params['PT5_inh_noise_amp'] = [0.1, 0.01, 0.001]
+
+Looking better:
+file:gif/20191126_084432.png
+
+Probably want exc and inh noise amp scales between 0.01 and 0.001
+
+batchLabel = 'v04_batch04'
+
+    params['PT5_exc_noise_amp'] = [0.01, 0.005, 0.001]
+    params['PT5_inh_noise_amp'] = [0.01, 0.005, 0.001]
+
+
+Looks like a noise amp of 0.005 will work well:
+file:gif/20191126_085032.png
+
+Now exploring excitatory noise and std/amp ratio:
+
+batchLabel = 'v04_batch05'
+
+    params['PT5_exc_noise_amp'] = [0.01, 0.005, 0.001]
+    params['PT5_inh_noise_std'] = [0.5, 1.0, 2.0]
+
+
+
+* 2019-12-16 --
+
+** Looking into Poirazi model
+
+Dendritic Nonlinearities Reduce Network Size Requirements and Mediate ON and OFF States of Persistent Activity in a PFC Microcircuit Model
+
+Article link:
+https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003764
+
+Model link:
+https://senselab.med.yale.edu/ModelDB/ShowModel?model=155057#tabs-1
+
+*** README from the model:
+
+This is the readme.txt for the L5 PFC microcircuit from the paper:
+
+Papoutsi A, Sidiropoulou K, Poirazi P.
+"Dendritic nonlinearities reduce network size requirements and mediate
+ON and OFF states of persistent activity in a PFC microcircuit
+model". Plos Computational Biology 2014.
+
+Also used in:
+
+Papoutsi A.,Sidiropoulou K, Cutsuridis V., Poirazi P.
+"Induction and modulation of persistent activity in a layer V PFC
+microcircuit model". Frontiers in Neural Circuits 2013.
+
+Abstract:
+
+Technological advances have unraveled the existence of small clusters
+of co-active neurons in the neocortex. The functional implications of
+these microcircuits are in large part unexplored. Using a heavily
+constrained biophysical model of a L5 PFC microcircuit, we recently
+showed that these structures act as tunable modules of persistent
+activity, the cellular correlate of working memory. Here, we
+investigate the mechanisms that underlie persistent activity emergence
+(ON) and termination (OFF) and search for the minimum network size
+required for expressing these states within physiological regimes. We
+show that (a) NMDA-mediated dendritic spikes gate the induction of
+persistent firing in the microcircuit. (b) The minimum network size
+required for persistent activity induction is inversely proportional
+to the synaptic drive of each excitatory neuron. (c) Relaxation of
+connectivity and synaptic delay constrains eliminates the gating
+effect of NMDA spikes, albeit at a cost of much larger networks.  (d)
+Persistent activity termination by increased inhibition depends on the
+strength of the synaptic input and is negatively modulated by
+dADP. (e) Slow synaptic mechanisms and network activity contain
+predictive information regarding the ability of a given stimulus to
+turn ON and/or OFF persistent firing in the microcircuit
+model. Overall, this study zooms out from dendrites to cell assemblies
+and suggests a tight interaction between dendritic non-linearities and
+network properties (size/connectivity) that may facilitate the
+short-memory function of the PFC.
+
+Model usage:
+
+This code was written in and requires NEURON which is freely available
+from http://www.neuron.yale.edu
+
+Download and expand this archive and compile the mod files located in
+the "mechanisms" folder with nrnivmodl (this model was run under the
+unix/linux operating systems).
+
+In the experiment folder:
+
+'incell.hoc' is the setup of the interneurons
+'pfc_pc_temp.hoc' is the setup of the pyramidal neurons.
+'net.hoc' is the microcircuit setup and the stimulation protocol.
+'values_NMDA.hoc' has the conductances for the nmda for the different
+  ratios used.
+'importBackgroundStimParams.hoc' has indicative time points of
+  backgrouns synaptic activity.
+'vecstim.hoc' implements background synaptic activity.
+'validation.hoc' has the validation protocol. The specific parameters
+  show the validated NMDA current, as in Supporting Figure 1A.  To run
+  validation.hoc execute the run_validation.
+'experiment.hoc' has the experimental protocol. The specific
+  parameters show persistent activity in the microcircuit for the ratio
+  2.3 and the generation of the dendritic plateau potential, as in
+  Figure 3A,C.  To run experiment.hoc execute the run_experiment in the
+  experiment folder (this will be the same as the auto-launch demo
+  started from mosinit.hoc).  After short while these graphs should
+  appear:
+
+screenshot
+
+For questions or comments please contact:
+Papoutsi Athanasia 
+athpapoutsi at gmail.com
+or 
+Poirazi Panayiota
+poirazi at imbb.forth.gr
+Computational Biology group
+Foundation of Research and Technology
+Crete, Greece
+
+The model files are also available at the web site:
+http://www.dendrites.gr
+
+
+** Exploring Poirazi model
+
+Downloading model and compiling mod files.
+
+https://senselab.med.yale.edu/modeldb/eavBinDown?o=155057&a=23&mime=application/zip
+
+    cd /u/graham/EEE_network/eee_net/L5microcircuit/mechanism/
+    nrnivmodl
+    Successfully created x86_64/special
+
+From the README:
+
+To run experiment.hoc execute the run_experiment in the experiment folder
+
+Looking at run_experiment:
+
+../mechanism/x86_64/special  experiment.hoc -
+
+So it looks like that just changes to the compiled mod dir and runs experiment.hoc
+
+Trying it out in NEURON:
+
+cd /u/graham/EEE_network/eee_net/L5microcircuit/experiment
+chmod +x run_experiment 
+./run_experiment
+
+Cool, it runs.  Now to convert it to Python and Netpyne...
+
+Created a new dir: EEE_network/poirazi
+
+With a mods dir and cells dir, copied over those files.
+
+Copied over cfg.py, netParams.py, init.py and batch.py from EEE work.
+
+Will commit then start modifying.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

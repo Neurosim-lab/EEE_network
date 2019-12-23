@@ -17029,6 +17029,31 @@ Copied over cfg.py, netParams.py, init.py and batch.py from EEE work.
 Will commit then start modifying.
 
 
+* 2019-12-17 --
+
+** Looking into Poirazi model
+
+experiment.hoc runs the experiment, the first thing called is net.hoc to set up the
+network.  
+	
+	xopen ("net.hoc")
+
+In net.hoc, the first thing done is to load the cell model templates
+
+	xopen ("pfc_pc_temp.hoc") //load template for pyramidal cells
+	xopen ("incell.hoc")      //load template for interneurons
+
+I think the first thing to do is to get the cells loaded into Netpyne and explore 
+them: f-I relationship, plateaus, etc.
+
+Creating a new dir with Netpyne file: poirazi/fi
+
+And setting up minimal essential cfg.py, netParams.py
+
+But first, I'll convert the cell models from hoc to python.
+
+
+** Converting cell models to Python
 
 
 

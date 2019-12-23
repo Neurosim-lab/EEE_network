@@ -9,15 +9,8 @@ except:
     from cfg import cfg
 
 
-## Hash function
-def id32(obj):
-    return sim.utils.hashStr(obj) #hash(obj) & 0xffffffff
-
-
 ## Network parameters
 netParams = specs.NetParams()  # object of class NetParams to store the network parameters
-
-netParams.version = 1
 
 netParams.sizeX = cfg.sizeX # x-dimension (horizontal length) size in um
 netParams.sizeY = cfg.sizeY # y-dimension (vertical height or cortical depth)

@@ -17055,6 +17055,19 @@ But first, I'll convert the cell models from hoc to python.
 
 ** Converting cell models to Python
 
+incell.hoc is now inh.py
+
+pfc_pc_temp.hoc is now pyr.py
+
+
+* 2019-12-30 -- 
+
+** Converting cell models to Python
+
+Had to correct minor mistake in pyr.py 
+
+Committing now.
+
 
 
 

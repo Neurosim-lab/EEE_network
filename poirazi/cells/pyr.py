@@ -154,7 +154,7 @@ class pyr():
 
         self.dend[0].insert('pas')
         self.dend[0].g_pas = 1.7e-04
-        self.dend[0].e_pas = 
+        self.dend[0].e_pas = e_pas
 
         self.dend[0].insert('Naf')
         self.dend[0].gnafbar_Naf = 1.8e-3 

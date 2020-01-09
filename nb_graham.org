@@ -17069,6 +17069,154 @@ Had to correct minor mistake in pyr.py
 Committing now.
 
 
+** Setting up the network
+
+According to the README:
+'net.hoc' is the microcircuit setup and the stimulation protocol.
+
+Looking at net.hoc now.
+
+So it calls the cell files first, which is where the number of cells is defined.
+
+Adding to netParams:
+
+numPyrCells = 8
+numInhCells = 2
+
+netParams.popParams['pyr'] = {'cellType': 'pyr', 'numCells': numPyrCells}
+netParams.popParams['inh'] = {'cellType': 'inh', 'numCells': numInhCells}
+
+
+* 2020-01-08 -- Poirazi model conversion to Python
+
+** Importing synaptic mechanisms
+
+Need name and mod
+
+Name 			Mod
+GLU 			ampa
+GLUIN 			ampain
+GABAa 			gabaa
+GABAain 		gabaain
+GABAb 			gabab
+NMDA 			NMDA
+nmda_spike 		NMDA_syn
+SinClamp 		sinclamp
+
+
+netParams.synMechParams['GLU']        = {'mod': 'ampa'}
+netParams.synMechParams['GLUIN']      = {'mod': 'ampain'}
+netParams.synMechParams['GABAa']      = {'mod': 'gabaa'}
+netParams.synMechParams['GABAain']    = {'mod': 'gabaain'}
+netParams.synMechParams['GABAb']      = {'mod': 'gabab'}
+netParams.synMechParams['NMDA']       = {'mod': 'NMDA'}
+netParams.synMechParams['nmda_spike'] = {'mod': 'NMDA_syn'}
+netParams.synMechParams['SinClamp']   = {'mod': 'sinclamp'}
+
+
+Stripping netParams.py and cfg.py down to bare essentials to ensure the model runs.
+
+Same thing for init.py.
+
+** Error in netParams
+
+Getting an error running netParams:
+
+	graham-mac:poirazi graham$ python netParams.py 
+	Traceback (most recent call last):
+	  File "netParams.py", line 26, in <module>
+	    netParams.cellParams['pyr'] = netParams.importCellParams(label='pyr', conds={'pop':'pyr'}, fileName=pyrPath, cellName='MakeCell', cellInstance=True)
+	  File "/Users/graham/Applications/netpyne/netpyne/specs/netParams.py", line 339, in importCellParams
+	    secs, secLists, synMechs, globs = conversion.importCell(fileName, cellName, cellArgs, cellInstance)
+	  File "/Users/graham/Applications/netpyne/netpyne/conversion/neuronPyHoc.py", line 191, in importCell
+	    tempModule = importlib.import_module(moduleName)
+	  File "/usr/site/nrniv/local/python/anaconda3/lib/python3.7/importlib/__init__.py", line 127, in import_module
+	    return _bootstrap._gcd_import(name[level:], package, level)
+	  File "<frozen importlib._bootstrap>", line 1006, in _gcd_import
+	  File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+	  File "<frozen importlib._bootstrap>", line 965, in _find_and_load_unlocked
+	ModuleNotFoundError: No module named 'pyr'
+
+Maybe it's because pyr.py doesn't run?  No, both cells run without error.
+
+I see my Netpyne is a bit out of date.  I'll update it before I dig any deeper.
+
+** Updating Netpyne
+
+ cd /Users/graham/Applications/netpyne/
+ git pull
+
+
+ ** Fixing netParams
+
+ It turns out I had the path to the cells dir wrong (wasn't ../cells, it was ./cells)
+
+ New error now:
+
+	 graham-mac:poirazi graham$ ipython netParams.py 
+	---------------------------------------------------------------------------
+	ValueError                                Traceback (most recent call last)
+	/u/graham/EEE_network/poirazi/netParams.py in <module>()
+	     22 
+	     23 ## Import cells
+	---> 24 netParams.cellParams['pyr'] = netParams.importCellParams(label='pyr', conds={'pop':'pyrs'}, fileName=pyrPath, cellName='makeCell', cellInstance=True)
+	     25 netParams.cellParams['inh'] = netParams.importCellParams(label='inh', conds={'pop':'inhs'}, fileName=inhPath, cellName='makeCell', cellInstance=True)
+	     26 
+
+	~/Applications/netpyne/netpyne/specs/netParams.py in importCellParams(self, label, conds, fileName, cellName, cellArgs, importSynMechs, somaAtOrigin, cellInstance)
+	    337             label = int(self._labelid)
+	    338             self._labelid += 1
+	--> 339         secs, secLists, synMechs, globs = conversion.importCell(fileName, cellName, cellArgs, cellInstance)
+	    340         cellRule = {'conds': conds, 'secs': secs, 'secLists': secLists, 'globals': globs}
+	    341 
+
+	~/Applications/netpyne/netpyne/conversion/neuronPyHoc.py in importCell(fileName, cellName, cellArgs, cellInstance)
+	    192         modulePointer = tempModule
+	    193         if isinstance(cellArgs, dict):
+	--> 194             cell = getattr(modulePointer, cellName)(**cellArgs) # create cell using template, passing dict with args
+	    195         else:
+	    196             cell = getattr(modulePointer, cellName)(*cellArgs)  # create cell using template, passing list with args
+
+	/u/graham/EEE_network/poirazi/cells/pyr.py in makeCell()
+	    292 
+	    293 def makeCell():
+	--> 294     cell = pyr()
+	    295     return cell
+
+	/u/graham/EEE_network/poirazi/cells/pyr.py in __init__(self)
+	     43     def __init__(self):
+	     44         self.create_cell()
+	---> 45         self.add_soma_channels()
+	     46         self.add_axon_channels()
+	     47         self.add_dend0_channels()
+
+	/u/graham/EEE_network/poirazi/cells/pyr.py in add_soma_channels(self)
+	     90         self.soma.e_pas = e_pas
+	     91 
+	---> 92         self.soma.insert('Naf')
+	     93         self.soma.gnafbar_Naf = 0.108 * 1.675
+	     94 
+
+	ValueError: argument not a density mechanism name.
+
+
+Looks like I need to compile the mod files and link to the x86_64 dir from poirazi dir...
+
+cd /u/graham/EEE_network/poirazi/mods
+nrnivmodl
+cd ..
+ln -s mods/x86_64 x86_64
+
+
+Okay, it runs now, but no figures were saved.  Looking into cfg option to save figs...
+
+Now figures are saved.  Committing now.
+
+
+
+
+
+
 
 
 

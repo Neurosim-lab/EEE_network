@@ -68,7 +68,12 @@ netParams.stimTargetParams[ruleLabel] = {
 ## Noise
 
 netParams.cellParams['pyr']['secs']['soma']['pointps'] = {
-    'noise': {'mod': 'Gfluctp'}}
+    'noise': {'mod': 'Gfluctp',
+    'seed1': 'gid'}}
+
+netParams.cellParams['inh']['secs']['soma']['pointps'] = {
+    'noise': {'mod': 'Gfluctp',
+    'seed1': 'gid'}}
 
 
 

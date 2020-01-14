@@ -2,7 +2,7 @@ from netpyne import specs, sim
 import os
 
 cfg = specs.SimConfig()
-cfg.simLabel = 'poirazi_14'
+cfg.simLabel = 'poirazi_16'
 cfg.saveFolder = os.path.join('output', cfg.simLabel)
 
 saveFigs = True

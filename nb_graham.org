@@ -18218,6 +18218,33 @@ cfg.simLabel = 'poirazi_14'
 Looks good.  Committing now.
 
 
+** Adding noise to inh cells
+
+Added to netParams:
+
+	netParams.cellParams['inh']['secs']['soma']['pointps'] = {
+    	'noise': {'mod': 'Gfluctp'}}
+
+Testing.  cfg.simLabel = 'poirazi_15'
+
+That works, but really reduces inh spiking:
+file:gif/20200114_100043.png
+
+The inh cells were sitting at around -70 before, with noise they sit at
+around -65
+
+So, should probably set noise amp based on e_pas.
+
+Also, still need to get unique seeds for noise in each cell.
+
+Added 'seed1': 'gid' to Gfluctp for all cells.
+
+cfg.simLabel = 'poirazi_16'
+
+Okay, now each cell gets unique noise.
+
+Committing.
+
 
 
 

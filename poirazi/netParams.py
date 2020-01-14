@@ -41,6 +41,8 @@ netParams.synMechParams['GABAb']      = {'mod': 'GABAb'}        # gabab.mod
 netParams.synMechParams['NMDA']       = {'mod': 'NMDA'}         # NMDA.mod
 netParams.synMechParams['nmda_spike'] = {'mod': 'nmda_spike'}   # NMDA_syn.mod
 netParams.synMechParams['SinClamp']   = {'mod': 'SinClamp'}     # sinclamp.mod
+netParams.synMechParams['Gfluctp']    = {'mod': 'Gfluctp'}      # Gfluctp.mod
+
 
 
 ## Stimulation
@@ -128,27 +130,6 @@ netParams.connParams[ruleLabel] = {
     'sec'        : 'soma',
     'synsPerConn': cfg.numSynsInhInh,
     'threshold'  : -20}
-
-
-
-# if cfg.addCommonInput1:
-
-#     netParams.stimSourceParams['CommonInput1'] = {'type': 'NetStim', 'start': cfg.delCommonInput1, 'interval': cfg.intCommonInput1, 'number': cfg.numCommonInput1}
-                  
-#     for postPop in cfg.popCommonInput1:             
-        
-#         ruleLabel = 'CommonInput1->'+postPop
-#         netParams.stimTargetParams[ruleLabel] = {
-#             'source' : 'CommonInput1', 
-#             'conds'  : {'pop': postPop}, 
-#             'sec'    : cfg.secCommonInput1, 
-#             'loc'    : cfg.locCommonInput1, 
-#             'synMech': ['AMPA', 'NMDA'], 
-#             'weight' : cfg.wgtCommonInput1, 
-#             'delay'  : 0.0}
-
-
-
 
 
 

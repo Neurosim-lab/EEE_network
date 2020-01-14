@@ -17822,6 +17822,253 @@ noise (playing a random)
 why locations aren't at 1.0 as specified
 minimum delay 0.38 (instead of absolute value of normal)
 
+** Meeting cancelled, but chatted on Slack
+
+Transcript:
+
+	joe 7:46 AM
+	Well, bom dia, then!  A quick update: cell models are converted to Python, I got the connectivity done (except for autapses, which I wanted to ask about), the stimulus is in place, and it runs and generates figures.
+	There’s no spiking yet, because I can’t figure out how to get the noise into NetPyNE…  In hoc, they used a Random, and then played it into a mod file… I think.  Would appreciate help with that.
+	:+1:
+
+	The mod file is here: https://senselab.med.yale.edu/ModelDB/ShowModel?model=155057&file=/L5microcircuit/mechanism/sinclamp.mod#tabs-2
+	Here’s where the noise gets inserted:
+
+	billl 7:54 AM
+	skip autpases
+
+	billl 7:56 AM
+	random can be done with background settings of netstims or with a population of netstims or as we were doing before with gfluct
+	depends on whether you want network noise or individual cell voltage noise
+
+	joe 8:00 AM
+	It looks to me like they are putting individual sinusoidal noise into each cell (using sinclamp.mod) and then playing a Poisson distribution into it…  I was trying to get the same noise so my results would be directly comparable with theirs…
+
+	billl 8:02 AM
+	do not try to get the same results -- will be ~impossible and big waste of time;  this sounds like what gfluct was designed to do ; random extra hoc/py code is not easy to add in netpyne -- if this was in a mod file i would suggest using it but else just move forward
+	if you can get the phenomenon that they show -- persistent activity?? right?? -- that's all we want
+
+	joe 8:03 AM
+	Cool, thanks.  I’ll start playing with gfluct then.
+
+	billl 8:03 AM
+	well you already know how it works -- you've been using it since start of project
+
+	joe 8:04 AM
+	Those two things can be mutually exclusive! :wink:
+
+	billl 8:10 AM
+	fair enough
+
+So, I will skip autapses and start using gfluct for noise.
+
+** Using gfluctp for noise
+
+Gfluctp.mod is here (I'll copy over to Poirazi model):
+https://github.com/Neurosim-lab/EEE_network/blob/master/mod/Gfluctp.mod
+
+Here's the code of Gfluctp.mod:
+
+	TITLE Fluctuating conductances with parallel random streams
+
+	COMMENT
+	-----------------------------------------------------------------------------
+		Fluctuating conductance model for synaptic bombardment
+	        adapted from Gfluct.mod -- see for full comments
+	ENDCOMMENT        
+
+	: headers
+	NEURON	{ 
+	  POINT_PROCESS Gfluctp
+	  THREADSAFE : only true if every instance has its own distinct Random
+	  RANGE g_e, g_i, E_e, E_i, g_e0, g_i0, g_e1, g_i1, seed1, seed2, seed3
+	  RANGE std_e, std_i, tau_e, tau_i, D_e, D_i
+
+	  RANGE rv, id
+	  NONSPECIFIC_CURRENT i
+	  POINTER internalpointer
+	}
+
+	UNITS {
+		(nA) = (nanoamp) 
+		(mV) = (millivolt)
+		(umho) = (micromho)
+	}
+
+	PARAMETER {
+	  dt		(ms)
+	  E_e	= 0 	(mV)	: reversal potential of excitatory conductance
+	  E_i	= -75 	(mV)	: reversal potential of inhibitory conductance
+
+	  g_e0	= 0.0121 (umho)	: average excitatory conductance
+	  g_i0	= 0.0573 (umho)	: average inhibitory conductance
+
+	  std_e	= 0.0030 (umho)	: standard dev of excitatory conductance
+	  std_i	= 0.0066 (umho)	: standard dev of inhibitory conductance
+
+	  tau_e	= 2.728	(ms)	: time constant of excitatory conductance
+	  tau_i	= 10.49	(ms)	: time constant of inhibitory conductance
+	  seed1 = 1
+	  seed2 = 1
+	  seed3 = 1
+	}
+
+	ASSIGNED {
+	  internalpointer
+	  v	(mV)		: membrane voltage
+	  i 	(nA)		: fluctuating current
+	  g_e	(umho)		: total excitatory conductance
+	  g_i	(umho)		: total inhibitory conductance
+	  g_e1	(umho)		: fluctuating excitatory conductance
+	  g_i1	(umho)		: fluctuating inhibitory conductance
+	  D_e	(umho umho /ms) : excitatory diffusion coefficient
+	  D_i	(umho umho /ms) : inhibitory diffusion coefficient
+	  exp_e
+	  exp_i
+	  amp_e	(umho)
+	  amp_i	(umho)
+
+	  rv
+	  id
+	}
+
+	: some verbatim stuff
+	VERBATIM
+	#include "nrnran123.h"
+	ENDVERBATIM
+
+	: CONSTRUCTOR and INITIAL block
+	CONSTRUCTOR {
+	  VERBATIM
+	  id=ifarg(2)?(int)*getarg(2):17.2;
+	  ENDVERBATIM
+	  
+	}
+
+	INITIAL {
+	  seeds123(seed1, seed2, seed3)
+	  VERBATIM
+	  // only this style initializes the stream on finitialize
+	  if (_p_internalpointer) { nrnran123_setseq((nrnran123_State*)_p_internalpointer, 0, 0); }
+	  ENDVERBATIM
+	  g_e1 = 0
+	  g_i1 = 0
+	  if(tau_e != 0) {
+	    D_e = 2 * std_e * std_e / tau_e
+	    exp_e = exp(-dt/tau_e)
+	    amp_e = std_e * sqrt( (1-exp(-2*dt/tau_e)) )
+	  }
+	  if(tau_i != 0) {
+	    D_i = 2 * std_i * std_i / tau_i
+	    exp_i = exp(-dt/tau_i)
+	    amp_i = std_i * sqrt( (1-exp(-2*dt/tau_i)) )
+	  }
+	}	
+
+	: BREAKPOINT
+	BREAKPOINT {
+	  SOLVE oup
+	  if(tau_e==0) {
+	    g_e = std_e * rand()
+	  }
+	  if(tau_i==0) {
+	    g_i = std_i * rand()
+	  }
+	  g_e = g_e0 + g_e1
+	  if(g_e < 0) { g_e = 0 }
+	  g_i = g_i0 + g_i1
+	  if(g_i < 0) { g_i = 0 }
+	  i = g_e * (v - E_e) + g_i * (v - E_i)
+	}
+
+	PROCEDURE oup() {
+	   if(tau_e!=0) {
+		g_e1 =  exp_e * g_e1 + amp_e * rand()
+	   }
+	   if(tau_i!=0) {
+		g_i1 =  exp_i * g_i1 + amp_i * rand()
+	   }
+	}
+
+	: FUNCTION rand()
+	FUNCTION rand () {
+	VERBATIM
+	  // Supports separate independent but reproducible streams for eaach instance. However, the corresponding hoc Random distribution MUST be set to Random.negexp(1)
+	  if (_p_internalpointer) {
+	     // _lrand = nrnran123_negexp((nrnran123_State*)_p_internalpointer);
+	     _lrand = nrnran123_normal((nrnran123_State*)_p_internalpointer);
+	  }
+	  ENDVERBATIM
+	}
+
+	: PROCEDURE seeds123
+	PROCEDURE seeds123 (a, b, c) {
+	VERBATIM
+	  nrnran123_State** pv = (nrnran123_State**)(&_p_internalpointer);
+	  if (*pv) {
+	    nrnran123_deletestream(*pv);
+	    *pv = (nrnran123_State*)0;
+	  }
+	  *pv = nrnran123_newstream3((uint32_t)_la, (uint32_t)_lb, (uint32_t)_lc);
+	ENDVERBATIM
+	}
+
+	: PROCEDURE noiseFromRandom123()
+	PROCEDURE noiseFromRandom123 () {
+	VERBATIM
+	  nrnran123_State** pv = (nrnran123_State**)(&_p_internalpointer);
+	  if (*pv) {
+	    nrnran123_deletestream(*pv);
+	    *pv = (nrnran123_State*)0;
+	  }
+	  if (ifarg(3)) {
+	    *pv = nrnran123_newstream3((uint32_t)*getarg(1), (uint32_t)*getarg(2), (uint32_t)*getarg(3));
+	  } else if (ifarg(2)) {
+	    *pv = nrnran123_newstream((uint32_t)*getarg(1), (uint32_t)*getarg(2));
+	  } else if (ifarg(1)) {
+	    *pv = nrnran123_newstream((uint32_t)*getarg(1), (uint32_t)0);
+	  } else {
+	    *pv = nrnran123_newstream3((uint32_t)seed1, (uint32_t)seed2, (uint32_t)seed3);
+	  }
+	ENDVERBATIM
+	}
+
+** Gfluctp
+
+Copied Gfluctp.mod over to poirazi/mods
+
+Now to delete x86_64, recompile mods, and re-symlink x86_64
+
+Added Gfluctp to netParams:
+
+netParams.synMechParams['Gfluctp']    = {'mod': 'Gfluctp'}      # Gfluctp.mod
+
+Running it to make sure it works.
+
+cfg.simLabel = 'poirazi_09'
+
+It works.
+
+Committing.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

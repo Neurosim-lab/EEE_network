@@ -2,7 +2,7 @@ from netpyne import specs, sim
 import os
 
 cfg = specs.SimConfig()
-cfg.simLabel = 'poirazi_08'
+cfg.simLabel = 'poirazi_09'
 cfg.saveFolder = os.path.join('output', cfg.simLabel)
 
 saveFigs = True
@@ -19,6 +19,7 @@ cfg.recordTraces = {'V_soma': {'sec':'soma', 'loc':0.5, 'var':'v'}}
 cfg.analysis['plotRaster'] = {'saveFig': saveFigs, 'showFig': showFigs}
 cfg.analysis['plotTraces'] = {'include': ['all'], 'saveFig': saveFigs, 'showFig': showFigs}
 cfg.analysis['plot2Dnet']  = {'saveFig': saveFigs, 'showFig': showFigs}
+cfg.analysis['plotConn']   = {'saveFig': saveFigs, 'showFig': showFigs, 'feature': 'strength'}
 
 # Stimulation parameters
 cfg.stimNumber = 90

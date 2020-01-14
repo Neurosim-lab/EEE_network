@@ -25,14 +25,36 @@ netParams.cellParams['pyr'] = netParams.importCellParams(label='pyr', conds={'po
 netParams.cellParams['inh'] = netParams.importCellParams(label='inh', conds={'pop':'inhs'}, fileName=inhPath, cellName='makeCell', cellInstance=True)
 
 ## Synaptic mechanisms
-netParams.synMechParams['GLU']        = {'mod': 'ampa'}
+netParams.synMechParams['GLU']        = {'mod': 'GLU'}          # ampa.mod
 netParams.synMechParams['GLUIN']      = {'mod': 'ampain'}
 netParams.synMechParams['GABAa']      = {'mod': 'gabaa'}
 netParams.synMechParams['GABAain']    = {'mod': 'gabaain'}
 netParams.synMechParams['GABAb']      = {'mod': 'gabab'}
 netParams.synMechParams['NMDA']       = {'mod': 'NMDA'}
-netParams.synMechParams['nmda_spike'] = {'mod': 'NMDA_syn'}
+netParams.synMechParams['nmda_spike'] = {'mod': 'nmda_spike'}   # NMDA_syn.mod
 netParams.synMechParams['SinClamp']   = {'mod': 'sinclamp'}
+
+## Stimulation
+
+netParams.stimSourceParams['stimulation'] = {
+    'type'    : 'NetStim', 
+    'start'   : 0, 
+    'interval': 50, 
+    'number'  : 10,
+    'noise'   : 0}
+    
+ruleLabel = 'stimulation->pyrs'
+netParams.stimTargetParams[ruleLabel] = {
+    'source'   : 'stimulation', 
+    'conds'    : {'pop': 'pyrs'}, 
+    'sec'      : 'dend_1', 
+    'loc'      : 0.5, 
+    'synMech'  : ['GLU', 'nmda_spike'], 
+    'weight'   : [cfg.stimAMPAweight, cfg.stimNMDAweight], 
+    'delay'    : 500,
+    'threshold': -20}
+
+
 
 ## Connectivity
 

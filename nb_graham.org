@@ -17213,7 +17213,173 @@ Okay, it runs now, but no figures were saved.  Looking into cfg option to save f
 Now figures are saved.  Committing now.
 
 
+** Correcting temperature
 
+I see that Netpyne is set to use h.celsius = 6.3, while the Poirazi cell models 
+are set to use celsius = 34
+
+Need to set this in the model...
+
+Looks like I need to add the following to cfg.py:
+cfg.hParams.celsius = 34.0
+
+Now the temp is correct.
+
+
+** Need to look into other global settings
+
+I have verbose = True in Netpyne, so I see it sets some other global hoc variables:
+
+Setting h global variables ...
+  h.celsius = 34.0
+  h.v_init = -65.0
+  h.clamp_resist = 0.001
+  h.ki0_k_ion = 140.0
+  h.ko0_k_ion = 3.82
+
+I need to ensure these are the same as used in the Poirazi model.
+
+Looks correct.  I see in the poirazi model cells, ca is also set:
+
+cao0_ca_ion = 2 	/* mM */
+cai0_ca_ion = 50e-6  	/* mM */
+
+Making sure these are the values in hoc...
+
+Yeah, those seem to be the standard values.
+
+
+** Upcoming steps
+
+Set up connectivity
+Set up noise
+
+* 2020-01-13 -- Poirazi model conversion to Python
+
+** Setting up connectivity
+
+From experiment.hoc:
+
+	//------------------Set # of synapses
+	inmaxsyn=	90			//initial stimulation
+	maxsyn=		5			//PC-PC connections
+	automaxsyn=	1			//autosynapses (one third, Lubke, 1996)
+	maxsyn1=	12			//IN-IN connections
+	maxsyn2=	2			//PC-IN connections 
+	maxsyn3=	4			//IN-PC connections 
+	synapses_backb=40			//basal background synapses
+	synapses_backpr=40			//proximal apical background synapses
+	synapses_backa=40			//distal apical background synapses
+	synapses_backinh=40			//background synapses of interneurons
+
+	//-------------------Set synaptic weights
+	ampaweightpr=	0.00024			//Initial stimulus
+	nmdaweightpr=	0.22			//Initial stimulus
+	ampaweight=	0.00019			//According to Wang(2008)
+	//nmdaweight=	0.52			//ratio inmda/iampa in basal dendrites:1 (Wang,Gao,2008)
+	gabaweight=	6.9e-4 			//According to Woo(2007)
+	//gabaweightb=	0.654e-4
+	ampaweightin=	7.5e-4			//according to Wang,Gao,2009
+	nmdaweightin=	3.2e-4			//ratio inmda/iampa for interneuron *0.5(Wang,Gao,2009)
+	autogabaweight=	5.1e-4			//According to Bacci (2003) 
+
+inmaxsyn appears in net.hoc, in the 'stimulation' procedure:
+
+	proc stimulation() {
+		r = new Random($1+165)
+		PID = r.uniform(0, 1)
+			
+		for i=0, (nPcells-1) {
+			if (save_PID==1) {
+				sprint(tmpstr, "stimulusPID/PID%d_%d.txt", i,runs+1)
+				variousdata.wopen(tmpstr)
+			}
+		
+			for j=0, (inmaxsyn-1) {
+				PID=r.repick()
+				if (save_PID==1) {variousdata.printf("%g\n", PID)}
+
+				Pcells[i].dend[1] ampapr[i][j]=new GLU(PID)
+				Pcells[i].dend[1] nmdapr[i][j]=new nmda_spike(PID)
+
+				nc1[i][j]=new NetCon(ns1, ampapr[i][j])
+				nc1[i][j].delay=500
+				nc1[i][j].weight=ampaweightpr
+				nc1[i][j].threshold=-20 
+			
+				nc2[i][j]=new NetCon(ns1, nmdapr[i][j])
+				nc2[i][j].delay=500
+				nc2[i][j].weight=nmdaweightpr	                       
+				nc2[i][j].threshold=-20 
+			}
+		}
+	}
+
+So it looks like each pyramidal cell gets 90 connections of GLU and nmda_spike, 
+connected to dend1, which is the proximal apical dendrite.
+
+ns1 is defined in net.hoc:
+
+	ns1=new NetStim(0.5)
+	ns1.interval=50 
+	ns1.number=10
+	ns1.start=0
+	ns1.noise=0
+
+Putting this into cfg.py:
+
+	# Stimulation parameters
+	cfg.stimNumber = 90
+	cfg.stimAMPAweight = 0.00024
+	cfg.stimNMDAweight = 0.22
+
+Putting this into netParams.py:
+
+	## Stimulation
+
+	netParams.stimSourceParams['stimulation'] = {
+	    'type'    : 'NetStim', 
+	    'start'   : 0, 
+	    'interval': 50, 
+	    'number'  : 10,
+	    'noise'   : 0}
+	    
+	ruleLabel = 'stimulation->pyrs'
+	netParams.stimTargetParams[ruleLabel] = {
+	    'source'   : 'stimulation', 
+	    'conds'    : {'pop': 'pyrs'}, 
+	    'sec'      : 'dend[1]', 
+	    'loc'      : 0.5, 
+	    'synMech'  : ['GLU', 'nmda_spike'], 
+	    'weight'   : [cfg.stimAMPAweight, cfg.stimNMDAweight], 
+	    'delay'    : 500,
+	    'threshold': -20}
+
+Seeing if it works.
+
+Got an error:
+
+	Adding stims...
+	  Warning: no valid sec specified for stim on cell gid=0 so using soma or 1st available. Existing secs: ['soma', 'axon', 'dend_0', 'dend_1', 'dend_2']; params: {'label': 'stimulation->pyrs', 'source': 'stimulation', 'sec': 'dend[1]', 'loc': 0.5, 'weight': 0.00024, 'delay': 500, 'synsPerConn': 1, 'synMech': 'GLU', 'type': 'NetStim', 'start': 0, 'interval': 50, 'number': 10, 'noise': 0}
+
+Looks like I need to change the 'sec' to 'dend_1'
+
+Got a new error:
+
+	AttributeError: 'hoc.HocObject' object has no attribute 'ampa'
+
+It looks like while the file is ampa.mod, the point process name is GLU
+
+Changing:
+
+	netParams.synMechParams['GLU']        = {'mod': 'GLU'}          # ampa.mod
+	netParams.synMechParams['nmda_spike'] = {'mod': 'nmda_spike'}   # NMDA_syn.mod
+
+cfg.simLabel = 'poirazi_02'
+
+It works now!  I can see the stimulation inputs in the voltage traces.
+
+Committing.
 
 
 

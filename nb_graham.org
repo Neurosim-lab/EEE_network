@@ -18051,9 +18051,171 @@ It works.
 
 Committing.
 
+Now to copy over some code to actually get Gfluctp into the cells.
+
+Here's the complete code from prior model:
+
+	cfg.PT5_exc_noise_e   = cfg.PT5_epas + 65.0     # Default E_e : 0.0
+	cfg.PT5_inh_noise_e   = cfg.PT5_epas - 10.0     # Default E_i : -75.0
+
+	# PT5_1 noise
+	if cfg.noise and cfg.noisePT5:
+	    netParams.cellParams['PT5_1']['secs']['soma']['pointps'] = {
+	                        'noise': {'mod': 'Gfluctp', 
+	                        'loc': 0.5,
+	                        'std_e': (0.0030/0.0121) * cfg.PT5_exc_noise_amp * cfg.noise_std_scale,
+	                        'g_e0' : 0.0121 * cfg.PT5_exc_noise_amp * cfg.noise_amp_scale, 
+	                        'tau_i': 10.49 * cfg.PT5_inh_noise_tau, 
+	                        'tau_e': 2.728 * cfg.PT5_exc_noise_tau, 
+	                        'std_i': (0.0066/0.0573) * cfg.PT5_inh_noise_amp * cfg.noise_std_scale, 
+	                        'g_i0' : 0.0573 * cfg.PT5_inh_noise_amp * cfg.noise_amp_scale, 
+	                        'E_e'  : cfg.PT5_exc_noise_e, 
+	                        'E_i'  : cfg.PT5_inh_noise_e, 
+	                        'seed1': 'gid', 
+	                        'seed2': id32('gluctp_exc'), 
+	                        'seed3': cfg.seeds['stim']}}
+
+	# PV5 noise
+	if cfg.noise and cfg.noisePV5:
+	    netParams.cellParams['PV5_1']['secs']['soma']['pointps'] = {
+	                        'noise': {'mod': 'Gfluctp', 
+	                        'loc': 0.5,
+	                        'std_e': 0.0030 * cfg.PV5_exc_noise_std * cfg.PV5_noise_std * cfg.noise_amp_scale * cfg.noise_std_scale,
+	                        'g_e0' : 0.0121 * cfg.PV5_exc_noise_amp * cfg.PV5_noise_amp * cfg.noise_amp_scale, 
+	                        'tau_i': 10.49 * cfg.PV5_inh_noise_tau, 
+	                        'tau_e': 2.728 * cfg.PV5_exc_noise_tau, 
+	                        'std_i': 0.0066 * cfg.PV5_inh_noise_std * cfg.PV5_noise_std * cfg.noise_amp_scale * cfg.noise_std_scale, 
+	                        'g_i0' : 0.0573 * cfg.PV5_inh_noise_amp * cfg.PV5_noise_amp * cfg.noise_amp_scale, 
+	                        'E_e'  : cfg.PV5_exc_noise_e, 
+	                        'E_i'  : cfg.PV5_inh_noise_e, 
+	                        'seed1': 'gid', 
+	                        'seed2': id32('gluctp_inh'), 
+	                        'seed3': cfg.seeds['stim']}}
 
 
+	# All PT5_1 parameters have been set (including noise), so now copy the 
+	#   cellRule for the other PT pops
+	# Note: we are creating 1 cell type per pop because they could potentially 
+	#   have different noise and connectivity params  
 
+	for label in ['PT5_2', 'PT5_3', 'PT5_4']:    
+	    cellRule = copy.deepcopy(netParams.cellParams['PT5_1'].todict())
+	    cellRule['conds']['pop'] = [label]
+	    netParams.cellParams[label] = cellRule
+
+	####
+	for label in ['PV5_2']:    
+	    cellRule = copy.deepcopy(netParams.cellParams['PV5_1'].todict())
+	    cellRule['conds']['pop'] = [label]
+	    netParams.cellParams[label] = cellRule
+	####
+
+But I'll start with the default values and see what happens.
+
+
+** Gfluctp into netParams
+
+Added this to netParams:
+
+	netParams.cellParams['pyrs']['secs']['soma']['pointps'] = {'noise': {'mod': 'Gfluctp'}}
+
+Now to run and see what happens.
+
+cfg.simLabel = 'poirazi_10'
+
+There's some sort of problem.  No cells were created.  Looking into it.
+
+netParams.py crashes:
+
+	graham-mac:poirazi graham$ python3 netParams.py 
+	Traceback (most recent call last):
+	  File "netParams.py", line 70, in <module>
+	    netParams.cellParams['pyrs']['secs']['soma']['pointps'] = {'noise': {'mod': 'Gfluctp'}}
+	  File "/Users/graham/Applications/netpyne/netpyne/specs/dicts.py", line 184, in __getitem__
+	    return super(ODict, self).__getitem__(k)
+	KeyError: 'pyrs'
+
+Looks like I should use 'pyr' instead of 'pyrs'...
+
+Yeah, now it works.
+
+file:gif/20200114_090628.png
+
+So the pyrs used to sit at around -65.45
+With noise added, they now sit at around -62.5
+
+The noise completely overwhelms the stimulus.  Need to ensure the stimulus is 
+as strong as it's supposed to be.
+
+Probably need to include the e_pas in Gfluct, e.g.:
+
+	cfg.PT5_exc_noise_e   = cfg.PT5_epas + 65.0     # Default E_e : 0.0
+	cfg.PT5_inh_noise_e   = cfg.PT5_epas - 10.0     # Default E_i : -75.0
+
+Also, every pyr cell is getting the same noise, so probably need to use GID
+as one of the seeds.
+
+Temporarily reducing the run duration to 2000 ms to make it quicker and see noise
+better.
+
+But first, I want to see some spiking.  I am going to add an IClamp and inject it 
+into pyrs.
+
+
+** Current injection into pyrs
+
+Added to netParams:
+
+	## Current injection
+
+	if cfg.pyrInject:
+
+	    netParams.stimSourceParams['pyrInject'] = {
+	        'type': 'IClamp', 
+	        'del': cfg.pyrInjectDel, 
+	        'dur': cfg.pyrInjectDur, 
+	        'amp': cfg.pyrInjectAmp}
+
+	        
+	    ruleLabel = 'pyrInject->pyrs'
+	    netParams.stimTargetParams[ruleLabel] = {
+	        'source': 'pyrInject', 
+	        'conds': {'popLabel': 'pyrs'}, 
+	        'sec': cfg.pyrInjectSec, 
+	        'loc': cfg.pyrInjectLoc}
+
+Added to cfg:
+
+	## Current injection
+
+	cfg.pyrInject = True
+	cfg.pyrInjectDel = 1000
+	cfg.pyrInjectDur = 500
+	cfg.pyrInjectAmp = 0.3
+	cfg.pyrInjectSec = 'soma'
+	cfg.pyrInjectLoc = 0.5
+
+Testing.  cfg.simLabel = 'poirazi_11'
+
+It works, but the stim is too low to cause spiking.  Increasing amp to 3.0.
+
+cfg.simLabel = 'poirazi_12'
+
+Now I see spiking.  :)
+
+I want to know the average rates, so adding this to cfg:
+
+	cfg.printPopAvgRates = True
+
+Also decreasing amp to 1.0
+
+cfg.simLabel = 'poirazi_13'
+
+Just a couple spikes now.  Increasing amp to 1.5
+
+cfg.simLabel = 'poirazi_14'
+
+Looks good.  Committing now.
 
 
 

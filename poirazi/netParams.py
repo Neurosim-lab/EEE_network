@@ -44,7 +44,6 @@ netParams.synMechParams['SinClamp']   = {'mod': 'SinClamp'}     # sinclamp.mod
 netParams.synMechParams['Gfluctp']    = {'mod': 'Gfluctp'}      # Gfluctp.mod
 
 
-
 ## Stimulation
 
 netParams.stimSourceParams['stimulation'] = {
@@ -68,7 +67,8 @@ netParams.stimTargetParams[ruleLabel] = {
 
 ## Noise
 
-
+netParams.cellParams['pyr']['secs']['soma']['pointps'] = {
+    'noise': {'mod': 'Gfluctp'}}
 
 
 
@@ -130,6 +130,40 @@ netParams.connParams[ruleLabel] = {
     'sec'        : 'soma',
     'synsPerConn': cfg.numSynsInhInh,
     'threshold'  : -20}
+
+
+## Current injection
+
+if cfg.pyrInject:
+
+    netParams.stimSourceParams['pyrInject'] = {
+        'type': 'IClamp', 
+        'del': cfg.pyrInjectDel, 
+        'dur': cfg.pyrInjectDur, 
+        'amp': cfg.pyrInjectAmp}
+
+        
+    ruleLabel = 'pyrInject->pyrs'
+    netParams.stimTargetParams[ruleLabel] = {
+        'source': 'pyrInject', 
+        'conds': {'popLabel': 'pyrs'}, 
+        'sec': cfg.pyrInjectSec, 
+        'loc': cfg.pyrInjectLoc}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

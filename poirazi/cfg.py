@@ -2,13 +2,13 @@ from netpyne import specs, sim
 import os
 
 cfg = specs.SimConfig()
-cfg.simLabel = 'poirazi_03'
+cfg.simLabel = 'poirazi_06'
 cfg.saveFolder = os.path.join('output', cfg.simLabel)
 
 saveFigs = True
 showFigs = False
 
-cfg.duration = 1000
+cfg.duration = 6000
 cfg.dt = 0.025
 cfg.verbose = True
 cfg.hParams.celsius = 34.0
@@ -25,14 +25,15 @@ cfg.stimNumber = 90
 cfg.stimAMPAweight = 0.00024
 cfg.stimNMDAweight = 0.22
 
-
 # Connectivity: pyrs -> pyrs
 cfg.numSynsPyrPyr = 5
 cfg.PyrPyrAMPAweight = 0.00019
 cfg.PyrPyrNMDAweight = 0.585
 
-
-
+# Connectivity: pyrs -> inhs
+cfg.numSynsPyrInh = 2
+cfg.PyrInhAMPAweight = 7.5e-4
+cfg.PyrInhNMDAweight = 3.2e-4
 
 
 

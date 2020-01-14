@@ -8,31 +8,40 @@ except:
 
 netParams = specs.NetParams()
 
+
 ## Population parameters
+
 numPyrCells = 8
 numInhCells = 2
 
 netParams.popParams['pyrs'] = {'cellType': 'pyr', 'numCells': numPyrCells}
 netParams.popParams['inhs'] = {'cellType': 'inh', 'numCells': numInhCells}
 
+
 ## Set path to cells directory
+
 cellpath = 'cells'
 pyrPath  = os.path.join(cellpath, 'pyr.py')
 inhPath  = os.path.join(cellpath, 'inh.py')
 
+
 ## Import cells
+
 netParams.cellParams['pyr'] = netParams.importCellParams(label='pyr', conds={'pop':'pyrs'}, fileName=pyrPath, cellName='makeCell', cellInstance=True)
 netParams.cellParams['inh'] = netParams.importCellParams(label='inh', conds={'pop':'inhs'}, fileName=inhPath, cellName='makeCell', cellInstance=True)
 
+
 ## Synaptic mechanisms
+
 netParams.synMechParams['GLU']        = {'mod': 'GLU'}          # ampa.mod
-netParams.synMechParams['GLUIN']      = {'mod': 'ampain'}
+netParams.synMechParams['GLUIN']      = {'mod': 'GLUIN'}        # ampain.mod
 netParams.synMechParams['GABAa']      = {'mod': 'gabaa'}
 netParams.synMechParams['GABAain']    = {'mod': 'gabaain'}
 netParams.synMechParams['GABAb']      = {'mod': 'gabab'}
-netParams.synMechParams['NMDA']       = {'mod': 'NMDA'}
+netParams.synMechParams['NMDA']       = {'mod': 'NMDA'}         # NMDA.mod
 netParams.synMechParams['nmda_spike'] = {'mod': 'nmda_spike'}   # NMDA_syn.mod
-netParams.synMechParams['SinClamp']   = {'mod': 'sinclamp'}
+netParams.synMechParams['SinClamp']   = {'mod': 'SinClamp'}     # sinclamp.mod
+
 
 ## Stimulation
 
@@ -55,9 +64,16 @@ netParams.stimTargetParams[ruleLabel] = {
     'threshold': -20}
 
 
+## Noise
+
+
+
+
+
+
 ## Connectivity
 
-# pyr --> pyr
+# pyrs --> pyrs
 ruleLabel = 'pyrs->pyrs'
 netParams.connParams[ruleLabel] = {
     'preConds'   : {'pop': 'pyrs'},
@@ -66,55 +82,26 @@ netParams.connParams[ruleLabel] = {
     'weight'     : [cfg.PyrPyrAMPAweight, cfg.PyrPyrNMDAweight],
     'delay'      : 'max(0.38, normal(1.7, 0.9))',
     'probability': 1.0,
-    'loc'        : 1.0,
+    'loc'        : [1.0, 1.0],
     'sec'        : 'dend_0',
     'synsPerConn': cfg.numSynsPyrPyr,
     'threshold'  : -20}
 
-# # Excitatory --> Inhibitory
-# for prePop in EPops:
-#     for postPop in IPops:
-#         ruleLabel = prePop+'->'+postPop
-#         netParams.connParams[ruleLabel] = {
-#             'preConds': {'pop': prePop},
-#             'postConds': {'pop': postPop},
-#             'synMech': 'AMPA',
-#             'weight': cfg.AMPAweight, 
-#             'delay': 'defaultDelay', #'defaultDelay+dist_3D/propVelocity',
-#             cfg.connType: EIconn,
-#             'loc': 0.5,
-#             'sec': 'soma'} #,
-#             #'synsPerConn': 'int(uniform(1,' + str(cfg.EIspc) + '))'}
+# pyrs --> inhs
+ruleLabel = 'pyrs->inhs'
+netParams.connParams[ruleLabel] = {
+    'preConds'   : {'pop': 'pyrs'},
+    'postConds'  : {'pop': 'inhs'},
+    'synMech'    : ['GLUIN', 'NMDA'], 
+    'weight'     : [cfg.PyrInhAMPAweight, cfg.PyrInhNMDAweight],
+    'delay'      : 'max(0.38, normal(0.6, 0.2))',
+    'probability': 1.0,
+    'loc'        : [1.0, 1.0],
+    'sec'        : 'soma',
+    'synsPerConn': cfg.numSynsPyrInh,
+    'threshold'  : -20}
 
-# # Inhibitory --> Excitatory
-# for prePop in IPops:
-#     for postPop in EPops:
-#         ruleLabel = prePop+'->'+postPop
-#         netParams.connParams[ruleLabel] = {
-#             'preConds': {'pop': prePop},
-#             'postConds': {'pop': postPop},
-#             'synMech': ISynMech, 
-#             'weight': [cfg.GABAAfastWeight, cfg.GABAAslowWeight],
-#             'delay': 'defaultDelay', #'defaultDelay+dist_3D/propVelocity',
-#             cfg.connType: IEconn,
-#             'loc': 0.5,
-#             'sec': 'soma'} #,
-#             #'synsPerConn': 'int(uniform(1,' + str(cfg.IEspc) + '))'}
 
-# # Inhibitory --> Inhibitory
-# for prePop in IPops:
-#     for postPop in IPops:
-#         ruleLabel = prePop+'->'+postPop
-#         netParams.connParams[ruleLabel] = {
-#             'preConds': {'pop': prePop},
-#             'postConds': {'pop': postPop},
-#             'synMech': 'GABAAfast',
-#             'weight': cfg.GABAAfastWeight, 
-#             'delay': 'defaultDelay', #'defaultDelay+dist_3D/propVelocity',
-#             cfg.connType: IIconn,
-#             'loc': 0.5,
-#             'sec': 'soma'} #,
-#             #'synsPerConn': 'int(uniform(1,' + str(cfg.IIspc) + '))'}
 
 
 

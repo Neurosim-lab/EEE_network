@@ -17576,7 +17576,140 @@ Trying again.
 
 Now it works.  Committing.
 
+Changing netParams:
 
+'loc'        : [1.0, 1.0],
+
+That doesn't seem to have helped.  The locs still vary.  I'll have to ask about this.
+
+** Running the sim for the full 6000 ms
+
+cfg.duration = 6000
+cfg.simLabel = 'poirazi_05'
+
+Still no spiking.  It probably needs the noise, which I will do next.
+
+** Adding noise
+
+From net.hoc:
+
+	//----------------------------------------------Membrane noise-----------------------------------------------------------//
+	experiments=0
+	proc noise() {
+		tot=0
+		totin=0
+		forsec soma_list {
+			w[experiments][runs][tot]=new Random(tot+$1) 
+			w[experiments][runs][tot].poisson(0.035)    
+			sinw[tot]=new SinClamp(0.5)
+			sinw[tot].del=0       
+			sinw[tot].dur=tstop
+			sinw[tot].freq =80     
+			w[experiments][runs][tot].play(&sinw[tot].pkamp)
+			tot=tot+1
+		} 
+
+		forsec insoma_list {
+			inw[experiments][runs][totin]=new Random($1+102)
+			inw[experiments][runs][totin].poisson(0.06) 
+
+			insinw[totin]=new SinClamp(0.5)
+			insinw[totin].del=0      
+			insinw[totin].dur=tstop
+			insinw[totin].freq =70  
+			inw[experiments][runs][totin].play(&insinw[totin].pkamp)
+			totin=totin+1
+		}
+	}
+
+I searched Netpyne for SinClamp and nothing came up.  I'll have to ask about this in
+the meeting.
+
+Oops, just realized SinClamp is a mod file point process.
+
+So it looks like the model is playing a random (poisson) vector...
+
+https://www.neuron.yale.edu/neuron/static/new_doc/programming/math/random.html?highlight=play#Random.play
+
+I'll have to ask for advice in the meeting.
+
+Moving on to finish up connectivity.
+
+** Connectivity pyrs->inhs
+
+From net.hoc:
+
+	//----------------------------------------------PC-IN connections-------------------------------------------------------//
+	proc pyrin() {
+		fpin = new Random($1*2)
+		delstim=fpin.normal(0.6, 0.2)		//latency from Pc-In, according to Thomson(2007), also Angulo,Audinat(1999)
+
+		//----------------------------------Insert synapses
+		for i=0, (nINcells-1) {
+		       for j=0, (maxsyn2-1) {
+				PID = r.repick ()
+				INcells[i].soma ampain[i][j] = new GLUIN(PID)
+				INcells[i].soma nmdain[i][j] = new NMDA(PID)
+		    }
+		}
+		//-----------------------------------Connect
+		for i=0, (nPcells-1) {
+			for j=0, (nINcells-1) {
+				for k=0, (maxsyn2-1) {
+					delstim=fpin.repick()
+					if (delstim<0) delstim=delstim*(-1)
+
+					Pcells[i].axon conampain[i][j][k] = new NetCon(&v(1), ampain[j][k], -20, delstim, ampaweightin)
+					Pcells[i].axon connmdain[i][j][k] = new NetCon(&v(1), nmdain[j][k], -20, delstim, nmdaweightin)   
+				}
+			}
+		}
+	}
+
+cfg.py:
+
+	# Connectivity: pyrs -> inhs
+	cfg.numSynsPyrInh = 2
+	cfg.PyrInhAMPAweight = 7.5e-4
+	cfg.PyrInhNMDAweight = 3.2e-4
+
+netParams.py:
+
+	# pyrs --> inhs
+	ruleLabel = 'pyrs->inhs'
+	netParams.connParams[ruleLabel] = {
+	    'preConds'   : {'pop': 'pyrs'},
+	    'postConds'  : {'pop': 'inhs'},
+	    'synMech'    : ['GLUIN', 'NMDA'], 
+	    'weight'     : [cfg.PyrInhAMPAweight, cfg.PyrInhNMDAweight],
+	    'delay'      : 'max(0.38, normal(0.6, 0.2))',
+	    'probability': 1.0,
+	    'loc'        : [1.0, 1.0],
+	    'sec'        : 'soma',
+	    'synsPerConn': cfg.numSynsPyrInh,
+	    'threshold'  : -20}
+
+Testing.  cfg.simLabel = 'poirazi_06'
+
+It works.  Committing.
+
+
+** Connectivity inhs->pyrs
+
+
+
+** Connectivity inhs->inhs
+
+
+
+
+* 2020-01-14 -- Poirazi model conversion to Python
+
+** To ask about in meeting
+
+autapses
+noise (playing a random)
+why locations aren't at 1.0 as specified
 
 
 

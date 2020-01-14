@@ -17251,12 +17251,13 @@ Yeah, those seem to be the standard values.
 
 ** Upcoming steps
 
+Set up stimulation
 Set up connectivity
 Set up noise
 
 * 2020-01-13 -- Poirazi model conversion to Python
 
-** Setting up connectivity
+** Setting up stimulation to pyramidal cells
 
 From experiment.hoc:
 
@@ -17381,24 +17382,199 @@ It works now!  I can see the stimulation inputs in the voltage traces.
 
 Committing.
 
+** Setting up background synaptic activity
+
+From experiment.hoc:
+
+	synapses_backb=40			//basal background synapses
+	synapses_backpr=40			//proximal apical background synapses
+	synapses_backa=40			//distal apical background synapses
+	synapses_backinh=40			//background synapses of interneurons
+
+These parameters appear in vecstim.hoc
+
+But it looks like vecstim isn't used, from experiment.hoc:
+
+			stimulation(runs)   
+			pyramidals(runs)
+			interneurons(runs)
+			pyrin(runs)
+			inpyr(runs)
+			
+			noise(runs) 
+			//call_vecstim(runs)   //Call this for background synaptic activity
+			sadp_soma()
+			sadp_dend()
+			ttx()
+
+I've finished 'stimulation'.  The next procedure called is 'pyramidals', which is 
+defined in net.hoc, and defines the pyramidal to pyramidal connectivity.
+
+** Setting up pyramidal to pyramidal connectivity
+
+From net.hoc:
+
+	// ---------------------------------PC-PC connections, basal dendrite------------------------------------//
+	proc pyramidals() {
+		r = new Random($1+165)
+		PID = r.uniform(0, 1)
+		fp = new Random($1+3)		
+		//FIDp=fp.normal(40,15)		//For large net
+		FIDp=fp.normal(1.7,0.9)		//According to Thomson(2007)
+		//------------------------------------------------Insert Autapses(Lubke, 1996)
+		for i=0, (nPcells-1) {
+			if (save_PID==1) {
+				sprint(tmpstr, "PID/PID%d_%d.txt", i,runs+1)
+				variousdata.wopen(tmpstr)
+			}
+			for j=0, (automaxsyn-1) {
+				PID=r.repick()
+				if (save_PID==1) {variousdata.printf("%g\n", PID)}
+				Pcells[i].dend[0] autoampa[i][j] = new GLU(PID)
+				Pcells[i].dend[0] autonmda[i][j] = new nmda_spike(PID)
+			}
+		}
+		//----------------------Connect autapses
+		for i=0, (nPcells-1) {
+			for j=0, (automaxsyn-1) {
+				FIDp=fp.repick()
+				if (FIDp<0) FIDp=FIDp*(-1)
+				Pcells[i].axon conautoampa [i][j] = new NetCon(&v(1), autoampa[i][j], -20, FIDp, ampaweight)
+				Pcells[i].axon conautonmda [i][j] = new NetCon(&v(1), autonmda[i][j], -20, FIDp, nmdaweight) 
+			}
+		}
+		//---------------------------------------------------------Insert Synapses
+		//The connections between Pcells are all-with-all, with the same strenght (#of synapses)
+		for i=0, (nPcells-1) {
+			if (save_PID==1) {
+				sprint(tmpstr, "PID/PID%d_%d.txt", i,runs+1)
+				variousdata.aopen(tmpstr)
+			}
+
+			for j=0, (maxsyn-1) {
+				PID=r.repick()
+
+				if (save_PID==1) {variousdata.printf("%g\n", PID)}
+
+				Pcells[i].dend[0] ampa[i][j] = new GLU(PID)
+				Pcells[i].dend[0] nmda[i][j] = new nmda_spike(PID)
+			}
+		}
+		//---------------------Connect synapses
+		for i=0, (nPcells-1) {
+			for j=0, (nPcells-1) {
+					if (i !=j) {
+						for k=0, (maxsyn-1) {
+							FIDp=fp.repick()
+							if (FIDp<0) FIDp=FIDp*(-1)
+							Pcells[i].axon conampa[i][j][k]=new NetCon(&v(1), ampa[j][k], -20, FIDp, ampaweight)
+							Pcells[i].axon connmda[i][j][k]=new NetCon(&v(1), nmda[j][k], -20, FIDp, nmdaweight)
+					}
+				}
+			}
+		}
+	}
 
 
 
+maxsyn=		5			//PC-PC connections
+automaxsyn=	1			//autosynapses (one third, Lubke, 1996)
 
 
+I'll figure out the autapses later.  First to get the normal synapses set up.
 
+	cfg.numSynsPyrPyr = 5
 
+From experiment.hoc:
 
+	ampaweight=	0.00019			//According to Wang(2008)
+	//nmdaweight=	0.52			//ratio inmda/iampa in basal dendrites:1 (Wang,Gao,2008)
 
+It looks like nmdaweight is varied using values_nmda.hoc, which reads:
 
+	nmdaweights.x[0]=0.25		//ratio 1.1
+	nmdaweights.x[1]=0.35		//ratio 1.5
+	nmdaweights.x[2]=0.47		//ratio 1.9
+	nmdaweights.x[3]=0.585		//ratio 2.3
 
+experiment.hoc uses value 3:
 
+	for nmdavalues=3,3{ 
+		nmdaweight=nmdaweights.get[nmdavalues]
 
+So:
 
+	cfg.PyrPyrAMPAweight = 0.00019
+	cfg.PyrPyrNMDAweight = 0.585
 
+Now I need to figure out what the -20 and FIDp do...
 
+	Pcells[i].axon conampa[i][j][k]=new NetCon(&v(1), ampa[j][k], -20, FIDp, ampaweight)
+	Pcells[i].axon connmda[i][j][k]=new NetCon(&v(1), nmda[j][k], -20, FIDp, nmdaweight)
 
+From NEURON documentation:
 
+	https://www.neuron.yale.edu/neuron/static/py_doc/modelspec/programmatic/network/netcon.html
+
+	netcon = h.NetCon(source_ref_v, target, [threshold, delay, weight], sec=section)
+	netcon = h.NetCon(source, target, [threshold, delay, weight])
+
+So it looks like the 'threshold' is -20 and the delay is FIDp.
+
+In net.hoc:
+
+	FIDp=fp.normal(1.7,0.9)		//According to Thomson(2007)
+
+So it's a sample from a normal distribution with mean 1.7 and standard deviation 0.9.
+
+I see it's actually the absolute value of FIDp:
+
+	if (FIDp<0) FIDp=FIDp*(-1)
+
+So here's how my netParams.py looks:
+
+	## Connectivity
+
+	# pyr --> pyr
+	ruleLabel = 'pyrs->pyrs'
+	netParams.connParams[ruleLabel] = {
+	    'preConds'   : {'pop': 'pyrs'},
+	    'postConds'  : {'pop': 'pyrs'},
+	    'synMech'    : ['GLU', 'nmda_spike'], 
+	    'weight'     : [cfg.PyrPyrAMPAweight, cfg.PyrPyrNMDAweight],
+	    'delay'      : 'abs(normal(1.7, 0.9))',
+	    'probability': 1.0,
+	    'loc'        : 1.0,
+	    'sec'        : 'dend_0',
+	    'synsPerConn': cfg.numSynsPyrPyr,
+	    'threshold'  : -20}
+
+Running a sim: cfg.simLabel = 'poirazi_03'
+
+For some reason, the locations of the synapses aren't all at 1.0...
+
+Also, I get a bunch of non-fatal errors like this:
+
+	Error: attempted to create self-connection on cell gid=0, section=dend_0
+
+And I get what seems to be a fatal error:
+
+	Minimum delay (time-step for queue exchange) is 0.38
+	0 nrniv: usable mindelay is 0 (or less than dt for fixed step method)
+	0  near line 0
+	0  tstop=1000.0
+	             ^
+	        0 finitialize(-65)
+
+It looks like the lowest delay I get is delay=0.01
+
+Changing netParams:
+
+	'delay'      : 'max(0.38, normal(1.7, 0.9))'
+
+Trying again.
+
+Now it works.  Committing.
 
 
 

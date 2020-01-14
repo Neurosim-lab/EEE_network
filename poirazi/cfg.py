@@ -2,7 +2,7 @@ from netpyne import specs, sim
 import os
 
 cfg = specs.SimConfig()
-cfg.simLabel = 'poirazi_02'
+cfg.simLabel = 'poirazi_03'
 cfg.saveFolder = os.path.join('output', cfg.simLabel)
 
 saveFigs = True
@@ -24,3 +24,22 @@ cfg.analysis['plot2Dnet']  = {'saveFig': saveFigs, 'showFig': showFigs}
 cfg.stimNumber = 90
 cfg.stimAMPAweight = 0.00024
 cfg.stimNMDAweight = 0.22
+
+
+# Connectivity: pyrs -> pyrs
+cfg.numSynsPyrPyr = 5
+cfg.PyrPyrAMPAweight = 0.00019
+cfg.PyrPyrNMDAweight = 0.585
+
+
+
+
+
+
+
+
+
+
+
+
+

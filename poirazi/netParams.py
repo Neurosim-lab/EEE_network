@@ -55,23 +55,21 @@ netParams.stimTargetParams[ruleLabel] = {
     'threshold': -20}
 
 
-
 ## Connectivity
 
-# # pyr --> pyr
-# for prePop in EPops:
-#     for postPop in EPops:
-#         ruleLabel = prePop+'->'+postPop
-#         netParams.connParams[ruleLabel] = {
-#             'preConds': {'pop': prePop},
-#             'postConds': {'pop': postPop},
-#             'synMech': ESynMech, 
-#             'weight': [cfg.AMPAweight, cfg.NMDAweight],
-#             'delay': 'defaultDelay', #'defaultDelay+dist_3D/propVelocity',
-#             cfg.connType: EEconn,
-#             'loc': 0.3,
-#             'sec': 'basal_8'} #,
-#             #'synsPerConn': 'int(uniform(1,' + str(cfg.EEspc) + '))'}
+# pyr --> pyr
+ruleLabel = 'pyrs->pyrs'
+netParams.connParams[ruleLabel] = {
+    'preConds'   : {'pop': 'pyrs'},
+    'postConds'  : {'pop': 'pyrs'},
+    'synMech'    : ['GLU', 'nmda_spike'], 
+    'weight'     : [cfg.PyrPyrAMPAweight, cfg.PyrPyrNMDAweight],
+    'delay'      : 'max(0.38, normal(1.7, 0.9))',
+    'probability': 1.0,
+    'loc'        : 1.0,
+    'sec'        : 'dend_0',
+    'synsPerConn': cfg.numSynsPyrPyr,
+    'threshold'  : -20}
 
 # # Excitatory --> Inhibitory
 # for prePop in EPops:

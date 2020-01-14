@@ -2,7 +2,7 @@ from netpyne import specs, sim
 import os
 
 cfg = specs.SimConfig()
-cfg.simLabel = 'poirazi_06'
+cfg.simLabel = 'poirazi_07'
 cfg.saveFolder = os.path.join('output', cfg.simLabel)
 
 saveFigs = True
@@ -35,7 +35,10 @@ cfg.numSynsPyrInh = 2
 cfg.PyrInhAMPAweight = 7.5e-4
 cfg.PyrInhNMDAweight = 3.2e-4
 
-
+# Connectivity: inhs -> pyrs
+cfg.numSynsInhPyr = 4
+cfg.PyrInhGABAaWeight = 7.5e-4
+cfg.PyrInhGABAbWeight = 3.2e-4
 
 
 

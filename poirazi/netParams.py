@@ -35,9 +35,9 @@ netParams.cellParams['inh'] = netParams.importCellParams(label='inh', conds={'po
 
 netParams.synMechParams['GLU']        = {'mod': 'GLU'}          # ampa.mod
 netParams.synMechParams['GLUIN']      = {'mod': 'GLUIN'}        # ampain.mod
-netParams.synMechParams['GABAa']      = {'mod': 'gabaa'}
+netParams.synMechParams['GABAa']      = {'mod': 'GABAa'}        # gabaa.mod
 netParams.synMechParams['GABAain']    = {'mod': 'gabaain'}
-netParams.synMechParams['GABAb']      = {'mod': 'gabab'}
+netParams.synMechParams['GABAb']      = {'mod': 'GABAb'}        # gabab.mod
 netParams.synMechParams['NMDA']       = {'mod': 'NMDA'}         # NMDA.mod
 netParams.synMechParams['nmda_spike'] = {'mod': 'nmda_spike'}   # NMDA_syn.mod
 netParams.synMechParams['SinClamp']   = {'mod': 'SinClamp'}     # sinclamp.mod
@@ -96,12 +96,24 @@ netParams.connParams[ruleLabel] = {
     'weight'     : [cfg.PyrInhAMPAweight, cfg.PyrInhNMDAweight],
     'delay'      : 'max(0.38, normal(0.6, 0.2))',
     'probability': 1.0,
-    'loc'        : [1.0, 1.0],
+    'loc'        : [0.5, 0.5],
     'sec'        : 'soma',
     'synsPerConn': cfg.numSynsPyrInh,
     'threshold'  : -20}
 
-
+# inhs --> pyrs
+ruleLabel = 'inhs->pyrs'
+netParams.connParams[ruleLabel] = {
+    'preConds'   : {'pop': 'inhs'},
+    'postConds'  : {'pop': 'pyrs'},
+    'synMech'    : ['GABAa', 'GABAb'], 
+    'weight'     : [cfg.PyrInhGABAaWeight, cfg.PyrInhGABAbWeight],
+    'delay'      : 'max(0.38, normal(1.8, 0.8))',
+    'probability': 1.0,
+    'loc'        : [0.5, 0.5],
+    'sec'        : 'soma',
+    'synsPerConn': cfg.numSynsInhPyr,
+    'threshold'  : -20}
 
 
 

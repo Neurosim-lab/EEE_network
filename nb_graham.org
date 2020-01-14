@@ -17696,6 +17696,62 @@ It works.  Committing.
 
 ** Connectivity inhs->pyrs
 
+From net.hoc:
+
+	//------------------------------------------------IN-PC connections-----------------------------------------------------//
+	proc inpyr() {
+		finp = new Random($1*8)
+		delstiminp=finp.normal(1.8, 0.8)	//latency from IN-Pc, according to Thomson(2007)
+
+		//----------------------------Insert synapses
+		for i=0, (nPcells-1) {
+			for j=0,(maxsyn3-1) { 
+
+				PID = r.repick()
+				Pcells[i].soma gabaa[i][j] = new GABAa(PID)
+				Pcells[i].soma gabab[i][j] = new GABAb(PID)
+			}
+		}
+		//-----------------------------Connect
+		for i=0, (nINcells-1) {
+			for j=0,(nPcells-1) {
+				for k=0, (maxsyn3-1) {
+					delstiminp=finp.repick()
+					if (delstiminp<0) delstiminp=delstiminp*(-1)
+
+					INcells[i].axon congabaa[i][j][k] = new NetCon(&v(1), gabaa[j][k], -20, delstiminp, gabaweight)
+					INcells[i].axon congabab[i][j][k] = new NetCon(&v(1), gabab[j][k], -20, delstiminp, gabaweightb)
+				}
+			}
+		}
+	}
+
+cfg.py:
+
+	# Connectivity: inhs -> pyrs
+	cfg.numSynsInhPyr = 4
+	cfg.PyrInhGABAaWeight = 7.5e-4
+	cfg.PyrInhGABAbWeight = 3.2e-4
+
+netParams.py:
+
+	# inhs --> pyrs
+	ruleLabel = 'inhs->pyrs'
+	netParams.connParams[ruleLabel] = {
+	    'preConds'   : {'pop': 'inhs'},
+	    'postConds'  : {'pop': 'pyrs'},
+	    'synMech'    : ['GABAa', 'GABAb'], 
+	    'weight'     : [cfg.PyrInhGABAaWeight, cfg.PyrInhGABAbWeight],
+	    'delay'      : 'max(0.38, normal(1.8, 0.8))',
+	    'probability': 1.0,
+	    'loc'        : [0.5, 0.5],
+	    'sec'        : 'soma',
+	    'synsPerConn': cfg.numSynsInhPyr,
+	    'threshold'  : -20}
+
+Testing.  cfg.simLabel = 'poirazi_07'
+
+It works.  Committing.
 
 
 ** Connectivity inhs->inhs
@@ -17710,7 +17766,7 @@ It works.  Committing.
 autapses
 noise (playing a random)
 why locations aren't at 1.0 as specified
-
+minimum delay 0.38 (instead of absolute value of normal)
 
 
 

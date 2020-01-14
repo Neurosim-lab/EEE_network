@@ -17756,10 +17756,64 @@ It works.  Committing.
 
 ** Connectivity inhs->inhs
 
+From net.hoc:
+
+//---------------------------------------------IN-IN connections--------------------------------------------------------//
+proc interneurons() {
+	fin = new Random($1-100)
+	delstimin=fin.normal(1.76,0.07)		//latency from IN-IN, according to Bacci (2003)   
+	//----------------------Insert synapses
+	for i=0, (nINcells-1) {
+		for j=0,(maxsyn1-1) {
+			PID = r.repick ()
+			INcells[i].soma gabaain[i][j] = new GABAain(PID)
+		}
+	}
+	//----------------------Connect
+	for i=0, (nINcells-1) {
+		for j=0, (nINcells-1) {
+			for k=0, (maxsyn1-1) {
+				delstimin=fin.repick()
+				if (delstimin<0) delstimin=delstimin*(-1)
+				INcells[i].axon congabaain[i][j][k] = new NetCon(&v(1), gabaain[j][k],-20,delstimin,autogabaweight)
+			}
+		}
+	}
+
+}
+
+cfg.py:
+
+	# Connectivity: inhs -> inhs
+	cfg.numSynsInhInh = 12
+	cfg.InhInhGABAaWeight = 5.1e-4
+
+netParams.py:
+
+	# inhs --> inhs
+	ruleLabel = 'inhs->inhs'
+	netParams.connParams[ruleLabel] = {
+	    'preConds'   : {'pop': 'inhs'},
+	    'postConds'  : {'pop': 'inhs'},
+	    'synMech'    : ['GABAain'], 
+	    'weight'     : [cfg.InhInhGABAaWeight],
+	    'delay'      : 'max(0.38, normal(1.76, 0.07))',
+	    'probability': 1.0,
+	    'loc'        : [0.5],
+	    'sec'        : 'soma',
+	    'synsPerConn': cfg.numSynsInhInh,
+	    'threshold'  : -20}
+
+Testing.  cfg.simLabel = 'poirazi_08'
+
+It works.  Committing.
 
 
 
-* 2020-01-14 -- Poirazi model conversion to Python
+
+
+
+* 2020-01-14 -- EEE meeting and Poirazi model conversion to Python
 
 ** To ask about in meeting
 

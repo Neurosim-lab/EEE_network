@@ -36,7 +36,7 @@ netParams.cellParams['inh'] = netParams.importCellParams(label='inh', conds={'po
 netParams.synMechParams['GLU']        = {'mod': 'GLU'}          # ampa.mod
 netParams.synMechParams['GLUIN']      = {'mod': 'GLUIN'}        # ampain.mod
 netParams.synMechParams['GABAa']      = {'mod': 'GABAa'}        # gabaa.mod
-netParams.synMechParams['GABAain']    = {'mod': 'gabaain'}
+netParams.synMechParams['GABAain']    = {'mod': 'GABAain'}      # gabaain.mod
 netParams.synMechParams['GABAb']      = {'mod': 'GABAb'}        # gabab.mod
 netParams.synMechParams['NMDA']       = {'mod': 'NMDA'}         # NMDA.mod
 netParams.synMechParams['nmda_spike'] = {'mod': 'nmda_spike'}   # NMDA_syn.mod
@@ -115,7 +115,19 @@ netParams.connParams[ruleLabel] = {
     'synsPerConn': cfg.numSynsInhPyr,
     'threshold'  : -20}
 
-
+# inhs --> inhs
+ruleLabel = 'inhs->inhs'
+netParams.connParams[ruleLabel] = {
+    'preConds'   : {'pop': 'inhs'},
+    'postConds'  : {'pop': 'inhs'},
+    'synMech'    : ['GABAain'], 
+    'weight'     : [cfg.InhInhGABAaWeight],
+    'delay'      : 'max(0.38, normal(1.76, 0.07))',
+    'probability': 1.0,
+    'loc'        : [0.5],
+    'sec'        : 'soma',
+    'synsPerConn': cfg.numSynsInhInh,
+    'threshold'  : -20}
 
 
 

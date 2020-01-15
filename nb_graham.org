@@ -18230,7 +18230,7 @@ Testing.  cfg.simLabel = 'poirazi_15'
 That works, but really reduces inh spiking:
 file:gif/20200114_100043.png
 
-The inh cells were sitting at around -70 before, with noise th232222222ey sit at
+The inh cells were sitting at around -70 before, with noise they sit at
 around -65
 
 So, should probably set noise amp based on e_pas.
@@ -18295,6 +18295,18 @@ There's not much difference in the pyr cells, but the inh cells are now
 back down at their lower RMP even with the noise added.
 
 Committing.
+
+** Increasing current injection to pyrs
+
+cfg.pyrInjectAmp = 2.0
+
+Made some changes to improve plots.
+
+cfg.simLabel = 'poirazi_18'
+
+Plots looking good.  Even with lots of pyr spiking though, there is no inh spiking.
+
+Committing before looking into inh spiking.
 
 
 

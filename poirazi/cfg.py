@@ -2,13 +2,13 @@ from netpyne import specs, sim
 import os
 
 cfg = specs.SimConfig()
-cfg.simLabel = 'poirazi_17'
+cfg.simLabel = 'poirazi_18'
 cfg.saveFolder = os.path.join('output', cfg.simLabel)
 
 saveFigs = True
 showFigs = False
 
-cfg.duration = 2000 #6000
+cfg.duration = 6000
 cfg.dt = 0.025
 cfg.verbose = True
 cfg.hParams.celsius = 34.0
@@ -18,12 +18,11 @@ cfg.recordStep = 0.1
 ## Plotting
 
 cfg.recordTraces = {'V_soma': {'sec':'soma', 'loc':0.5, 'var':'v'}}
-cfg.printPopAvgRates = True
 
-cfg.analysis['plotRaster'] = {'saveFig': saveFigs, 'showFig': showFigs}
+cfg.analysis['plotRaster'] = {'saveFig': saveFigs, 'showFig': showFigs, 'orderInverse': True, 'popRates': True}
 cfg.analysis['plotTraces'] = {'include': ['all'], 'saveFig': saveFigs, 'showFig': showFigs}
 cfg.analysis['plot2Dnet']  = {'saveFig': saveFigs, 'showFig': showFigs}
-cfg.analysis['plotConn']   = {'saveFig': saveFigs, 'showFig': showFigs, 'feature': 'strength'}
+cfg.analysis['plotConn']   = {'saveFig': saveFigs, 'showFig': showFigs, 'includePre': ['pyrs', 'inhs'], 'includePost': ['pyrs', 'inhs'],'feature': 'numConns'}  # 'strength'
 
 
 # Stimulation parameters
@@ -72,7 +71,7 @@ cfg.inhInhNoiseE = cfg.inhEpas - 10.0     # Default E_i : -75.0
 cfg.pyrInject = True
 cfg.pyrInjectDel = 1000
 cfg.pyrInjectDur = 500
-cfg.pyrInjectAmp = 1.5
+cfg.pyrInjectAmp = 2.0
 cfg.pyrInjectSec = 'soma'
 cfg.pyrInjectLoc = 0.5
 

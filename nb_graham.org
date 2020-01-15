@@ -18230,7 +18230,7 @@ Testing.  cfg.simLabel = 'poirazi_15'
 That works, but really reduces inh spiking:
 file:gif/20200114_100043.png
 
-The inh cells were sitting at around -70 before, with noise they sit at
+The inh cells were sitting at around -70 before, with noise th232222222ey sit at
 around -65
 
 So, should probably set noise amp based on e_pas.
@@ -18246,11 +18246,55 @@ Okay, now each cell gets unique noise.
 Committing.
 
 
+* 2020-01-15 -- Poirazi model conversion to Python
 
+** Setting noise reversal potentials relative to cell's RMP
 
+Added to cfg:
 
+	## Resting membrane potential
+	cfg.pyrEpas = -66.0
+	cfg.inhEpas = -70.0
 
+	## Noise
+	cfg.pyrExcNoiseE   = cfg.pyrEpas + 65.0     # Default E_e : 0.0
+	cfg.pyrInhNoiseE   = cfg.pyrEpas - 10.0     # Default E_i : -75.0
+	cfg.inhExcNoiseE   = cfg.inhEpas + 65.0     # Default E_e : 0.0
+	cfg.inhInhNoiseE   = cfg.inhEpas - 10.0     # Default E_i : -75.0
 
+Added to netParams:
+
+	## Resting membrane potential
+
+	for secName, sec in netParams.cellParams['pyr']['secs'].items():
+	    sec['mechs']['pas']['e'] = cfg.pyrEpas
+
+	for secName, sec in netParams.cellParams['inh']['secs'].items():
+	    sec['mechs']['pas']['e'] = cfg.inhEpas
+
+	## Noise
+
+	netParams.cellParams['pyr']['secs']['soma']['pointps'] = {
+	    'noise': {'mod': 'Gfluctp',
+	    'seed1': 'gid',
+	    'E_e': cfg.pyrExcNoiseE,
+	    'E_i': cfg.pyrInhNoiseE}}
+
+	netParams.cellParams['inh']['secs']['soma']['pointps'] = {
+	    'noise': {'mod': 'Gfluctp',
+	    'seed1': 'gid',
+	    'E_e': cfg.inhExcNoiseE,
+	    'E_i': cfg.inhInhNoiseE}}
+
+Testing.  cfg.simLabel = 'poirazi_17'
+
+It works as expected:
+file:gif/20200115_105114.png
+
+There's not much difference in the pyr cells, but the inh cells are now 
+back down at their lower RMP even with the noise added.
+
+Committing.
 
 
 

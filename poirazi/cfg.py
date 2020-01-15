@@ -2,7 +2,7 @@ from netpyne import specs, sim
 import os
 
 cfg = specs.SimConfig()
-cfg.simLabel = 'poirazi_16'
+cfg.simLabel = 'poirazi_17'
 cfg.saveFolder = os.path.join('output', cfg.simLabel)
 
 saveFigs = True
@@ -53,6 +53,18 @@ cfg.PyrInhGABAbWeight = 3.2e-4
 # inhibitory -> inhibitory
 cfg.numSynsInhInh = 12
 cfg.InhInhGABAaWeight = 5.1e-4
+
+
+## Resting membrane potential
+cfg.pyrEpas = -66.0
+cfg.inhEpas = -70.0
+
+
+## Noise
+cfg.pyrExcNoiseE = cfg.pyrEpas + 65.0     # Default E_e : 0.0
+cfg.pyrInhNoiseE = cfg.pyrEpas - 10.0     # Default E_i : -75.0
+cfg.inhExcNoiseE = cfg.inhEpas + 65.0     # Default E_e : 0.0
+cfg.inhInhNoiseE = cfg.inhEpas - 10.0     # Default E_i : -75.0
 
 
 ## Current injection

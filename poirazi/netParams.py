@@ -65,17 +65,28 @@ netParams.stimTargetParams[ruleLabel] = {
     'threshold': -20}
 
 
+## Resting membrane potential
+
+for secName, sec in netParams.cellParams['pyr']['secs'].items():
+    sec['mechs']['pas']['e'] = cfg.pyrEpas
+
+for secName, sec in netParams.cellParams['inh']['secs'].items():
+    sec['mechs']['pas']['e'] = cfg.inhEpas
+
+
 ## Noise
 
 netParams.cellParams['pyr']['secs']['soma']['pointps'] = {
     'noise': {'mod': 'Gfluctp',
-    'seed1': 'gid'}}
+    'seed1': 'gid',
+    'E_e': cfg.pyrExcNoiseE,
+    'E_i': cfg.pyrInhNoiseE}}
 
 netParams.cellParams['inh']['secs']['soma']['pointps'] = {
     'noise': {'mod': 'Gfluctp',
-    'seed1': 'gid'}}
-
-
+    'seed1': 'gid',
+    'E_e': cfg.inhExcNoiseE,
+    'E_i': cfg.inhInhNoiseE}}
 
 
 ## Connectivity

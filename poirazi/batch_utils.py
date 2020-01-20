@@ -112,7 +112,6 @@ def readBatchData(dataFolder, batchLabel, loadAll=False, saveAll=True, vars=None
                 #outFile = b['saveFolder']+'/'+simLabel+'.json'
                 #outFile = dataFolder+'/'+batchLabel+'/'+simLabel+'.json'
                 outFile = dataFolder+'/'+simLabel+'.json'
-                print('outFile: ', outFile)
                 try:
                     with open(outFile, 'r') as fileObj:
                         output = json.load(fileObj, object_pairs_hook=specs.ODict)

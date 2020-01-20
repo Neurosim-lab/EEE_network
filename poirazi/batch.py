@@ -2,7 +2,7 @@ from netpyne import specs
 from netpyne.batch import Batch 
 import os
 
-batchLabel = 'batch05'
+batchLabel = 'batch07'
 
 #runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
 runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
@@ -27,8 +27,8 @@ def batchRun():
 
     # fill in with parameters to explore and range of values (key has to coincide with a variable in simConfig) 
 
-    params['numSynsPyrInh'] = [2, 4, 6]  # Default: 2
-    params['numSynsPyrPyr'] = [4, 5, 6]  # Default: 5
+    params['numSynsPyrInh'] = [2, 6]  # Default: 2
+    params['numSynsPyrPyr'] = [5, 10]  # Default: 5
 
 
 
@@ -39,6 +39,9 @@ def batchRun():
     b.batchLabel = batchLabel 
     b.method = 'grid'
     b.saveFolder = os.path.join(saveFolder, b.batchLabel, dataFolder)
+
+    if not os.path.isdir(b.saveFolder):
+        os.makedirs(b.saveFolder)
     
     if runType == 'hpc_slurm':
         b.runCfg = {'type': 'hpc_slurm',
@@ -53,8 +56,6 @@ def batchRun():
                     'skip': True,
                     'custom': '#SBATCH -p skx-normal'}
     elif runType == 'mpi_bulletin':
-        if not os.path.isdir(b.saveFolder):
-            os.makedirs(b.saveFolder)
         b.runCfg = {'type': 'mpi_bulletin', 
                     'script': 'init.py', 
                     'skip': True}

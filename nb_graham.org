@@ -18453,9 +18453,31 @@ To:
 
 Now it works.  Committing.
 
+** Running a new batch and analyzing
 
+batchLabel = 'batch06'
 
+    params['numSynsPyrInh'] = [2, 6]  # Default: 2
+    params['numSynsPyrPyr'] = [5, 10]  # Default: 5
 
+Got an error:
+
+	>>> >>> >>> Traceback (most recent call last):
+	  File "batch.py", line 71, in <module>
+	    batchRun() 
+	  File "batch.py", line 57, in batchRun
+	    os.makedirs(b.saveFolder)
+	  File "/usr/site/nrniv/local/python/anaconda3/lib/python3.7/os.py", line 221, in makedirs
+	    mkdir(name, mode)
+	FileExistsError: [Errno 17] File exists: 'output/batch06/batch_data'
+
+I think it's a problem with parallelization.  I moved the makedirs out of the batchRun script...
+
+batchLabel = 'batch07'
+
+Now everything works.  Removing the print statements from batch_analysis and batch_utils.
+
+Committing.
 
 
 

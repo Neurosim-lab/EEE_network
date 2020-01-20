@@ -1021,10 +1021,6 @@ def plot_vtraces(batchname, batchdatadir=None, cellIDs=None, secs=None, timerang
     if type(batchname) == str:
         if batchdatadir is None:
             batchdatadir = os.path.join(myoutputdir, batchname, mybatchdatadir)
-        print('myoutputdir   : ', myoutputdir)
-        print('batchname     : ', batchname)
-        print('mybatchdatadir: ', mybatchdatadir)
-        print('batchdatadir  : ', batchdatadir)
         params, data = batch_utils.load_batch(batchname, batchdatadir=batchdatadir)
     elif type(batchname) == tuple:
         batchname, params, data = batchname

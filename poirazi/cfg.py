@@ -15,6 +15,12 @@ cfg.hParams.celsius = 34.0
 cfg.recordStep = 0.1
 
 
+## Saving data
+
+cfg.saveJson = True
+cfg.saveDataInclude = ['simData', 'simConfig', 'netParams', 'net']
+
+
 ## Plotting
 
 cfg.recordTraces = {'V_soma': {'sec':'soma', 'loc':0.5, 'var':'v'}}
@@ -71,7 +77,7 @@ cfg.inhInhNoiseE = cfg.inhEpas - 10.0     # Default E_i : -75.0
 cfg.pyrInject = True
 cfg.pyrInjectDel = 1000
 cfg.pyrInjectDur = 500
-cfg.pyrInjectAmp = 2.0
+cfg.pyrInjectAmp = 1.5
 cfg.pyrInjectSec = 'soma'
 cfg.pyrInjectLoc = 0.5
 

@@ -18309,6 +18309,168 @@ Plots looking good.  Even with lots of pyr spiking though, there is no inh spiki
 Committing before looking into inh spiking.
 
 
+** Setting up a batch of sims to explore pyr->inh connectivity
+
+batchLabel = 'batch01'
+
+    params['numSynsPyrInh'] = [2, 3, 4]  # Default: 2
+    params['numSynsPyrPyr'] = [4, 5, 6]  # Default: 5
+
+
+
+* 2020-01-15 -- Poirazi model
+
+** Increasing numSynsPyrInh and running another batch
+
+    params['numSynsPyrInh'] = [2, 4, 6]  # Default: 2
+    params['numSynsPyrPyr'] = [4, 5, 6]  # Default: 5
+
+Also added batch plotting of v_traces to the end of batch.py
+
+Ahh, the batch plotting wasn't working because I didn't save the data.
+
+Changing that now.
+
+batchLabel = 'batch03'
+
+Now the batch plotting works, but saving the figures needs to be better organized.
+
+I want the following directory structure:
+
+output ----> batch_label ----> batch_data
+                          \--> batch_figures
+
+* 2020-01-20 -- Poirazi model
+
+** Working on batch sims
+
+Made the improvements to batch_analysis, now to test it.
+
+batchLabel = 'batch04'
+
+Got an error:
+
+	  File "batch.py", line 71, in <module>
+	    batchRun() 
+	  File "batch.py", line 57, in batchRun
+	    os.mkdir(b.saveFolder)
+	FileNotFoundError: [Errno 2] No such file or directory: 'output/batch04/batch_data'
+
+Looks like I should switch to os.makedirs()
+
+batchLabel = 'batch05'
+
+Okay, the batch ran.  Now to see if the analysis still works.
+
+Error:
+
+	In [1]: import batch_analysis as ba
+	---------------------------------------------------------------------------
+	NameError                                 Traceback (most recent call last)
+	<ipython-input-1-0406d6b30e5b> in <module>()
+	----> 1 import batch_analysis as ba
+
+	/u/graham/EEE_network/poirazi/batch_analysis.py in <module>()
+	     26 
+	     27 
+	---> 28 if outputdir is None:
+	     29     outputdir = os.path.join(myoutputdir, batchname, mybatchfigdir)
+	     30 
+
+	NameError: name 'outputdir' is not defined
+
+Forgot to delete a couple lines I was using for cut and pasting.
+
+Now it imports properly.
+
+But there is an error when plotting traces:
+
+	In [1]: import batch_analysis as ba
+
+	In [2]: ba.plot_vtraces('batch05')
+	Plotting voltage traces...
+	---------------------------------------------------------------------------
+	FileNotFoundError                         Traceback (most recent call last)
+	<ipython-input-2-05e261af2c74> in <module>()
+	----> 1 ba.plot_vtraces('batch05')
+
+	/u/graham/EEE_network/poirazi/batch_analysis.py in plot_vtraces(batchname, batchdatadir, cellIDs, secs, timerange, param_labels, title, filename, save, outputdir)
+	   1022         if batchdatadir is None:
+	   1023             batchdatadir = os.path.join(myoutputdir, batchname, mybatchdatadir)
+	-> 1024         params, data = batch_utils.load_batch(batchname, batchdatadir=batchdatadir)
+	   1025     elif type(batchname) == tuple:
+	   1026         batchname, params, data = batchname
+
+	/u/graham/EEE_network/poirazi/batch_utils.py in load_batch(batchLabel, batchdatadir)
+	    194 def load_batch(batchLabel, batchdatadir=batchdatadir):
+	    195     """Returns the parameters and data from a batch, given its batchLabel."""
+	--> 196     params, data = readBatchData(batchdatadir, batchLabel, loadAll=0, saveAll=0, vars=None, maxCombs=None)
+	    197     return params, data
+	    198 
+
+	/u/graham/EEE_network/poirazi/batch_utils.py in readBatchData(dataFolder, batchLabel, loadAll, saveAll, vars, maxCombs, listCombs)
+	     87     # read the batch file and cfg
+	     88     batchFile = '%s/%s/%s_batch.json' % (dataFolder, batchLabel, batchLabel)
+	---> 89     with open(batchFile, 'r') as fileObj:
+	     90         b = json.load(fileObj)['batch']
+	     91 
+
+	FileNotFoundError: [Errno 2] No such file or directory: 'output/batch05/batch_data/batch05/batch05_batch.json'
+
+Looks like there's an extra 'batch05' in there...  Looking for how it got there...
+
+It doesn't happen in batch_analysis:
+
+	myoutputdir   :  output
+	batchname     :  batch05
+	mybatchdatadir:  batch_data
+	batchdatadir  :  output/batch05/batch_data
+
+So it must happen in batch_utils...
+
+Changing this line:
+
+    batchFile = '%s/%s/%s_batch.json' % (dataFolder, batchLabel, batchLabel)
+
+To:
+
+    batchFile = '%s/%s_batch.json' % (dataFolder, batchLabel)
+
+Testing again.
+
+Still a problem:
+
+	Reading data...
+	9 files missing
+
+Changing:
+
+	outFile = dataFolder+'/'+batchLabel+'/'+simLabel+'.json'
+
+To:
+
+	outFile = dataFolder+'/'+simLabel+'.json'
+
+Now it works.  Committing.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

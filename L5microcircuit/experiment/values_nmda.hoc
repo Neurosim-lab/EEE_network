@@ -1,0 +1,9 @@
+// Vector of conductances of the NMDA 
+
+
+nmdaweights = new Vector(4)
+nmdaweights.x[0]=0.25		//ratio 1.1
+nmdaweights.x[1]=0.35		//ratio 1.5
+nmdaweights.x[2]=0.47		//ratio 1.9
+nmdaweights.x[3]=0.585		//ratio 2.3
+

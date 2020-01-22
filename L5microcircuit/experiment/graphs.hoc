@@ -1,0 +1,12 @@
+//graphs of various currents
+
+//agraph_2("INcells[0].soma.v(0.5)",0,tstop, -70, 50)
+//dgraph_2("Pcells[0].soma.v(0.5)",0,tstop, -70, 50)
+/*addgraph_2("Pcells[0].soma.ina_Nap(0.5)",0,tstop,-1,1)
+addgraph_2("Pcells[0].dend[0].cai(0.5)",0,tstop,0,0.1)
+addgraph_2("Pcells[0].soma.cai(0.5)",0,tstop,0,0.1)
+addgraph_2("Pcells[0].soma.ica_cal(0.5)",0,tstop,-1,1)
+addgraph_2("Pcells[0].soma.ica_can(0.5)",0,tstop,-1,1)
+addgraph_2("Pcells[0].soma.ica_cat(0.5)",0,tstop,-1,1)*/
+//addgraph_2("Pcells[0].dend[1].v(0.5)",0 , tstop, -70, 50)
+//addgraph_2("Pcells[0].dend[0].v(0.5)",0,tstop, -70, 50)

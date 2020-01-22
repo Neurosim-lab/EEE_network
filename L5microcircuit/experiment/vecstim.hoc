@@ -1,0 +1,82 @@
+// Background synaptic activity
+
+totalb=100
+objref vstim[nPcells][totalb], vstimpr[nPcells][totalb],vstimpra[nPcells][totalb], vstim_inh[nPcells][totalb], vstiminh[nINcells][totalb], ran, BG_Stim_basal[totalb][nPcells][totalb], BG_Stim_Apicpr[totalb][nPcells][totalb], BG_Stim_Apic[totalb][nPcells][totalb], BG_Stim_Soma[totalb][nINcells][totalb]
+
+objref  ampabasalback[nPcells][totalb], nmdabasalback[nPcells][totalb],ampabackpr[nPcells][totalb], nmdabackpr[nPcells][totalb],ampabackpra[nPcells][totalb], nmdabackpra[nPcells][totalb],ampain_back[nINcells][totalb],nmdain_back[nINcells][totalb], gabaa_back[nPcells][totalb]
+
+objref ncampaback[nPcells][totalb], ncnmdaback[nPcells][totalb], ncampabackpr[nPcells][totalb], ncnmdabackpr[nPcells][totalb], ncnmdainback[nINcells][totalb], ncampainback[nINcells][totalb], ncgabaa[nPcells][totalb]
+objref  ncampabackpra[nPcells][totalb], ncnmdabackpra[nPcells][totalb]
+
+strdef temp_load
+
+proc call_vecstim () {
+	
+	xopen("importBackgroundStimParams.hoc")
+
+	ran = new Random($1+5)
+	PIDb = ran.uniform(0, 1)
+//----------------------Connect
+	for cn=0,nPcells-1 {
+		for syn=0,(synapses_backb-1) {
+			
+			vstim[cn][syn] = new VecStim(0.5)
+			vstim[cn][syn].delay = 0
+			vstim[cn][syn].play(BG_Stim_basal[runs][cn][syn])
+			PIDb=ran.repick()
+
+			Pcells[cn].dend[0] ampabasalback[cn][syn]=new GLU(PIDb)
+			Pcells[cn].dend[0] nmdabasalback[cn][syn]=new nmda_spike(PIDb)	
+
+			ncampaback[cn][syn] = new NetCon(vstim[cn][syn], ampabasalback[cn][syn], -20, 0, ampaweight)
+			ncnmdaback[cn][syn] = new NetCon(vstim[cn][syn], nmdabasalback[cn][syn], -20, 0, 0.25)
+		}
+	}
+	for cn=0,nPcells-1 {
+		for syn=0,(synapses_backpr-1) {
+			vstimpr[cn][syn] = new VecStim(0.5)
+			vstimpr[cn][syn].delay = 0
+			vstimpr[cn][syn].play(BG_Stim_Apicpr[runs][cn][syn])
+
+			PIDb=ran.repick()
+			Pcells[cn].dend[1] ampabackpr[cn][syn]=new GLU(PIDb)
+			Pcells[cn].dend[1] nmdabackpr[cn][syn]=new nmda_spike(PIDb)
+
+			ncampabackpr[cn][syn] = new NetCon(vstimpr[cn][syn], ampabackpr[cn][syn], -20, 0, ampaweightpr)
+			ncnmdabackpr[cn][syn] = new NetCon(vstimpr[cn][syn], nmdabackpr[cn][syn], -20, 0, 0.22)
+		}
+	}
+	for cn=0,nPcells-1 {
+		for syn=0,(synapses_backa-1) {
+			vstimpra[cn][syn] = new VecStim(0.5)
+			vstimpra[cn][syn].delay = 0
+			vstimpra[cn][syn].play(BG_Stim_Apic[runs][cn][syn])
+
+			PIDb=ran.repick()
+			Pcells[cn].dend[2] ampabackpra[cn][syn]=new GLU(PIDb)
+			Pcells[cn].dend[2] nmdabackpra[cn][syn]=new nmda_spike(PIDb)
+
+			ncampabackpra[cn][syn] = new NetCon(vstimpra[cn][syn], ampabackpra[cn][syn], -20, 0, ampaweightpr)
+			ncnmdabackpra[cn][syn] = new NetCon(vstimpra[cn][syn], nmdabackpra[cn][syn], -20, 0, 0.2)
+		}
+	}
+
+	
+	for cn=0,nINcells-1 {
+		for syn=0,synapses_backinh-1 {
+			vstiminh[cn][syn] = new VecStim(0.5)
+			vstiminh[cn][syn].delay = 0
+			vstiminh[cn][syn].play(BG_Stim_Soma[runs][cn][syn])
+			PIDb=ran.repick()
+
+			INcells[cn].soma ampain_back[cn][syn]=new GLUIN(PIDb)
+			INcells[cn].soma nmdain_back[cn][syn]=new NMDA(PIDb)
+
+			ncampainback[cn][syn] = new NetCon(vstiminh[cn][syn], ampain_back[cn][syn], -20, 0, ampaweightin)
+			ncnmdainback[cn][syn] = new NetCon(vstiminh[cn][syn], nmdain_back[cn][syn], -20, 0, nmdaweightin)
+		}
+	}
+
+}
+
+

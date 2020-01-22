@@ -1,0 +1,4 @@
+
+proc run_sim() {
+	load_file("experiment.hoc")
+}

@@ -1,0 +1,21 @@
+//-----------------Sum synaptic currents each neuron receives
+
+proc add_syn_currents() {
+	for cn=0, nPcells-1 {
+		ampac[cn]=new Vector(n)
+		nmdac[cn]=new Vector(n)
+		gabaac[cn]=new Vector(n)
+		gababc[cn]=new Vector(n)
+
+		for i=0, (maxsyn-1){ampac[cn]=ampac[cn].add(campa[cn][i])}
+		for i=0, (automaxsyn-1){ampac[cn]=ampac[cn].add(campaa[cn][i])}
+		//for i=0, (inmaxsyn-1){ampac=ampac.add(campain[i])}
+
+		for i=0, (maxsyn-1){nmdac[cn]=nmdac[cn].add(cnmda[cn][i])}
+		for i=0, (automaxsyn-1){nmdac[cn]=nmdac[cn].add(cnmdaa[cn][i])}
+		//for i=0, (inmaxsyn-1){nmdac=nmdac.add(cnmdain[i])}
+
+		for i=0, (maxsyn3-1){gabaac[cn]=gabaac[cn].add(cgabaa[cn][i])}
+		for i=0, (maxsyn3-1){gababc[cn]=gababc[cn].add(cgabab[cn][i])}
+	}
+}

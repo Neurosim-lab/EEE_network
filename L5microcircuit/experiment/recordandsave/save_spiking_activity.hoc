@@ -1,0 +1,32 @@
+//Procedure to saves total spiking activity
+
+//----Record spiking activity
+
+proc rec_total_spiking_activity() {
+	timevec = new Vector()
+	idvec = new Vector()
+	recncs = new List()
+	i=0
+	forsec soma_list {
+		for (x) {
+			i=i+1
+			tobj = new NetCon(&v(0.5), nil)
+			tobj.threshold=0
+			tobj.record(timevec, idvec, i+1) 
+			recncs.append(tobj)
+		}
+	}
+}
+
+
+
+//----Save spiking activity
+proc save_total_spiking_activity() {
+	total_activity = new File()	
+	sprint(temp,"%s/%s/hist%d.dat", data_dira, data_dirb, runs+1)	
+	total_activity.wopen(temp)
+	for j=0,timevec.size()-1 {
+		total_activity.printf ("%f\n",timevec.x[j])
+	}
+	total_activity.close()
+}

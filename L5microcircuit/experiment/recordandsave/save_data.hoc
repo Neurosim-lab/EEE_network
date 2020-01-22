@@ -1,0 +1,64 @@
+//--------Save voltage & synaptic currents
+
+proc save_membrane_voltage() {
+	for cn=0, nPcells-1 {
+		vsoma[cn] = new File()		
+		sprint(temp,"%s/%s/soma%d_%d.dat", data_dira, data_dirb, cn, runs+1)
+		vsoma[cn].wopen(temp)
+		for j=0, PCv[cn].size()-1 {
+		vsoma[cn].printf ("%f\n",PCv[cn].x[j])
+		}
+		vsoma[cn].close()
+	}
+
+	for cn=0,nINcells-1 {
+		insoma[cn] = new File()		
+		sprint(temp,"%s/%s/insoma%d_%d.dat", data_dira, data_dirb,  cn, runs+1)
+		insoma[cn].wopen(temp)
+		for j=0,INv[cn].size()-1 {
+		insoma[cn].printf ("%f\n",INv[cn].x[j])
+		}
+		insoma[cn].close()
+	}
+}
+
+
+proc save_currents() {
+	for cn=0, nPcells-1 {
+		curampa[cn] = new File()		
+		sprint(temp,"%s/%s/ampa%d_%d.dat", data_dira, data_dirb,cn, runs+1)
+		curampa[cn].wopen(temp)
+		for j=0,ampac[cn].size()-1 {
+			curampa[cn].printf ("%f\n",ampac[cn].x[j])
+		}
+		curampa[cn].close()
+
+		curnmda[cn]  = new File()		
+		sprint(temp,"%s/%s/nmda%d_%d.dat", data_dira, data_dirb,  cn,runs+1)
+		curnmda[cn].wopen(temp)
+		for j=0,nmdac[cn].size()-1 {
+			curnmda[cn].printf ("%f\n",nmdac[cn].x[j])
+		}
+		curnmda[cn].close()
+
+		curgabaa[cn]  = new File()		
+		sprint(temp,"%s/%s/gabaa%d_%d.dat",data_dira, data_dirb,  cn,runs+1)
+		curgabaa[cn].wopen(temp)
+		for j=0,gabaac[cn].size()-1 {
+			curgabaa[cn].printf ("%f\n",gabaac[cn].x[j])
+		}
+		curgabaa[cn].close()
+
+		curgabab[cn] = new File()		
+		sprint(temp,"%s/%s/gabab%d_%d.dat", data_dira, data_dirb,  cn,runs+1)
+		curgabab[cn].wopen(temp)
+		for j=0,gababc[cn].size()-1 {
+			curgabab[cn].printf ("%f\n",gababc[cn].x[j])
+		}
+		curgabab[cn].close()
+	}
+}
+
+
+
+

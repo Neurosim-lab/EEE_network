@@ -1,0 +1,111 @@
+//--Record voltage and total NMDA, AMPA, GAABA, GABAB synaptic currents per pyramidal neuron.
+//--To save these data adjust the parameters in the save_data.hoc
+
+proc rec_membrane_voltage(){
+	for (i=0;i<nPcells;i=i+1) {
+		PCv[i]=new Vector()
+		PCt[i]=new Vector(n)
+		for j=0,n-1 {PCt[i].x[j]=j*dt }
+		Pcells[i].soma cv.record(&v(.5),PCv[i],PCt[i],1) 
+		}
+		/*PCv[0]=new Vector()
+		PCt[0]=new Vector(n)
+		for j=0,n-1 {PCt[0].x[j]=j*dt }
+		Pcells[0].soma cv.record(&v(.5),PCv[0],PCt[0],1)*/
+	
+		/*PCv[1]=new Vector()
+		PCt[1]=new Vector(n)
+		for j=0,n-1 {PCt[1].x[j]=j*dt }
+		Pcells[0].dend[0] cv.record(&v(.5),PCv[1],PCt[1],1)*/
+	
+		/*PCv[2]=new Vector()
+		PCt[2]=new Vector(n)
+		for j=0,n-1 {PCt[2].x[j]=j*dt }
+		Pcells[0].dend[1] cv.record(&v(.5),PCv[2],PCt[2],1)*/
+	
+		for (k=0;k<nINcells;k=k+1) {
+		INv[k]=new Vector()
+		INt[k]=new Vector(n)
+		for j=0,n-1 {INt[k].x[j]=j*dt }
+	    	INcells[k].soma cv.record(&v(.5),INv[k],INt[k],1)
+	}
+}
+
+proc rec_synaptic_currents() {
+
+	//-----Record AMPA synaptic current 
+	for cn=0,nPcells-1 {
+		for i=0, (maxsyn-1) {
+			campa[cn][i]=new Vector(n)
+			ct[0][cn][i]=new Vector(n)
+			for j=0,(n-1) {ct[0][cn][i].x[j]=j*dt }
+			Pcells[cn].dend[0] cv.record(&ampa[cn][i].iglu,campa[cn][i],ct[0][cn][i],1)
+		}
+	}
+
+	for cn=0,nPcells-1 {
+		for i=0, (automaxsyn-1) {
+			campaa[cn][i]=new Vector(n)
+			ct[1][cn][i]=new Vector(n)
+			for j=0,(n-1) {ct[1][cn][i].x[j]=j*dt }
+			Pcells[cn].dend[0] cv.record(&autoampa[cn][i].iglu,campaa[cn][i],ct[1][cn][i],1)
+		}
+	}
+
+	for cn=0,nPcells-1 {
+		for i=0, (inmaxsyn-1) {
+			campain[cn][i]=new Vector(n)
+			ct[2][cn][i]=new Vector(n)
+			for j=0,(n-1) {ct[2][cn][i].x[j]=j*dt }
+			Pcells[cn].dend[1] cv.record(&ampapr[cn][i].iglu,campain[cn][i],ct[2][cn][i],1)
+		}
+	}
+	//------Record NMDA synaptic current
+	for cn=0,nPcells-1 {
+		for i=0, (maxsyn-1) {
+			cnmda[cn][i]=new Vector(n)
+			ct[3][cn][i]=new Vector(n)
+			for j=0,(n-1) {ct[3][cn][i].x[j]=j*dt }
+			Pcells[cn].dend[0] cv.record(&nmda[cn][i].inmda,cnmda[cn][i],ct[3][cn][i],1)
+		}
+	}
+	for cn=0,nPcells-1 {
+		for i=0, (automaxsyn-1) {
+			cnmdaa[cn][i]=new Vector(n)
+			ct[4][cn][i]=new Vector(n)
+			for j=0,(n-1) {ct[4][cn][i].x[j]=j*dt }
+			Pcells[cn].dend[0] cv.record(&autonmda[cn][i].inmda,cnmdaa[cn][i],ct[4][cn][i],1)
+		}
+	}
+
+	for cn=0, (nPcells-1) {
+		for i=0, (inmaxsyn-1) {
+			cnmdain[cn][i]=new Vector(n)
+			ct[5][cn][i]=new Vector(n)
+			for j=0,(n-1) {ct[5][cn][i].x[j]=j*dt }
+			Pcells[cn].dend[1] cv.record(&nmdapr[cn][i].inmda,cnmdain[cn][i],ct[5][cn][i],1)
+		}
+	}
+	//-----Record Gabab synaptic current
+	for cn=0, (nPcells-1) {
+		for i=0, (maxsyn3-1){
+			cgabab[cn][i]=new Vector(n)
+			ct[6][cn][i]=new Vector(n)
+			for j=0,n-1 {ct[6][cn][i].x[j]=j*dt }
+			Pcells[cn].soma cv.record(&gabab[cn][i].i,cgabab[cn][i],ct[6][cn][i],1)
+		}
+	}
+
+	//----Record Gabaa synaptic current
+	for cn=0, (nPcells-1) {
+		for i=0, (maxsyn3-1){
+			cgabaa[cn][i]=new Vector(n)
+			ct[7][cn][i]=new Vector(n)
+			for j=0,n-1 {ct[7][cn][i].x[j]=j*dt }
+			Pcells[cn].soma cv.record(&gabaa[cn][i].i,cgabaa[cn][i],ct[7][cn][i],1)
+		}
+	}
+
+//After recording synaptic currents of each receptor, call add_syn_currents() in rec_total_currents.hoc for summed synaptic currents per neuron
+
+}

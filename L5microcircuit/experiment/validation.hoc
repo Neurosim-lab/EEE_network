@@ -1,0 +1,236 @@
+//--------Various validation procedures
+/*Papoutsi et al. (2014) Plos Computational Biology*/
+
+load_file("nrngui.hoc")  
+//-----------------------------Set parameters-----------------------------------------------------------------------//        
+cvode.active(0)                       
+xopen ("net.hoc") 
+objref gababweights, nmdaweights
+xopen("values_nmda.hoc")                   
+strdef syscmd
+strdef data_dir
+data_dir = "data"
+sprint(syscmd, "mkdir -p %s", data_dir) 
+system(syscmd)
+celsius   = 34
+tstop=1000
+steps_per_ms=10
+dt=0.1
+
+//----------------------Set synaptic weights
+ampaweightpr=	0.00024			
+nmdaweightpr=	0.22			
+nmdaweight=	0.585
+ampaweight=	0.00019			//According to Wang(2008)
+gabaweight=	6.9e-4 			//According to Woo(2007)
+gabaweightb=	0.25			//According to Thomson(1999)
+ampaweightin=	7.5e-4			
+nmdaweightin=	3.2e-4			//ratio inmda/iampa for interneuron *0.5(Wang, Gao, 2009)
+autogabaweight=	5.1e-4			//According to Bacci (2003)
+
+//---------------------Set # of synapses
+inmaxsyn=90			//initial stimulation
+maxsyn=5			//PC-PC connections
+automaxsyn=1			//autosynapses (one third, Lubke, 1996)
+maxsyn1=12			//IN-IN connections
+maxsyn2=2			//PC-IN connections 
+maxsyn3=4			//IN-PC connections 
+lmaxsyn=5			//later stimulation
+
+//---------------------------------Procedure for various checks------------------------------------------------//
+objref r1
+r1=new Random(0)
+PID1=r1.uniform(0,1)
+ns2=new NetStim(0.5)
+ns2.interval=20
+ns2.number=1
+ns2.start=0
+ns2.noise=0
+
+proc later() {
+lmaxsyn=$1
+for i=0, (nPcells-1) {
+	for j=0, (lmaxsyn-1) {
+		PID1=r1.repick()
+		Pcells[i].dend[0] ampal[i][j]=new GLU(PID1)
+		Pcells[i].dend[0] nmdal[i][j]=new nmda_spike(PID1)
+		
+		/*nc3[i][j]=new NetCon(ns2, ampal[i][j])
+		nc3[i][j].delay=200
+		nc3[i][j].weight=ampaweight
+		nc3[i][j].threshold=-20*/
+
+		nc4[i][j]=new NetCon(ns2, nmdal[i][j])
+		nc4[i][j].delay=200
+		nc4[i][j].weight=0.25
+		nc4[i][j].threshold=-20
+}}}
+//--------------------------------------------------------------IClamp
+proc IClump() {
+amp=-0.1
+Pcells[0].soma ic=new IClamp(0.5)
+ic.del=500
+ic.dur=500
+ic.amp=amp
+}
+
+proc train() {
+	delay_clamp=150
+	amp=3
+	for i=1, 5 {
+	papa=papa+50
+	Pcells[0].soma ic1[i] = new IClamp(0.5)
+	ic1[i].del=delay_clamp
+	ic1[i].dur=5
+	ic1[i].amp=amp
+}}
+
+//--------------------------------------------------------------Vclamp
+objref vc, vcdend
+proc vclamp() {
+access Pcells[0].soma
+vc = new VClamp(0.5)
+vc.amp[0]=60
+vc.dur[0]=tstop
+}
+
+//-----------------------------------Pharmacological procedures
+fi1=0
+proc sadp_soma() {
+	forsec soma_list{
+		for(x) {
+		if(ismembrane("ican")) for(x) { gbar_ican(x)= 0.001*fi1 } 
+}}}
+proc sadp_dend() {
+	forsec dend_list{
+		for(x) {
+		if(ismembrane("ican")) for(x) { gbar_ican(x)= 0.001*0.1*fi1} 
+}}}
+
+proc ttx() {
+forsec soma_list {
+	for(x) {
+	if(ismembrane("Naf")) for(x) {  gnafbar_Naf(x)= gnafbar_Naf(x)*0 }
+	if(ismembrane("Nap")) for(x) {  gnapbar_Nap(x)= gnapbar_Nap(x)*0 }
+}}
+forsec axon_list {
+	for(x) {
+	if(ismembrane("Naf")) for(x) {  gnafbar_Naf(x)= gnafbar_Naf(x)*0 }
+	if(ismembrane("Nap")) for(x) {  gnapbar_Nap(x)= gnapbar_Nap(x)*0 }
+}}
+}
+proc ttxin() {
+	forsec insoma_list {
+		for(x) {
+		if(ismembrane("Naf")) for(x) {  gnafbar_Naf(x)= gnafbar_Naf(x)*0 }
+		if(ismembrane("Nap")) for(x) {  gnapbar_Nap(x)= gnapbar_Nap(x)*0 }
+}}}
+proc calcium_block() {
+	forsec cell0_list {
+		for(x) {
+		if(ismembrane("can")) for(x) {  gcabar_can(x)= gcabar_can(x)*0 }
+		if(ismembrane("cat")) for(x) {  gcatbar_cat(x)= gcatbar_cat(x)*0 }			
+		if(ismembrane("cal")) for(x) {  gcalbar_cal(x)= gcalbar_cal(x)*0 }
+		if(ismembrane("car")) for(x) {  gcabar_car(x)= gcabar_car(x)*0 }
+}}}
+proc validateNMDA () {
+	forsec cell0_list {
+		for(x) {
+		if(ismembrane("Naf")) for(x) {  gnafbar_Naf(x)= gnafbar_Naf(x)*0 }
+		if(ismembrane("Nap")) for(x) {  gnapbar_Nap(x)= gnapbar_Nap(x)*0 }
+		if(ismembrane("kdr")) for(x) {  gkdrbar_kdr(x)= gkdrbar_kdr(x)*0 }
+		if(ismembrane("IKs")) for(x) {  gKsbar_IKs(x)= gKsbar_IKs(x)*0 }
+		if(ismembrane("kad")) for(x) { gkabar_kad(x)= gkabar_kad(x)*0 }
+		if(ismembrane("kca")) for(x) {  gbar_kca(x)= gbar_kca(x)*0}
+		if(ismembrane("iC"))  for(x) {  gkcbar_iC(x)= gkcbar_iC(x)*0}
+}}}
+
+//-------------------------------------------Graphs
+xopen("../bash_templates/basic-graphics.hoc") 	
+
+/*for j=0, (nPcells-1) {
+addgraph_2("Pcells[j].soma.v(0.5)", 0,tstop, -70, 50)
+}*/
+
+addgraph_2("Pcells[0].dend[0].v(0.5)",190,tstop,-70,-10)
+addgraph_2("Pcells[0].soma.v(0.5)",190,tstop,-80,-40)
+
+//addgraph_2("Pcells[0].dend[0].v(0.5)",0,tstop,-70,50)
+//addgraph_2("INcells[0].soma.v(0.5)",0,tstop, -70, 50)
+//addgraph_2("INcells[0].axon.v(0.5)",0,tstop, -70, 50)
+//addgraph_2("Pcells[1].soma.cai(0.5)",0,tstop,-1,1)
+/*addgraph_2("Pcells[0].soma.in_ican(0.5)",0,tstop,-1,1)
+addgraph_2("Pcells[0].soma.ica_can(0.5)",0,tstop,-1,1)
+addgraph_2("Pcells[0].soma.ica_cat(0.5)",0,tstop,-1,1)
+*/
+//-----------------------------------------------------Multiple Runs
+//---For many experiments
+strdef syscmd, running, tmpstr,data_dira, data_dirb, data_dirc, data_dird
+//-----Variables
+n=int(tstop/dt)
+//-----Objects for record data
+objref cv
+cv=new CVode(0)
+objref PCv[nPcells], PCt[nPcells], INv[nINcells], INt[nINcells]
+strdef temp
+objref vsoma1, vsoma2, vsoma3, vsoma4, vsoma5, vsoma6, vsoma7, insoma1, insoma2, curampa[nPcells], curnmda[nPcells], curgabaa[nPcells], curgabab[nPcells]
+objref campa[nPcells][maxsyn], ct[8][nPcells][inmaxsyn], cnmda[nPcells][maxsyn], cnmdat[nPcells][inmaxsyn], cgabaa[nPcells][maxsyn3], campaa[nPcells][automaxsyn], cnmdaa[nPcells][automaxsyn], campain[nPcells][inmaxsyn], cnmdain[nPcells][inmaxsyn], cgabaat[nPcells][maxsyn3], cgabab[nPcells][maxsyn3], cgababt[maxsyn3], ampac[nPcells], nmdac[nPcells], gabaac[nPcells], gababc[nPcells]	
+objref gababweights, nmdaweights, adpweights
+
+
+for experiments =0, 0 {
+		for runs = 0, 0 {
+		print runs
+		//--------------------------------------Call procedures
+		//stimulation(runs)
+		//pyramidals()
+		//interneurons(runs)
+		//pyrin()
+		//inpyr()
+		//noise(runs)
+		later(lmaxsyn)
+		vclamp()
+		//IClump()
+		//train()
+		sadp_soma()
+		sadp_dend()
+		ttx()
+		//ttxin()
+		calcium_block()
+		validateNMDA()
+		 
+		//------------------------------------initialize and run
+		//addgraph_2("ampapyr1pyr2[0].i",0,tstop,-1,1)
+		//addgraph_2("ampal[0][0].i",0,tstop,-1,1)
+		//addgraph_2("nmdal[0][0].i",0,tstop,-1,1)
+		addgraph_2("vc.i",0,tstop, 1.8,2.5)
+
+		//-------------------------------------Record & Save data data
+		xopen("recordandsave/record.hoc")
+		//xopen("recordandsave/save_data.hoc")
+		//xopen("recordandsave/rec_total_currents.hoc")
+		rec_membrane_voltage()
+
+		run()
+		
+		//save_membrane_voltage()
+		vsoma1 = new File()		
+		sprint(temp,"%s/soma%d_%d.dat", data_dir, experiments, runs)
+		vsoma1.wopen(temp)
+		for j=0, PCv[0].size()-1 {
+		vsoma1.printf ("%f\n",PCv[0].x[j])
+		}
+		vsoma1.close()
+
+		vsoma2 = new File()		
+		sprint(temp,"%s/basal%d_%d.dat", data_dir, experiments, runs)
+		vsoma2.wopen(temp)
+		for j=0, PCv[1].size()-1 {
+		vsoma2.printf ("%f\n",PCv[1].x[j])
+		}
+		vsoma2.close()
+	}
+}
+
+//That's the end!
+

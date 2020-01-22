@@ -1,0 +1,148 @@
+//--------------Set parameters and run this for the net (7 pyramidal cells and 2 Interneurons +1 pyramidal neuron with blocked Naf, Nap)
+/*Papoutsi et al. (2014) Plos Computational Biology*/
+
+load_file("nrngui.hoc")			
+cvode.active(0)		
+xopen ("net.hoc")                    	//load net structure
+
+//----------------------------------------Set parameters--------------------------------------------------------------//
+tstop=6000
+steps_per_ms=10
+dt=0.1
+celsius=34
+save_PID=0
+
+//-------------------Set synaptic weights
+ampaweightpr=	0.00024			//Initial stimulus
+nmdaweightpr=	0.22			//Initial stimulus
+ampaweight=	0.00019			//According to Wang(2008)
+//nmdaweight=	0.52			//ratio inmda/iampa in basal dendrites:1 (Wang,Gao,2008)
+gabaweight=	6.9e-4 			//According to Woo(2007)
+//gabaweightb=	0.654e-4
+ampaweightin=	7.5e-4			//according to Wang,Gao,2009
+nmdaweightin=	3.2e-4			//ratio inmda/iampa for interneuron *0.5(Wang,Gao,2009)
+autogabaweight=	5.1e-4			//According to Bacci (2003) 
+//------------------Set # of synapses
+inmaxsyn=	90			//initial stimulation
+maxsyn=		5			//PC-PC connections
+automaxsyn=	1			//autosynapses (one third, Lubke, 1996)
+maxsyn1=	12			//IN-IN connections
+maxsyn2=	2			//PC-IN connections 
+maxsyn3=	4			//IN-PC connections 
+synapses_backb=40			//basal background synapses
+synapses_backpr=40			//proximal apical background synapses
+synapses_backa=40			//distal apical background synapses
+synapses_backinh=40			//background synapses of interneurons
+
+//------------------------------------Pharmacological procedures
+proc sadp_soma() {
+	forsec soma_list{
+		for(x) {
+			if(ismembrane("ican")) for(x) { gbar_ican(x)= 0.001*fadp } 
+		}
+		}}
+proc sadp_dend() {
+	forsec dend_list{
+		for (x) {
+			if(ismembrane("ican")) for(x) { gbar_ican(x)= 0.001*0.1*fadp} 
+		}}}
+
+
+proc ttx() {
+	 Pcells[7].soma {
+		for(x) {
+		if(ismembrane("Naf")) for(x) {  gnafbar_Naf(x)= gnafbar_Naf(x)*0 }
+		if(ismembrane("Nap")) for(x) {  gnapbar_Nap(x)= gnapbar_Nap(x)*0 }
+	}}
+	Pcells[7].axon {
+		for(x) {
+		if(ismembrane("Naf")) for(x) {  gnafbar_Naf(x)= gnafbar_Naf(x)*0 }
+		if(ismembrane("Nap")) for(x) {  gnapbar_Nap(x)= gnapbar_Nap(x)*0 }
+	}}
+}
+
+
+//--------------------------------------Graphs
+xopen("../bash_templates/basic-graphics.hoc") 	
+//for j=0, (nPcells-1) {addgraph_2("Pcells[j].soma.v(0.5)", 0,tstop, -70, 50)}
+addgraph_2("Pcells[7].dend[0].v(0.5)", 0,tstop, -70, 50)
+addgraph_2("Pcells[6].soma.v(0.5)", 0,tstop, -70, 50)
+addgraph_2("Pcells[6].soma.v(0.5)", 0,tstop, -70, 50)
+//addgraph_2("INcells[0].soma.v(0.5)", 0,tstop, -80, 50)
+//addgraph_2("INcells[1].soma.v(0.5)", 0,tstop, -80, 50)
+//---------------------------------------------Multiple Experiments/Runs---------------------------------------------//
+//---For many experiments
+strdef syscmd, data_dira, data_dirb, data_dirc, data_dird, running, tmpstr 
+initial_obj=100
+//-----Variables
+n=int(tstop/dt)
+//-----Objects for record data
+objref cv
+cv=new CVode(0)
+objref PCv[nPcells], PCt[nPcells], INv[nINcells], INt[nINcells]
+strdef temp
+objref vsoma[nPcells], insoma[nINcells], insomab, curampa[nPcells], curnmda[nPcells], curgabaa[nPcells], curgabab[nPcells]
+objref campa[nPcells][initial_obj], ct[8][nPcells][initial_obj], cnmda[nPcells][initial_obj], cnmdat[nPcells][initial_obj], cgabaa[nPcells][initial_obj], campaa[nPcells][initial_obj], cnmdaa[nPcells][initial_obj], campain[nPcells][initial_obj], cnmdain[nPcells][initial_obj], cgabaat[nPcells][initial_obj], cgabab[nPcells][initial_obj], cgababt[initial_obj], ampac[nPcells], nmdac[nPcells], gabaac[nPcells], gababc[nPcells]	
+objref gababweights, nmdaweights, adpweights
+//----record total cell population spike activity
+objref timevec, idvec, recncs, tobj, nil, total_activity
+xopen("values_gabaweight.hoc")
+xopen("values_nmda.hoc")
+xopen("values_adp.hoc")
+xopen("vecstim.hoc")
+gabaweightb=gababweights.get[0]
+for adpvalues=0,0 {
+	fadp=adpweights.get[adpvalues]
+	sprint(data_dira,"adp%.2f",fadp)
+	sprint(syscmd,"mkdir -p %s",data_dira) 	
+	system(syscmd)
+
+	for nmdavalues=3,3{ 
+		nmdaweight=nmdaweights.get[nmdavalues]
+		sprint(data_dirb,"nmda%.2f",nmdaweight)
+		sprint(syscmd,"mkdir -p %s/%s", data_dira, data_dirb) 	
+		system(syscmd)
+
+		sprint(running,"ADP value is %f",fadp)
+		print running
+		sprint(running,"NMDA value is %f",nmdaweight)
+		print running
+		
+		for runs = 0,0{
+			stimulation(runs)   
+			pyramidals(runs)
+			interneurons(runs)
+			pyrin(runs)
+			inpyr(runs)
+			
+			noise(runs) 
+			//call_vecstim(runs)   //Call this for background synaptic activity
+			sadp_soma()
+			sadp_dend()
+			ttx()
+			print runs
+			//-------------------------------------Record & Save data data
+			xopen("recordandsave/record.hoc")
+			xopen("recordandsave/save_data.hoc")
+			xopen("recordandsave/rec_total_currents.hoc")
+			xopen("recordandsave/save_spiking_activity.hoc")
+
+			rec_membrane_voltage()
+			
+			//rec_synaptic_currents()
+			//rec_total_spiking_activity()
+			//--------------------------------------Synaptic graphs
+			//addgraph_2("nmda[0][0].iNMDA",0,tstop,-1,1)
+			run()
+
+			//add_syn_currents()
+			save_membrane_voltage()
+			//save_currents()
+			//save_total_spiking_activity()
+
+			if (save_PID==1) {variousdata.close()}
+		}
+	}
+	
+}
+//That's the end

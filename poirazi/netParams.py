@@ -31,6 +31,12 @@ netParams.cellParams['pyr'] = netParams.importCellParams(label='pyr', conds={'po
 netParams.cellParams['inh'] = netParams.importCellParams(label='inh', conds={'pop':'inhs'}, fileName=inhPath, cellName='makeCell', cellInstance=True)
 
 
+## Set axons as spike generating locations
+
+netParams.cellParams['pyr']['secs']['axon']['spikeGenLoc'] = 0.5
+netParams.cellParams['inh']['secs']['axon']['spikeGenLoc'] = 0.5
+
+
 ## Synaptic mechanisms
 
 netParams.synMechParams['GLU']        = {'mod': 'GLU'}          # ampa.mod
@@ -60,7 +66,7 @@ netParams.stimTargetParams[ruleLabel] = {
     'sec'      : 'dend_1', 
     'loc'      : 0.5, 
     'synMech'  : ['GLU', 'nmda_spike'], 
-    'weight'   : [cfg.stimAMPAweight, cfg.stimNMDAweight], 
+    'weight'   : [cfg.stimAMPAweight*cfg.stimScale, cfg.stimNMDAweight*cfg.stimScale], 
     'delay'    : 500,
     'threshold': -20}
 
@@ -76,17 +82,19 @@ for secName, sec in netParams.cellParams['inh']['secs'].items():
 
 ## Noise
 
-netParams.cellParams['pyr']['secs']['soma']['pointps'] = {
-    'noise': {'mod': 'Gfluctp',
-    'seed1': 'gid',
-    'E_e': cfg.pyrExcNoiseE,
-    'E_i': cfg.pyrInhNoiseE}}
+if cfg.noise:
 
-netParams.cellParams['inh']['secs']['soma']['pointps'] = {
-    'noise': {'mod': 'Gfluctp',
-    'seed1': 'gid',
-    'E_e': cfg.inhExcNoiseE,
-    'E_i': cfg.inhInhNoiseE}}
+    netParams.cellParams['pyr']['secs']['soma']['pointps'] = {
+        'noise': {'mod': 'Gfluctp',
+        'seed1': 'gid',
+        'E_e': cfg.pyrExcNoiseE,
+        'E_i': cfg.pyrInhNoiseE}}
+
+    netParams.cellParams['inh']['secs']['soma']['pointps'] = {
+        'noise': {'mod': 'Gfluctp',
+        'seed1': 'gid',
+        'E_e': cfg.inhExcNoiseE,
+        'E_i': cfg.inhInhNoiseE}}
 
 
 ## Connectivity
@@ -100,7 +108,7 @@ netParams.connParams[ruleLabel] = {
     'weight'     : [cfg.PyrPyrAMPAweight, cfg.PyrPyrNMDAweight],
     'delay'      : 'max(0.38, normal(1.7, 0.9))',
     'probability': 1.0,
-    'loc'        : [1.0, 1.0],
+    'loc'        : [cfg.numSynsPyrPyr*[0.5], cfg.numSynsPyrPyr*[0.5]],
     'sec'        : 'dend_0',
     'synsPerConn': cfg.numSynsPyrPyr,
     'threshold'  : -20}
@@ -114,7 +122,7 @@ netParams.connParams[ruleLabel] = {
     'weight'     : [cfg.PyrInhAMPAweight, cfg.PyrInhNMDAweight],
     'delay'      : 'max(0.38, normal(0.6, 0.2))',
     'probability': 1.0,
-    'loc'        : [0.5, 0.5],
+    'loc'        : [cfg.numSynsPyrInh*[0.5], cfg.numSynsPyrInh*[0.5]],
     'sec'        : 'soma',
     'synsPerConn': cfg.numSynsPyrInh,
     'threshold'  : -20}
@@ -128,7 +136,7 @@ netParams.connParams[ruleLabel] = {
     'weight'     : [cfg.PyrInhGABAaWeight, cfg.PyrInhGABAbWeight],
     'delay'      : 'max(0.38, normal(1.8, 0.8))',
     'probability': 1.0,
-    'loc'        : [0.5, 0.5],
+    'loc'        : [cfg.numSynsInhPyr*[0.5], cfg.numSynsInhPyr*[0.5]],
     'sec'        : 'soma',
     'synsPerConn': cfg.numSynsInhPyr,
     'threshold'  : -20}
@@ -142,7 +150,7 @@ netParams.connParams[ruleLabel] = {
     'weight'     : [cfg.InhInhGABAaWeight],
     'delay'      : 'max(0.38, normal(1.76, 0.07))',
     'probability': 1.0,
-    'loc'        : [0.5],
+    'loc'        : cfg.numSynsInhInh*[0.5],
     'sec'        : 'soma',
     'synsPerConn': cfg.numSynsInhInh,
     'threshold'  : -20}

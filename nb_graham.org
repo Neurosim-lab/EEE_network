@@ -18479,6 +18479,309 @@ Now everything works.  Removing the print statements from batch_analysis and bat
 
 Committing.
 
+** Exploring connectivity
+
+The inhibitory neurons aren't firing when the pyramdial neurons do.
+
+I'm going to set up a batch to explore increasing pyr->inh connectivity.
+
+batchLabel = 'batch08'
+
+	params['numSynsPyrInh'] = [2, 4, 6, 8]  # Default: 2
+    params['numSynsInhInh'] = [8, 12, 16]  # Default: 12
+
+file:gif/20200120_164222.png
+
+Increasing pyr->inh syns to 6 and 8 results in inh spiking.
+
+Changing inh->inh syns seems to have little effect.
+
+Now to explore inh -> pyr syns.
+
+batchLabel = 'batch09'
+
+Nothing too interesting.
+
+
+** Checking on the synaptic weights
+
+It seems odd to me that the AMPA and NMDA weights are the same as the GABAa and GABAb weights.
+
+	# pyramidal -> inhibitory
+	cfg.numSynsPyrInh = 2
+	cfg.PyrInhAMPAweight = 7.5e-4
+	cfg.PyrInhNMDAweight = 3.2e-4
+
+	# inhibitory -> pyramidal
+	cfg.numSynsInhPyr = 4
+	cfg.PyrInhGABAaWeight = 7.5e-4
+	cfg.PyrInhGABAbWeight = 3.2e-4
+
+I'm going to check these numbers.
+
+Yeah, I messed it up:
+
+   25: gabaweight=	6.9e-4 			//According to Woo(2007)
+   26: gabaweightb=	0.25			//According to Thomson(1999)
+
+Setting these values and seeing what happens.
+
+cfg.simLabel = 'poirazi_19'
+
+Hmmm... Still no inh firing.
+
+
+** Running a new batch to explore P->I number of synapses
+
+batchLabel = 'batch10'
+
+    params['numSynsPyrInh'] = [2, 4, 6, 8]  # Default: 2
+    params['noise'] = [True, False]
+
+Got the file exists error again...  But now seem to have fixed it.
+
+And some odd output:
+file:gif/20200120_184837.png
+file:gif/20200120_184903.png
+
+
+** Exploring current injection and P->I
+
+batchLabel = 'batch11'
+
+    params['numSynsPyrInh'] = [2, 4, 6, 8]  # Default: 2
+    params['pyrInjectAmp'] = [0.25, 0.5, 1.0, 1.5]
+
+
+Adjusting current amplitude range:
+
+batchLabel = 'batch12'
+
+    params['numSynsPyrInh'] = [2, 4, 6, 8]  # Default: 2
+    params['pyrInjectAmp'] = [0.8, 1.0, 1.2, 1.4]
+
+Getting the same odd results...  I'll have to ask about this in the EEE meeting.
+
+Moving on to the plateau stimulus.
+
+
+** Plateau stimulus
+
+batchLabel = 'batch13'
+
+    params['stimScale'] = [1.0, 10.0, 100.0]
+    params['noise'] = [True, False]
+
+Adjusting stimulus range
+
+batchLabel = 'batch14'
+
+batchLabel = 'batch15'
+
+    params['stimScale'] = [1.0, 10.0, 50.0, 100.0]
+    params['noise'] = [True, False]
+
+
+* 2020-01-21 -- EEE meeting and Poirazi model
+
+** Running single sim without MPI
+
+With verbose on, in order to see all messages
+
+cfg.simLabel = 'poirazi_20'
+
+I was worried about the location of synapses, because the Poirazi model has them
+at one location while earlier I noticed Netpyne seemed to distribute them uniformly.
+
+Now I see there is a message to this effect:
+
+	Error: The length of the list of locations does not match synsPerConn (distributing uniformly)
+
+Setting all 'loc's to a single value to see if that fixes the problem.
+
+cfg.simLabel = 'poirazi_21'
+
+It does not solve the problem.  Looks like I'll have to have a list the length
+of the numSynsPerConn...
+
+I did the following for all conns:
+
+	'loc'        : [cfg.numSynsPyrPyr*[1.0], cfg.numSynsPyrPyr*[1.0]],
+
+Running a new sim to check locs.
+
+cfg.simLabel = 'poirazi_23'
+
+Got an error:
+
+	Making connections...
+	Generating set of probabilistic connections (rule: pyrs->pyrs) ...
+	  Error: attempted to create self-connection on cell gid=0, section=dend_0 
+	  Error: attempted to create self-connection on cell gid=0, section=dend_0 
+	  Created connection preGid=1, postGid=0, sec=dend_0, loc=1, synMech=GLU, weight=0.00019, delay=1.34
+	  Created connection preGid=1, postGid=0, sec=dend_0, loc=1, synMech=GLU, weight=0.00019, delay=1.34
+	  Created connection preGid=1, postGid=0, sec=dend_0, loc=1, synMech=GLU, weight=0.00019, delay=1.34
+	  Created connection preGid=1, postGid=0, sec=dend_0, loc=1, synMech=GLU, weight=0.00019, delay=1.34
+	  Created connection preGid=1, postGid=0, sec=dend_0, loc=1, synMech=GLU, weight=0.00019, delay=1.34
+	You can not locate a point process at
+	 position 0 or 1 if it needs an ion
+	NEURON: ca_ion can't be inserted in this node
+	 near line 0
+	 nao0_na_ion = 140.0
+
+Looking at Poirazi code, I don't know why I set the loc at 1.0, they don't seem to 
+specify a loc, so it must default to 0.5.
+
+Changing connectivity thusly:
+
+    'loc'        : [cfg.numSynsPyrPyr*[0.5], cfg.numSynsPyrPyr*[0.5]],
+
+Trying again.
+
+cfg.simLabel = 'poirazi_24'
+
+Now the locations all seem to be good and the sim is running.
+
+
+** Initial stimulation
+
+I realize I haven't accounted for the 90 syns for initial stim...
+
+Setting cfg.stimScale = 90 should handle this.  Running a sim now.
+
+Running a batch with noise on and off and varying stimScale
+
+batchLabel = 'batch16'
+
+    params['stimScale'] = [45.0, 90.0, 180.0]
+    params['noise'] = [True, False]
+
+Noise alost completely wipes out effect of initial stimulation...
+
+
+
+** Looking into spikeGenLoc
+
+In order to have axons be the location for spike generation
+
+From Netpyne documentation:
+
+	spikeGenLoc - (optional) Indicates that this section is responsible for spike generation (instead of the default ‘soma’), and provides the location (segment) where spikes are generated.
+	e.g. cellRule['secs']['axon']['spikeGenLoc'] = 1.0
+
+Added the following to netParams:
+
+	## Set axons as spike generating locations
+
+	netParams.cellParams['pyr']['secs']['axon']['spikeGenLoc'] = 0.5
+	netParams.cellParams['inh']['secs']['axon']['spikeGenLoc'] = 0.5
+
+Running a sim.
+
+cfg.simLabel = 'poirazi_25'
+
+No spiking, no sign of initial stimulation.
+
+Running a batch.
+
+batchLabel = 'batch17'
+
+
+** Exploring current injection
+
+batchLabel = 'batch18'
+
+    params['noise'] = [True, False]
+    params['pyrInjectAmp'] = [0.8, 1.0, 1.2, 1.4]
+
+
+** EEE Meeting
+
+It was decided it's better at this point to work with the original Poirazi model
+rather than continuing to try to convert to NetPyNE.
+
+
+** Compare original hoc cell models and new Python models
+
+Commented out current-balancein.hoc call
+
+Getting an error importing hoc cells:
+
+	In [5]: h.xopen('incell.hoc')
+	NEURON: syntax error
+	 in incell.hoc near line 25
+	 	insert Naf
+	           ^
+	        xopen("incell.hoc")
+	---------------------------------------------------------------------------
+	RuntimeError                              Traceback (most recent call last)
+	<ipython-input-5-c6f314886f64> in <module>()
+	----> 1 h.xopen('incell.hoc')
+
+	RuntimeError: hoc error
+
+I think I need to symlink to the compiled mod dir from the cells dir:
+
+ln -s ../mods/x86_64 ./x86_64
+
+Yeah, now it works.  But moving on quickly.
+
+
+** Creating poirazi.py
+
+Copied current balance files over to cells dir and modified incell.hoc:
+
+	//xopen("../bash_templates/current-balancein.hoc")
+	xopen("cells/current-balancein.hoc")
+
+Modified pfc_pc_temp.hoc:
+
+	//xopen("../bash_templates/current-balancein.hoc")
+	xopen("cells/current-balancein.hoc")
+
+poirazi.py so far:
+
+	from neuron import h
+
+	h.load_file('stdrun.hoc')
+
+	h.xopen('cells/incell.hoc')
+	h.xopen('cells/pfc_pc_temp.hoc')
+
+And that runs properly.  
+
+
+** Moving over to /Users/graham/Desktop/L5microcircuit/
+
+Which is the original download from ModelDB
+
+	cd /Users/graham/Desktop/L5microcircuit/mechanism
+	nrnivmodl
+	cd ..
+	ln -s mechanism/x86_64 ./x86_64
+	cd 
+
+Creating a poirazi.py file here.
+
+
+* 2020-01-22 -- Using Poirazi hoc code 
+
+** Starting a new dir in EEE_network
+
+Was working late last night and still figuring things out. 
+
+Now I'll start clean and quick.
+
+First thing, commit current changes.  
+
+Then clone new copy of EEE_network to my home dir (rather than /u/graham).
+
+Then copy over nb_gif.
+
+Then put original Poirazi hoc files into new dir in EEE_network
+
+But first, commit.
+
 
 
 

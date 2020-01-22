@@ -79,6 +79,7 @@ INcells[i].soma insoma_list.append()
 }
 
 //Balance membrane potential 
-xopen("../bash_templates/current-balancein.hoc")
+//xopen("../bash_templates/current-balancein.hoc")
+xopen("cells/current-balancein.hoc")
 current_balancein(-70) 
 

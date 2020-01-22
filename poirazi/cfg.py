@@ -2,13 +2,13 @@ from netpyne import specs, sim
 import os
 
 cfg = specs.SimConfig()
-cfg.simLabel = 'poirazi_18'
+cfg.simLabel = 'poirazi_25'
 cfg.saveFolder = os.path.join('output', cfg.simLabel)
 
 saveFigs = True
 showFigs = False
 
-cfg.duration = 6000
+cfg.duration = 2500
 cfg.dt = 0.025
 cfg.verbose = True
 cfg.hParams.celsius = 34.0
@@ -36,6 +36,7 @@ cfg.analysis['plotConn']   = {'saveFig': saveFigs, 'showFig': showFigs, 'include
 cfg.stimNumber = 90
 cfg.stimAMPAweight = 0.00024
 cfg.stimNMDAweight = 0.22
+cfg.stimScale = 90
 
 
 ## Connectivity 
@@ -52,8 +53,8 @@ cfg.PyrInhNMDAweight = 3.2e-4
 
 # inhibitory -> pyramidal
 cfg.numSynsInhPyr = 4
-cfg.PyrInhGABAaWeight = 7.5e-4
-cfg.PyrInhGABAbWeight = 3.2e-4
+cfg.PyrInhGABAaWeight = 6.9e-4 
+cfg.PyrInhGABAbWeight = 0.25
 
 # inhibitory -> inhibitory
 cfg.numSynsInhInh = 12
@@ -66,6 +67,7 @@ cfg.inhEpas = -70.0
 
 
 ## Noise
+cfg.noise = True
 cfg.pyrExcNoiseE = cfg.pyrEpas + 65.0     # Default E_e : 0.0
 cfg.pyrInhNoiseE = cfg.pyrEpas - 10.0     # Default E_i : -75.0
 cfg.inhExcNoiseE = cfg.inhEpas + 65.0     # Default E_e : 0.0

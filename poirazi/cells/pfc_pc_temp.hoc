@@ -298,6 +298,7 @@ Pcells[0].dend[1] cell0_list.append()
 Pcells[0].dend[2] cell0_list.append()
 
 //Balance membrane potential 
-xopen("../bash_templates/current-balance.hoc")
+//xopen("../bash_templates/current-balance.hoc")
+xopen("cells/current-balance.hoc")
 current_balance(-66)
 

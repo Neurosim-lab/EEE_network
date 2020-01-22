@@ -2,7 +2,7 @@ from netpyne import specs
 from netpyne.batch import Batch 
 import os
 
-batchLabel = 'batch07'
+batchLabel = 'batch18'
 
 #runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
 runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
@@ -20,6 +20,10 @@ figFolder  = 'batch_figures'
 #allocation = 'csd403'         # NSG on Comet
 #allocation = 'TG-IBN140002'   # NSG on Stampede
 
+batchSaveFolder = os.path.join(saveFolder, batchLabel, dataFolder)
+if not os.path.isdir(batchSaveFolder):
+    os.makedirs(batchSaveFolder, exist_ok=True)
+
 
 def batchRun():
     # Create variable of type ordered dictionary (NetPyNE's customized version) 
@@ -27,8 +31,13 @@ def batchRun():
 
     # fill in with parameters to explore and range of values (key has to coincide with a variable in simConfig) 
 
-    params['numSynsPyrInh'] = [2, 6]  # Default: 2
-    params['numSynsPyrPyr'] = [5, 10]  # Default: 5
+
+    #params['stimScale'] = [45.0, 90.0, 180.0]
+    params['noise'] = [True, False]
+
+    #params['numSynsPyrInh'] = [2, 4, 6, 8]  # Default: 2
+    params['pyrInjectAmp'] = [0.8, 1.0, 1.2, 1.4]
+    
 
 
 
@@ -38,10 +47,7 @@ def batchRun():
     # Set output folder, grid method (all param combinations), and run configuration
     b.batchLabel = batchLabel 
     b.method = 'grid'
-    b.saveFolder = os.path.join(saveFolder, b.batchLabel, dataFolder)
-
-    if not os.path.isdir(b.saveFolder):
-        os.makedirs(b.saveFolder)
+    b.saveFolder = batchSaveFolder
     
     if runType == 'hpc_slurm':
         b.runCfg = {'type': 'hpc_slurm',

@@ -18798,7 +18798,53 @@ The file will have its original line endings in your working directory
 Hmmm...  Just to ensure I have the same thing as the repo, I will commit, push, 
 delete current dir and clone again.
 
+When I pushed, git reminded me there are some very large files in L5microcircuit:
 
+	graham$ git push
+	Enumerating objects: 35, done.
+	Counting objects: 100% (35/35), done.
+	Delta compression using up to 8 threads
+	Compressing objects: 100% (30/30), done.
+	Writing objects: 100% (33/33), 11.77 MiB | 549.00 KiB/s, done.
+	Total 33 (delta 3), reused 3 (delta 0)
+	remote: Resolving deltas: 100% (3/3), completed with 2 local objects.
+	remote: warning: GH001: Large files detected. You may want to try Git Large File Storage - https://git-lfs.github.com.
+	remote: warning: See http://git.io/iEPt8g for more information.
+	remote: warning: File L5microcircuit/experiment/importBackgroundStimParams.hoc is 92.30 MB; this is larger than GitHub's recommended maximum file size of 50.00 MB
+	To https://github.com/Neurosim-lab/EEE_network.git
+	   c707653..a570b19  master -> master
+
+But I will worry about that later.
+
+Copied over nb_gif again.
+
+Okay, now I should have a nice clean repo.  Time to set up the Poirazi model.
+
+** Setting up Poirazi model
+
+Compile and link mod files:
+
+graham$ cd
+graham$ cd EEE_network/L5microcircuit/mechanism/
+graham$ nrnivmodl
+graham$ cd ../experiment/
+graham$ ln -s ../mechanism/x86_64 ./x86_64
+
+After a lot of frustration, I learned you can only symlink with relative paths 
+from the directory you want the symlink in (or you can use complete paths).
+
+** Running the experiment
+
+Created experiment.py in the experiment dir:
+
+	from neuron import h
+	h.xopen('experiment.hoc')
+
+That runs and spits out figures in the gui.
+
+Now to get the data into Python so we can explore it.
+
+Committing first.
 
 
 

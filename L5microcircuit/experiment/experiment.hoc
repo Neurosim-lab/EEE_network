@@ -6,7 +6,8 @@ cvode.active(0)
 xopen ("net.hoc")                    	//load net structure
 
 //----------------------------------------Set parameters--------------------------------------------------------------//
-tstop=6000
+//tstop=6000
+tstop=1000
 steps_per_ms=10
 dt=0.1
 celsius=34

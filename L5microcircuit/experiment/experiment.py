@@ -34,13 +34,6 @@ for inh_index, inh_trace in enumerate(inh_traces):
 	plt.title('Inhibitory cell ' + str(inh_index))
 
 
-plt.figure()
-plt.plot(time, pyr_traces[6], label="soma")
-plt.plot(time, pyr_traces[7], label="dend")
-plt.legend()
-plt.xlabel('Time (ms)')
-plt.ylabel('Membrane Potential (mV)')
-plt.title('Pyramidal cell 7?')
 
 
 

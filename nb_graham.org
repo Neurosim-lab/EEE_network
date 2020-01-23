@@ -18927,6 +18927,8 @@ all be soma recordings, but there is also dend recording set up (from record.hoc
 		}
 	}
 
+It looks like PCv is overwritten. 
+
 Reducing tstop from 6000 to 1000 to reduce sim time (in experiment.hoc)
 
 	//tstop=6000
@@ -18958,6 +18960,19 @@ file:gif/20200123_105918.png
 ** Fixing record.hoc
 
 Messing around with this may break stuff.  Committing first.
+
+Whoops, I realize there was a lot of stuff commented out in record.hoc...
+
+Anything between /* and */ is commented out.
+
+So nothing is getting overwritten, the reason the final pyr soma voltage trace looks
+different is because the final pyr cell gets ttx (removal of Na currents).
+
+Removing the final plot (which assumed the ttx trace was a dend).
+
+Committing.
+
+
 
 
 

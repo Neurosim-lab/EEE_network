@@ -18974,6 +18974,215 @@ Committing.
 
 
 
+** Message to #eee-theory
+
+Okay, I've dived back into using NEURON without NetPyNE.  I'm working here: https://github.com/Neurosim-lab/EEE_network/blob/master/L5microcircuit/experiment/experiment.py
+
+Running experiment.py (after compiling mods and symlinking x86_64 into the experiment dir) runs a simulation and plots the voltage traces from all cells.
+
+I'm ready to start exploring the model, but in the interest of saving time and not floundering around, I'd love to get ideas on what I should explore first. @billl
+
+I'm busy with flooring for the next few hours (so no hurry), but I'll be back at it later this afternoon.
+
+billl  12:18 PM
+measure sync during entire duration and then periods during activity
+12:19
+i assume that there is a subset of cells that is active?
+
+joe  12:22 PM
+The model as is only has 8 pyramidals and 2 inhibitory.  Every cell is active following the glutamate stimulation.
+12:22
+I could add more pyramidals, connect them the same way, and not give them the glutamate?
+12:23
+Or just not give glutamate to some fraction of existing 8 pyrs?
+
+billl  12:23 PM
+oh so small?  hmm want to make bigger or then everything instantly breaks
+12:24
+well how about we just get the sync measures to start with and see where we stand
+12:24
+how long is sim?  1 sec?
+
+joe  12:24 PM
+Six seconds.
+12:25
+And the plateau never turns off in that time…  Another thing I could explore is the parameters of the glutamate stim to see about plateau duration…
+
+billl  12:26 PM
+is it a plateau at all? -- are the basilar dends up?  how many compartments in each cell?
+
+joe  12:27 PM
+Five compartments: soma, basal dend, two apical dends, and axon.
+12:27
+Haven’t plotted the dend voltage, but I’ll do that and report back.
+
+
+** Looking into measuring synchrony
+
+PySpike has synchrony measurements, but needs spike times.
+
+I need to uncomment (in experiment.hoc):
+
+	134: 			//rec_total_spiking_activity()
+
+Then, from save_spiking_activity.hoc:
+
+	//----Record spiking activity
+
+	proc rec_total_spiking_activity() {
+		timevec = new Vector()
+		idvec = new Vector()
+		recncs = new List()
+		i=0
+		forsec soma_list {
+			for (x) {
+				i=i+1
+				tobj = new NetCon(&v(0.5), nil)
+				tobj.threshold=0
+				tobj.record(timevec, idvec, i+1) 
+				recncs.append(tobj)
+			}
+		}
+	}
+
+It looks like I can get spike times and spike neuron IDs from timevec and idvec.
+
+Running and exploring.
+
+After running the sim:
+
+	timevec = h.timevec.to_python()
+	idvec = h.idvec.to_python()
+
+There seems to be a problem, because idvec varies between 6 and 36, while there are only
+8 pyrs and 2 inhs...
+
+Looking at NEURON documentation:
+	
+	https://www.neuron.yale.edu/neuron/static/py_doc/modelspec/programmatic/network/netcon.html#NetCon.record
+
+Says that the idvec is actually the id of the Netcon, not the neuron...
+
+It looks like I can get the spike times for each NetCon directly.  The netcons are saved
+in recncs.
+
+	In [20]: h.recncs
+	Out[20]: List[8]
+
+	In [21]: h.recncs[0]
+	Out[21]: NetCon[2256]
+
+	In [23]: foo = h.recncs[0]
+
+	In [25]: foo.get_recordvec()
+	Out[25]: Vector[26]
+
+	In [26]: foo.get_recordvec().to_python()
+
+Spits out list of spike times for cell 0.
+
+Getting a weird problem.  It looks like recncs should be a list 8 values long:
+
+	In [1]: h.recncs
+	Out[1]: List[8]
+
+But when I iterate through recncs, I get 40 outputs (five for each of 8 cells)...
+
+It must have something to do with the x in the save_spiking_activity.hoc for loops:
+
+	proc rec_total_spiking_activity() {
+		timevec = new Vector()
+		idvec = new Vector()
+		recncs = new List()
+		i=0
+		forsec soma_list {
+			for (x) {
+				i=i+1
+				tobj = new NetCon(&v(0.5), nil)
+				tobj.threshold=0
+				tobj.record(timevec, idvec, i+1) 
+				recncs.append(tobj)
+			}
+		}
+	}
+
+
+* 2020-01-24 -- Using Poirazi hoc code 
+
+** Asking on Slack about getting spike times
+
+Should get rid of `for (x)` and put `new Vector` into `for somasec` loop
+
+Here's the new code in rec_total_spiking_activity:
+
+	//----Record spiking activity
+
+	proc rec_total_spiking_activity() {
+		recncs = new List()
+		i=0
+		forsec soma_list {
+			i=i+1
+			timevec = new Vector()
+			idvec = new Vector()
+			tobj = new NetCon(&v(0.5), nil)
+			tobj.threshold=0
+			tobj.record(timevec, idvec, i+1) 
+			recncs.append(tobj)
+		}
+	}
+
+Trying it out.
+
+Now it enumerates over just 8 pyr somas, as it should.
+
+But the vectors are all empty.
+
+After a lot of playing around, I got it to work with the following:
+
+	//----Record spiking activity
+
+	proc rec_total_spiking_activity() {
+		recncs = new List()
+		i=0
+		timevec = new Vector()
+		idvec = new Vector()
+		forsec soma_list {
+			for x=2,2 {
+				tobj = new NetCon(&v(0.5), nil)
+				tobj.threshold=-20
+				tobj.record(timevec, idvec, i) 
+				recncs.append(tobj)
+				i=i+1
+			}
+		}
+	}
+
+And I can plot rasters with:
+
+	plt.figure() 
+	for ind, spikes in zip(h.idvec.to_python(), h.timevec.to_python()):
+	    plt.vlines(spikes, ind - 0.5, ind + 0.5)
+
+So now that I can get the spike times, it's time to get synchrony measured.
+
+But first, I'll plot dend voltages.
+
+Committing before that.
+
+
+
+** Plotting dend voltage
+
+
+
+
+
+
+
+
+
+
+** Measuring synchrony
 
 
 

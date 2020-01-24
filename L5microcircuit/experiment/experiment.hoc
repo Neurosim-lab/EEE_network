@@ -131,7 +131,7 @@ for adpvalues=0,0 {
 			rec_membrane_voltage()
 			
 			//rec_synaptic_currents()
-			//rec_total_spiking_activity()
+			rec_total_spiking_activity()
 			//--------------------------------------Synaptic graphs
 			//addgraph_2("nmda[0][0].iNMDA",0,tstop,-1,1)
 			run()

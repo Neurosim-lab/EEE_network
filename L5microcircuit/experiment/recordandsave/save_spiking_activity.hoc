@@ -3,17 +3,17 @@
 //----Record spiking activity
 
 proc rec_total_spiking_activity() {
-	timevec = new Vector()
-	idvec = new Vector()
 	recncs = new List()
 	i=0
+	timevec = new Vector()
+	idvec = new Vector()
 	forsec soma_list {
-		for (x) {
-			i=i+1
+		for x=2,2 {
 			tobj = new NetCon(&v(0.5), nil)
-			tobj.threshold=0
-			tobj.record(timevec, idvec, i+1) 
+			tobj.threshold=-20
+			tobj.record(timevec, idvec, i) 
 			recncs.append(tobj)
+			i=i+1
 		}
 	}
 }

@@ -2,12 +2,24 @@
 //--To save these data adjust the parameters in the save_data.hoc
 
 proc rec_membrane_voltage(){
+	
 	for (i=0;i<nPcells;i=i+1) {
 		PCv[i]=new Vector()
 		PCt[i]=new Vector(n)
 		for j=0,n-1 {PCt[i].x[j]=j*dt }
 		Pcells[i].soma cv.record(&v(.5),PCv[i],PCt[i],1) 
+
+		PCvax[i] = new Vector()
+		Pcells[i].axon cv.record(&v(.5), PCvax[i], PCt[i], 1)
+		PCvbd[i] = new Vector()
+		Pcells[i].dend[0] cv.record(&v(.5), PCvbd[i], PCt[i], 1)
+		PCvpa[i] = new Vector()
+		Pcells[i].dend[1] cv.record(&v(.5), PCvpa[i], PCt[i], 1)
+		PCvda[i] = new Vector()
+		Pcells[i].dend[2] cv.record(&v(.5), PCvda[i], PCt[i], 1)
 		}
+
+
 		/*PCv[0]=new Vector()
 		PCt[0]=new Vector(n)
 		for j=0,n-1 {PCt[0].x[j]=j*dt }

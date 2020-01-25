@@ -80,7 +80,8 @@ n=int(tstop/dt)
 //-----Objects for record data
 objref cv
 cv=new CVode(0)
-objref PCv[nPcells], PCt[nPcells], INv[nINcells], INt[nINcells]
+//objref PCv[nPcells], PCt[nPcells], INv[nINcells], INt[nINcells]
+objref PCv[nPcells], PCt[nPcells], INv[nINcells], INt[nINcells], PCvax[nPcells], PCvbd[nPcells], PCvpa[nPcells], PCvda[nPcells]
 strdef temp
 objref vsoma[nPcells], insoma[nINcells], insomab, curampa[nPcells], curnmda[nPcells], curgabaa[nPcells], curgabab[nPcells]
 objref campa[nPcells][initial_obj], ct[8][nPcells][initial_obj], cnmda[nPcells][initial_obj], cnmdat[nPcells][initial_obj], cgabaa[nPcells][initial_obj], campaa[nPcells][initial_obj], cnmdaa[nPcells][initial_obj], campain[nPcells][initial_obj], cnmdain[nPcells][initial_obj], cgabaat[nPcells][initial_obj], cgabab[nPcells][initial_obj], cgababt[initial_obj], ampac[nPcells], nmdac[nPcells], gabaac[nPcells], gababc[nPcells]	

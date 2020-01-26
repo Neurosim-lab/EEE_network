@@ -19255,7 +19255,21 @@ Plotting:
 
 But committing first.
 
+Changes in net.hoc:
 
+			//Pcells[i].dend[1] ampapr[i][j]=new GLU(PID)
+			//Pcells[i].dend[1] nmdapr[i][j]=new nmda_spike(PID)
+
+			Pcells[i].dend[0] ampapr[i][j]=new GLU(PID)
+			Pcells[i].dend[0] nmdapr[i][j]=new nmda_spike(PID)
+
+Running.
+
+Looks good.  Now to measure synchrony.
+
+
+
+* 2020-01-26 -- Using Poirazi hoc code 
 
 ** Measuring synchrony
 

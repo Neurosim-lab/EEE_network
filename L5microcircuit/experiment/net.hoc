@@ -86,8 +86,11 @@ proc stimulation() {
 			PID=r.repick()
 			if (save_PID==1) {variousdata.printf("%g\n", PID)}
 
-			Pcells[i].dend[1] ampapr[i][j]=new GLU(PID)
-			Pcells[i].dend[1] nmdapr[i][j]=new nmda_spike(PID)
+			//Pcells[i].dend[1] ampapr[i][j]=new GLU(PID)
+			//Pcells[i].dend[1] nmdapr[i][j]=new nmda_spike(PID)
+
+			Pcells[i].dend[0] ampapr[i][j]=new GLU(PID)
+			Pcells[i].dend[0] nmdapr[i][j]=new nmda_spike(PID)
 
 			nc1[i][j]=new NetCon(ns1, ampapr[i][j])
 			nc1[i][j].delay=500

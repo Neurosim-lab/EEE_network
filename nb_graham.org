@@ -19273,11 +19273,61 @@ Looks good.  Now to measure synchrony.
 
 ** Measuring synchrony
 
+Using the following code:
+
+	spike_times = [ [] for i in range(len(pyr_soma_traces)) ]
+
+	for index, dummy in enumerate(spike_times):
+	    spike_times[index] = [time for ind, time in zip(spike_ind, spike_time) if ind==index]
+
+	def measure_sync(spike_times, time_range=None):
+
+	    spike_trains = [ [] for i in range(len(spike_times)) ]
+
+	    for index, times in enumerate(spike_times):
+
+	        if time_range is not None:
+	            spike_times[index] = [time for time in times if (time > time_range[0] and time < time_range[1])]
+	            spike_trains[index] = spk.SpikeTrain(spike_trains[index], edges=time_range)
+
+	    print(spike_times)
+	    print()
+
+	    return np.mean(spk.spike_sync_matrix(spike_trains))
+
+	early = measure_sync(spike_times[0:6], time_range=[500, 550])
+
+	late = measure_sync(spike_times[0:6], time_range=[900, 1000])
+
+	print('early: ', early)
+	print('late : ', late)
+
+But the sync measure is exactly the same for both time ranges...
+
+	early:  0.8333333333333334
+	late :  0.8333333333333334
 
 
+* 2020-01-27 -- Poirazi synchrony
 
+** Measuring synchrony
 
+Okay, after much searching, it turns out the spike time arrays in each spike_train is
+empty.
 
+	In [10]: st0 = spike_trains[0]
+	In [11]: st0.spikes
+	Out[11]: array([], dtype=float64)
 
+I found the problem.  I was trying to put spike_trains into SpikeTrain instead of 
+spike_times.
+
+Now it works, but the sync measure needs to be smoothed...
+
+It looks like max_tau might allow this.  Looking into it.
+
+It looks like coincidence_profile_cython does the actual calculation.
+
+Committing now before playing around with max_tau
 
 

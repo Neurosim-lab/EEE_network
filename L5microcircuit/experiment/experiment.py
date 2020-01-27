@@ -2,6 +2,7 @@ from neuron import h
 import numpy as np
 import matplotlib.pyplot as plt
 import pyspike as spk
+from pyspike import SpikeTrain
 
 plt.ion()
 
@@ -56,18 +57,63 @@ for inh_index, inh_trace in enumerate(inh_traces):
     plt.ylabel('Membrane Potential (mV)')
     plt.title('Inhibitory cell ' + str(inh_index))
 
-
+spike_ind = h.idvec.to_python()
+spike_time = h.timevec.to_python()
 
 plt.figure() 
-for ind, spikes in zip(h.idvec.to_python(), h.timevec.to_python()):
-    plt.vlines(spikes, ind - 0.5, ind + 0.5)
+for ind, spike in zip(spike_ind, spike_time):
+    plt.vlines(spike, ind - 0.5, ind + 0.5)
     
+spike_times = [ [] for i in range(len(pyr_soma_traces)) ]
+
+for index, dummy in enumerate(spike_times):
+    spike_times[index] = [time for ind, time in zip(spike_ind, spike_time) if ind==index]
+
+def make_spike_trains(spike_times, time_range):
+
+    spike_trains = [ [] for i in range(len(spike_times)) ]
+
+    for index, times in enumerate(spike_times):
+
+        spike_times[index] = [time for time in times if (time > time_range[0] and time < time_range[1])]
+        spike_trains[index] = spk.SpikeTrain(np.array(spike_times[index]), edges=time_range)
+
+    return spike_trains
+
+
+spike_trains = make_spike_trains(spike_times, time_range=[500, 6000])
+
+sync_profile = spk.spike_sync_profile(spike_trains)
+x, y = sync_profile.get_plottable_data()
+plt.figure()
+plt.plot(x, y)
+plt.ylabel('Synchrony Profile')
+plt.xlabel('Time (ms)')
+plt.title('Synchrony')
+print("Synchrony: %.8f" % sync_profile.avrg())
+
+
+isi_profile = spk.isi_profile(spike_trains)
+x, y = isi_profile.get_plottable_data()
+plt.figure()
+plt.plot(x, y)
+plt.ylabel('ISI Profile')
+plt.xlabel('Time (ms)')
+plt.title('ISI Distance')
+print("ISI distance: %.8f" % isi_profile.avrg())
+
+
+spike_profile = spk.spike_profile(spike_trains)
+x, y = spike_profile.get_plottable_data()
+plt.figure()
+plt.plot(x, y)
+plt.ylabel('Spike Distance Profile')
+plt.xlabel('Time (ms)')
+plt.title('Spike Distance')
+print("SPIKE distance: %.8f" % spike_profile.avrg())
 
 
 
 
-
-
-
-
-
+    
+     

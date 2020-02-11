@@ -19806,6 +19806,45 @@ Committing now.
 
 Then I'll change the glut stim to a single pulse instead of 10.
 
+In net.hoc:
+
+	//ns1.number=10
+	ns1.number=1
+
+And running sim.  Good, one pulse now.
+
+Now to increase weight to see if we can get plateaus at all.
+
+So I'll need to change:
+
+	ampaweightpr
+	nmdaweightpr
+
+Which are set in experiment.hoc:
+
+	ampaweightpr=	0.00024			//Initial stimulus
+	nmdaweightpr=	0.22			//Initial stimulus
+
+Adding to experiment.hoc:
+
+	glut_scale = 1.0
+	ampaweightpr=	0.00024 * glut_scale			//Initial stimulus
+	nmdaweightpr=	0.22	* glut_scale     		//Initial stimulus
+
+And seeing if that works.  Seems to run fine.  Now to scale waaaay up.
+
+	glut_scale = 100
+
+Nice!  Now we get a plateau without connectivity, and it lasts about 300 ms.
+
+Screen Shot 2020-02-11 at 11.34.21 AM.png
+
+It looks a bit weird (vertical plateau initiation), because I haven't spread 
+out NMDA/AMPAs spatially or temporally yet.  Working on that now.
+
+Committing first.
+
+
 
 
 

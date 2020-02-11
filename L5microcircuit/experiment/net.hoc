@@ -66,7 +66,8 @@ proc noise() {
 //---------------------------Initial stimulation (proximal dendrite)(Kuroda, 1998, Constantinides, 2001)---------------//
 ns1=new NetStim(0.5)
 ns1.interval=50 
-ns1.number=10
+//ns1.number=10
+ns1.number=1
 ns1.start=0
 ns1.noise=0
 

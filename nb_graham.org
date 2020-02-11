@@ -19330,4 +19330,491 @@ It looks like coincidence_profile_cython does the actual calculation.
 
 Committing now before playing around with max_tau
 
+	for max_tau in [0.0, 0.1, 1.0, 10.0]:
+
+	    sync_profile = spk.spike_sync_profile(spike_trains, max_tau=max_tau)
+	    x, y = sync_profile.get_plottable_data()
+	    plt.figure()
+	    plt.plot(x, y)
+	    plt.ylabel('Synchrony Profile for max_tau = ' + str(max_tau))
+	    plt.xlabel('Time (ms)')
+	    plt.title('Synchrony')
+	    print("Synchrony: %.8f" % sync_profile.avrg())
+
+Changing max_tau doesn't lead to any smoothing.
+
+** Chat with Bill
+
+joe  11:57 AM
+Screen Shot 2020-01-27 at 11.56.36 AM.png 
+Screen Shot 2020-01-27 at 11.56.36 AM.png
+
+Synchrony, Interspike Interval, and Spike Distance profiles (using PySpike)
+
+billl:airplane:  11:58 AM
+good?
+
+joe  11:59 AM
+Screen Shot 2020-01-27 at 11.59.04 AM.png 
+Screen Shot 2020-01-27 at 11.59.04 AM.png
+
+
+12:00
+The first fig is for all 8 pyr cells (including one with TTX).  Second fig excludes TTX cell.
+12:00
+Good?  It works…  Now how to apply it?
+
+billl:airplane:  12:01 PM
+sync is high?
+12:01
+but unchanging?
+12:01
+go thru cycles of activate and inactive?
+
+joe  12:02 PM
+Okay, I’ll work on that next.  I was also considering aiming for a similar spike frequency, but induced with IClamp, to see if sync is higher with glutamate.
+
+billl:airplane:  12:03 PM
+sg
+
+
+* 2020-01-28 -- Poirazi model and EEE meeting
+
+** Measuring synchrony without connectivity
+
+Turning off pyr->pyr and inh->pyr connectivity in net.hoc 
+
+(Enclosing connectivity in /*  */)
+
+Getting an error when I try that:
+
+	NEURON: inpyr undefined function
+	 in experiment.hoc near line 152
+	 }
+	  ^
+	        inpyr(0)
+	      xopen("experiment.hoc")
+	---------------------------------------------------------------------------
+	RuntimeError                              Traceback (most recent call last)
+	~/EEE_network/L5microcircuit/experiment/experiment.py in <module>()
+	      7 plt.ion()
+	      8 
+	----> 9 h.xopen('experiment.hoc')
+	     10 
+	     11 time = np.array(h.PCt[0].to_python())
+
+	RuntimeError: hoc error
+
+Instead of commenting in net.hoc, I will comment out the calls to connectivity in 
+net.hoc:
+
+		for runs = 0,0{
+			stimulation(runs)   
+			//pyramidals(runs)
+			interneurons(runs)
+			pyrin(runs)
+			//inpyr(runs)
+
+And running...
+
+I get the exact same sync values as before...
+
+Disconnecting everything and running again.
+
+		for runs = 0,0{
+			stimulation(runs)   
+			//pyramidals(runs)
+			//interneurons(runs)
+			//pyrin(runs)
+			//inpyr(runs)
+
+Must have done something wrong before.  Now turning off pyr conn has effect 
+(eliminates plateau)
+
+Turning off just inh->pyr conn to see what happens.
+
+Synchrony increases.
+
+
+** Turning off glutamate stimulus
+
+No spiking activity, as expected.
+
+Leaving stimulus off, but turning on their background synaptic activity
+
+	call_vecstim(runs)   //Call this for background synaptic activity
+
+This eventually ends up in a plateau (after 4000 ms)
+
+Turning on glutamate, leaving bg syns on
+
+Sync increases slightly, from 0.8239 to 0.8438, no other obvious differences
+
+
+** Measuring synchrony during iClamp
+
+Want to set similar spike frequency using current clamp to see how sync 
+is different than during glutamate stimulus
+
+
+** EEE meeting
+
+Agenda/notes:
+
+https://docs.google.com/document/d/1Q4biw-hQwkz0E8Vh-EcU2qWTcOMZHF4iAqHgSJMU6XU/edit#
+
+Today’s agenda
+
+Upcoming deadlines
+Single-cell Article Revision is due by 23rd Jul 2020
+Srdjan will address concerns about wet experiments, will take some time
+Planning new experiments
+Update in 3 to 4 weeks
+Concern about how model contributes to paper (model results could be derived theoretically)
+Need to brainstorm responses to this concern
+Need non-trivial results from model (more than cable theory)
+Make more predictions with model?
+Distance-dependance of plateau duration may be non-trivial
+Specific morphological model is an advance over cable theory alone
+Any others?
+
+Single cell article resubmission updates 
+Posted to BioRxiv: https://www.biorxiv.org/content/10.1101/828582v1
+Submitted to Journal of Neurophysiology
+Model here: https://bitbucket.org/peng_gao_penny/eee_detailed_model/
+Received revisions from reviewers (attached below)
+
+Exploring Poirazi model without NetPyNE
+Running experiment.py executes hoc code and runs analysis, plots figures
+https://github.com/Neurosim-lab/EEE_network/blob/master/L5microcircuit/experiment/experiment.py
+Moved glutamate stimulus from proximal apical dendrite to basal dendrite
+This causes plateaus to develop more quickly (see Figures 1 and 2)
+Plateaus still continue without ending (Figure 3), even up to 30s
+Can now measure synchrony, ISI- and spike-distance (using PySpike)
+Sync measure is very noisy, changing max_tau doesn’t help (Figure 4)
+Single scalar measure is probably the way to go
+Turning off connectivity
+Turning off all connectivity stops plateau formation (Figure 5)
+Perhaps play with glutamate stimulus to mimic Srdjan’s experiments?
+Poirazi stimulus: 10 glutamate pulses at 50 ms interval into 90 synapses
+Turning off glutamate stimulus, turning on their background synaptic activity
+Background synaptic activity is generated by an enormous (~100 MB file)
+Eventually generates a plateau spontaneously (Figure 6)
+Next steps:
+Bill suggests measuring cycles of activation and inactivation
+How to inactivate?  Hyperpolarizing current pulse?
+Using current clamp stim instead of glutamate to see diff in sync?
+Increasing size of network and only giving glutamate to part?
+Exploring glutamate stim parameters and plateaus (shorten plateau)?
+
+Other items?
+Joe got a new job in New York
+Will be doing software development, etc. for NetPyNE
+Will be moving Feb. 4 (no meeting next week)
+
+Action items 
+
+Everybody brainstorm responses to reviews
+Good fig: apical to basal increases plateau formation speed
+Why does plateau never end? (bistability, strong connectivity)  
+Reduce exc conn, or increase inh conn
+Why do our plateaus end?
+Look over Poirazi article for discussion of ending plateau
+Explore glutamate stimulus parameters (more similar to experiments)
+Try to generate plateau without connectivity
+
+Explore “natural” plateaus
+Want network that doesn’t spontaneously enter “on” state
+Remove connectivity and explore spatial glutamate dist on basal
+
+
+
+* 2020-01-29 -- Poirazi model
+
+** Email notes from Srdjan
+
+Got a pdf from Srdjan with his thoughts on the Poirazi model
+
+Summarizing important points here:
+
+- Should look into Poirazi papers and see if they discuss plateau termination
+  (current model has self-sustaining plat that doesn't end even up to 30 s)
+
+- The sustained depolarization during the Poirazi Persistent Activity is only 
+  10 mV in the cell body.  The glutamate-mediated dendritic plateau potentials 
+  of our single-cell model can drive soma at 20 mV above resting.
+
+---  Need to match somatic plateau with Srdjan's experiments
+
+- Network-driven self-sustaining plateaus are advantage of Poirazi model, it
+  would be great if we could continue this behavior in modified model
+
+- Srdjan concerned about inherent instability in network, but the spontaneous 
+  plateau I saw was in a sim with background synaptic activity (Srdjan seems to 
+  think there was no external input to network in this case)
+
+There is more in Srdjan's document, but I think the most important thing right 
+now it to match the plateaus in Poirazi model to Srdjan's experiments.
+
+Srdjan's thoughts on this are:
+
+	To match the somatic waveforms in network neurons (so they look similar to 
+	the waveforms in the single-cell paper) Joe may consider changing:
+	
+	[1] the number of glutamate pulses arriving on dendrite,
+	[2] their frequency on dendrite,
+	[3] their distribution along the synthetic basal dendrite,
+	[4] inclusion of extrasynaptic (ExSyn) NMDAr. Basically, add new NMDA conductances
+	on top of the existing NMDA conductances. Put a 5-10 ms delay on extrasynaptic
+	NMDA receptors. Ideally, ExSyn NMDAr should be activated only when afferent
+	synaptic activity reaches some level. For example, we could put a condition on the
+	ExSyn NMDAr that it activates at higher membrane potentials compared to the Syn
+	NMDAr. The rationale for this is that dendritic membrane potential is proportional 
+	to the amount of received glut input. When dendritic membrane potential is elevated, there is a lot of glut inputs arriving, hence better chance for glutamate to spill
+	over onto ExSyn NMDA receptors.
+
+So that's the priority right now.  But first I wanted to run a couple sims to explore
+a few things.
+
+** Things to explore quickly
+
+1) Long sim without glutamate, to see if spontaneously formed plateaus also 
+spontaneously end.
+
+2) Sim without noise
+
+3) Turning off TTX to the one pyr cell
+
+4) Turning off the sadp process, which reduces gbar_ican
+
+		proc sadp_soma() {
+			forsec soma_list{
+				for(x) {
+					if(ismembrane("ican")) for(x) { gbar_ican(x)= 0.001*fadp } 
+				}
+				}}
+		proc sadp_dend() {
+			forsec dend_list{
+				for (x) {
+					if(ismembrane("ican")) for(x) { gbar_ican(x)= 0.001*0.1*fadp} 
+				}}}
+
+
+*** 1) Long sim without glut
+
+Changes in experiment.hoc:
+
+	tstop=30000
+	//tstop=6000
+
+	//stimulation(runs)
+
+	call_vecstim(runs)
+
+The plateau never ends (to 30 s) once it's started.
+
+*** 2) Sim without noise
+
+Changes in experiment.hoc:
+
+	tstop=6000
+	stimulation(runs)
+	//call_vecstim(runs)
+	//noise(runs)
+
+Output looks very similar, just no noise.
+
+Changes in experiment.hoc:
+
+	tstop=6000
+	//stimulation(runs)
+	call_vecstim(runs)
+	//noise(runs)
+
+So without the noise, the background synaptic activity is insufficient to cause spiking
+in pyr cells, but it's interesting to see the effect of bg syns:
+
+Screen Shot 2020-01-29 at 9.34.36 AM.png
+
+They are all excitatory, which makes sense (inh INs being more local).
+
+
+*** 3) Turning off TTX to pyr[7]
+
+Changes in experiment.hoc:
+
+	//ttx()
+
+Output for 6s looks very similar (now spiking in p7, obv)
+
+Trying for 1s.  Looks very similar.  Leaving TTX off for now.
+
+
+*** 4) Turning off the sadp process
+
+Changes in experiment.hoc:
+
+	//sadp_soma()
+	//sadp_dend()
+
+Comparing before and after turning off sadp, seems like not much difference
+
+Screen Shot 2020-01-29 at 9.52.49 AM.png
+
+Top:    sadp on (default in model)
+Bottom: sadp off
+
+I'll go ahead and leave it on (default) until I look into it further.
+
+
+
+** Matching experimental plateaus (modifying glutamate stimulus)
+
+Glutamate stim in Poirazi model:
+
+	ampaweightpr=	0.00024			//Initial stimulus
+	nmdaweightpr=	0.22			//Initial stimulus
+
+	inmaxsyn=	90			//initial stimulation
+
+	ns1=new NetStim(0.5)
+	ns1.interval=50 
+	ns1.number=10
+
+	Pcells[i].dend[0] ampapr[i][j]=new GLU(PID)
+	Pcells[i].dend[0] nmdapr[i][j]=new nmda_spike(PID)
+
+
+Glutamate stim in EEE single cell model:
+
+    Pool1_num: syanptic AMPA/NMDA numbers
+    Pool2_num: extrasyanptic NMDA numbers
+    Beta: parameter for NMDA Receptors
+    Cdur: parameter for NMDA Receptors
+    Syn_w1: the syanptic weight of AMPA/NMDA receptors in pool1
+    Syn_w2: the syanptic weight of AMPA/NMDA receptors in pool2
+    Loc: the stimulation location
+
+    delay1 = random_2(10, 50 + int(Syn_w1*50), Pool1_num)
+    # delay1 = random_beta(10, 50 + int(Syn_w1*50), Pool1_num)
+    ns = h.NetStim()
+    ns.interval = 20
+    ns.number = 1
+    ns.start = 190
+    ns.noise = 0
+
+    loc = [0.25, 0.6]
+
+    ###########################################
+    loc1 = list(np.linspace(Loc[0], Loc[1], Pool1_num))
+    ###########################################
+    # Loc and time delay set up
+    delay1 = random_2(10, 50 + int(Syn_w1*50), Pool1_num)
+    # delay1 = random_beta(10, 50 + int(Syn_w1*50), Pool1_num)
+    ns = h.NetStim()
+    ns.interval = 20
+    ns.number = 1
+    ns.start = 190
+    ns.noise = 0
+    ###########################################
+    for i in range(Pool1_num):
+        ###########################
+        # Adding AMPA
+        SynAMPA.append(h.AMPA(Cell.basal[34](loc1[i])))
+        SynAMPA[-1].gmax = 0.05
+        nc_AMPA.append(h.NetCon(ns, SynAMPA[i]))
+        nc_AMPA[-1].delay = delay1[i]
+        nc_AMPA[-1].weight[0] = Syn_w1
+        ###########################
+        #Adding NMDA
+        SynNMDA.append(h.NMDA(Cell.basal[34](loc1[i])))
+        SynNMDA[-1].gmax = 0.005
+        SynNMDA[-1].Beta = Beta
+        SynNMDA[-1].Cdur = Cdur
+        nc_NMDA.append(h.NetCon(ns, SynNMDA[i]))
+        nc_NMDA[-1].delay = delay1[i]
+        nc_NMDA[-1].weight[0] = Syn_w1
+
+    ###########################################
+    # Adding Pool 2
+    ###########################################
+    ExNMDA = []
+    nc_ExNMDA = []
+
+    loc2 = list(np.linspace(Loc[0], Loc[1], Pool2_num))
+	#    delay2 = list(np.linspace(5, 10, Pool2_num))
+    delay2 = random_2(15, 55 + int(Syn_w2*60), Pool2_num)
+    # delay2 = random_beta(15, 55 + int(Syn_w2*60), Pool2_num)
+    for i in range(Pool2_num):
+        ###########################
+        # Adding extrasyanptic NMDA
+        ExNMDA.append(h.NMDA(Cell.basal[34](loc2[i])))
+        ExNMDA[-1].gmax = 0.005
+        ExNMDA[-1].Beta = Beta
+        ExNMDA[-1].Cdur = Cdur
+        nc_ExNMDA.append(h.NetCon(ns, ExNMDA[i]))
+        nc_ExNMDA[-1].delay = delay2[i]
+        nc_ExNMDA[-1].weight[0] = Syn_w2
+
+
+* 2020-02-11 -- Poirazi model glutamate modification
+
+** Gao model glutamate
+
+From Penny's code:
+
+	weight = [0.1, 0.15, 0.20, 0.25, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
+
+	Pool_num = 8 + int(20*w)
+
+	delay1 = random_2(10, 50 + int(Syn_w1*50), Pool1_num)
+	# delay1 = random_beta(10, 50 + int(Syn_w1*50), Pool1_num)
+
+
+So Penny's model uses between 10 and 23 NMDA/AMPA synaptic receptors
+(depending on weight of stim, which seems a bit odd) and the same number 
+of NMDA extrasynaptic receptors
+
+They are spread between 0.25 and 0.6 of the length of the basal_34 branch
+
+They are temporally spread using a random delay of min 10 ms and max 55 to 90 
+ms (again, oddly in my mind, depending on weight).
+
+Penny's model uses a single pulse, whereas Poirazi uses 10 pulses at 50 ms 
+intervals
+
+So I am now going to begin modifying the Poirazi glutamate stim
+
+
+** Modifying Poirazi glutamate stim
+
+I am going to turn off connectivity and run a baseline sim. 
+
+In experiment.hoc, commenting out the following lines:
+
+			pyramidals(runs)
+			interneurons(runs)
+			pyrin(runs)
+			inpyr(runs)
+
+Then run the sim:
+
+	cd /Users/graham/EEE_network/L5microcircuit/experiment
+	ipython -i experiment.py
+
+Committing now.
+
+Then I'll change the glut stim to a single pulse instead of 10.
+
+
+
+
+
+
+
+
+
+
+
+
 

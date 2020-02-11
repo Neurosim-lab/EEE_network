@@ -45,7 +45,7 @@ for pyr_index, pyr_soma_trace in enumerate(pyr_soma_traces):
     plt.plot(time, pyr_soma_trace, label='soma')
     #plt.plot(time, pyr_axon_traces[pyr_index], label='axon')
     plt.plot(time, pyr_basal_traces[pyr_index], label='basal')
-    plt.plot(time, pyr_proxap_traces[pyr_index], label='prox ap')
+    #plt.plot(time, pyr_proxap_traces[pyr_index], label='prox ap')
     #plt.plot(time, pyr_distap_traces[pyr_index], label='dist ap')
     plt.legend()
 
@@ -83,13 +83,15 @@ def make_spike_trains(spike_times, time_range):
 
 spike_trains = make_spike_trains(spike_times, time_range=[500, 6000])
 
+spike_trains = spike_trains[0:6]
+
 sync_profile = spk.spike_sync_profile(spike_trains)
 x, y = sync_profile.get_plottable_data()
 plt.figure()
 plt.plot(x, y)
-plt.ylabel('Synchrony Profile')
+plt.ylabel('Synchrony')
 plt.xlabel('Time (ms)')
-plt.title('Synchrony')
+plt.title('Synchrony Profile (sync = %.4f)' % sync_profile.avrg())
 print("Synchrony: %.8f" % sync_profile.avrg())
 
 
@@ -97,9 +99,9 @@ isi_profile = spk.isi_profile(spike_trains)
 x, y = isi_profile.get_plottable_data()
 plt.figure()
 plt.plot(x, y)
-plt.ylabel('ISI Profile')
+plt.ylabel('ISI Distance')
 plt.xlabel('Time (ms)')
-plt.title('ISI Distance')
+plt.title('ISI Profile (ISI = %.4f)' % isi_profile.avrg())
 print("ISI distance: %.8f" % isi_profile.avrg())
 
 
@@ -107,13 +109,22 @@ spike_profile = spk.spike_profile(spike_trains)
 x, y = spike_profile.get_plottable_data()
 plt.figure()
 plt.plot(x, y)
-plt.ylabel('Spike Distance Profile')
+plt.ylabel('Spike Distance')
 plt.xlabel('Time (ms)')
-plt.title('Spike Distance')
+plt.title('Spike Distance Profile (SD = %.4f)' % spike_profile.avrg())
 print("SPIKE distance: %.8f" % spike_profile.avrg())
 
 
+# for max_tau in [0.0, 0.1, 1.0, 10.0]:
 
+#     sync_profile = spk.spike_sync_profile(spike_trains, max_tau=max_tau)
+#     x, y = sync_profile.get_plottable_data()
+#     plt.figure()
+#     plt.plot(x, y)
+#     plt.ylabel('Synchrony Profile for max_tau = ' + str(max_tau))
+#     plt.xlabel('Time (ms)')
+#     plt.title('Synchrony')
+#     print("Synchrony: %.8f" % sync_profile.avrg())
 
     
      

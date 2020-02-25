@@ -25,7 +25,8 @@ ampaweightin=	7.5e-4			//according to Wang,Gao,2009
 nmdaweightin=	3.2e-4			//ratio inmda/iampa for interneuron *0.5(Wang,Gao,2009)
 autogabaweight=	5.1e-4			//According to Bacci (2003) 
 //------------------Set # of synapses
-inmaxsyn=	90			//initial stimulation
+//inmaxsyn=	90			//initial stimulation
+inmaxsyn=	25			//initial stimulation
 maxsyn=		5			//PC-PC connections
 automaxsyn=	1			//autosynapses (one third, Lubke, 1996)
 maxsyn1=	12			//IN-IN connections
@@ -93,6 +94,8 @@ xopen("values_nmda.hoc")
 xopen("values_adp.hoc")
 xopen("vecstim.hoc")
 gabaweightb=gababweights.get[0]
+
+/*
 for adpvalues=0,0 {
 	fadp=adpweights.get[adpvalues]
 	sprint(data_dira,"adp%.2f",fadp)
@@ -148,3 +151,59 @@ for adpvalues=0,0 {
 	
 }
 //That's the end
+*/
+
+
+// New code below added by Joe Graham
+
+adpvalues=0
+fadp=adpweights.get[adpvalues]
+sprint(data_dira,"adp%.2f",fadp)
+sprint(syscmd,"mkdir -p %s",data_dira) 	
+system(syscmd)
+
+nmdavalues=3
+nmdaweight=nmdaweights.get[nmdavalues]
+sprint(data_dirb,"nmda%.2f",nmdaweight)
+sprint(syscmd,"mkdir -p %s/%s", data_dira, data_dirb) 	
+system(syscmd)
+
+sprint(running,"ADP value is %f",fadp)
+print running
+sprint(running,"NMDA value is %f",nmdaweight)
+print running
+
+runs = 0
+stimulation(runs)   
+//pyramidals(runs)
+//interneurons(runs)
+//pyrin(runs)
+//inpyr(runs)
+
+noise(runs) 
+//call_vecstim(runs)   //Call this for background synaptic activity
+sadp_soma()
+sadp_dend()
+//ttx()
+print runs
+//-------------------------------------Record & Save data data
+xopen("recordandsave/record.hoc")
+xopen("recordandsave/save_data.hoc")
+xopen("recordandsave/rec_total_currents.hoc")
+xopen("recordandsave/save_spiking_activity.hoc")
+
+rec_membrane_voltage()
+
+//rec_synaptic_currents()
+rec_total_spiking_activity()
+//--------------------------------------Synaptic graphs
+//addgraph_2("nmda[0][0].iNMDA",0,tstop,-1,1)
+run()
+
+//add_syn_currents()
+save_membrane_voltage()
+//save_currents()
+//save_total_spiking_activity()
+
+if (save_PID==1) {variousdata.close()}
+

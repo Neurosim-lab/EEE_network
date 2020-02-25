@@ -19844,8 +19844,43 @@ out NMDA/AMPAs spatially or temporally yet.  Working on that now.
 
 Committing first.
 
+** Reducing number of Poirazi syns for glut stim
+
+It was at 90, I'll back it down to 25, which is in the range of our single-cell model
+
+In experiment.hoc:
+
+	//inmaxsyn=	90			//initial stimulation
+	inmaxsyn=	25			//initial stimulation
+
+And running.  Still looks good, even without increasing glut_scale more.  But now
+plateau lasts only 200 to 250 ms.  Nice.
+
+I'm going to explore glut_scale briefly...
 
 
+** Exploring glut_scale
+
+Commenting out sync figs, inh figs, and pyr figs and plotting just one pyr trace
+
+** Spreading Poirazi stim spatially
+
+** Spreading Poirazi stim temporally
+
+
+
+* 2020-02-25 -- Poirazi model glutamate modification
+
+** Modifying code to be able to run loops in Python
+
+In experiment.hoc, I am commenting out the loop that runs sims and copying the necessary
+assignments below it.
+
+Testing now.  
+
+It still runs.
+
+Committing.
 
 
 

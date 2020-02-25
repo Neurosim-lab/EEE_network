@@ -19882,6 +19882,23 @@ It still runs.
 
 Committing.
 
+The only thing after the `run()` command in experiment.hoc is `save_membrane_voltage()`, 
+which is defined in `save_data.hoc` and appears to write to a file.
+
+I don't need the file, so I'll comment out save_membrane_voltage() and run() so that I 
+can issue the run command from Python.
+
+Adding `h.run()` to experiment.py and testing.
+
+$ cd /Users/graham/EEE_network/L5microcircuit/experiment; ipython -i experiment.py
+
+Great, it still works.  Now I can run sims in loops in Python.
+
+Adding code to plot just one voltage trace.
+
+That worked.  Committing.
+
+
 
 
 

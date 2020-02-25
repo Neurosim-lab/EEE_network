@@ -198,10 +198,10 @@ rec_membrane_voltage()
 rec_total_spiking_activity()
 //--------------------------------------Synaptic graphs
 //addgraph_2("nmda[0][0].iNMDA",0,tstop,-1,1)
-run()
+//run()
 
 //add_syn_currents()
-save_membrane_voltage()
+//save_membrane_voltage()
 //save_currents()
 //save_total_spiking_activity()
 

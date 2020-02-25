@@ -9,7 +9,7 @@ plt.ion()
 h.xopen('experiment.hoc')
 
 
-glut_scales = [100, 1000, 10000]
+glut_scales = [1, 5, 10, 50, 100, 200]
 
 for run, glut_scale in enumerate(glut_scales):
 
@@ -58,16 +58,16 @@ for run, glut_scale in enumerate(glut_scales):
 
     for pyr_index, pyr_soma_trace in enumerate(pyr_soma_traces):
 
-        if pyr_index == 0:
+        if pyr_index == 7:
         
-            plt.figure()
+            #plt.figure()
             plt.xlabel('Time (ms)')
             plt.ylabel('Membrane Potential (mV)')
             #plt.title('Pyramidal cell ' + str(pyr_index))
             plt.title('glut_scale = ' + str(glut_scale) + ' | Pyramidal cell ' + str(pyr_index))
-            plt.plot(time, pyr_soma_trace, label='soma')
+            plt.plot(time, pyr_soma_trace, label='glut_scale = ' + str(glut_scale))
             #plt.plot(time, pyr_axon_traces[pyr_index], label='axon')
-            plt.plot(time, pyr_basal_traces[pyr_index], label='basal')
+            #plt.plot(time, pyr_basal_traces[pyr_index], label='basal')
             #plt.plot(time, pyr_proxap_traces[pyr_index], label='prox ap')
             #plt.plot(time, pyr_distap_traces[pyr_index], label='dist ap')
             plt.legend()

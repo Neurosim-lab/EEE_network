@@ -19938,6 +19938,12 @@ Finally got it to work by changing the weights of each input in a loop:
 Committing now.
 
 
+** Exploring glutamate stim amp
+
+Got a cool figure showing plateaus:
+Screen Shot 2020-02-25 at 2.42.59 AM.png
+
+Committing.
 
 
 

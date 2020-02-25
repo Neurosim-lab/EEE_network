@@ -19899,6 +19899,47 @@ Adding code to plot just one voltage trace.
 That worked.  Committing.
 
 
+** Preparing to explore glutamate stim amplitude
+
+Making a loop around h.run() and the plotting.
+
+That works.  Now need to figure out how to vary glutamate stim amp in the loop...
+
+So the variable I want to change is h.glut_scale
+
+It doesn't seem to be working...
+
+Ah, it's because the scaling only occurs when experiment.hoc is called, and it's only 
+called once.
+
+Need to scale ampa and nmda directly in my python code...
+
+Setting glut_scale = 1 in experiment.hoc and adding to experiment.py:
+
+Still not working.
+
+Oh, so the ampa and nmda values for the actual stim are set in net.hoc, which is called
+by experiment.hoc...
+
+Ugh.  What a pain.
+
+Finally got it to work by changing the weights of each input in a loop:
+
+####################
+    for i in range(int(h.nPcells)):
+        
+        for j in range(int(h.inmaxsyn)):
+            
+            h.nc1[i][j].weight[0] = ampaweightpr            
+            h.nc2[i][j].weight[0] = nmdaweightpr                          
+
+######################
+
+Committing now.
+
+
+
+
 
 
 

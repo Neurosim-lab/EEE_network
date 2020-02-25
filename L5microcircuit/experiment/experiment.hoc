@@ -14,7 +14,7 @@ celsius=34
 save_PID=0
 
 //-------------------Set synaptic weights
-glut_scale = 100
+glut_scale = 1
 ampaweightpr=	0.00024 * glut_scale			//Initial stimulus
 nmdaweightpr=	0.22	* glut_scale     		//Initial stimulus
 ampaweight=	0.00019			//According to Wang(2008)
@@ -72,6 +72,8 @@ addgraph_2("Pcells[7].dend[0].v(0.5)", 0,tstop, -70, 50)
 addgraph_2("Pcells[6].soma.v(0.5)", 0,tstop, -70, 50)
 //addgraph_2("INcells[0].soma.v(0.5)", 0,tstop, -80, 50)
 //addgraph_2("INcells[1].soma.v(0.5)", 0,tstop, -80, 50)
+
+
 //---------------------------------------------Multiple Experiments/Runs---------------------------------------------//
 //---For many experiments
 strdef syscmd, data_dira, data_dirb, data_dirc, data_dird, running, tmpstr 

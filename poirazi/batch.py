@@ -2,7 +2,7 @@ from netpyne import specs
 from netpyne.batch import Batch 
 import os
 
-batchLabel = 'batch34'
+batchLabel = 'batch43'
 
 #runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
 runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
@@ -31,10 +31,8 @@ def batchRun():
 
     # fill in with parameters to explore and range of values (key has to coincide with a variable in simConfig) 
 
-
-    params['stimScale'] = [5.0, 10.0, 50.0]
-    params['numCells'] = [10, 20, 50]
-
+    params['pyrInjectAmp'] = [0.32, 0.33, 0.34]
+    params['stimScale'] = [50.0]
 
     #params['noise'] = [False, True]
 

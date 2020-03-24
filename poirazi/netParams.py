@@ -13,9 +13,10 @@ netParams = specs.NetParams()
 ## Population parameters
 
 numPyrCells = int(np.round(0.8 * cfg.numCells))
-numInhCells = cfg.numCells - numPyrCells
+numInhCells = int(cfg.numCells - numPyrCells)
 
-netParams.popParams['pyrs'] = {'cellType': 'pyr', 'numCells': numPyrCells}
+netParams.popParams['pyrs_plat'] = {'cellType': 'pyr', 'numCells': int(numPyrCells/2)}
+netParams.popParams['pyrs'] = {'cellType': 'pyr', 'numCells': int(numPyrCells/2)}
 netParams.popParams['inhs'] = {'cellType': 'inh', 'numCells': numInhCells}
 
 
@@ -28,7 +29,7 @@ inhPath  = os.path.join(cellpath, 'inh.py')
 
 ## Import cells
 
-netParams.cellParams['pyr'] = netParams.importCellParams(label='pyr', conds={'pop':'pyrs'}, fileName=pyrPath, cellName='makeCell', cellInstance=True)
+netParams.cellParams['pyr'] = netParams.importCellParams(label='pyr', conds={'pop':['pyrs', 'pyrs_plat']}, fileName=pyrPath, cellName='makeCell', cellInstance=True)
 netParams.cellParams['inh'] = netParams.importCellParams(label='inh', conds={'pop':'inhs'}, fileName=inhPath, cellName='makeCell', cellInstance=True)
 
 
@@ -62,10 +63,10 @@ if cfg.glutStim:
         'number'  : 1,
         'noise'   : 0}
         
-    ruleLabel = 'stimulation->pyrs'
+    ruleLabel = 'stimulation->pyrs_plat'
     netParams.stimTargetParams[ruleLabel] = {
         'source'     : 'stimulation', 
-        'conds'      : {'pop': 'pyrs'}, 
+        'conds'      : {'pop': 'pyrs_plat'}, 
         'sec'        : 'dend_1', 
         'loc'        : 0.5, 
         'synMech'    : ['GLU', 'nmda_spike'], 
@@ -116,8 +117,8 @@ if cfg.noise:
 # pyrs --> pyrs
 ruleLabel = 'pyrs->pyrs'
 netParams.connParams[ruleLabel] = {
-    'preConds'   : {'pop': 'pyrs'},
-    'postConds'  : {'pop': 'pyrs'},
+    'preConds'   : {'cellType': 'pyr'},
+    'postConds'  : {'cellType': 'pyr'},
     'synMech'    : ['GLU', 'nmda_spike'], 
     'weight'     : [cfg.PyrPyrAMPAweight, cfg.PyrPyrNMDAweight],
     'delay'      : 'max(0.38, normal(1.7, 0.9))',
@@ -130,7 +131,7 @@ netParams.connParams[ruleLabel] = {
 # pyrs --> inhs
 ruleLabel = 'pyrs->inhs'
 netParams.connParams[ruleLabel] = {
-    'preConds'   : {'pop': 'pyrs'},
+    'preConds'   : {'cellType': 'pyr'},
     'postConds'  : {'pop': 'inhs'},
     'synMech'    : ['GLUIN', 'NMDA'], 
     'weight'     : [cfg.PyrInhAMPAweight, cfg.PyrInhNMDAweight],
@@ -145,7 +146,7 @@ netParams.connParams[ruleLabel] = {
 ruleLabel = 'inhs->pyrs'
 netParams.connParams[ruleLabel] = {
     'preConds'   : {'pop': 'inhs'},
-    'postConds'  : {'pop': 'pyrs'},
+    'postConds'  : {'cellType': 'pyr'},
     'synMech'    : ['GABAa', 'GABAb'], 
     'weight'     : [cfg.PyrInhGABAaWeight, cfg.PyrInhGABAbWeight],
     'delay'      : 'max(0.38, normal(1.8, 0.8))',
@@ -184,7 +185,7 @@ if cfg.pyrInject:
     ruleLabel = 'pyrInject->pyrs'
     netParams.stimTargetParams[ruleLabel] = {
         'source': 'pyrInject', 
-        'conds': {'popLabel': 'pyrs'}, 
+        'conds': {'pop': 'pyrs'}, 
         'sec': cfg.pyrInjectSec, 
         'loc': cfg.pyrInjectLoc}
 

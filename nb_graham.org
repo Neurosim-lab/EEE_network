@@ -20115,10 +20115,141 @@ For now I'll go with 20 cells (16 pyr, 4 inh) and give glutamate stim to half of
 
 But, committing first.
 
+Two pops:
+
+netParams.popParams['pyrs_plat'] = {'cellType': 'pyr', 'numCells': numPyrCells/2}
+netParams.popParams['pyrs'] = {'cellType': 'pyr', 'numCells': numPyrCells/2}
+
+cfg.simLabel = 'poirazi_29'
 
 
+** Exploring range of injected current
 
+Trying to match firing rate with that during plateau
 
+batchLabel = 'batch35'
+    params['stimScale'] = [25.0, 50.0, 75.0]
+    params['pyrInjectAmp'] = [0.5, 1.0, 1.5]
+
+plats:
+/Users/graham/screenshots/20200323_230035.png
+
+non-plats:
+/Users/graham/screenshots/20200323_230046.png
+
+Need to decrease injected current even more.
+
+batchLabel = 'batch36'
+    params['stimScale'] = [50.0]
+    params['pyrInjectAmp'] = [0.1, 0.2, 0.3]
+
+Needs to be between 0.2 and 0.3
+
+batchLabel = 'batch37'
+    params['pyrInjectAmp'] = [0.225, 0.250, 0.275]
+    params['stimScale'] = [50.0]
+
+Needs to be between 0.275 and 0.3
+
+batchLabel = 'batch38'
+    params['pyrInjectAmp'] = [0.28, 0.285, 0.29]
+    params['stimScale'] = [50.0]
+
+Needs to be between .29 and .3
+
+batchLabel = 'batch39'
+    params['pyrInjectAmp'] = [0.2925, 0.2950, 0.2975]
+    params['stimScale'] = [50.0]
+
+0.2975 is looking pretty good
+/Users/graham/screenshots/20200323_234029.png
+
+batchLabel = 'batch40'
+    params['pyrInjectAmp'] = [0.2975, 0.2985, 0.2995]
+    params['stimScale'] = [50.0]
+
+Any of these values looks good.
+/Users/graham/screenshots/20200323_235237.png
+
+Changing sim so injected only goes to non-plat pyrs and running batch of same values.
+
+'conds': {'cellType': 'pyr'} --> 'conds': {'pop': 'pyrs'}
+
+batchLabel = 'batch41'
+
+Injected current needs to be increased now, with only half of pyrs getting it...
+
+batchLabel = 'batch42'
+    params['pyrInjectAmp'] = [0.30, 0.31, 0.32]
+    params['stimScale'] = [50.0]
+
+Slightly higher still.
+
+batchLabel = 'batch43'
+    params['pyrInjectAmp'] = [0.32, 0.33, 0.34]
+    params['stimScale'] = [50.0]
+
+I'll use amp = 0.34:
+/Users/graham/screenshots/20200324_000924.png
+
+The firing rates are about equal during inj and plat, so good for measuring sync.
+
+** Measuring sync
+
+cfg.simLabel = 'poirazi_32'
+
+cfg.analysis['plotSpikeStats'] = {'saveFig': saveFigs, 'showFig': showFigs, 'include': ['eachPop'], 'graphType': 'boxplot', 'stats': ['rate', 'isicv', 'sync', 'pairsync']} 
+
+Got a warning:
+
+	Warning: spike_distance_cython not found. Make sure that PySpike is installed by running
+	 'python setup.py build_ext --inplace'!
+	 Falling back to slow python backend.
+
+Fixed it by executing that command in PySpike dir.
+
+Also got a key error... Turns out the key for 'pairsync' in the x_labels dict in spikes was ' pairsync'.
+Need to commit and push this fix to Netpyne.
+
+cfg.simLabel = 'poirazi_34'
+
+Synchrony looks good!  As expected, it's higher during plats than with injected current.
+
+/Users/graham/screenshots/20200324_003903.png
+/Users/graham/screenshots/20200324_003915.png
+/Users/graham/screenshots/20200324_003926.png
+/Users/graham/screenshots/20200324_003936.png
+/Users/graham/screenshots/20200324_003945.png
+/Users/graham/screenshots/20200324_004008.png
+/Users/graham/screenshots/20200324_004021.png
+
+Now to run sync measures during only injected current, then only during plateau.
+
+*** Injection
+
+cfg.simLabel = 'poirazi_35'
+
+cfg.analysis['plotSpikeStats'] = {'saveFig': saveFigs, 'showFig': showFigs, 'include': ['eachPop'], 'graphType': 'boxplot', 'stats': ['rate', 'isicv', 'sync', 'pairsync'], 'timeRange': [200, 450]} 
+
+Pairwise sync is a little weird:
+/Users/graham/screenshots/20200324_004458.png
+
+But sync looks good:
+/Users/graham/screenshots/20200324_004525.png
+
+*** Plateau 
+
+cfg.simLabel = 'poirazi_36'
+
+cfg.analysis['plotSpikeStats'] = {'saveFig': saveFigs, 'showFig': showFigs, 'include': ['eachPop'], 'graphType': 'boxplot', 'stats': ['rate', 'isicv', 'sync', 'pairsync'], 'timeRange': [1250, 1500]} 
+
+Pairwise sync is as expected:
+/Users/graham/screenshots/20200324_004913.png
+
+As is sync:
+/Users/graham/screenshots/20200324_004944.png
+
+Committing and calling it a day.
 
 
 

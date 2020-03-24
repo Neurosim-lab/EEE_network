@@ -2,7 +2,7 @@ from netpyne import specs, sim
 import os
 
 cfg = specs.SimConfig()
-cfg.simLabel = 'poirazi_28'
+cfg.simLabel = 'poirazi_36'
 cfg.saveFolder = os.path.join('output', cfg.simLabel)
 
 saveFigs = True
@@ -27,11 +27,13 @@ cfg.saveDataInclude = ['simData', 'simConfig', 'netParams', 'net']
 ## Plotting
 cfg.recordTraces = {'V_soma': {'sec':'soma', 'loc':0.5, 'var':'v'},
 					'V_dend': {'sec':'dend_0', 'loc':0.5, 'var':'v'}}
-cfg.recordCells = [('pyrs', [0,1]), ('inhs', [0,1])]
+cfg.recordCells = [('pyrs', [0,1]), ('pyrs_plat', [0,1]), ('inhs', [0,1])]
 cfg.analysis['plotRaster'] = {'saveFig': saveFigs, 'showFig': showFigs, 'orderInverse': True, 'popRates': True}
-cfg.analysis['plotTraces'] = {'include': [('pyrs', [0,1]), ('inhs', [0,1])], 'saveFig': saveFigs, 'showFig': showFigs}
+cfg.analysis['plotTraces'] = {'saveFig': saveFigs, 'showFig': showFigs, 'overlay': True}
 #cfg.analysis['plot2Dnet']  = {'saveFig': saveFigs, 'showFig': showFigs}
-cfg.analysis['plotConn']   = {'saveFig': saveFigs, 'showFig': showFigs, 'includePre': ['pyrs', 'inhs'], 'includePost': ['pyrs', 'inhs'],'feature': 'strength'}  # strength, numConns
+cfg.analysis['plotConn']   = {'saveFig': saveFigs, 'showFig': showFigs, 'includePre': ['pyrs_plat', 'pyrs', 'inhs'], 'includePost': ['pyrs_plat', 'pyrs', 'inhs'], 'feature': 'strength'}  # strength, numConns
+
+cfg.analysis['plotSpikeStats'] = {'saveFig': saveFigs, 'showFig': showFigs, 'include': ['eachPop'], 'graphType': 'boxplot', 'stats': ['rate', 'isicv', 'sync', 'pairsync'], 'timeRange': [1250, 1500]} 
 
 
 # Stimulation parameters
@@ -81,10 +83,10 @@ cfg.inhInhNoiseE = cfg.inhEpas - 10.0     # Default E_i : -75.0
 
 ## Current injection
 
-cfg.pyrInject = False
+cfg.pyrInject = True
 cfg.pyrInjectDel = 200
 cfg.pyrInjectDur = 250
-cfg.pyrInjectAmp = 1.5
+cfg.pyrInjectAmp = 0.34
 cfg.pyrInjectSec = 'soma'
 cfg.pyrInjectLoc = 0.5
 

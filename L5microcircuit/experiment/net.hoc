@@ -32,7 +32,7 @@ objref ic, ic1[11]
 objref sinw[nPcells], w[lala][total][nPcells], ramp				
 objref insinw[nINcells], inw[lala][total][nINcells], ramp
 objref variousdata
-strdef tmpstr
+strdef tmpstr, msg
 
 //----------------------------------------------Membrane noise-----------------------------------------------------------//
 experiments=0
@@ -160,6 +160,10 @@ proc pyramidals() {
 					for k=0, (maxsyn-1) {
 						FIDp=fp.repick()
 						if (FIDp<0) FIDp=FIDp*(-1)
+
+						sprint(msg, "Delay value is %f", FIDp)
+						print msg
+
 						Pcells[i].axon conampa[i][j][k]=new NetCon(&v(1), ampa[j][k], -20, FIDp, ampaweight)
 						Pcells[i].axon connmda[i][j][k]=new NetCon(&v(1), nmda[j][k], -20, FIDp, nmdaweight)
 				}

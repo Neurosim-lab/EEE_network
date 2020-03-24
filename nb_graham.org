@@ -19946,6 +19946,183 @@ Screen Shot 2020-02-25 at 2.42.59 AM.png
 Committing.
 
 
+* 2020-03-22 -- Scaling up network model
+
+** Scaling up EEE model
+
+First I'll set glut_scale to 100 to get plateaus lasting ~ 250 ms.
+
+Now turning background stim back on and increasing sim length back to 6000ms.
+
+Uncommenting the following in experiment.hoc:
+call_vecstim(runs)   //Call this for background synaptic activity
+
+Not much spiking:
+Screen Shot 2020-03-22 at 11.30.44 AM.png
+
+Ah, connectivity is turned off. Turning it back on.
+
+Uncommenting the following in experiment.hoc:
+pyramidals(runs)
+interneurons(runs)
+pyrin(runs)
+inpyr(runs)
+
+Running again.
+
+cd /Users/graham/EEE_network/L5microcircuit/experiment/ ; ipython -i experiment.py
+
+Now the cells get kicked into a permanent on state.  Running a range of glut stims again to see if can get plateau to end.
+
+Every glut_scale above 1.0 causes a permanent on state.  Looking into reducing connectivity strength.
+
+To hell with working with this hoc code.  I'm switching to using Netpyne and looking into solving the weird
+traces when no noise.
+
+** Switching to using NetPyNE
+
+cfg.simLabel = 'poirazi_26'
+
+Reduced number of glut syns to 25
+
+Made delay 0 and start time 500
+
+Running sim.
+
+No spikes.  Cranking up stimScale to 1000
+
+cfg.simLabel = 'poirazi_27'
+
+Good, we get spikes now,
+
+Running batch to explore glutstim levels and noise.
+
+batchLabel = 'batch19'
+
+Weird differences when noise is on versus off... and no activity in inh cells.
+/Users/graham/screenshots/20200323_140059.png
+
+I'm going to turn off noise in hoc code and see what happens.
+
+Running a batch
+	batchLabel = 'batch20'
+	params['stimScale'] = [1.0, 5.0, 10.0]
+
+And the hoc 
+	glut_scales = [1, 5, 10]
+
+To compare.
+
+Yeah, there's a problem somewhere...
+/Users/graham/screenshots/20200323_141620.png
+
+Turning off connectivity in both and running again.
+
+Yeah, now they look very similar.
+/Users/graham/screenshots/20200323_143304.png
+
+The problem must be in the connectivity.  Looking into it.
+
+Checking pyr->pyr connectivity...looks okay
+Turning the pyr->pyr connectivity back on.  Both look similar.
+/Users/graham/screenshots/20200323_152432.png
+
+Checking pyr->inh conn...looks okay
+Turning back on. 
+They look pretty similar.
+
+Checking inh->inh conn...looks okay
+Turning back on.
+They look pretty similar.
+
+Checking inh->pyr conn...
+I had gabaweightb as 0.25, but it looks like it should actually be 1.05e-4
+Yeah, that was the problem.
+
+Now things look much better in pyrs:
+/Users/graham/screenshots/20200323_175639.png
+
+But the noise eliminates spiking in inhs:
+/Users/graham/screenshots/20200323_175739.png
+
+
+
+* 2020-03-23 -- Exploring noise
+
+** Exploring noise
+
+From Gfluctp.mod:
+
+  g_e0	= 0.0121 (umho)	: average excitatory conductance
+  g_i0	= 0.0573 (umho)	: average inhibitory conductance
+
+  std_e	= 0.0030 (umho)	: standard dev of excitatory conductance
+  std_i	= 0.0066 (umho)	: standard dev of inhibitory conductance
+
+So it looks like I can scale noise by adjusting conductance.
+
+In netParams, added to noise dict:
+        'g_e0' : 0.0121 * cfg.noiseScale,
+        'g_i0' : 0.0573 * cfg.noiseScale
+
+Running a batch:
+	batchLabel = 'batch29'
+    params['stimScale'] = [1.0, 5.0, 10.0, 50.0]
+    params['noiseScale'] = [1.0, 0.1, 0.001, 0.0]
+
+Reducing the average noise conductance does allow inh spiking, but seems to have little effect
+on noise amplitude:
+/Users/graham/screenshots/20200323_183518.png
+
+I'm going to scale the noise conductance std as well.
+
+In netParams:
+
+        'g_e0' : 0.0121 * cfg.noiseScale,
+        'g_i0' : 0.0573 * cfg.noiseScale,
+        'std_e': 0.0030 * cfg.noiseScale,
+        'std_i': 0.0066 * cfg.noiseScale
+
+Running the same batch settings.
+
+	batchLabel = 'batch30'
+
+Yeah, now the noise scales nicely:
+/Users/graham/screenshots/20200323_184644.png
+
+I'll set the noise scale to 0.1
+
+** Scaling up the network
+
+Time to scale up.
+
+batchLabel = 'batch31'
+    params['stimScale'] = [5.0, 10.0, 50.0]
+    params['numCells'] = [10, 20, 50]
+
+Pyrs:
+/Users/graham/screenshots/20200323_221929.png
+
+Inhs:
+/Users/graham/screenshots/20200323_221948.png
+
+Seems to scale up nicely.
+
+
+** Two pyr pops, with and without plats
+
+For now I'll go with 20 cells (16 pyr, 4 inh) and give glutamate stim to half of pyrs
+
+But, committing first.
+
+
+
+
+
+
+
+
+
 
 
 

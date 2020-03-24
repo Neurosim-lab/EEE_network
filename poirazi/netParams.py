@@ -1,5 +1,6 @@
 from netpyne import specs, sim
 import os
+import numpy as np
 
 try:
     from __main__ import cfg
@@ -11,8 +12,8 @@ netParams = specs.NetParams()
 
 ## Population parameters
 
-numPyrCells = 8
-numInhCells = 2
+numPyrCells = int(np.round(0.8 * cfg.numCells))
+numInhCells = cfg.numCells - numPyrCells
 
 netParams.popParams['pyrs'] = {'cellType': 'pyr', 'numCells': numPyrCells}
 netParams.popParams['inhs'] = {'cellType': 'inh', 'numCells': numInhCells}
@@ -50,25 +51,28 @@ netParams.synMechParams['SinClamp']   = {'mod': 'SinClamp'}     # sinclamp.mod
 netParams.synMechParams['Gfluctp']    = {'mod': 'Gfluctp'}      # Gfluctp.mod
 
 
-## Stimulation
+## Glutamate stimulation
 
-netParams.stimSourceParams['stimulation'] = {
-    'type'    : 'NetStim', 
-    'start'   : 0, 
-    'interval': 50, 
-    'number'  : 10,
-    'noise'   : 0}
-    
-ruleLabel = 'stimulation->pyrs'
-netParams.stimTargetParams[ruleLabel] = {
-    'source'   : 'stimulation', 
-    'conds'    : {'pop': 'pyrs'}, 
-    'sec'      : 'dend_1', 
-    'loc'      : 0.5, 
-    'synMech'  : ['GLU', 'nmda_spike'], 
-    'weight'   : [cfg.stimAMPAweight*cfg.stimScale, cfg.stimNMDAweight*cfg.stimScale], 
-    'delay'    : 500,
-    'threshold': -20}
+if cfg.glutStim:
+
+    netParams.stimSourceParams['stimulation'] = {
+        'type'    : 'NetStim', 
+        'start'   : cfg.stimTime, 
+        'interval': 1, 
+        'number'  : 1,
+        'noise'   : 0}
+        
+    ruleLabel = 'stimulation->pyrs'
+    netParams.stimTargetParams[ruleLabel] = {
+        'source'     : 'stimulation', 
+        'conds'      : {'pop': 'pyrs'}, 
+        'sec'        : 'dend_1', 
+        'loc'        : 0.5, 
+        'synMech'    : ['GLU', 'nmda_spike'], 
+        'weight'     : [cfg.stimAMPAweight*cfg.stimScale, cfg.stimNMDAweight*cfg.stimScale], 
+        'delay'      : 0,
+        'threshold'  : -20,
+        'synsPerConn': cfg.stimNumber}
 
 
 ## Resting membrane potential
@@ -87,14 +91,24 @@ if cfg.noise:
     netParams.cellParams['pyr']['secs']['soma']['pointps'] = {
         'noise': {'mod': 'Gfluctp',
         'seed1': 'gid',
-        'E_e': cfg.pyrExcNoiseE,
-        'E_i': cfg.pyrInhNoiseE}}
+        'E_e'  : cfg.pyrExcNoiseE,
+        'E_i'  : cfg.pyrInhNoiseE,
+        'g_e0' : 0.0121 * cfg.noiseScale,
+        'g_i0' : 0.0573 * cfg.noiseScale,
+        'std_e': 0.0030 * cfg.noiseScale,
+        'std_i': 0.0066 * cfg.noiseScale
+        }}
 
     netParams.cellParams['inh']['secs']['soma']['pointps'] = {
         'noise': {'mod': 'Gfluctp',
         'seed1': 'gid',
-        'E_e': cfg.inhExcNoiseE,
-        'E_i': cfg.inhInhNoiseE}}
+        'E_e'  : cfg.inhExcNoiseE,
+        'E_i'  : cfg.inhInhNoiseE,
+        'g_e0' : 0.0121 * cfg.noiseScale,
+        'g_i0' : 0.0573 * cfg.noiseScale,
+        'std_e': 0.0030 * cfg.noiseScale,
+        'std_i': 0.0066 * cfg.noiseScale
+        }}
 
 
 ## Connectivity

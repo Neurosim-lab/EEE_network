@@ -177,15 +177,15 @@ print running
 
 runs = 0
 stimulation(runs)   
-//pyramidals(runs)
-//interneurons(runs)
-//pyrin(runs)
-//inpyr(runs)
+pyramidals(runs)
+interneurons(runs)
+pyrin(runs)
+inpyr(runs)
 
-noise(runs) 
+//noise(runs) 
 //call_vecstim(runs)   //Call this for background synaptic activity
-sadp_soma()
-sadp_dend()
+//sadp_soma()
+//sadp_dend()
 //ttx()
 print runs
 //-------------------------------------Record & Save data data

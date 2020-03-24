@@ -2,12 +2,12 @@ from netpyne import specs
 from netpyne.batch import Batch 
 import os
 
-batchLabel = 'batch18'
+batchLabel = 'batch34'
 
 #runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
 runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
 
-runFolder = '/u/graham/EEE_network/poirazi/'
+runFolder = '/Users/graham/EEE_network/poirazi/'
 #runFolder = '/home/jwgraham/EEE_network/eee_net/'
 #runFolder = '/home1/06322/tg856217/EEE_network/eee_net/'
 
@@ -32,13 +32,15 @@ def batchRun():
     # fill in with parameters to explore and range of values (key has to coincide with a variable in simConfig) 
 
 
-    #params['stimScale'] = [45.0, 90.0, 180.0]
-    params['noise'] = [True, False]
+    params['stimScale'] = [5.0, 10.0, 50.0]
+    params['numCells'] = [10, 20, 50]
+
+
+    #params['noise'] = [False, True]
 
     #params['numSynsPyrInh'] = [2, 4, 6, 8]  # Default: 2
-    params['pyrInjectAmp'] = [0.8, 1.0, 1.2, 1.4]
+    #params['pyrInjectAmp'] = [0.8, 1.0, 1.2, 1.4]
     
-
 
 
     # create Batch object with paramaters to modify, and specifying files to use
@@ -76,6 +78,8 @@ def batchRun():
 if __name__ == '__main__':
     
     batchRun() 
+    import batch_analysis as bp
+    bp.plot_vtraces(batchLabel)
 
     #import batch_analysis as ba
     #batch = ba.plot_vtraces(batchLabel, batchdatadir=saveFolder, outputdir=os.path.join(saveFolder, b.batchLabel))

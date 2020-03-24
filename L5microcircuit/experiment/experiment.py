@@ -9,7 +9,11 @@ plt.ion()
 h.xopen('experiment.hoc')
 
 
-glut_scales = [1, 5, 10, 50, 100, 200]
+glut_scales = [1, 5, 10] #[1, 5, 10, 50, 100, 200]
+#glut_scales = [100]
+
+Pfig, Pax = plt.subplots(1)
+Ifig, Iax = plt.subplots(1)
 
 for run, glut_scale in enumerate(glut_scales):
 
@@ -60,26 +64,28 @@ for run, glut_scale in enumerate(glut_scales):
 
         if pyr_index == 7:
         
-            #plt.figure()
-            plt.xlabel('Time (ms)')
-            plt.ylabel('Membrane Potential (mV)')
-            #plt.title('Pyramidal cell ' + str(pyr_index))
-            plt.title('glut_scale = ' + str(glut_scale) + ' | Pyramidal cell ' + str(pyr_index))
-            plt.plot(time, pyr_soma_trace, label='glut_scale = ' + str(glut_scale))
+            Pax.set_xlabel('Time (ms)')
+            Pax.set_ylabel('Membrane Potential (mV)')
+            Pax.set_title('glut_scale = ' + str(glut_scale) + ' | Pyramidal cell ' + str(pyr_index))
+            Pax.plot(time, pyr_soma_trace, label='glut_scale = ' + str(glut_scale))
+            #plt.plot(time, pyr_basal_traces[pyr_index], label='glut_scale = ' + str(glut_scale))
             #plt.plot(time, pyr_axon_traces[pyr_index], label='axon')
             #plt.plot(time, pyr_basal_traces[pyr_index], label='basal')
             #plt.plot(time, pyr_proxap_traces[pyr_index], label='prox ap')
             #plt.plot(time, pyr_distap_traces[pyr_index], label='dist ap')
-            plt.legend()
+            Pax.legend()
 
-    """
+
     for inh_index, inh_trace in enumerate(inh_traces):
-        plt.figure()
-        plt.plot(time, inh_trace)
-        plt.xlabel('Time (ms)')
-        plt.ylabel('Membrane Potential (mV)')
-        plt.title('Inhibitory cell ' + str(inh_index))
-    """
+        
+        if inh_index == 0:
+
+            Iax.plot(time, inh_trace, label='glut_scale = ' + str(glut_scale))
+            Iax.set_xlabel('Time (ms)')
+            Iax.set_ylabel('Membrane Potential (mV)')
+            Iax.set_title('Inhibitory cell ' + str(inh_index))
+            Iax.legend()
+
 
     spike_ind = h.idvec.to_python()
     spike_time = h.timevec.to_python()

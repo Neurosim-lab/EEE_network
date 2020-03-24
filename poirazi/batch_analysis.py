@@ -1060,10 +1060,10 @@ def plot_vtraces(batchname, batchdatadir=None, cellIDs=None, secs=None, timerang
             output = get_vtraces(params, data, cellID=cellID, section=sec, timerange=timerange)
             if ind == 0:
                 fig1 = plot_relation(param_labels=param_labels, title=title, swapaxes=False, **output)
-                fig2 = plot_relation(param_labels=param_labels, title=title, swapaxes=True, **output)
+                #fig2 = plot_relation(param_labels=param_labels, title=title, swapaxes=True, **output)
             else:
                 fig1 = plot_relation(param_labels=param_labels, swapaxes=False, fig=fig1, **output)
-                fig2 = plot_relation(param_labels=param_labels, swapaxes=True, fig=fig2, **output)
+                #fig2 = plot_relation(param_labels=param_labels, swapaxes=True, fig=fig2, **output)
         
         if save:
             if not os.path.isdir(outputdir):
@@ -1071,10 +1071,10 @@ def plot_vtraces(batchname, batchdatadir=None, cellIDs=None, secs=None, timerang
             if filename is None:
                 print(str(os.path.join(outputdir, batchname + "_" + cellLabel + "_vtrace_1.png")))
                 fig1.savefig(os.path.join(outputdir, batchname + "_" + cellLabel + "_vtrace_1.png"))
-                fig2.savefig(os.path.join(outputdir, batchname + "_" + cellLabel + "_vtrace_2.png"))
+                #fig2.savefig(os.path.join(outputdir, batchname + "_" + cellLabel + "_vtrace_2.png"))
             else:
                 fig1.savefig(os.path.join(outputdir, batchname + "_" + cellLabel + "_vtrace_1_" + filename + ".png"))
-                fig2.savefig(os.path.join(outputdir, batchname + "_" + cellLabel + "_vtrace_2_" + filename + ".png"))
+                #fig2.savefig(os.path.join(outputdir, batchname + "_" + cellLabel + "_vtrace_2_" + filename + ".png"))
 
     return (batchname, params, data)
 

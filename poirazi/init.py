@@ -23,3 +23,17 @@ sim.runSim()
 sim.gatherData()
 sim.saveData()
 sim.analysis.plotData()
+
+out = sim.analysis.iplotConn(saveFig=True, includePre=['pyrs_plat', 'pyrs', 'inhs', 'bkg'], includePost=['pyrs_plat', 'pyrs', 'inhs'], feature='numConns')
+out = sim.analysis.iplotConn(saveFig=True, includePre=['pyrs_plat', 'pyrs', 'inhs', 'bkg'], includePost=['pyrs_plat', 'pyrs', 'inhs'], feature='strength')
+
+out = sim.analysis.iplotConn(saveFig=True, includePre=['bkg'], includePost=['pyrs_plat', 'pyrs', 'inhs'], feature='numConns', groupBy='cell')
+out = sim.analysis.iplotConn(saveFig=True, includePre=['bkg'], includePost=['pyrs_plat', 'pyrs', 'inhs'], feature='weight', groupBy='cell')
+
+out = sim.analysis.iplotConn(saveFig=True, includePre=['pyrs_plat', 'pyrs', 'inhs'], includePost=['pyrs_plat', 'pyrs', 'inhs'], feature='numConns', groupBy='cell')
+out = sim.analysis.iplotConn(saveFig=True, includePre=['pyrs_plat', 'pyrs', 'inhs'], includePost=['pyrs_plat', 'pyrs', 'inhs'], feature='weight', groupBy='cell')
+
+
+out = sim.analysis.plotRaster(saveFig=True, orderInverse=True, popRates=True)
+out = sim.analysis.plotRaster(saveFig=True, orderInverse=True, popRates=True, include=['pyrs_plat', 'pyrs', 'inhs'])
+

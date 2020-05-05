@@ -122,7 +122,7 @@ netParams.connParams[ruleLabel] = {
     'synMech'    : ['GLU', 'nmda_spike'], 
     'weight'     : [cfg.PyrPyrAMPAweight, cfg.PyrPyrNMDAweight],
     'delay'      : 'max(0.38, normal(1.7, 0.9))',
-    'probability': 1.0,
+    'probability': cfg.connProbPyrPyr * cfg.connProb,
     'loc'        : [cfg.numSynsPyrPyr*[0.5], cfg.numSynsPyrPyr*[0.5]],
     'sec'        : 'dend_0',
     'synsPerConn': cfg.numSynsPyrPyr,
@@ -136,7 +136,7 @@ netParams.connParams[ruleLabel] = {
     'synMech'    : ['GLUIN', 'NMDA'], 
     'weight'     : [cfg.PyrInhAMPAweight, cfg.PyrInhNMDAweight],
     'delay'      : 'max(0.38, normal(0.6, 0.2))',
-    'probability': 1.0,
+    'probability': cfg.connProbPyrInh * cfg.connProb,
     'loc'        : [cfg.numSynsPyrInh*[0.5], cfg.numSynsPyrInh*[0.5]],
     'sec'        : 'soma',
     'synsPerConn': cfg.numSynsPyrInh,
@@ -150,7 +150,7 @@ netParams.connParams[ruleLabel] = {
     'synMech'    : ['GABAa', 'GABAb'], 
     'weight'     : [cfg.PyrInhGABAaWeight, cfg.PyrInhGABAbWeight],
     'delay'      : 'max(0.38, normal(1.8, 0.8))',
-    'probability': 1.0,
+    'probability': cfg.connProbInhPyr * cfg.connProb,
     'loc'        : [cfg.numSynsInhPyr*[0.5], cfg.numSynsInhPyr*[0.5]],
     'sec'        : 'soma',
     'synsPerConn': cfg.numSynsInhPyr,
@@ -164,7 +164,7 @@ netParams.connParams[ruleLabel] = {
     'synMech'    : ['GABAain'], 
     'weight'     : [cfg.InhInhGABAaWeight],
     'delay'      : 'max(0.38, normal(1.76, 0.07))',
-    'probability': 1.0,
+    'probability': cfg.connProbInhInh * cfg.connProb,
     'loc'        : cfg.numSynsInhInh*[0.5],
     'sec'        : 'soma',
     'synsPerConn': cfg.numSynsInhInh,
@@ -190,6 +190,73 @@ if cfg.pyrInject:
         'loc': cfg.pyrInjectLoc}
 
 
+## Background stimulation
+
+# Stimulation parameters
+netParams.popParams['bkg'] = {
+    'cellType': 'bkg', 
+    'cellModel': 'NetStim', 
+    'numCells': 800,
+    'rate': 5,
+    'start': 0,
+    'noise': 0.3
+    }
+
+ruleLabel = 'bkg->pyr_basal'
+netParams.connParams[ruleLabel] = {
+    'preConds'   : {'cellType': 'bkg'},
+    'postConds'  : {'cellType': 'pyr'},
+    'synMech'    : ['GLU', 'nmda_spike'], 
+    'weight'     : [cfg.BkgPyrAMPAweight * cfg.PyrPyrAMPAweight * cfg.BkgPyrScale, 
+                    cfg.BkgPyrNMDAweight * cfg.PyrPyrNMDAweight * cfg.BkgPyrScale],
+    'delay'      : 1.0,
+    'convergence': 40.0,
+    'loc'        : [cfg.numSynsPyrPyr*[0.5], cfg.numSynsPyrPyr*[0.5]],
+    'sec'        : 'dend_0',
+    'synsPerConn': 1,
+    'threshold'  : -20}
+
+ruleLabel = 'bkg->pyr_proxapic'
+netParams.connParams[ruleLabel] = {
+    'preConds'   : {'cellType': 'bkg'},
+    'postConds'  : {'cellType': 'pyr'},
+    'synMech'    : ['GLU', 'nmda_spike'], 
+    'weight'     : [cfg.BkgPyrAMPAweight * cfg.PyrPyrAMPAweight * cfg.BkgPyrScale, 
+                    cfg.BkgPyrNMDAweight * cfg.PyrPyrNMDAweight * cfg.BkgPyrScale],
+    'delay'      : 1.0,
+    'convergence': 40.0,
+    'loc'        : [cfg.numSynsPyrPyr*[0.5], cfg.numSynsPyrPyr*[0.5]],
+    'sec'        : 'dend_1',
+    'synsPerConn': 1,
+    'threshold'  : -20}
+
+ruleLabel = 'bkg->pyr_distapic'
+netParams.connParams[ruleLabel] = {
+    'preConds'   : {'cellType': 'bkg'},
+    'postConds'  : {'cellType': 'pyr'},
+    'synMech'    : ['GLU', 'nmda_spike'], 
+    'weight'     : [cfg.BkgPyrAMPAweight * cfg.PyrPyrAMPAweight * cfg.BkgPyrScale, 
+                    cfg.BkgPyrNMDAweight * cfg.PyrPyrNMDAweight * cfg.BkgPyrScale],
+    'delay'      : 1.0,
+    'convergence': 40.0,
+    'loc'        : [cfg.numSynsPyrPyr*[0.5], cfg.numSynsPyrPyr*[0.5]],
+    'sec'        : 'dend_2',
+    'synsPerConn': 1,
+    'threshold'  : -20}
+
+ruleLabel = 'bkg->inh'
+netParams.connParams[ruleLabel] = {
+    'preConds'   : {'cellType': 'bkg'},
+    'postConds'  : {'cellType': 'inh'},
+    'synMech'    : ['GLUIN', 'NMDA'], 
+    'weight'     : [cfg.BkgInhAMPAweight * cfg.PyrInhAMPAweight * cfg.BkgInhScale, 
+                    cfg.BkgInhNMDAweight * cfg.PyrInhNMDAweight * cfg.BkgInhScale],
+    'delay'      : 1.0,
+    'convergence': 40.0,
+    'loc'        : [cfg.numSynsPyrPyr*[0.5], cfg.numSynsPyrPyr*[0.5]],
+    'sec'        : 'soma',
+    'synsPerConn': 1,
+    'threshold'  : -20}
 
 
 

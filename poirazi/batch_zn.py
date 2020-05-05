@@ -2,16 +2,17 @@ from netpyne import specs
 from netpyne.batch import Batch 
 import os
 
-batchLabel = 'batch59'
+batchLabel = 'batch_zn_01'
 
 #runType = 'hpc_slurm' # Either 'hpc_slurm' or 'mpi_bulletin'
 runType = 'mpi_bulletin' # Either 'hpc_slurm' or 'mpi_bulletin'
 
-runFolder = '/Users/graham/EEE_network/poirazi/'
-#runFolder = '/home/jwgraham/EEE_network/eee_net/'
-#runFolder = '/home1/06322/tg856217/EEE_network/eee_net/'
+#runFolder = '/Users/graham/EEE_network/poirazi/'           # For local machine
+runFolder = '/u/graham/EEE_network/poirazi/'                # For Neurosim machines
+#runFolder = '/home/jwgraham/EEE_network/eee_net/'          # For Comet 
+#runFolder = '/home1/06322/tg856217/EEE_network/eee_net/'   # For Stampede
 
-saveFolder = 'output' # For running on a local machine
+saveFolder = 'output' 
 dataFolder = 'batch_data'
 figFolder  = 'batch_figures'
 #saveFolder = '/oasis/scratch/comet/jwgraham/temp_project/EEE_network/eee_net/'  # Comet
@@ -31,7 +32,7 @@ def batchRun():
 
     # fill in with parameters to explore and range of values (key has to coincide with a variable in simConfig) 
 
-    params['connProb'] = [0.0, 0.5, 1.0]
+    params['connProb'] = [0.0, 0.25, 0.5, 0.75, 1.0]
     params['noise'] = [False, True]
 
     #params['connProbPyrPyr'] = [0.1, 0.2, 0.3]
@@ -97,10 +98,7 @@ def batchRun():
 if __name__ == '__main__':
     
     batchRun() 
-    import batch_analysis as bp
-    bp.plot_vtraces(batchLabel)
+    import batch_analysis as ba
+    ba.plot_vtraces(batchLabel)
 
-    #import batch_analysis as ba
     #batch = ba.plot_vtraces(batchLabel, batchdatadir=saveFolder, outputdir=os.path.join(saveFolder, b.batchLabel))
-
-    os.system("say 'batch completed'")

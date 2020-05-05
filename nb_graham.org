@@ -20252,6 +20252,433 @@ As is sync:
 Committing and calling it a day.
 
 
+* 2020-03-24 -- EEE meeting
+
+** EEE meeting
+
+https://docs.google.com/document/d/1_s1gQTdPZmEK-yaRmNQTKKmBrmsYDAkngO4PDA91G50/edit#
+
+Ported Poirazi model into NetPyNE
+Doubled size of network (to 16 pyr, 4 inh)
+Half of pyrs get glutamate (plateau), half get injected current
+Matched spike freq, measured sync
+Plateaus increase sync
+Next steps
+	Inject current into dendrite 
+	Apply background activity
+		Same to all cells?  Unique to each?
+		Start same to all, then consider unique by pop
+	Look into dend backpropagation
+		Look into simp EEE model
+		Why aren’t we seeing more in this model?
+			1 huge axial resistance
+			2 no Na channels in dendrite
+	Scale up larger
+	Look for emergent plateaus
+	Others?
+
+
+* 2020-04-06 -- 
+
+** Looking into background activity
+
+We want to see some network activity, which doesn't happen now without external stimuli.
+
+Looking into Poirazi background activity properties:
+
+L5microcircuit/experiment/importBackgroundStimParams.hoc
+
+	BG_Stim_basal[51][9][40], 
+	BG_Stim_Apicpr[51][9][40], 
+	BG_Stim_Apic[51][9][40], 
+	BG_Stim_Soma[51][9][40]
+
+	BG_Stim_basal[0][0][0] = new Vector(30)
+
+L5microcircuit/experiment/experiment.hoc
+
+	synapses_backb=40			//basal background synapses
+	synapses_backpr=40			//proximal apical background synapses
+	synapses_backa=40			//distal apical background synapses
+	synapses_backinh=40			//background synapses of interneurons
+
+It seems the 51 is the number of sim runs, the 9 is the number of cells, and the 40 is the
+number of synapses.
+
+Looking at L5microcircuit/experiment/vecstim.hoc, it appears like the background stimuli are 
+at an average of 5 Hz (30 stimuli in 6000 ms), with 40 synapses onto each 1) pyr basal dends, 
+2) pyr proximal apical dends, 3) pyr distal apical dends, and 4) inh somas.
+
+The mechs used for pyr cells are: `GLU` and `nmda_spike`
+
+	Weights for basal    : ampaweight and 0.25
+	Weights for prox apic: ampaweightpr and 0.22
+	Weights for dist apic: ampaweightpr and 0.20
+
+	ampaweight  : 0.00019
+	ampaweightpr: 0.00024
+
+
+The mechs used for inh cells are: `GLUIN` and `NMDA`
+
+	Weights: ampaweightin and nmdaweightin
+
+	ampaweightin: 7.5e-4
+	nmdaweightin: 3.2e-4
+
+Okay, so now to set that up in NetPyNE.
+
+
+** Setting up background activity in NetPyNE
+
+Added bkg stim to basal dends of pyrs:
+
+	## Background stimulation
+
+	# Stimulation parameters
+	netParams.popParams['bkg'] = {
+	    'cellType': 'bkg', 
+	    'cellModel': 'NetStim', 
+	    'numCells': 800,
+	    'rate': 5,
+	    'start': 0,
+	    }
+
+	ruleLabel = 'bkg->pyr_basal'
+	netParams.connParams[ruleLabel] = {
+	    'preConds'   : {'cellType': 'bkg'},
+	    'postConds'  : {'cellType': 'pyr'},
+	    'synMech'    : ['GLU', 'nmda_spike'], 
+	    'weight'     : [cfg.PyrPyrAMPAweight, cfg.PyrPyrNMDAweight],
+	    'delay'      : 0.0,
+	    'convergence': 40.0,
+	    'loc'        : [cfg.numSynsPyrPyr*[0.5], cfg.numSynsPyrPyr*[0.5]],
+	    'sec'        : 'dend_0',
+	    'synsPerConn': 1,
+	    'threshold'  : -20}
+
+Running sim to see results:
+cfg.simLabel = 'poirazi_38'
+
+Without noise, all bkg cells fire at the same times:
+/Users/graham/screenshots/20200407_070507.png
+
+Adding noise to NetStims.
+'noise': 0.3
+
+cfg.simLabel = 'poirazi_39'
+
+Much better, bkg spiking is random now.
+
+batchLabel = 'batch44'
+    params['BkgPyrAMPAweight'] = [0.00019, 1.5*0.00019, 2.0*0.00019]
+    params['BkgPyrNMDAweight'] = [0.585, 1.5*0.585, 2.0*0.585]
+
+Adding background stim to inh cells.
+
+batchLabel = 'batch45'
+
+The inh cells all end up looking like this:
+/Users/graham/screenshots/20200408_165540.png
+
+Depolarization block with weird spiking.
+
+Looking into the bkg weights onto inh cells...
+
+Yeah, had a mistake in netParams.  Rerunning same batch params.
+
+batchLabel = 'batch46'
+
+Okay, so now inh cells spike normally and at a decent rate.
+
+But pyr cells don't spike at all.  
+
+Running a batch reducing inh -> pyr num conns
+
+batchLabel = 'batch47'
+    params['numSynsInhPyr'] = [4, 3, 2, 1, 0]
+    params['noise'] = [False, True]
+
+
+
+* 2020-04-20 -- 
+
+** Looking into background activity
+
+Turned on glut stim and current injection and running same batch as last time.
+
+batchLabel = 'batch48'
+
+These look pretty good:
+/Users/graham/screenshots/20200420_114238.png
+
+Reducing inh num syns does increase spiking.
+
+Adding noise reduces spiking.
+
+Time to find background activity that causes some spiking.
+
+batchLabel = 'batch49'
+    params['BkgPyrAMPAweight'] = [1.0, 2.0, 10.0] 
+    params['BkgPyrNMDAweight'] = [1.0, 2.0, 10.0]
+
+Yeah, increasing the Bkg -> Pyr weights results in spiking.
+
+Looks like a scale between 1.0 and 2.0 will give a good rate, when noise is off.
+
+Running the same params with noise True
+
+batchLabel = 'batch50'
+
+Looks better with noise (slightly less spiking).
+
+I'm going to set an overall scale for the background weight that includes the inh syns.
+
+batchLabel = 'batch51'
+
+    params['BkgScale'] = [1.25, 1.5, 1.75] 
+    params['noise'] = [False, True]
+
+
+/Users/graham/screenshots/20200420_123527.png
+
+It looks like I should explore around 1.75, and look at exc bkg separately from inh bkg...
+
+batchLabel = 'batch52'
+
+    params['BkgPyrScale'] = [1.0, 1.6, 1.7, 1.8]
+    params['BkgInhScale'] = [1.0, 1.6, 1.7, 1.8]
+
+/Users/graham/screenshots/20200420_130240.png
+
+Looks like the spiking is all or nothing.  
+
+I'm going to explore reducing pyr->pyr connectivity
+
+** Explore reducing pyr->pyr connectivity
+
+I added cfg.connProbPyrPyr, the connection probability between pyrs and will scale it...
+
+batchLabel = 'batch53'
+
+    params['connProbPyrPyr'] = [0.0, 0.5, 0.75, 1.0]
+    params['BkgPyrScale'] = [1.8, 1.9]
+
+/Users/graham/screenshots/20200420_134000.png
+
+Not a lot of effect above 0.5...  Exploring lower range...
+
+batchLabel = 'batch54'
+
+    params['connProbPyrPyr'] = [0.0, 0.1, 0.2, 0.3]
+    params['BkgPyrScale'] = [1.8, 1.9, 2.0]
+
+
+batchLabel = 'batch56'
+
+    params['connProbPyrPyr'] = [0.1, 0.2, 0.3]
+    params['BkgPyrScale'] = [1.8, 2.0, 2.2]
+
+
+** Exploring scaling bkg to pyr and inh together
+
+batchLabel = 'batch57'
+
+    params['BkgPyrScale'] = [1.8, 2.0, 2.2]
+    params['BkgInhScale'] = [1.8, 2.0, 2.2]
+
+Too much spiking, forgot to set pyr pyr conn to a lower value.
+
+Setting it to 0.1 and re-running batch.
+
+batchLabel = 'batch58'
+
+/Users/graham/screenshots/20200420_151550.png
+
+Much better.  It looks like I can set the background scale for both pyr and inh
+at 2.0 for decent spiking.
+
+** I'm going to explore a sim in depth.
+
+cfg.simLabel = 'poirazi_46'
+
+Need a raster plot without the background spiking.
+
+This does it:
+	out = sim.analysis.plotRaster(saveFig=True, orderInverse=True, popRates=True, include=['pyrs_plat', 'pyrs', 'inhs'])
+
+Want to see connectivity:
+
+For background:
+
+	out = sim.analysis.iplotConn(saveFig=True, includePre=['bkg'], includePost=['pyrs_plat', 'pyrs', 'inhs'], feature='numConns', groupBy='cell')
+	out = sim.analysis.iplotConn(saveFig=True, includePre=['bkg'], includePost=['pyrs_plat', 'pyrs', 'inhs'], feature='weight', groupBy='cell')
+
+For cells:
+
+	out = sim.analysis.iplotConn(saveFig=True, includePre=['pyrs_plat', 'pyrs', 'inhs'], includePost=['pyrs_plat', 'pyrs', 'inhs'], feature='numConns', groupBy='cell')
+	out = sim.analysis.iplotConn(saveFig=True, includePre=['pyrs_plat', 'pyrs', 'inhs'], includePost=['pyrs_plat', 'pyrs', 'inhs'], feature='weight', groupBy='cell')
+
+Note, some of these figs get overwritten.  Should consider renaming new figs with `_#` to 
+prevent overwriting.
+
+
+** Doubling size of network
+
+cfg.simLabel = 'poirazi_47'
+
+Looks fine.
+
+
+** Increasing network to 100 cells
+
+cfg.simLabel = 'poirazi_48'
+
+That worked.  Analyze later.
+
+
+** Adding glutamate stim to 100 cell network
+
+cfg.simLabel = 'poirazi_49'
+
+cfg.glutStim       = True
+
+
+
+
+
+* 2020-04-21 -- 
+
+** Including current pulse 
+
+cfg.simLabel = 'poirazi_50'
+
+
+
+** Exploring connection probability
+
+batchLabel = 'batch59'
+
+    params['connProb'] = [0.0, 0.5, 1.0]
+    params['noise'] = [False, True]
+
+
+
+** Decreasing number of background cells
+
+
+
+* 2020-05-05 --
+
+** Notes from last meeting
+
+https://docs.google.com/document/d/1_s1gQTdPZmEK-yaRmNQTKKmBrmsYDAkngO4PDA91G50/edit
+
+Joe
+	Todo
+		TTX to see what plateaus are doing
+		Check single cell model also
+		Move to Neurosim machines (consider x2Go)
+		Explore connectivity
+		Explore synchronization of background
+	Added background stimulation 
+		800 NetStims (5 Hz, Noise = 0.3)
+		Connected to Pyr (distal apical, proximal apical, and basal) and Inh (soma)
+		Convergence of 40
+		Uses scaled weight values from Pyr conns
+		Doubled normal weight to start seeing good spiking rate
+		Background activity has pretty high synchrony…
+		Look into synchronizing input more
+	Increasing network size (original: 10 cells)
+		Current injection doesn’t result in later spiking
+		Glutamate stimulation does cause later spiking
+		Need to reduce connectivity (all-to-all in original model)
+	Working on connectivity scaling
+		Increased to 100 neurons
+		All-to-all in original model results in big swings in voltage
+		Exploring scaling of conns now
+		Will switch to using Neurosim machines
+
+
+** Running on Neurosim machine
+
+Problem connecting...
+
+	graham$ sshzn
+	@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+	@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+	Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+	It is also possible that a host key has just been changed.
+	The fingerprint for the ECDSA key sent by the remote host is
+	SHA256:tU5XnVP0dgyzeeqqoOxFcEd71wV9LeFd4GV9Lnn8qDk.
+	Please contact your system administrator.
+	Add correct host key in /Users/graham/.ssh/known_hosts to get rid of this message.
+	Offending ECDSA key in /Users/graham/.ssh/known_hosts:6
+	ECDSA host key for no.neurosim.downstate.edu has changed and you have requested strict checking.
+	Host key verification failed.
+
+Found this:
+https://stackoverflow.com/questions/20840012/ssh-remote-host-identification-has-changed
+
+It works after doing this:
+	graham$ ssh-keygen -R no.neurosim.downstate.edu
+	# Host no.neurosim.downstate.edu found: line 6
+	/Users/graham/.ssh/known_hosts updated.
+	Original contents retained as /Users/graham/.ssh/known_hosts.old
+
+Connecting to zn and attempting to run a sim...
+
+	graham$ sshzn
+	zn% git clone https://github.com/Neurosim-lab/EEE_network
+	zn% cd ~/EEE_network/poirazi/mods/
+	zn% nrnivmodl
+	zn% cd ..
+	zn% ./runsim
+
+Get an error:
+
+	ModuleNotFoundError: No module named 'pandas'
+
+Forgot I needed to run `py3env` before anything else.  After that, IPython runs 
+Python3 and Pandas is importable.
+
+	zn% py3env
+
+Need to symlink to the compiled mods and create output dir:
+
+	zn% ln -s mods/x86_64 ./x86_64
+	zn% mkdir output
+
+And now to run sim:
+
+	zn% cd ~/EEE_network/poirazi ; ./runsim
+
+It completed successfully, but need to install PySpike:
+
+	Error: plotSpikeStats() requires the PySpike python package 
+	to calculate synchrony (try: pip install pyspike)
+
+Adding batch_zn.py for running batches on zn.
+
+
+
+Committing now to try running a batch.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -20662,12 +20662,16 @@ It completed successfully, but need to install PySpike:
 
 Adding batch_zn.py for running batches on zn.
 
-
-
 Committing now to try running a batch.
 
+Need a runbatch_zn file.  Adding and committing.
 
 
+** Running a batch on zn
+
+sshzn
+cd ~/EEE_network/poirazi/
+git pull
 
 
 
